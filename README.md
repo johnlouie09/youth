@@ -1,66 +1,77 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# YOUTH Platform
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Youth Oriented Unified Transparency Hub Platform
 
-## About Laravel
+---
+## Development Setup
+Here are the steps to set up the development environment for this project:
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+1. Open Windows Powershell (run as administrator) and copy then paste this command:
+    ```sh
+    Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://php.new/install/windows/8.4'))
+    ```
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+    the command above is to install the PHP, Composer, and the Laravel installer on Windows, you should restart your terminal.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+2. Download and install
+   [XAMPP](https://www.apachefriends.org/download.html)
+   and [NodeJS](https://nodejs.org/en/),
+   if you haven't already.
 
-## Learning Laravel
+3. Start Apache and MySQL through XAMPP if not already running.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+4. Clone or download this repository to your XAMPP **htdocs** folder.
+   The final path should be `path_to/xampp/htdocs/youth`.
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+5. Copy [**`app/config/database.example.php`**](app/config/database.example.php)
+   to **`app/config/database.php`**, then modify the database connection settings in the new file.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+6. Inside [phpMyAdmin](http://localhost/phpmyadmin),
+   create a MySQL database named `youth` and import [youth.sql](youth.sql) into it.
 
-## Laravel Sponsors
+7. Open the terminal and navigate to the project directory **youth**.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+8. Execute the following commands to install the required dependencies:
+   ```sh
+   npm install
+   ```
 
-### Premium Partners
+9. Compile and run the development server with hot reloading:
+   ```sh
+   npm run dev
+   ```
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+10. Open your web browser and access <http://localhost:5173> to view the application.
+---
 
-## Contributing
+### Writing Tests
+To write your tests, simply add your **Unit Tests** to the
+[tests/**unit**](tests/unit) directory
+and your ***Feature Tests*** to the
+[tests/**feature**](tests/feature) directory.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### Running Tests
+1. Open a terminal window and navigate to the root directory of the project.
+2. Run the following command to execute your tests:
 
-## Code of Conduct
+   - *all tests*
+   ```shell
+   phpunit
+   ```
+   - *unit tests only*
+   ```shell
+   phpunit --testsuite unit
+   ```
+   - *feature tests only*
+   ```shell
+   phpunit --testsuite feature
+   ```
+   
+   If `phpunit` command does not work, try running `vendor\bin\phpunit` instead.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
 
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+---
 
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+The YOUTH platform software is licensed under the [MIT license](https://opensource.org/licenses/MIT).
