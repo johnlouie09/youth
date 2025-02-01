@@ -6,42 +6,35 @@ Youth Oriented Unified Transparency Hub Platform
 ## Development Setup
 Here are the steps to set up the development environment for this project:
 
-1. Open Windows Powershell (run as administrator) and copy then paste this command:
-    ```sh
-    Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://php.new/install/windows/8.4'))
-    ```
-
-    the command above is to install the PHP, Composer, and the Laravel installer on Windows, you should restart your terminal.
-
-2. Download and install
+1. Download and install
    [XAMPP](https://www.apachefriends.org/download.html)
    and [NodeJS](https://nodejs.org/en/),
    if you haven't already.
 
-3. Start Apache and MySQL through XAMPP if not already running.
+2. Start Apache and MySQL through XAMPP if not already running.
 
-4. Clone or download this repository to your XAMPP **htdocs** folder.
+3. Clone or download this repository to your XAMPP **htdocs** folder.
    The final path should be `path_to/xampp/htdocs/youth`.
 
-5. Copy [**`app/config/database.example.php`**](app/config/database.example.php)
+4. Copy [**`app/config/database.example.php`**](app/config/database.example.php)
    to **`app/config/database.php`**, then modify the database connection settings in the new file.
 
-6. Inside [phpMyAdmin](http://localhost/phpmyadmin),
+5. Inside [phpMyAdmin](http://localhost/phpmyadmin),
    create a MySQL database named `youth` and import [youth.sql](youth.sql) into it.
 
-7. Open the terminal and navigate to the project directory **youth**.
+6. Open the terminal and navigate to the project directory **youth**.
 
-8. Execute the following commands to install the required dependencies:
+7. Execute the following commands to install the required dependencies:
    ```sh
    npm install
    ```
 
-9. Compile and run the development server with hot reloading:
+8. Compile and run the development server with hot reloading:
    ```sh
    npm run dev
    ```
 
-10. Open your web browser and access <http://localhost:5173> to view the application.
+9. Open your web browser and access <http://localhost:5173> to view the application.
 ---
 
 ### Writing Tests
