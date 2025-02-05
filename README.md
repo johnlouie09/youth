@@ -37,34 +37,6 @@ Here are the steps to set up the development environment for this project:
 9. Open your web browser and access <http://localhost:5173> to view the application.
 ---
 
-### Writing Tests
-To write your tests, simply add your **Unit Tests** to the
-[tests/**unit**](tests/unit) directory
-and your ***Feature Tests*** to the
-[tests/**feature**](tests/feature) directory.
-
-### Running Tests
-1. Open a terminal window and navigate to the root directory of the project.
-2. Run the following command to execute your tests:
-
-   - *all tests*
-   ```shell
-   phpunit
-   ```
-   - *unit tests only*
-   ```shell
-   phpunit --testsuite unit
-   ```
-   - *feature tests only*
-   ```shell
-   phpunit --testsuite feature
-   ```
-   
-   If `phpunit` command does not work, try running `vendor\bin\phpunit` instead.
-
-
----
-
 ## License
 
 The YOUTH platform software is licensed under the [MIT license](https://opensource.org/licenses/MIT).
