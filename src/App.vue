@@ -1,12 +1,9 @@
 <script setup>
-import { RouterLink, RouterView } from 'vue-router'
+import Preloader from "./components/Preloader.vue";
 </script>
 
 <template>
-    <div class="text-red-400">
-        TEXT HERE
-    </div>
-
+    <Preloader />
     <RouterView/>
 </template>
 
