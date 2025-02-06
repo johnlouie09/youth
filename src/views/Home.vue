@@ -1,5 +1,5 @@
 <script setup>
-import YouthIcon from "@/components/icons/YouthIcon.vue";
+//import YouthIcon from "@/components/icons/YouthIcon.vue";
 </script>
 
 <template>
