@@ -1,0 +1,125 @@
+<script setup>
+import { reactive } from 'vue';
+
+const views = reactive([
+    {
+        name: "Home",
+        to: "/home",
+        class: "view home"
+    },
+    {
+        name: "About",
+        to: "/about",
+        class: "view about"
+    },
+    {
+        name: "Contact",
+        to: "/contact",
+        class: "view contact"
+    },
+    {
+        name: "Services",
+        to: "/service",
+        class: "view service"
+    }
+])
+</script>
+
+<template>
+    <nav >      
+        <svg width="87" height="16" viewBox="0 0 87 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M3.03139 0.137277L0.290732 0.0776367C0.0410835 0.458641 -0.208567 0.839646 0.278101 1.72969C0.764767 2.61972 1.98775 4.01876 3.21072 5.41781L5.88601 5.51213C6.06143 5.21438 6.23685 4.91663 5.76108 4.02083C5.28531 3.12502 4.15835 1.63115 3.03139 0.137277Z" fill="url(#paint0_linear_743_371)"/>
+    <path d="M14.9122 0.215371L12.2353 0.129395L6.11862 8.9028L6.04443 15.657C6.46479 15.7902 6.88515 15.9234 7.37593 15.9383C7.40779 15.9392 7.43995 15.9397 7.47239 15.9397C7.93957 15.9397 8.46433 15.843 8.9891 15.7462L9.03677 9.66829C11.2054 6.75392 13.3741 3.83957 14.3533 2.26408C15.3326 0.688596 15.1224 0.451981 14.9122 0.215371Z" fill="url(#paint1_linear_743_371)"/>
+    <path d="M25.1474 0.427805L25.2404 2.66594C23.8844 3.13342 22.5283 3.60088 21.7883 5.04223C21.0483 6.48359 20.9244 8.89888 21.583 10.4116C22.2416 11.9243 23.6829 12.5344 25.1241 13.1445L25.1545 15.924C24.4745 15.8703 23.7944 15.8166 22.8532 15.4231C21.9119 15.0295 20.7096 14.2961 19.7396 12.9656C18.7696 11.6351 18.032 9.70748 18.1182 7.72354C18.2043 5.73959 19.1142 3.69934 20.2953 2.38004C21.4764 1.06074 22.9287 0.462383 23.7826 0.257189C24.0462 0.193854 24.2527 0.167969 24.4198 0.167969C24.7942 0.167969 24.9708 0.297876 25.1474 0.427805Z" fill="url(#paint2_linear_743_371)"/>
+    <path d="M26.9453 0.418016L26.8599 2.65648C28.2175 3.11938 29.5751 3.58228 30.3199 5.02115C31.0647 6.46003 31.1968 8.87487 30.5433 10.3898C29.8897 11.9047 28.4505 12.5196 27.0114 13.1346L26.9903 15.9142C27.6702 15.8582 28.3501 15.8022 29.29 15.4055C30.2298 15.0088 31.4297 14.2714 32.3952 12.9376C33.3607 11.6038 34.0918 9.67372 33.999 7.69007C33.9062 5.70643 32.9895 3.66925 31.804 2.35394C30.6184 1.03863 29.1641 0.445191 28.3095 0.242849C28.0487 0.181077 27.8437 0.155762 27.6775 0.155762C27.2994 0.155762 27.1223 0.286881 26.9453 0.418016Z" fill="url(#paint3_linear_743_371)"/>
+    <path d="M41.5866 10.4574L41.5536 0.396398C41.0636 0.216037 40.5736 0.0356445 40.0887 0.0356445C40.0633 0.0356445 40.0378 0.0361401 40.0125 0.0371611C39.5026 0.0575797 38.9986 0.288257 38.4946 0.518951L38.4986 10.6959C38.7811 11.5008 39.0637 12.3057 39.4846 12.9905C39.9055 13.6753 40.4648 14.2402 41.0649 14.7351C41.665 15.2301 42.3061 15.6552 42.8696 15.8292C43.1209 15.9067 43.3568 15.9344 43.5842 15.9344C43.8667 15.9344 44.136 15.8917 44.4054 15.849L44.5506 13.3607C43.847 13.0758 43.1435 12.791 42.6495 12.3071C42.1555 11.8233 41.871 11.1403 41.5866 10.4574Z" fill="url(#paint4_linear_743_371)"/>
+    <path d="M49.2088 10.4449L49.1462 0.38404C49.6406 0.196656 50.1351 0.00927734 50.6261 0.00927734C50.6454 0.00927734 50.6646 0.0095701 50.6839 0.0101482C51.1939 0.0257205 51.7 0.251627 52.2062 0.477524L52.2989 10.654C52.024 11.4615 51.7491 12.2691 51.3348 12.9579C50.9204 13.6467 50.3665 14.2168 49.7711 14.7175C49.1756 15.2181 48.5387 15.6493 47.9768 15.8286C47.7164 15.9117 47.472 15.9407 47.2364 15.9407C46.9636 15.9407 46.7025 15.9019 46.4413 15.863L46.2725 13.3762C46.9733 13.0847 47.6741 12.7932 48.1635 12.3046C48.6529 11.8161 48.9308 11.1305 49.2088 10.4449Z" fill="url(#paint5_linear_743_371)"/>
+    <path d="M56.2632 2.73711L56.3171 0.485303C56.6107 0.297907 56.9043 0.110489 57.3654 0.0373876C57.5282 0.0115691 57.7119 0 57.8995 0C58.2432 0 58.5999 0.0388131 58.8652 0.0999706C59.2754 0.194499 59.4672 0.342421 59.659 0.490334L59.7253 2.83104C59.0757 2.9858 58.426 3.14056 57.8663 3.14056C57.8399 3.14056 57.8137 3.14021 57.7877 3.13951C57.2107 3.12386 56.7369 2.93048 56.2632 2.73711Z" fill="url(#paint6_linear_743_371)"/>
+    <path d="M61.6045 15.9146L63.8164 16.0001L64.2503 15.5783L64.1753 3.02866L68.8927 3.06323L69.2919 2.62414L69.438 0.572774L68.9858 0.0938516L61.4809 0.0878906L61.1265 0.446662L61.2708 15.4289L61.6045 15.9146Z" fill="url(#paint7_linear_743_371)"/>
+    <path d="M73.4334 0.735044L73.8531 0.179199L76.0338 0.201271L76.4225 0.572385L76.436 4.88669L75.9859 5.34459L73.9773 5.37892L73.3892 4.70319L73.4334 0.735044Z" fill="url(#paint8_linear_743_371)"/>
+    <path d="M83.5144 0.731386L84.1149 0.164551L86.0037 0.189851L86.4737 0.603398L86.5021 15.2586L85.9187 15.7925L84.0028 15.7759L83.4945 15.3835L83.5163 9.30996L76.4332 9.30057L76.4272 15.383L75.9378 15.7781L73.8605 15.7943L73.3706 15.35L73.4942 6.98075L74.028 6.49791L83.4491 6.4826L83.5144 0.731386Z" fill="url(#paint9_linear_743_371)"/>
+    <defs>
+    <linearGradient id="paint0_linear_743_371" x1="45.5488" y1="0.67471" x2="45.5488" y2="16.435" gradientUnits="userSpaceOnUse">
+    <stop stop-color="#3F51B5"/>
+    <stop offset="0.509009" stop-color="#F44336"/>
+    <stop offset="1" stop-color="#FFEB3B"/>
+    </linearGradient>
+    <linearGradient id="paint1_linear_743_371" x1="45.5491" y1="0.673982" x2="45.5491" y2="16.4343" gradientUnits="userSpaceOnUse">
+    <stop stop-color="#3F51B5"/>
+    <stop offset="0.509009" stop-color="#F44336"/>
+    <stop offset="1" stop-color="#FFEB3B"/>
+    </linearGradient>
+    <linearGradient id="paint2_linear_743_371" x1="45.5488" y1="0.674916" x2="45.5488" y2="16.4352" gradientUnits="userSpaceOnUse">
+    <stop stop-color="#3F51B5"/>
+    <stop offset="0.509009" stop-color="#F44336"/>
+    <stop offset="1" stop-color="#FFEB3B"/>
+    </linearGradient>
+    <linearGradient id="paint3_linear_743_371" x1="45.5485" y1="0.675121" x2="45.5485" y2="16.4354" gradientUnits="userSpaceOnUse">
+    <stop stop-color="#3F51B5"/>
+    <stop offset="0.509009" stop-color="#F44336"/>
+    <stop offset="1" stop-color="#FFEB3B"/>
+    </linearGradient>
+    <linearGradient id="paint4_linear_743_371" x1="45.5487" y1="0.674957" x2="45.5487" y2="16.4352" gradientUnits="userSpaceOnUse">
+    <stop stop-color="#3F51B5"/>
+    <stop offset="0.509009" stop-color="#F44336"/>
+    <stop offset="1" stop-color="#FFEB3B"/>
+    </linearGradient>
+    <linearGradient id="paint5_linear_743_371" x1="45.5488" y1="0.674716" x2="45.5488" y2="16.435" gradientUnits="userSpaceOnUse">
+    <stop stop-color="#3F51B5"/>
+    <stop offset="0.509009" stop-color="#F44336"/>
+    <stop offset="1" stop-color="#FFEB3B"/>
+    </linearGradient>
+    <linearGradient id="paint6_linear_743_371" x1="45.549" y1="0.675009" x2="45.549" y2="16.4353" gradientUnits="userSpaceOnUse">
+    <stop stop-color="#3F51B5"/>
+    <stop offset="0.509009" stop-color="#F44336"/>
+    <stop offset="1" stop-color="#FFEB3B"/>
+    </linearGradient>
+    <linearGradient id="paint7_linear_743_371" x1="45.5488" y1="0.675086" x2="45.5488" y2="16.4354" gradientUnits="userSpaceOnUse">
+    <stop stop-color="#3F51B5"/>
+    <stop offset="0.509009" stop-color="#F44336"/>
+    <stop offset="1" stop-color="#FFEB3B"/>
+    </linearGradient>
+    <linearGradient id="paint8_linear_743_371" x1="45.5486" y1="0.67584" x2="45.5486" y2="16.4361" gradientUnits="userSpaceOnUse">
+    <stop stop-color="#3F51B5"/>
+    <stop offset="0.509009" stop-color="#F44336"/>
+    <stop offset="1" stop-color="#FFEB3B"/>
+    </linearGradient>
+    <linearGradient id="paint9_linear_743_371" x1="45.5485" y1="0.675324" x2="45.5485" y2="16.4356" gradientUnits="userSpaceOnUse">
+    <stop stop-color="#3F51B5"/>
+    <stop offset="0.509009" stop-color="#F44336"/>
+    <stop offset="1" stop-color="#FFEB3B"/>
+    </linearGradient>
+    </defs>
+        </svg>
+
+        <ul>
+            <RouterLink v-for="view in views" :to="view.to" :class="view.class">
+                {{ view.name.toUpperCase() }}
+            </RouterLink> 
+        </ul>
+    </nav>
+</template>
+
+<style>
+    nav {
+        background-color: black;
+        color: #848484;
+        height: 60px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0% 160px;
+    }
+
+    ul {
+        width: 25%;
+        display: flex;
+        justify-content: space-between;
+        margin-right: 100px;
+        font-weight: bold;
+    }
+
+    .view:hover {
+        color: #3772FF;
+    }
+</style>

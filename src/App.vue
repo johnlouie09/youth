@@ -1,12 +1,12 @@
 <script setup>
 import Preloader from "./components/Preloader.vue";
-import Footer from "@/components/Footer.vue";
+import NavigationBar from "./components/NavigationBar.vue";
 </script>
 
 <template>
     <Preloader />
+    <NavigationBar></NavigationBar>
     <RouterView/>
-<Footer/>
 </template>
 
 <style scoped>
