@@ -1,10 +1,13 @@
 @import "tailwindcss";
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 
 * {
     font-family: 'Inter', sans-serif;
 }
 =======
+=======
+>>>>>>> Stashed changes
 :root {
     --background-color: #ffffff;
     --text-color: #000000;
@@ -22,4 +25,7 @@ body {
     color: var(--text-color);
     transition: background-color 0.3s, color 0.3s;
 }
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes

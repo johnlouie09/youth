@@ -1,6 +1,11 @@
 import { createRouter, createWebHistory } from 'vue-router'
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 
+=======
+import Home from '../views/Home.vue'
+import SanFrancisco from "../views/SanFrancisco.vue"; // Path to the new page
+>>>>>>> Stashed changes
 =======
 import Home from '../views/Home.vue'
 import SanFrancisco from "../views/SanFrancisco.vue"; // Path to the new page
@@ -15,6 +20,7 @@ const router = createRouter({
       alias: ['/home']
     },
     {
+<<<<<<< Updated upstream
       path: '/contact',
       name: 'contact',
       // route level code-splitting
@@ -25,6 +31,8 @@ const router = createRouter({
 <<<<<<< Updated upstream
 =======
     {
+=======
+>>>>>>> Stashed changes
       path: '/SanFrancisco',
       name: 'SanFrancisco',
       component: SanFrancisco,
