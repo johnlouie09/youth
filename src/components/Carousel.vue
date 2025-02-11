@@ -1,6 +1,4 @@
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
+
 <script setup>
 </script>
 
@@ -50,29 +48,17 @@
             <div class="indicator"></div>
             <div class="indicator"></div>
             <div class="indicator"></div>
-=======
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
+        </div>
 <template>
     <div class="gallery" ref="flickityGallery">
         <div class="gallery-cell" v-for="(cell, index) in cells" :key="index">
             {{ index + 1 }}
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
+
         </div>
     </div>
 </template>
 
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
+
 <style>
 .box {
   width: 97%;  /* Adjust as needed */
@@ -135,11 +121,7 @@
     background-color: #6F6969;
 }
 </style>
-=======
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
+
 <script>
 import Flickity from "flickity";
 import "flickity/css/flickity.css";
@@ -186,10 +168,5 @@ export default {
 
 }
 </style>
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
+
+    </div></template>

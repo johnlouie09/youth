@@ -1,20 +1,21 @@
 import { createRouter, createWebHistory } from 'vue-router'
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
 
-=======
+
 import Home from '../views/Home.vue'
 import SanFrancisco from "../views/SanFrancisco.vue"; // Path to the new page
->>>>>>> Stashed changes
-=======
+
+
 import Home from '../views/Home.vue'
 import SanFrancisco from "../views/SanFrancisco.vue"; // Path to the new page
->>>>>>> Stashed changes
-=======
+
+
 import Home from '../views/Home.vue'
 import SanFrancisco from "../views/SanFrancisco.vue"; // Path to the new page
->>>>>>> Stashed changes
+
+
+import Home from '../views/Home.vue'
+import SanFrancisco from "../views/SanFrancisco.vue"; // Path to the new page
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -25,8 +26,7 @@ const router = createRouter({
       alias: ['/home']
     },
     {
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
+
       path: '/contact',
       name: 'contact',
       // route level code-splitting
@@ -34,13 +34,10 @@ const router = createRouter({
       // which is lazy-loaded when the route is visited.
       component: () => import('../views/Contact.vue'),
     },
-<<<<<<< Updated upstream
-=======
+
+
     {
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
+
       path: '/SanFrancisco',
       name: 'SanFrancisco',
       component: SanFrancisco,
@@ -55,7 +52,7 @@ const router = createRouter({
     //   // which is lazy-loaded when the route is visited.
     //   component: () => import('../views/About.vue'),
     // },
->>>>>>> Stashed changes
+
   ],
 })
 
