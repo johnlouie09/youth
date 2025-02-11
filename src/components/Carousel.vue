@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 <script setup>
 </script>
 
@@ -47,10 +48,17 @@
             <div class="indicator"></div>
             <div class="indicator"></div>
             <div class="indicator"></div>
+=======
+<template>
+    <div class="gallery" ref="flickityGallery">
+        <div class="gallery-cell" v-for="(cell, index) in cells" :key="index">
+            {{ index + 1 }}
+>>>>>>> Stashed changes
         </div>
     </div>
 </template>
 
+<<<<<<< Updated upstream
 <style>
 .box {
   width: 97%;  /* Adjust as needed */
@@ -113,3 +121,51 @@
     background-color: #6F6969;
 }
 </style>
+=======
+<script>
+import Flickity from "flickity";
+import "flickity/css/flickity.css";
+
+export default {
+    data() {
+        return {
+            flickity: null,
+            cells: [1, 2, 3, 4, 5], // Number of slides
+        };
+    },
+    mounted() {
+        this.flickity = new Flickity(this.$refs.flickityGallery, {
+            wrapAround: true,
+        });
+    },
+    beforeUnmount() {
+        if (this.flickity) {
+            this.flickity.destroy();
+        }
+    },
+};
+</script>
+
+<style scoped>
+* {
+    box-sizing: border-box;
+}
+
+.gallery {
+    background: transparent;
+}
+
+.gallery-cell {
+    width: 66%;
+    height: 300px;
+    margin-right: 10px;
+    background: rgba(76, 82, 76, 0.68);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 80px;
+    color: white;
+
+}
+</style>
+>>>>>>> Stashed changes

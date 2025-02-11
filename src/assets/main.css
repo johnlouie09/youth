@@ -1,5 +1,25 @@
 @import "tailwindcss";
+<<<<<<< Updated upstream
 
 * {
     font-family: 'Inter', sans-serif;
 }
+=======
+:root {
+    --background-color: #ffffff;
+    --text-color: #000000;
+}
+
+/* Dark Theme */
+.dark-theme {
+    --background-color: #121212;
+    --text-color: #ffffff;
+}
+
+/* Apply to Body */
+body {
+    background-color: var(--background-color);
+    color: var(--text-color);
+    transition: background-color 0.3s, color 0.3s;
+}
+>>>>>>> Stashed changes
