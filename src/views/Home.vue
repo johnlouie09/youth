@@ -14,7 +14,7 @@ import Carousel from '@/components/Carousel.vue';
 <template>
     <main class="container">
         <div>
-            
+
         </div>
         <div class="bg-[url('@/bg_hero.jpg')] bg-fixed ...">
             <!-- Your background and content -->
