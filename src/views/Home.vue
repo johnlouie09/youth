@@ -1,6 +1,7 @@
 <script setup>
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 // import YouthIcon from "@/components/icons/YouthIcon.vue";
 import Carousel from '@/components/Carousel.vue';
 </script>
@@ -10,6 +11,8 @@ import Carousel from '@/components/Carousel.vue';
         <div class="carousel">
             <Carousel></Carousel>
 =======
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
 // Import Vue Router if needed (for navigation)
@@ -23,7 +26,16 @@ import Carousel from '@/components/Carousel.vue';
         <div class="bg-[url('@/bg_hero.jpg')] bg-fixed ...">
             <!-- Your background and content -->
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 =======
+=======
+        </div>
+        <div>
+            <!-- Button wrapped in a router-link to the San Francisco page -->
+            <router-link to="/SanFrancisco">
+                <button class="bg-blue-500 text-white py-2 px-4 rounded">Go to San Francisco Page</button>
+            </router-link>
+>>>>>>> Stashed changes
         </div>
         <div>
             <!-- Button wrapped in a router-link to the San Francisco page -->
@@ -46,6 +58,7 @@ import Carousel from '@/components/Carousel.vue';
 </template>
 
 <style scoped>
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
 main {
@@ -71,6 +84,14 @@ button {
 }
 >>>>>>> Stashed changes
 
+=======
+/* Scoped styles for button */
+button {
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+>>>>>>> Stashed changes
 =======
 /* Scoped styles for button */
 button {

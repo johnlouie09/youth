@@ -1,5 +1,6 @@
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 <script setup>
 </script>
 
@@ -52,11 +53,16 @@
 =======
 =======
 >>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
 <template>
     <div class="gallery" ref="flickityGallery">
         <div class="gallery-cell" v-for="(cell, index) in cells" :key="index">
             {{ index + 1 }}
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
@@ -64,6 +70,7 @@
     </div>
 </template>
 
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <<<<<<< Updated upstream
 <style>
@@ -131,6 +138,8 @@
 =======
 =======
 >>>>>>> Stashed changes
+=======
+>>>>>>> Stashed changes
 <script>
 import Flickity from "flickity";
 import "flickity/css/flickity.css";
@@ -178,6 +187,9 @@ export default {
 }
 </style>
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
