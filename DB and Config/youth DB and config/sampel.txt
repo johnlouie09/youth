@@ -1,0 +1,9 @@
+require 'config.php';
+
+// Example query: Fetch all barangays
+$result = $conn->query("SELECT * FROM Barangays");
+
+// Fetch and display results
+while ($row = $result->fetch_assoc()) {
+    echo "Barangay: " . $row['barangay_name'] . "<br>";
+}
