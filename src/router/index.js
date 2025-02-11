@@ -3,6 +3,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 
 import Home from '../views/Home.vue'
 import SanFrancisco from "../views/SanFrancisco.vue"; // Path to the new page
+m
 
 
 import Home from '../views/Home.vue'
@@ -15,6 +16,7 @@ import SanFrancisco from "../views/SanFrancisco.vue"; // Path to the new page
 
 import Home from '../views/Home.vue'
 import SanFrancisco from "../views/SanFrancisco.vue"; // Path to the new page
+
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -27,6 +29,7 @@ const router = createRouter({
     },
     {
 
+
       path: '/contact',
       name: 'contact',
       // route level code-splitting
@@ -37,6 +40,7 @@ const router = createRouter({
 
 
     {
+
 
       path: '/SanFrancisco',
       name: 'SanFrancisco',

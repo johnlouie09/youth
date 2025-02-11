@@ -1,7 +1,11 @@
 <script setup>
 
+
 // import YouthIcon from "@/components/icons/YouthIcon.vue";
 import Carousel from '@/components/Carousel.vue';
+
+// Import Vue Router if needed (for navigation)
+
 </script>
 
 <template>
@@ -18,6 +22,18 @@ import Carousel from '@/components/Carousel.vue';
         </div>
         <div class="bg-[url('@/bg_hero.jpg')] bg-fixed ...">
             <!-- Your background and content -->
+
+
+            <YouthIcon />
+        </div>
+        <div class="bg-[url('@/bg_hero.jpg')] bg-fixed ...">
+            <!-- Your background and content -->
+        </div>
+        <div>
+            <!-- Button wrapped in a router-link to the San Francisco page -->
+            <router-link to="/SanFrancisco">
+                <button class="bg-blue-500 text-white py-2 px-4 rounded">Go to San Francisco Page</button>
+            </router-link>
 
         </div>
         <div>
@@ -55,6 +71,12 @@ import Carousel from '@/components/Carousel.vue';
 </template></div></main></template>
 
 <style scoped>
+/* Scoped styles for button */
+button {
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
 
 main {
     height: 100vh;
@@ -98,6 +120,7 @@ button {
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
+
 
 button:hover {
     background-color: #2b6cb0; /* Example hover color */

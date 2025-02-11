@@ -49,6 +49,7 @@
             <div class="indicator"></div>
             <div class="indicator"></div>
         </div>
+
 <template>
     <div class="gallery" ref="flickityGallery">
         <div class="gallery-cell" v-for="(cell, index) in cells" :key="index">
@@ -56,7 +57,9 @@
 
         </div>
     </div>
-</template>
+</template>    </div></template>
+
+
 
 
 <style>
@@ -122,6 +125,7 @@
 }
 </style>
 
+
 <script>
 import Flickity from "flickity";
 import "flickity/css/flickity.css";
@@ -169,4 +173,4 @@ export default {
 }
 </style>
 
-    </div></template>
+
