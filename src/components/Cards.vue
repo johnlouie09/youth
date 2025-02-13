@@ -28,7 +28,7 @@
                     <div class="card-content"
                     >
                         <v-img
-                            src="public/Sangguniang_Kabataan_logo.svg"
+                            src="/Sangguniang_Kabataan_logo.svg"
                             class="card-image"
                             cover
                         ></v-img>

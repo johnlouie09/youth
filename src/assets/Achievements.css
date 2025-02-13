@@ -1,16 +1,14 @@
 .custom-card {
-    transition: all 0.3s ease-in-out;
-    border-radius: 20px;
     position: relative;
-
-
-
-
-
+    overflow: hidden;
+    border-radius: 20px; /* Smooth corners */
+    transition: border 0.3s ease-in-out;
 }
 
+/* Pseudo-element for gradient border effect */
 .custom-card::before {
     content: "";
+    position: absolute;
     inset: 0;
     border-radius: 20px;
     padding: 3px;
@@ -23,33 +21,10 @@
     mask-composite: exclude;
 
     transition: opacity 0.3s ease-in-out;
-    opacity: 0;
+    opacity: 0; /* Initially hidden */
 }
 
+/* Show gradient border on hover */
 .custom-card:hover::before {
     opacity: 1;
-}
-.card-content {
-    position: relative;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-}
-
-.card-image {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 200px; /* Adjust size as needed */
-    height: auto;
-    opacity: 1.3; /* Adjust transparency */
-}
-
-.card-text {
-    position: relative;
-    z-index: 1;
-    color: white; /* Ensure text remains visible */
 }

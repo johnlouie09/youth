@@ -1,88 +1,58 @@
 <script setup>
-import DialogComponent from "../components/DialogComponent.vue"
+import { ref } from 'vue';
 
+const showStates = ref([]); // Array to track each card's show state
+
+const toggleShow = (index) => {
+    showStates.value[index] = !showStates.value[index];
+};
 </script>
 
 <template>
     <v-container>
         <v-row>
-            <v-col cols="12" md="4">
-                <v-card class="custom-card" height="300px" hover
-                elevation="10"
-                        @click="openDialogs">
-                    <div class="card-content">
-                        <v-img
-                            src="public/Sangguniang_Kabataan_logo.svg"
-                            class="card-image"
-                            cover
-                        ></v-img>
-                        <div class="card-text">
+            <v-col v-for="(card, index) in 6" :key="index" cols="12" md="4">
+                <v-card
+                    class="custom-card mx-auto"
+                    max-width="350"
+                >
+                    <v-img
+                        height="200"
+                        style="scale: 35%"
+                        src="/Sangguniang_Kabataan_logo.svg"
+                    ></v-img>
+
+                    <v-card-title>
+                        Basketball
+                    </v-card-title>
+
+                    <v-card-subtitle>
+                        Kung walang nilaga sana tayo nalang...
+                    </v-card-subtitle>
+
+                    <v-card-actions>
+                        <v-btn
+                            color="orange-lighten-2"
+                            @click="toggleShow(index)"
+                        >
+                            {{ showStates[index] ? 'Show Less' : 'Show More' }}
+                        </v-btn>
+                    </v-card-actions>
+
+                    <v-expand-transition>
+                        <div v-show="showStates[index]">
+                            <v-divider></v-divider>
+
+                            <v-card-text>
+                                I'm a thing. But, like most politicians, he promised more than he could deliver. You won't have time for sleeping, soldier, not with all the bed making you'll be doing. Then we'll go with that data file! Hey, you add a one and two zeros to that or we walk! You're going to do his laundry? I've got to find a way to escape.
+                            </v-card-text>
                         </div>
-                    </div>
-                </v-card>
-            </v-col>
-
-            <v-col cols="12" md="4">
-                <v-card class="custom-card" height="300px"
-                        @click="openDialogs"
-                        hover
-                        elevation="10">
-                    <div class="card-content">
-                        <v-img
-                            src="public/Sangguniang_Kabataan_logo.svg"
-                            class="card-image"
-                            cover
-                        ></v-img>
-                        <div class="card-text">
-
-                        </div>
-                    </div>
-                </v-card>
-
-            </v-col>
-
-            <v-col cols="12" md="4">
-                <v-card class="custom-card" height="300px" hover
-                        elevation="10"
-                    @click="openDialogs">
-
-                    <div class="card-content">
-                        <v-img
-                            src="public/Sangguniang_Kabataan_logo.svg"
-                            class="card-image"
-                            cover
-                        ></v-img>
-                        <div class="card-text">
-                        </div>
-                    </div>
+                    </v-expand-transition>
                 </v-card>
             </v-col>
         </v-row>
     </v-container>
-    <DialogComponent ref="dialogComponent"/>
-
 </template>
-
-
-<script>
-export default {
-    components: {
-        DialogComponent,
-    },
-    methods: {
-        openDialog() {
-            this.$refs.dialogComponent.openDialog();
-        },
-        openDialogs() {
-            this.$refs.dialogComponent.openDialogs();
-        },
-    },
-    data: () => ({
-        model: null,
-    }),
-}
-</script>
-<style scoped>
-
-@import "@/assets/Achievements.css";
+<style>
+@import "../assets/Achievements.css";
 </style>
