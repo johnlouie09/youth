@@ -1,20 +1,4 @@
 import { createRouter, createWebHistory } from 'vue-router'
-
-
-import Home from '../views/Home.vue'
-import SanFrancisco from "../views/SanFrancisco.vue"; // Path to the new page
-m
-
-
-import Home from '../views/Home.vue'
-import SanFrancisco from "../views/SanFrancisco.vue"; // Path to the new page
-
-
-import Home from '../views/Home.vue'
-import SanFrancisco from "../views/SanFrancisco.vue"; // Path to the new page
-
-
-import Home from '../views/Home.vue'
 import SanFrancisco from "../views/SanFrancisco.vue"; // Path to the new page
 
 
