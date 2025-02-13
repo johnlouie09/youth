@@ -1,3 +1,6 @@
+<script setup>
+
+</script>
 <template>
     <footer class="text-white py-12 fixed bottom-0 left-0 w-full" style="background-color: rgb(35,35,35);">
         <div class="container mx-auto flex justify-between items-center">
@@ -11,8 +14,3 @@
     </footer>
 </template>
 
-<script>
-export default {
-    name: "Footer",
-};
-</script>
