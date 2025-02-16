@@ -11,7 +11,7 @@ const toggleShow = (index) => {
 <template>
     <v-container>
         <v-row>
-            <v-col v-for="(card, index) in 6" :key="index" cols="12" md="4">
+            <v-col v-for="(index) in 3" :key="index" cols="12" md="4">
                 <v-card
                     class="custom-card mx-auto"
                     max-width="350"
@@ -22,7 +22,7 @@ const toggleShow = (index) => {
                         src="/Sangguniang_Kabataan_logo.svg"
                     ></v-img>
 
-                    <v-card-title>
+                    <v-card-title class="overlay-titleee">
                         Basketball
                     </v-card-title>
 
@@ -55,4 +55,7 @@ const toggleShow = (index) => {
 </template>
 <style>
 @import "../assets/Achievements.css";
+@import "../assets/fontEffects.css";
+
+
 </style>

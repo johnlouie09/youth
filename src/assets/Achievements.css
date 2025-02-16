@@ -28,3 +28,25 @@
 .custom-card:hover::before {
     opacity: 1;
 }
+h1 {
+    text-align: center;
+    font-size: 32px;
+    text-transform: uppercase;
+    font-weight: bold;
+    /* Added a visible text color */
+    animation: glowEffect 2s ease-in-out infinite alternate;
+}
+
+@keyframes glowEffect {
+    0% {
+        text-shadow: 0 0 10px rgba(55, 114, 255, 0.6),
+        0 0 10px rgba(223, 41, 53, 0.6),
+        0 0 15px rgba(253, 202, 64, 0.6);
+    }
+    100% {
+        text-shadow: 0 0 10px rgba(55, 114, 255, 0.8),
+        0 0 20px rgba(223, 41, 53, 0.8),
+        0 0 30px rgba(253, 202, 64, 0.8);
+    }
+}
+
