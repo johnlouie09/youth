@@ -3,7 +3,8 @@ import { onMounted, ref, computed } from "vue";
 import Swiper from "swiper";
 import "swiper/css";
 import "swiper/css/effect-coverflow";
-import { EffectCoverflow } from "swiper/modules";
+import "swiper/css/autoplay";
+import { EffectCoverflow, Autoplay } from "swiper/modules";
 
 // Reference to the Swiper container
 const swiperContainer = ref(null);
@@ -19,7 +20,7 @@ const movies = computed(() =>
 
 onMounted(() => {
     new Swiper(swiperContainer.value, {
-        modules: [EffectCoverflow],
+        modules: [EffectCoverflow, Autoplay],
         effect: "coverflow",
         grabCursor: true,
         centeredSlides: true,
@@ -32,6 +33,9 @@ onMounted(() => {
             slideShadows: false,
         },
         loop: true,
+        autoplay: {
+            delay: 5000,
+        },
     });
 });
 </script>
@@ -75,5 +79,5 @@ onMounted(() => {
     width: 100%;
 }
 
-
 </style>
+
