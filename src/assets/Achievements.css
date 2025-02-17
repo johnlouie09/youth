@@ -34,7 +34,6 @@ h1 {
     text-transform: uppercase;
     font-weight: bold;
     /* Added a visible text color */
-    animation: glowEffect 2s ease-in-out infinite alternate;
 }
 
 @keyframes glowEffect {

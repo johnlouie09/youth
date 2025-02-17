@@ -34,17 +34,29 @@ import ThemeSwitcher from "../components/ThemeSwitcher.vue";
         </div>
         <br>
         <div>
-            <h1>Announcements</h1>
+            <h1 class="gradient-text">Announcements</h1>
             <Carousel/>
             <br>
             <Cards/>
         </div>
        <br>
-        <h1>Achievements</h1>
+        <h1 class="gradient-text">Achievements</h1>
         <Achievements />
     </v-app>
 </template>
 
 <style>
-@import "../assets/Achievements.css";
+
+.gradient-text {
+    background-image: linear-gradient(to right, #3772FF 40%, #DF2935 50%, #FDCA40 60%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.font-bold {
+    background-image: linear-gradient(45deg, #3772FF 2%, #DF2935 20%, #FDCA40 35%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: bold;
+
+}
 </style>

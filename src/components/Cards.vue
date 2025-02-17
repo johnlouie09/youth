@@ -6,9 +6,25 @@ const dialogComponent = ref(null);
 
 const openDialog = () => {
     dialogComponent.value.openDialog();
+
+
 };
 
 const model = ref(null);
+const skPositions = ref([
+    "SK Secretary",
+    "SK Treasurer",
+    "SK Kagawad 1",
+    "SK Kagawad 2",
+    "SK Kagawad 3",
+    "SK Kagawad 4",
+    "SK Kagawad 5",
+    "SK Kagawad 6",
+    "SK Kagawad 7",
+    "SK Kagawad 8"
+
+]);
+
 </script>
 
 <template>
@@ -24,8 +40,8 @@ const model = ref(null);
 
         </v-card-title>
         <v-row>
+            <!-- SK Chairperson -->
             <v-col cols="4">
-
                 <v-card
                     class="custom-card"
                     height="200px"
@@ -51,8 +67,9 @@ const model = ref(null);
 
                 <DialogComponent ref="dialogComponent" />
             </v-col>
-            <v-col cols="6"
-            >
+
+            <!-- SK Members Slider -->
+            <v-col cols="6">
                 <v-slide-group
                     v-model="model"
                     class="pa-4"
@@ -61,15 +78,16 @@ const model = ref(null);
                     style="width: 820px; margin-top: 1px;"
                 >
                     <v-slide-group-item
-                        v-for="n in 15"
-                        :key="n"
+                        v-for="(position, index) in skPositions"
+                        :key="index"
                         v-slot="{ isSelected, toggle, selectedClass }"
                     >
+
                         <v-card
                             class="custom-card"
                             hover
                             :class="['ma-4', selectedClass]"
-                           elevation="10"
+                            elevation="10"
                             height="150"
                             width="200"
                             @click="openDialog"
@@ -83,9 +101,12 @@ const model = ref(null);
                                         size="4"
                                     ></v-icon>
                                 </v-scale-transition>
+                                <div class="overlay-title">
+                                    {{ position }}
+                                </div>
                             </div>
-                        </v-card>
 
+                        </v-card>
                     </v-slide-group-item>
                 </v-slide-group>
             </v-col>
