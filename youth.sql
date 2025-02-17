@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 13, 2025 at 02:28 PM
--- Server version: 10.4.28-MariaDB
--- PHP Version: 8.2.4
+-- Generation Time: Feb 17, 2025 at 09:09 AM
+-- Server version: 10.4.32-MariaDB
+-- PHP Version: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -29,25 +29,39 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `barangays` (
   `id` int(11) NOT NULL,
-  `barangay_name` varchar(100) NOT NULL,
-  `cluster_id` int(11) DEFAULT NULL
+  `name` varchar(100) NOT NULL,
+  `cluster_id` int(11) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- --------------------------------------------------------
-
 --
--- Table structure for table `chairperson`
+-- Dumping data for table `barangays`
 --
 
-CREATE TABLE `chairperson` (
-  `id` int(11) NOT NULL,
-  `full_name` varchar(150) NOT NULL,
-  `contact_number` varchar(20) DEFAULT NULL,
-  `email` varchar(100) DEFAULT NULL,
-  `barangay_id` int(11) DEFAULT NULL,
-  `term_start` date DEFAULT NULL,
-  `term_end` date DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+INSERT INTO `barangays` (`id`, `name`, `cluster_id`, `created_at`, `updated_at`) VALUES
+(1, 'San Francisco', 1, '2025-02-17 08:00:20', '2025-02-17 08:00:20'),
+(2, 'Francia', 1, '2025-02-17 08:00:20', '2025-02-17 08:00:20'),
+(3, 'La Purisima', 1, '2025-02-17 08:00:20', '2025-02-17 08:00:20'),
+(4, 'San Juan', 1, '2025-02-17 08:00:20', '2025-02-17 08:00:20'),
+(5, 'San Jose', 1, '2025-02-17 08:00:20', '2025-02-17 08:00:20'),
+(6, 'San Miguel', 1, '2025-02-17 08:00:20', '2025-02-17 08:00:20'),
+(7, 'San Nicolas', 2, '2025-02-17 08:00:20', '2025-02-17 08:00:20'),
+(8, 'Del Rosario', 3, '2025-02-17 08:00:20', '2025-02-17 08:00:20'),
+(9, 'Santiago', 3, '2025-02-17 08:00:20', '2025-02-17 08:00:20'),
+(10, 'Sto. Domingo', 3, '2025-02-17 08:00:20', '2025-02-17 08:00:20'),
+(11, 'La Anunciacion', 3, '2025-02-17 08:00:20', '2025-02-17 08:00:20'),
+(12, 'Sta. Cruz Norte', 4, '2025-02-17 08:07:33', '2025-02-17 08:07:33'),
+(13, 'Cristo Rey', 4, '2025-02-17 08:07:33', '2025-02-17 08:07:33'),
+(14, 'San Vicente Norte', 4, '2025-02-17 08:07:33', '2025-02-17 08:07:33'),
+(15, 'Antipolo', 4, '2025-02-17 08:07:33', '2025-02-17 08:07:33'),
+(16, 'Sta. Maria', 4, '2025-02-17 08:07:33', '2025-02-17 08:07:33'),
+(17, 'San Pedro', 4, '2025-02-17 08:07:33', '2025-02-17 08:07:33'),
+(18, 'San Rafael', 4, '2025-02-17 08:07:33', '2025-02-17 08:07:33'),
+(19, 'Sta. Cruz Sur', 5, '2025-02-17 08:07:33', '2025-02-17 08:07:33'),
+(20, 'Sto. Niño', 5, '2025-02-17 08:07:33', '2025-02-17 08:07:33'),
+(21, 'San Vicente Sur', 5, '2025-02-17 08:07:33', '2025-02-17 08:07:33'),
+(22, 'Salvacion', 5, '2025-02-17 08:07:33', '2025-02-17 08:07:33');
 
 -- --------------------------------------------------------
 
@@ -57,9 +71,21 @@ CREATE TABLE `chairperson` (
 
 CREATE TABLE `clusters` (
   `id` int(11) NOT NULL,
-  `cluster_name` varchar(100) NOT NULL,
-  `description` text DEFAULT NULL
+  `name` varchar(100) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `clusters`
+--
+
+INSERT INTO `clusters` (`id`, `name`, `created_at`, `updated_at`) VALUES
+(1, 'Poblacion Unit', '2025-02-17 07:54:50', '2025-02-17 07:54:50'),
+(2, 'National Road Unit', '2025-02-17 07:54:50', '2025-02-17 07:54:50'),
+(3, 'East Road Unit', '2025-02-17 07:56:30', '2025-02-17 07:56:30'),
+(4, 'Mountain Unit', '2025-02-17 07:56:30', '2025-02-17 07:56:30'),
+(5, 'River Unit', '2025-02-17 07:56:30', '2025-02-17 07:56:30');
 
 -- --------------------------------------------------------
 
@@ -73,20 +99,9 @@ CREATE TABLE `events` (
   `barangay_id` int(11) DEFAULT NULL,
   `event_date` date DEFAULT NULL,
   `location` varchar(255) DEFAULT NULL,
-  `description` text DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `kagawad`
---
-
-CREATE TABLE `kagawad` (
-  `id` int(11) NOT NULL,
-  `full_name` varchar(150) NOT NULL,
-  `contact_number` varchar(20) DEFAULT NULL,
-  `barangay_id` int(11) DEFAULT NULL
+  `description` text DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -105,6 +120,38 @@ CREATE TABLE `projects` (
   `end_date` date DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `sk_chairpersons`
+--
+
+CREATE TABLE `sk_chairpersons` (
+  `id` int(11) NOT NULL,
+  `full_name` varchar(150) NOT NULL,
+  `contact_number` int(12) NOT NULL,
+  `email` varchar(100) NOT NULL,
+  `barangay_id` tinyint(3) UNSIGNED NOT NULL,
+  `term_start` date DEFAULT NULL,
+  `term_end` date DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `sk_members`
+--
+
+CREATE TABLE `sk_members` (
+  `id` int(11) NOT NULL,
+  `full_name` varchar(150) NOT NULL,
+  `position` enum('SK Secretary','SK Treasurer','SK Kagawad','') NOT NULL,
+  `contact_number` varchar(20) DEFAULT NULL,
+  `barangay_id` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 --
 -- Indexes for dumped tables
 --
@@ -115,13 +162,6 @@ CREATE TABLE `projects` (
 ALTER TABLE `barangays`
   ADD PRIMARY KEY (`id`),
   ADD KEY `cluster_id` (`cluster_id`);
-
---
--- Indexes for table `chairperson`
---
-ALTER TABLE `chairperson`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `barangay_id` (`barangay_id`);
 
 --
 -- Indexes for table `clusters`
@@ -137,16 +177,23 @@ ALTER TABLE `events`
   ADD KEY `barangay_id` (`barangay_id`);
 
 --
--- Indexes for table `kagawad`
+-- Indexes for table `projects`
 --
-ALTER TABLE `kagawad`
+ALTER TABLE `projects`
   ADD PRIMARY KEY (`id`),
   ADD KEY `barangay_id` (`barangay_id`);
 
 --
--- Indexes for table `projects`
+-- Indexes for table `sk_chairpersons`
 --
-ALTER TABLE `projects`
+ALTER TABLE `sk_chairpersons`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `barangay_id` (`barangay_id`);
+
+--
+-- Indexes for table `sk_members`
+--
+ALTER TABLE `sk_members`
   ADD PRIMARY KEY (`id`),
   ADD KEY `barangay_id` (`barangay_id`);
 
@@ -158,19 +205,13 @@ ALTER TABLE `projects`
 -- AUTO_INCREMENT for table `barangays`
 --
 ALTER TABLE `barangays`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `chairperson`
---
-ALTER TABLE `chairperson`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- AUTO_INCREMENT for table `clusters`
 --
 ALTER TABLE `clusters`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `events`
@@ -179,15 +220,21 @@ ALTER TABLE `events`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `kagawad`
---
-ALTER TABLE `kagawad`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
 -- AUTO_INCREMENT for table `projects`
 --
 ALTER TABLE `projects`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `sk_chairpersons`
+--
+ALTER TABLE `sk_chairpersons`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `sk_members`
+--
+ALTER TABLE `sk_members`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
@@ -201,28 +248,22 @@ ALTER TABLE `barangays`
   ADD CONSTRAINT `barangays_ibfk_1` FOREIGN KEY (`cluster_id`) REFERENCES `clusters` (`id`) ON DELETE CASCADE;
 
 --
--- Constraints for table `chairperson`
---
-ALTER TABLE `chairperson`
-  ADD CONSTRAINT `chairperson_ibfk_1` FOREIGN KEY (`barangay_id`) REFERENCES `barangays` (`id`) ON DELETE CASCADE;
-
---
 -- Constraints for table `events`
 --
 ALTER TABLE `events`
   ADD CONSTRAINT `events_ibfk_1` FOREIGN KEY (`barangay_id`) REFERENCES `barangays` (`id`) ON DELETE CASCADE;
 
 --
--- Constraints for table `kagawad`
---
-ALTER TABLE `kagawad`
-  ADD CONSTRAINT `kagawad_ibfk_1` FOREIGN KEY (`barangay_id`) REFERENCES `barangays` (`id`) ON DELETE CASCADE;
-
---
 -- Constraints for table `projects`
 --
 ALTER TABLE `projects`
   ADD CONSTRAINT `projects_ibfk_1` FOREIGN KEY (`barangay_id`) REFERENCES `barangays` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `sk_members`
+--
+ALTER TABLE `sk_members`
+  ADD CONSTRAINT `sk_members_ibfk_1` FOREIGN KEY (`barangay_id`) REFERENCES `barangays` (`id`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
