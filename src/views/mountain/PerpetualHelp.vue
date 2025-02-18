@@ -1,10 +1,10 @@
 <script setup>
-import Preloader from "../components/Preloader.vue";
+import Preloader from "../../components/Preloader.vue";
 import barangayHall from '/San_Francisco_Barangay_Hall.JPG?url';
-import Carousel from "../components/Carousel.vue";
-import Cards from "../components/Cards.vue";
-import Achievements from "../components/Achievements.vue";
-import ThemeSwitcher from "../components/ThemeSwitcher.vue";
+import Carousel from "../../components/Carousel.vue";
+import Cards from "../../components/Cards.vue";
+import Achievements from "../../components/Achievements.vue";
+import ThemeSwitcher from "../../components/ThemeSwitcher.vue";
 </script>
 
 <template>
@@ -39,7 +39,7 @@ import ThemeSwitcher from "../components/ThemeSwitcher.vue";
             <br>
             <Cards/>
         </div>
-       <br>
+        <br>
         <h1 class="gradient-text">Achievements</h1>
         <Achievements />
     </v-app>

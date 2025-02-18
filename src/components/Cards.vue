@@ -29,7 +29,7 @@ const skPositions = ref([
 
 <template>
     <v-sheet
-        class="mx-auto bg-"
+        class="mx-auto"
         elevation="8"
         max-width="1200"
         style="border-radius: 20px;"
