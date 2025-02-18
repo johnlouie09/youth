@@ -6,8 +6,6 @@ const dialogComponent = ref(null);
 
 const openDialog = () => {
     dialogComponent.value.openDialog();
-
-
 };
 
 const model = ref(null);
@@ -22,7 +20,6 @@ const skPositions = ref([
     "SK Kagawad 6",
     "SK Kagawad 7",
     "SK Kagawad 8"
-
 ]);
 
 </script>
@@ -37,7 +34,6 @@ const skPositions = ref([
     >
         <v-card-title class="font-bold" font-bold="font-bold">
             SANGGUNIANG KABATAAN OFFICIALS
-
         </v-card-title>
         <v-row>
             <!-- SK Chairperson -->
@@ -64,8 +60,6 @@ const skPositions = ref([
                         SK CHAIRPERSON
                     </div>
                 </v-card>
-
-                <DialogComponent ref="dialogComponent" />
             </v-col>
 
             <!-- SK Members Slider -->
@@ -105,15 +99,14 @@ const skPositions = ref([
                                     {{ position }}
                                 </div>
                             </div>
-
+                            
                         </v-card>
                     </v-slide-group-item>
                 </v-slide-group>
             </v-col>
         </v-row>
+        <DialogComponent ref="dialogComponent"/>
     </v-sheet>
-
-    <DialogComponent ref="dialogComponent"/>
 
 </template>
 

@@ -1,3 +1,7 @@
+.container {
+    width: 85%;
+}
+
 .custom-card {
     position: relative;
     overflow: hidden;

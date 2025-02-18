@@ -1,7 +1,20 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 
-const showStates = ref([]); // Array to track each card's show state
+const props = defineProps({
+    achievements: {
+        type: Array,
+        required: true,
+    },
+});
+
+// Create a reactive array to track each card's expanded state
+const showStates = ref([]);
+
+// Watch for changes in props.achievements and initialize showStates
+watch(() => props.achievements, (newAchievements) => {
+    showStates.value = newAchievements.map(() => false); 
+}, { immediate: true });
 
 const toggleShow = (index) => {
     showStates.value[index] = !showStates.value[index];
@@ -9,13 +22,10 @@ const toggleShow = (index) => {
 </script>
 
 <template>
-    <v-container>
+    <v-container class="container">
         <v-row>
-            <v-col v-for="(index) in 3" :key="index" cols="12" md="4">
-                <v-card
-                    class="custom-card mx-auto"
-                    max-width="350"
-                >
+            <v-col v-for="(achievement, index) in props.achievements" :key="index" cols="12" md="4">
+                <v-card class="custom-card mx-auto" max-width="435">
                     <v-img
                         height="200"
                         style="scale: 35%"
@@ -23,18 +33,15 @@ const toggleShow = (index) => {
                     ></v-img>
 
                     <v-card-title class="overlay-titleee">
-                        Basketball
+                        {{ achievement.title }}
                     </v-card-title>
 
                     <v-card-subtitle>
-                        Kung walang nilaga sana tayo nalang...
+                        {{ achievement.subtitle }}
                     </v-card-subtitle>
 
                     <v-card-actions>
-                        <v-btn
-                            color="orange-lighten-2"
-                            @click="toggleShow(index)"
-                        >
+                        <v-btn color="orange-lighten-2" @click="toggleShow(index)">
                             {{ showStates[index] ? 'Show Less' : 'Show More' }}
                         </v-btn>
                     </v-card-actions>
@@ -42,9 +49,8 @@ const toggleShow = (index) => {
                     <v-expand-transition>
                         <div v-show="showStates[index]">
                             <v-divider></v-divider>
-
                             <v-card-text>
-                                I'm a thing. But, like most politicians, he promised more than he could deliver. You won't have time for sleeping, soldier, not with all the bed making you'll be doing. Then we'll go with that data file! Hey, you add a one and two zeros to that or we walk! You're going to do his laundry? I've got to find a way to escape.
+                                {{ achievement.info }}
                             </v-card-text>
                         </div>
                     </v-expand-transition>
@@ -53,9 +59,8 @@ const toggleShow = (index) => {
         </v-row>
     </v-container>
 </template>
+
 <style>
 @import "../assets/Achievements.css";
 @import "../assets/fontEffects.css";
-
-
 </style>
