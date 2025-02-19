@@ -52,4 +52,62 @@ h1 {
         0 0 30px rgba(253, 202, 64, 0.8);
     }
 }
+.custom-btn {
+    border-radius: 10px;
+    position: relative; /* Added to ensure the ::before pseudo-element is positioned correctly */
+}
+
+.custom-btn::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 10px;
+    padding: 3px;
+    background: linear-gradient(45deg, #3772FF, #DF2935, #FDCA40);
+    -webkit-mask: linear-gradient(white 0 0) content-box, linear-gradient(white 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    transition: opacity 0.3s ease-in-out;
+    opacity: 0; /* Initially hidden */
+}
+
+/* Hover state to show gradient border */
+.custom-btn:hover::before {
+    opacity: 1;
+}
+
+/* Active state: Keep the gradient border visible */
+.custom-btn:active::before {
+    opacity: 1;
+    background: linear-gradient(45deg, #3772FF, #DF2935, #FDCA40);
+}
+
+/* When the button is active (selected), keep the gradient border visible */
+.active-btn::before {
+    opacity: 1; /* Ensures the gradient stays visible */
+    background: linear-gradient(45deg, #3772FF, #DF2935, #FDCA40);
+}
+
+.overlay-titles {
+    background: transparent;
+    font-weight: bold;
+    transition: all 0.3s ease-in-out;
+}
+
+/* Hover state to apply gradient to the text */
+.custom-btn:hover .overlay-titles {
+    background-image: linear-gradient(45deg, #3772FF, #DF2935, #FDCA40);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* Active state to keep the gradient effect on text */
+.custom-btn:active .overlay-titles,
+.active-btn .overlay-titles {
+    background-image: linear-gradient(45deg, #3772FF, #DF2935, #FDCA40);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+
 
