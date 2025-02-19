@@ -1,3 +1,22 @@
+<script setup>
+import { ref } from 'vue';
+import Baranggays from './Baranggays.vue';
+
+const units = ref([
+    'Poblacion',
+    'Mountain Unit',
+    'National Road Unit',
+    'East Road Unit',
+    'River Unit'
+]);
+
+const selectedUnit = ref('Poblacion'); // Set a default unit
+
+const changeUnit = (unit) => {
+    selectedUnit.value = unit;
+};
+</script>
+
 <template>
     <v-app>
         <v-container>
@@ -22,26 +41,3 @@
         </v-sheet>
     </v-app>
 </template>
-
-<script setup>
-import { ref } from 'vue';
-import Baranggays from './Baranggays.vue';
-
-const units = ref([
-    'Poblacion',
-    'Mountain Unit',
-    'National Road Unit',
-    'East Road Unit',
-    'River Unit'
-]);
-
-const selectedUnit = ref('Poblacion'); // Set a default unit
-
-const changeUnit = (unit) => {
-    selectedUnit.value = unit;
-};
-</script>
-
-<style scoped>
-
-</style>

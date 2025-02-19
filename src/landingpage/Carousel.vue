@@ -8,12 +8,6 @@
     </div>
 </template>
 
-<script>
-export default {
-    name: 'HeroSection'
-}
-</script>
-
 <style scoped>
 .hero-container {
     position: Relative;

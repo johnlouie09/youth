@@ -1,19 +1,3 @@
-<template>
-    <v-row>
-        <v-col v-for="(barangay, index) in barangays" :key="index" cols="12" md="4">
-            <router-link
-                v-if="barangay.name"
-                :to="'/barangay/' + barangay.name.toLowerCase().replace(/\s+/g, '-')"
-                class="d-block"
-            >
-                <v-card elevation="10" class="custom-card ma-2 hoverable" :max-width="350" height="200px">
-                    <v-card-title class="overlay-titles-barrangays">{{ barangay.name }}</v-card-title>
-                </v-card>
-            </router-link>
-        </v-col>
-    </v-row>
-</template>
-
 <script setup>
 import { computed } from 'vue';
 
@@ -51,6 +35,22 @@ const barangays = computed(() => {
 });
 </script>
 
+<template>
+    <v-row>
+        <v-col v-for="(barangay, index) in barangays" :key="index" cols="12" md="4">
+            <router-link
+                v-if="barangay.name"
+                :to="barangay.name.toLowerCase().replace(/\s+/g, '-')"
+                class="d-block"
+            >
+                <v-card elevation="10" class="custom-card ma-2 hoverable" :max-width="350" height="200px">
+                    <v-card-title class="overlay-titles-barrangays">{{ barangay.name }}</v-card-title>
+                </v-card>
+            </router-link>
+        </v-col>
+    </v-row>
+</template>
+
 <style scoped>
 .custom-card {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -63,11 +63,5 @@ const barangays = computed(() => {
 
 .hoverable {
     cursor: pointer;
-}
-
-.v-card {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
 }
 </style>
