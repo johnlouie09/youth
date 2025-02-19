@@ -1,39 +1,15 @@
 <template>
     <v-row>
         <v-col v-for="(barangay, index) in barangays" :key="index" cols="12" md="4">
-            <!-- Only show router-link for 'perpetual' -->
             <router-link
-                v-if="barangay.name === 'perpetual'"
-                :to="{ name: 'perpetual' }"
+                v-if="barangay.name"
+                :to="'/barangay/' + barangay.name.toLowerCase().replace(/\s+/g, '-')"
                 class="d-block"
             >
-
-                <v-card
-                    class="custom-card ma-2 hoverable"
-                    :max-width="350"
-                    height="200px"
-                >
-                    <v-card-title class="overlay-titles">{{ barangay.name }}</v-card-title>
-
+                <v-card elevation="10" class="custom-card ma-2 hoverable" :max-width="350" height="200px">
+                    <v-card-title class="overlay-titles-barrangays">{{ barangay.name }}</v-card-title>
                 </v-card>
             </router-link>
-
-            <router-link
-                v-if="barangay.name === 'San Francisco'"
-                :to="{ name: 'San Francisco' }"
-                class="d-block"
-            >
-
-                <v-card
-                    class="custom-card ma-2 hoverable custom-card"
-                    :max-width="350"
-                    height="200px"
-                >
-                    <v-card-title class="overlay-titles">{{ barangay.name }}</v-card-title>
-
-                </v-card>
-            </router-link>
-
         </v-col>
     </v-row>
 </template>
@@ -49,28 +25,29 @@ const props = defineProps({
 });
 
 const barangays = computed(() => {
-    if (props.unit === 'Mountain Unit') {
-        return [
-            { name: 'perpetual', unit: 'Mountain Unit' }
-        ];
-    } else if (props.unit === 'National Road Unit') {
-        return [
-            { name: 'Barangay 1', unit: 'National Road' }
-        ];
-    } else if (props.unit === 'East Road Unit') {
-        return [
-            { name: 'Barangay 1', unit: 'East Road' }
-        ];
-    } else if (props.unit === 'River Unit') {
-        return [
-            { name: 'Barangay 1', unit: 'River Unit' }
-        ];
-    } else if (props.unit === 'Poblacion') {
-        return [
-            { name: 'San Francisco', unit: 'Poblacion' } // Corrected spelling
-        ];
-    }
-    return [];
+    const unitsData = {
+        'Mountain Unit': [
+            { name: 'Perpetual' },
+            { name: 'Summit Heights' }
+        ],
+        'National Road Unit': [
+            { name: 'Barangay 1' }
+        ],
+        'East Road Unit': [
+            { name: 'Barangay 1' }
+        ],
+        'River Unit': [
+            { name: 'Barangay 1' }
+        ],
+        'Poblacion': [
+            { name: 'San Francisco' },
+            { name: 'San Francisco' },
+            { name: 'San Francisco' }
+
+        ]
+    };
+
+    return unitsData[props.unit] || [];
 });
 </script>
 
