@@ -1,5 +1,8 @@
 <template>
     <div class="hero-container">
+        <video id="bg-video" autoplay loop muted playsinline>
+            <source src="/video.mp4" type="video/mp4">
+        </video>
         <div class="content">
             <div><img src="/Group.svg"></div>
             <h1>YOUTH ORIENTED UNIFIED TRANSPARENCY HUB</h1>
@@ -9,18 +12,24 @@
 </template>
 
 <script>
+document.addEventListener("DOMContentLoaded", function() {
+    const video = document.getElementById("bg-video");
+    video.play().catch(error => console.error("Autoplay failed:", error));
+});
+
 export default {
     name: 'HeroSection'
+
 }
+
 </script>
 
 <style scoped>
 .hero-container {
-    position: Relative;
+    position: relative;
     top: 18px;
     left: 24px;
     right: 0;
-    background: linear-gradient(135deg, #1a1919 0%, #1f1d1d 100%);
     height: 150vh;
     width: 1300px;
     display: flex;
@@ -29,19 +38,20 @@ export default {
     color: white;
     text-align: center;
     overflow: hidden;
-    border-radius: 20px;
+    border-bottom-left-radius: 100% 50px;
+    border-bottom-right-radius: 100% 50px;
 }
-.hero-container::after {
-    content: '';
+
+.background-video {
     position: absolute;
-    bottom: 0;
+    top: 0;
     left: 0;
     width: 100%;
-    height: 75px;
-    background-color: #ffffff;
-    border-top-left-radius: 50% 50px;
-    border-top-right-radius: 50% 50px;
+    height: 100%;
+    object-fit: cover; /* Ensures the video covers the entire div */
+    z-index: -1;
 }
+
 .content {
     z-index: 1;
     text-align: center;
@@ -60,22 +70,27 @@ export default {
     margin-bottom: 20px;
 }
 
-
-
-
-h1 {
+h1, h2 {
     font-weight: bold;
-    font-size: 2.5rem;
     background: linear-gradient(to left, #3772FF 20%, #DF2935 50%, #FDCA40, #3772FF);
     background-size: 200% 100%;
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    display: inline-block; /* Ensures the gradient applies properly */
     animation: animate-gradient 2.5s linear infinite;
+}
+
+h1 {
+    font-size: 2.5rem;
+    display: inline-block; /* Ensures the gradient applies properly */
     letter-spacing: 0px;
     word-spacing: 0px;
     white-space: nowrap;
+}
+
+h2 {
+    font-size: 3rem;
+    margin-top: 5px;
 }
 
 @keyframes animate-gradient {
@@ -86,16 +101,4 @@ h1 {
         background-position: 0% 50%;
     }
 }
-
-h2 {
-    font-weight: bold;
-    font-size: 3rem;
-    margin-top: 5px;
-    background: linear-gradient(to left, #3772FF 20%, #DF2935 50%, #FDCA40, #3772FF);
-    background-size: 200% 100%;
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    animation: animate-gradient 2.5s linear infinite;
-}
-</style>
+</style>  the video is not playing the path is correct
