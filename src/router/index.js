@@ -29,7 +29,7 @@ const router = createRouter({
 
 
     {
-      path: '/poblacion/san-francisco',
+      path: '/san-francisco',
       name: 'San Francisco',
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
