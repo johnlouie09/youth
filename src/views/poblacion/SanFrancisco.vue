@@ -1,5 +1,4 @@
 <script setup>
-import Preloader from "../../components/Preloader.vue";
 import barangayHall from '/San_Francisco_Barangay_Hall.JPG?url';
 import Carousel from "../../components/Carousel.vue";
 import Cards from "../../components/Cards.vue";
@@ -127,7 +126,6 @@ const barangay = reactive({
 </script>
 
 <template>
-    <Preloader/>
     <v-app :theme="$vuetify.theme.global.name.value">
         <v-app-bar app color="black">
             <v-img src="/youth.svg" style="scale: 300%; margin-left: -300px;"></v-img>
