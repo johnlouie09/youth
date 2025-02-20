@@ -23,3 +23,55 @@ body {
     transition: background-color 0.3s, color 0.3s;
 }
 
+.custom-cardss {
+    position: relative;
+    overflow: hidden;
+    transition: border 0.3s ease-in-out;
+    border-radius: 10px;
+}
+
+/* Pseudo-element for gradient border effect */
+.custom-cardss::before {
+    content: "";
+    border-radius: 10px;
+    position: absolute;
+    inset: 0;
+    padding: 3px;
+    background: linear-gradient(45deg, #3772FF, #DF2935, #FDCA40);
+    -webkit-mask:
+            linear-gradient(white 0 0) content-box,
+            linear-gradient(white 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    transition: opacity 0.3s ease-in-out;
+    opacity: 0; /* Initially hidden */
+}
+
+/* Show gradient border on hover */
+.custom-cardss:hover::before {
+    opacity: 1;
+}
+
+.gradient-text {
+    background-image: linear-gradient(to right, #3772FF 30%, #DF2935 50%, #FDCA40 70%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-size: 2rem;
+    text-align: center;
+}
+
+.faq-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    background: transparent;
+}
+
+.faq-text {
+    font-size: 1.2rem;
+    line-height: 1.6;
+
+}
+.faq-item {
+    margin-bottom: 16px; /* Adjust spacing as needed */
+
+}

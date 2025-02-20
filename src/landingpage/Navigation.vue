@@ -1,5 +1,5 @@
 <template>
-    <v-app>
+
         <v-container>
             <v-navigation grow class="d-flex justify-center">
                 <v-btn
@@ -20,7 +20,7 @@
                 <Baranggays style="padding: 50px;" :unit="selectedUnit" :key="selectedUnit" />
             </transition>
         </v-sheet>
-    </v-app>
+
 </template>
 
 <script setup>

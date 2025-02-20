@@ -3,7 +3,7 @@
         <v-col v-for="(barangay, index) in barangays" :key="index" cols="12" md="4">
             <router-link
                 v-if="barangay.name"
-                :to="'/barangay/' + barangay.name.toLowerCase().replace(/\s+/g, '-')"
+                :to="'/' + formatUnit(props.unit) + '/' + formatBarangay(barangay.name)"
                 class="d-block"
             >
                 <v-card elevation="10" class="custom-card ma-2 hoverable" :max-width="350" height="200px">
@@ -49,6 +49,14 @@ const barangays = computed(() => {
 
     return unitsData[props.unit] || [];
 });
+const formatUnit = (unit) => {
+    return unit.toLowerCase().replace(/\s+/g, '-'); // "Mountain Unit" → "mountain-unit"
+};
+
+const formatBarangay = (barangay) => {
+    return barangay.toLowerCase().replace(/\s+/g, '-'); // "San Francisco" → "san-francisco"
+};
+
 </script>
 
 <style scoped>

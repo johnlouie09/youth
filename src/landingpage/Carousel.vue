@@ -1,7 +1,7 @@
 <template>
     <div class="hero-container">
-        <video id="bg-video" autoplay loop muted playsinline>
-            <source src="/video.mp4" type="video/mp4">
+        <video class="background-video" id="bg-video" autoplay loop muted playsinline>
+            <source src="" type="video/mp4">
         </video>
         <div class="content">
             <div><img src="/Group.svg"></div>
@@ -17,20 +17,16 @@ document.addEventListener("DOMContentLoaded", function() {
     video.play().catch(error => console.error("Autoplay failed:", error));
 });
 
-export default {
-    name: 'HeroSection'
-
-}
 
 </script>
 
 <style scoped>
 .hero-container {
     position: relative;
-    top: 18px;
+
     left: 24px;
     right: 0;
-    height: 150vh;
+    height: 110vh;
     width: 1300px;
     display: flex;
     align-items: center;
@@ -40,17 +36,11 @@ export default {
     overflow: hidden;
     border-bottom-left-radius: 100% 50px;
     border-bottom-right-radius: 100% 50px;
+
 }
 
 .background-video {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover; /* Ensures the video covers the entire div */
-    z-index: -1;
-}
+    filter: brightness(60%); /* Adjust brightness as needed (0% - completely black, 100% - normal, >100% - brighter) */}
 
 .content {
     z-index: 1;
@@ -71,6 +61,7 @@ export default {
 }
 
 h1, h2 {
+    will-change: transform, opacity;
     font-weight: bold;
     background: linear-gradient(to left, #3772FF 20%, #DF2935 50%, #FDCA40, #3772FF);
     background-size: 200% 100%;
@@ -101,4 +92,4 @@ h2 {
         background-position: 0% 50%;
     }
 }
-</style>  the video is not playing the path is correct
+</style>

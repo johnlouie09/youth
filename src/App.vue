@@ -1,14 +1,17 @@
 <script setup>
 import Preloader from "./components/Preloader.vue";
-import Footer from "./components/Footer.vue";
+import Menu from './components/Menu.vue'
 import ThemeSwitcher from './components/ThemeSwitcher.vue';
+
 </script>
 
 <template>
 
-    <Preloader />
-    <RouterView/>
-
+    <v-app>
+        <Menu/> <!-- Place it directly inside v-app -->
+        <Preloader />
+        <RouterView />
+    </v-app>
 </template>
 
 <style scoped>
