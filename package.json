@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.0.0",
+    "axios": "^1.7.9",
     "bespoke": "^1.1.0",
     "bespoke-keys": "^1.1.0",
     "bespoke-scale": "^1.0.1",
