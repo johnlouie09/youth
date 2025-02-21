@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 17, 2025 at 09:09 AM
+-- Generation Time: Feb 21, 2025 at 07:56 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -24,13 +24,34 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `admin_users`
+--
+
+CREATE TABLE `admin_users` (
+  `id` int(11) NOT NULL,
+  `username` varchar(50) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `admin_users`
+--
+
+INSERT INTO `admin_users` (`id`, `username`, `password`, `created_at`) VALUES
+(1, 'admin', 'admin', '2025-02-21 03:55:40'),
+(4, 'sk-admin', '$2y$10$.pkAzmiSRIteWTkSl1c17Ocu96EdyP43DJ8WTHwZWbH37pGMV5AEO', '2025-02-21 03:59:43');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `barangays`
 --
 
 CREATE TABLE `barangays` (
   `id` int(11) NOT NULL,
-  `name` varchar(100) NOT NULL,
   `cluster_id` int(11) NOT NULL,
+  `name` varchar(100) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -39,29 +60,29 @@ CREATE TABLE `barangays` (
 -- Dumping data for table `barangays`
 --
 
-INSERT INTO `barangays` (`id`, `name`, `cluster_id`, `created_at`, `updated_at`) VALUES
-(1, 'San Francisco', 1, '2025-02-17 08:00:20', '2025-02-17 08:00:20'),
-(2, 'Francia', 1, '2025-02-17 08:00:20', '2025-02-17 08:00:20'),
-(3, 'La Purisima', 1, '2025-02-17 08:00:20', '2025-02-17 08:00:20'),
-(4, 'San Juan', 1, '2025-02-17 08:00:20', '2025-02-17 08:00:20'),
-(5, 'San Jose', 1, '2025-02-17 08:00:20', '2025-02-17 08:00:20'),
-(6, 'San Miguel', 1, '2025-02-17 08:00:20', '2025-02-17 08:00:20'),
-(7, 'San Nicolas', 2, '2025-02-17 08:00:20', '2025-02-17 08:00:20'),
-(8, 'Del Rosario', 3, '2025-02-17 08:00:20', '2025-02-17 08:00:20'),
-(9, 'Santiago', 3, '2025-02-17 08:00:20', '2025-02-17 08:00:20'),
-(10, 'Sto. Domingo', 3, '2025-02-17 08:00:20', '2025-02-17 08:00:20'),
-(11, 'La Anunciacion', 3, '2025-02-17 08:00:20', '2025-02-17 08:00:20'),
-(12, 'Sta. Cruz Norte', 4, '2025-02-17 08:07:33', '2025-02-17 08:07:33'),
-(13, 'Cristo Rey', 4, '2025-02-17 08:07:33', '2025-02-17 08:07:33'),
-(14, 'San Vicente Norte', 4, '2025-02-17 08:07:33', '2025-02-17 08:07:33'),
-(15, 'Antipolo', 4, '2025-02-17 08:07:33', '2025-02-17 08:07:33'),
-(16, 'Sta. Maria', 4, '2025-02-17 08:07:33', '2025-02-17 08:07:33'),
-(17, 'San Pedro', 4, '2025-02-17 08:07:33', '2025-02-17 08:07:33'),
-(18, 'San Rafael', 4, '2025-02-17 08:07:33', '2025-02-17 08:07:33'),
-(19, 'Sta. Cruz Sur', 5, '2025-02-17 08:07:33', '2025-02-17 08:07:33'),
-(20, 'Sto. Niño', 5, '2025-02-17 08:07:33', '2025-02-17 08:07:33'),
-(21, 'San Vicente Sur', 5, '2025-02-17 08:07:33', '2025-02-17 08:07:33'),
-(22, 'Salvacion', 5, '2025-02-17 08:07:33', '2025-02-17 08:07:33');
+INSERT INTO `barangays` (`id`, `cluster_id`, `name`, `created_at`, `updated_at`) VALUES
+(1, 1, 'San Francisco', '2025-02-17 08:00:20', '2025-02-17 08:00:20'),
+(2, 1, 'Francia', '2025-02-17 08:00:20', '2025-02-17 08:00:20'),
+(3, 1, 'La Purisima', '2025-02-17 08:00:20', '2025-02-17 08:00:20'),
+(4, 1, 'San Juan', '2025-02-17 08:00:20', '2025-02-17 08:00:20'),
+(5, 1, 'San Jose', '2025-02-17 08:00:20', '2025-02-17 08:00:20'),
+(6, 1, 'San Miguel', '2025-02-17 08:00:20', '2025-02-17 08:00:20'),
+(7, 2, 'San Nicolas', '2025-02-17 08:00:20', '2025-02-17 08:00:20'),
+(8, 3, 'Del Rosario', '2025-02-17 08:00:20', '2025-02-17 08:00:20'),
+(9, 3, 'Santiago', '2025-02-17 08:00:20', '2025-02-17 08:00:20'),
+(10, 3, 'Sto. Domingo', '2025-02-17 08:00:20', '2025-02-17 08:00:20'),
+(11, 3, 'La Anunciacion', '2025-02-17 08:00:20', '2025-02-17 08:00:20'),
+(12, 4, 'Sta. Cruz Norte', '2025-02-17 08:07:33', '2025-02-17 08:07:33'),
+(13, 4, 'Cristo Rey', '2025-02-17 08:07:33', '2025-02-17 08:07:33'),
+(14, 4, 'San Vicente Norte', '2025-02-17 08:07:33', '2025-02-17 08:07:33'),
+(15, 4, 'Antipolo', '2025-02-17 08:07:33', '2025-02-17 08:07:33'),
+(16, 4, 'Sta. Maria', '2025-02-17 08:07:33', '2025-02-17 08:07:33'),
+(17, 4, 'San Pedro', '2025-02-17 08:07:33', '2025-02-17 08:07:33'),
+(18, 4, 'San Rafael', '2025-02-17 08:07:33', '2025-02-17 08:07:33'),
+(19, 5, 'Sta. Cruz Sur', '2025-02-17 08:07:33', '2025-02-17 08:07:33'),
+(20, 5, 'Sto. Niño', '2025-02-17 08:07:33', '2025-02-17 08:07:33'),
+(21, 5, 'San Vicente Sur', '2025-02-17 08:07:33', '2025-02-17 08:07:33'),
+(22, 5, 'Salvacion', '2025-02-17 08:07:33', '2025-02-17 08:07:33');
 
 -- --------------------------------------------------------
 
@@ -95,8 +116,8 @@ INSERT INTO `clusters` (`id`, `name`, `created_at`, `updated_at`) VALUES
 
 CREATE TABLE `events` (
   `id` int(11) NOT NULL,
+  `barangay_id` int(11) NOT NULL,
   `event_name` varchar(200) NOT NULL,
-  `barangay_id` int(11) DEFAULT NULL,
   `event_date` date DEFAULT NULL,
   `location` varchar(255) DEFAULT NULL,
   `description` text DEFAULT NULL,
@@ -112,12 +133,14 @@ CREATE TABLE `events` (
 
 CREATE TABLE `projects` (
   `id` int(11) NOT NULL,
+  `barangay_id` int(11) NOT NULL,
   `project_name` varchar(200) NOT NULL,
-  `barangay_id` int(11) DEFAULT NULL,
   `budget` decimal(10,2) DEFAULT NULL,
   `status` enum('Proposed','Ongoing','Completed') DEFAULT NULL,
   `start_date` date DEFAULT NULL,
-  `end_date` date DEFAULT NULL
+  `end_date` date DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -128,15 +151,43 @@ CREATE TABLE `projects` (
 
 CREATE TABLE `sk_chairpersons` (
   `id` int(11) NOT NULL,
+  `barangay_id` int(11) NOT NULL,
   `full_name` varchar(150) NOT NULL,
-  `contact_number` int(12) NOT NULL,
+  `contact_number` int(12) DEFAULT NULL,
   `email` varchar(100) NOT NULL,
-  `barangay_id` tinyint(3) UNSIGNED NOT NULL,
   `term_start` date DEFAULT NULL,
   `term_end` date DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `sk_chairpersons`
+--
+
+INSERT INTO `sk_chairpersons` (`id`, `barangay_id`, `full_name`, `contact_number`, `email`, `term_start`, `term_end`, `created_at`, `updated_at`) VALUES
+(1, 1, 'Dessa Mare P. Lontayao', 0, '', NULL, NULL, '2025-02-21 06:16:33', '2025-02-21 06:43:34'),
+(2, 2, 'Irish N. Zaragoza', 0, '', NULL, NULL, '2025-02-21 06:41:36', '2025-02-21 06:41:36'),
+(3, 3, 'Anthony T. Balbuena', 0, '', NULL, NULL, '2025-02-21 06:41:36', '2025-02-21 06:41:36'),
+(4, 4, 'Aiden Osward M. Basagre', 0, '', NULL, NULL, '2025-02-21 06:41:36', '2025-02-21 06:41:36'),
+(5, 5, 'Neil Christian D. Vargas', 0, '', NULL, NULL, '2025-02-21 06:41:36', '2025-02-21 06:41:36'),
+(6, 6, 'Jade Dustin F. Villareal', 0, '', NULL, NULL, '2025-02-21 06:41:36', '2025-02-21 06:41:36'),
+(7, 7, 'Kim Roland P. Vargas', 0, '', NULL, NULL, '2025-02-21 06:41:36', '2025-02-21 06:41:36'),
+(8, 8, 'Leiriz C. Ibarreta', 0, '', NULL, NULL, '2025-02-21 06:41:36', '2025-02-21 06:41:36'),
+(9, 9, 'Bea Franchezka Naldo', 0, '', NULL, NULL, '2025-02-21 06:41:36', '2025-02-21 06:41:36'),
+(10, 10, 'Rex A. Embestro', 0, '', NULL, NULL, '2025-02-21 06:41:36', '2025-02-21 06:41:36'),
+(11, 11, 'Rico Maniscan', 0, '', NULL, NULL, '2025-02-21 06:41:36', '2025-02-21 06:41:36'),
+(12, 12, 'Jhustine A. Robles', 0, '', NULL, NULL, '2025-02-21 06:41:36', '2025-02-21 06:41:36'),
+(13, 13, 'James Lorren J. Brondial', 0, '', NULL, NULL, '2025-02-21 06:41:36', '2025-02-21 06:41:36'),
+(14, 14, 'Eddel Mae D. Brago', 0, '', NULL, NULL, '2025-02-21 06:41:36', '2025-02-21 06:41:36'),
+(15, 15, 'Princes Leonard W. Llagas', 0, '', NULL, NULL, '2025-02-21 06:41:36', '2025-02-21 06:41:36'),
+(16, 16, 'Diana Rose A. Canlas', 0, '', NULL, NULL, '2025-02-21 06:41:36', '2025-02-21 06:41:36'),
+(17, 17, 'Mary Grace A. Biag', 0, '', NULL, NULL, '2025-02-21 06:41:36', '2025-02-21 06:41:36'),
+(18, 18, 'Jean-Lyka C. Villanueva', 0, '', NULL, NULL, '2025-02-21 06:41:36', '2025-02-21 06:41:36'),
+(19, 19, 'James S. Tasarra', 0, '', NULL, NULL, '2025-02-21 06:41:36', '2025-02-21 06:41:36'),
+(20, 20, 'Aliza Mae P. Viñas', 0, '', NULL, NULL, '2025-02-21 06:41:36', '2025-02-21 06:41:36'),
+(21, 21, 'Erika Mae V. Molina', 0, '', NULL, NULL, '2025-02-21 06:41:36', '2025-02-21 06:41:36'),
+(22, 22, 'Jessa Mae C. Matubis', 0, '', NULL, NULL, '2025-02-21 06:41:36', '2025-02-21 06:41:36');
 
 -- --------------------------------------------------------
 
@@ -146,15 +197,24 @@ CREATE TABLE `sk_chairpersons` (
 
 CREATE TABLE `sk_members` (
   `id` int(11) NOT NULL,
+  `barangay_id` int(11) NOT NULL,
   `full_name` varchar(150) NOT NULL,
   `position` enum('SK Secretary','SK Treasurer','SK Kagawad','') NOT NULL,
   `contact_number` varchar(20) DEFAULT NULL,
-  `barangay_id` int(11) DEFAULT NULL
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Indexes for dumped tables
 --
+
+--
+-- Indexes for table `admin_users`
+--
+ALTER TABLE `admin_users`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `username` (`username`);
 
 --
 -- Indexes for table `barangays`
@@ -202,6 +262,12 @@ ALTER TABLE `sk_members`
 --
 
 --
+-- AUTO_INCREMENT for table `admin_users`
+--
+ALTER TABLE `admin_users`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
 -- AUTO_INCREMENT for table `barangays`
 --
 ALTER TABLE `barangays`
@@ -229,7 +295,7 @@ ALTER TABLE `projects`
 -- AUTO_INCREMENT for table `sk_chairpersons`
 --
 ALTER TABLE `sk_chairpersons`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- AUTO_INCREMENT for table `sk_members`
@@ -258,6 +324,12 @@ ALTER TABLE `events`
 --
 ALTER TABLE `projects`
   ADD CONSTRAINT `projects_ibfk_1` FOREIGN KEY (`barangay_id`) REFERENCES `barangays` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `sk_chairpersons`
+--
+ALTER TABLE `sk_chairpersons`
+  ADD CONSTRAINT `sk_chairpersons_ibfk_1` FOREIGN KEY (`barangay_id`) REFERENCES `barangays` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `sk_members`
