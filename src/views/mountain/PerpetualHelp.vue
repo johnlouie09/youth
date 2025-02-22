@@ -10,14 +10,6 @@ import ThemeSwitcher from "../../components/ThemeSwitcher.vue";
 <template>
     <Preloader/>
     <v-app :theme="$vuetify.theme.global.name.value">
-
-        <v-app-bar app color="black">
-            <v-img src="/youth.svg" style="scale: 300%; margin-left: -300px;"></v-img>
-            <v-spacer></v-spacer>
-            <v-btn>
-                <ThemeSwitcher />
-            </v-btn>
-        </v-app-bar>
         <div class="relative flex justify-center items-center overflow-hidden">
             <img class="w-full object-fill" :src="barangayHall" alt="" style="height: 350px;" />
 
@@ -44,9 +36,7 @@ import ThemeSwitcher from "../../components/ThemeSwitcher.vue";
         <Achievements />
     </v-app>
 </template>
-
 <style>
-
 .gradient-text {
     background-image: linear-gradient(to right, #3772FF 40%, #DF2935 50%, #FDCA40 60%);
     -webkit-background-clip: text;

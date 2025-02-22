@@ -12,6 +12,7 @@ import faqs from '../landingpage/faqs.vue'
      <Carousel/>
      <br>
      <Navigation/>
+        <br>
         <faqs/>
  </v-app>
 

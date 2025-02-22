@@ -15,10 +15,6 @@ const router = createRouter({
 
 
       path: '/contact',
-      name: 'contact',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
       component: () => import('../views/Contact.vue'),
     },
     // {
@@ -31,17 +27,12 @@ const router = createRouter({
     {
       path: '/poblacion/san-francisco',
       name: 'San Francisco',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
       component: () => import('../views/poblacion/SanFrancisco.vue'),
     },
     {
-      path: '/mountain/perpetual',
+      path: '/mountain-unit/perpetual',
       name: 'perpetual',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
+
       component: () => import('../views/mountain/PerpetualHelp.vue'),
     },
   ],

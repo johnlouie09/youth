@@ -6,13 +6,14 @@
 }
 
 :root {
-    --background-color: #ffffff;
+    --background-color: #121212;
     --text-color: #000000;
+
 }
 
 /* Dark Theme */
 .dark-theme {
-    --background-color: #121212;
+    --background-color: #ffffff;
     --text-color: #ffffff;
 }
 

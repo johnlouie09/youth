@@ -1,7 +1,7 @@
 <template>
     <div class="hero-container">
         <video class="background-video" id="bg-video" autoplay loop muted playsinline>
-            <source src="" type="video/mp4">
+            <source src="../assets/video (2).mp4" type="video/mp4">
         </video>
         <div class="content">
             <div><img src="/Group.svg"></div>
@@ -23,7 +23,6 @@ document.addEventListener("DOMContentLoaded", function() {
 <style scoped>
 .hero-container {
     position: relative;
-
     left: 24px;
     right: 0;
     height: 110vh;
@@ -34,8 +33,7 @@ document.addEventListener("DOMContentLoaded", function() {
     color: white;
     text-align: center;
     overflow: hidden;
-    border-bottom-left-radius: 100% 50px;
-    border-bottom-right-radius: 100% 50px;
+    clip-path: ellipse(130% 95% at 50% 0%);
 
 }
 
