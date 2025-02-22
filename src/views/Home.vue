@@ -16,3 +16,9 @@ import ThemeSwitcher from "@/components/ThemeSwitcher.vue";
         </v-app>
     </v-app>
 </template>
+
+<style scoped>
+    * {
+        font-family: 'Inter', sans-serif;
+    }
+</style>
