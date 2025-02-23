@@ -4,6 +4,7 @@ import 'vuetify/styles'
 import { createVuetify } from 'vuetify'
 import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
+import axios from 'axios';
 
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
@@ -21,7 +22,7 @@ const vuetify = createVuetify({
     },
 })
 
-
+axios.defaults.baseURL = 'http://localhost/youth/app';
 app.use(createPinia())
 app.use(router)
 app.use(vuetify)

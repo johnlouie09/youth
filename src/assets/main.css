@@ -1,9 +1,7 @@
 @import "tailwindcss";
 
 
-* {
-    font-family: 'Inter', sans-serif;
-}
+
 
 :root {
     --background-color: #ffffff;
@@ -22,3 +20,4 @@ body {
     color: var(--text-color);
     transition: background-color 0.3s, color 0.3s;
 }
+

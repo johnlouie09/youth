@@ -1,16 +1,18 @@
-.custom-card {
-    transition: all 0.3s ease-in-out;
-    border-radius: 20px;
-    position: relative;
-
-
-
-
-
+.container {
+    width: 85%;
 }
 
+.custom-card {
+    position: relative;
+    overflow: hidden;
+    border-radius: 20px; /* Smooth corners */
+    transition: border 0.3s ease-in-out;
+}
+
+/* Pseudo-element for gradient border effect */
 .custom-card::before {
     content: "";
+    position: absolute;
     inset: 0;
     border-radius: 20px;
     padding: 3px;
@@ -23,33 +25,89 @@
     mask-composite: exclude;
 
     transition: opacity 0.3s ease-in-out;
-    opacity: 0;
+    opacity: 0; /* Initially hidden */
 }
 
+/* Show gradient border on hover */
 .custom-card:hover::before {
     opacity: 1;
 }
-.card-content {
-    position: relative;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+h1 {
     text-align: center;
+    font-size: 32px;
+    text-transform: uppercase;
+    font-weight: bold;
+    /* Added a visible text color */
 }
 
-.card-image {
+@keyframes glowEffect {
+    0% {
+        text-shadow: 0 0 10px rgba(55, 114, 255, 0.6),
+        0 0 10px rgba(223, 41, 53, 0.6),
+        0 0 15px rgba(253, 202, 64, 0.6);
+    }
+    100% {
+        text-shadow: 0 0 10px rgba(55, 114, 255, 0.8),
+        0 0 20px rgba(223, 41, 53, 0.8),
+        0 0 30px rgba(253, 202, 64, 0.8);
+    }
+}
+.custom-btn {
+    border-radius: 10px;
+    position: relative; /* Added to ensure the ::before pseudo-element is positioned correctly */
+}
+
+.custom-btn::before {
+    content: "";
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 200px; /* Adjust size as needed */
-    height: auto;
-    opacity: 1.3; /* Adjust transparency */
+    inset: 0;
+    border-radius: 10px;
+    padding: 3px;
+    background: linear-gradient(45deg, #3772FF, #DF2935, #FDCA40);
+    -webkit-mask: linear-gradient(white 0 0) content-box, linear-gradient(white 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    transition: opacity 0.3s ease-in-out;
+    opacity: 0; /* Initially hidden */
 }
 
-.card-text {
-    position: relative;
-    z-index: 1;
-    color: white; /* Ensure text remains visible */
+/* Hover state to show gradient border */
+.custom-btn:hover::before {
+    opacity: 1;
 }
+
+/* Active state: Keep the gradient border visible */
+.custom-btn:active::before {
+    opacity: 1;
+    background: linear-gradient(45deg, #3772FF, #DF2935, #FDCA40);
+}
+
+/* When the button is active (selected), keep the gradient border visible */
+.active-btn::before {
+    opacity: 1; /* Ensures the gradient stays visible */
+    background: linear-gradient(45deg, #3772FF, #DF2935, #FDCA40);
+}
+
+.overlay-titles {
+    background: transparent;
+    font-weight: bold;
+    transition: all 0.3s ease-in-out;
+}
+
+/* Hover state to apply gradient to the text */
+.custom-btn:hover .overlay-titles {
+    background-image: linear-gradient(45deg, #3772FF, #DF2935, #FDCA40);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* Active state to keep the gradient effect on text */
+.custom-btn:active .overlay-titles,
+.active-btn .overlay-titles {
+    background-image: linear-gradient(45deg, #3772FF, #DF2935, #FDCA40);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+
+

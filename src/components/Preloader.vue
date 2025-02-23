@@ -6,7 +6,7 @@ const isLoading = ref(true);
 
 onMounted(() => {
     const tl = gsap.timeline({
-        delay: 0.5,
+        delay: 0.3,
         onComplete: () => {
             isLoading.value = false;
         },
@@ -15,10 +15,10 @@ onMounted(() => {
     tl.fromTo(
             ".preloader-svg",
             { opacity: 0, x: 50 },
-            { opacity: 1, x: 0, duration: 1, ease: "power3.out" }
+            { opacity: 1, x: 0, duration: 1.5, ease: "power3.out" }
     );
 
-    tl.to({}, { duration: 0.5 });
+    tl.to({}, { duration: 0 });
 
     tl.to(".preloader-svg", {
         opacity: 0,
@@ -31,7 +31,7 @@ onMounted(() => {
             ".mil-preloader",
             {
                 opacity: 0,
-                duration: 0.5,
+                duration: 1,
                 ease: "power3.out",
             },
             "-=0.3"

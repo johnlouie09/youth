@@ -1,10 +1,10 @@
 <script setup>
-import Preloader from "../components/Preloader.vue";
+import Preloader from "../../components/Preloader.vue";
 import barangayHall from '/San_Francisco_Barangay_Hall.JPG?url';
-import Carousel from "../components/Carousel.vue";
-import Cards from "../components/Cards.vue";
-import Achievements from "../components/Achievements.vue";
-import ThemeSwitcher from "../components/ThemeSwitcher.vue";
+import Carousel from "../../components/Carousel.vue";
+import Cards from "../../components/Cards.vue";
+import Achievements from "../../components/Achievements.vue";
+import ThemeSwitcher from "../../components/ThemeSwitcher.vue";
 </script>
 
 <template>
@@ -12,7 +12,7 @@ import ThemeSwitcher from "../components/ThemeSwitcher.vue";
     <v-app :theme="$vuetify.theme.global.name.value">
 
         <v-app-bar app color="black">
-           <v-img src="/youth.svg" style="scale: 300%; margin-left: -300px;"></v-img>
+            <v-img src="/youth.svg" style="scale: 300%; margin-left: -300px;"></v-img>
             <v-spacer></v-spacer>
             <v-btn>
                 <ThemeSwitcher />
@@ -34,21 +34,29 @@ import ThemeSwitcher from "../components/ThemeSwitcher.vue";
         </div>
         <br>
         <div>
-            <h1>Announcements</h1>
+            <h1 class="gradient-text">Announcements</h1>
             <Carousel/>
-            <br><br>
+            <br>
             <Cards/>
         </div>
         <br>
-        <h1>Achievements</h1>
+        <h1 class="gradient-text">Achievements</h1>
         <Achievements />
     </v-app>
 </template>
+
 <style>
-h1 {
-    text-align: center;
-    font-size: 32px;
-    text-transform: uppercase;
+
+.gradient-text {
+    background-image: linear-gradient(to right, #3772FF 40%, #DF2935 50%, #FDCA40 60%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.font-bold {
+    background-image: linear-gradient(45deg, #3772FF 2%, #DF2935 20%, #FDCA40 35%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
     font-weight: bold;
+
 }
 </style>

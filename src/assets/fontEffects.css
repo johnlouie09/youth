@@ -1,0 +1,70 @@
+.overlay-title {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: transparent;
+    font-size: 15px;
+    font-weight: bold;
+    text-align: center;
+    padding: 5px;
+    transition: all 0.3s ease-in-out;
+}
+
+.custom-card:hover .overlay-title {
+
+    background-image: linear-gradient(45deg, #3772FF, #DF2935, #FDCA40);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+
+}
+.overlay-titleee {
+
+    background: transparent;
+    font-weight: bold;
+    padding: 15px;
+    transition: all 0.3s ease-in-out;
+}
+
+.custom-card:hover .overlay-titleee {
+
+    background-image: linear-gradient(45deg, #3772FF 10%, #DF2935 20%, #FDCA40 35%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+
+}
+.overlay-titles {
+
+    background: transparent;
+    font-weight: bold;
+
+    transition: all 0.3s ease-in-out;
+}
+
+.custom-card:hover .overlay-titles {
+
+    background-image: linear-gradient(45deg, #3772FF 10%, #DF2935 20%, #FDCA40 35%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+
+}
+.overlay-titles-barrangays {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    background: transparent;
+    font-weight: bold;
+text-align: center;
+    transition: all 0.3s ease-in-out;
+
+}
+
+.custom-card:hover .overlay-titles-barrangays {
+
+    background-image: linear-gradient(45deg, #3772FF 30%, #DF2935 60%, #FDCA40 70%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+
+}
