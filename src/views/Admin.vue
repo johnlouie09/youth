@@ -7,12 +7,8 @@ import Sidebar from '../components/adminComponents/Sidebar.vue';
     <main>
         <Sidebar></Sidebar>
 
-        <div class="adminMain">
-
-        </div>
-        <!-- <RouterView class="adminMain">
-
-        </RouterView> -->
+        <RouterView class="adminMain">
+        </RouterView>
 
     </main>
 
@@ -30,6 +26,11 @@ import Sidebar from '../components/adminComponents/Sidebar.vue';
     }
 
     .adminMain {
-        background-color: #1C1C1C;
+        background: linear-gradient(
+        to bottom,
+        #101010 0%,  /* Dark Gray */
+        #101010 47%, /* Same Dark Gray */
+        #272727 100% /* Slightly lighter Gray */
+        );
     }
 </style>

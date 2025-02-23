@@ -2,12 +2,12 @@
     import { reactive } from 'vue';
 
     const menuObjs = reactive([
-        { menuName: "Dashboard", icon: "/public/adminAssets/sidebarIcon/dashboard.svg" },
-        { menuName: "Officials", icon: "/public/adminAssets/sidebarIcon/officials.svg" },
-        { menuName: "Announcements", icon: "/public/adminAssets/sidebarIcon/announcements.svg" },
-        { menuName: "Achievements", icon: "/public/adminAssets/sidebarIcon/achievements.svg" },
-        { menuName: "Settings and profile", icon: "/public/adminAssets/sidebarIcon/settings.svg" },
-        { menuName: "Notices", icon: "/public/adminAssets/sidebarIcon/notices.svg" }
+        { menuName: "Dashboard", icon: "/public/adminAssets/sidebarIcon/dashboard.svg", to:"/admin/dashboard"},
+        { menuName: "Officials", icon: "/public/adminAssets/sidebarIcon/officials.svg", to:"/admin/officials"},
+        { menuName: "Announcements", icon: "/public/adminAssets/sidebarIcon/announcements.svg", to:"/admin/announcements" },
+        { menuName: "Achievements", icon: "/public/adminAssets/sidebarIcon/achievements.svg", to:"/admin/achievements" },
+        { menuName: "Settings and profile", icon: "/public/adminAssets/sidebarIcon/settings.svg", to:"/admin/settings" },
+        { menuName: "Notices", icon: "/public/adminAssets/sidebarIcon/notices.svg", to:"/admin/notices" }
     ]);
 </script>
 
@@ -29,10 +29,12 @@
 
         <!-- Navigation Menu -->
         <ul>
-            <li v-for="menuObj in menuObjs" :key="menuObj.menuName">
-                <img :src="menuObj.icon" :alt="`${menuObj.menuName} Icon`">
-                <span>{{ menuObj.menuName }}</span>
-            </li>
+            <router-link class="routes" v-for="menuObj in menuObjs" :key="menuObj.menuName" :to="menuObj.to" >
+                <li>
+                    <img :src="menuObj.icon" :alt="`${menuObj.menuName} Icon`">
+                    <span>{{ menuObj.menuName }}</span>
+                </li>
+            </router-link>
         </ul>
 
         <!-- Logout Button -->
@@ -52,6 +54,7 @@
         align-items: center;
         gap: 25px;
         padding: 28px 16px;
+        position: sticky;
     }
 
     /* LOGO SECTION */
@@ -100,7 +103,7 @@
     }
 
     /* MENU LIST */
-    ul {
+    .routes {
         display: flex;
         flex-direction: column;
         width: 100%;
@@ -108,9 +111,16 @@
         padding: 0;
     }
 
+    ul {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+    }
+
     li {
         display: flex;
-        align-items: center;
+        align-items: flex-start;
         width: 100%;
         padding: 10px 20px;
         gap: 8px;
@@ -137,9 +147,12 @@
         transition: background 0.3s;
     }
 
-    .logout-button:hover {
-        background-color: rgba(255, 255, 255, 0.1);
+
+    .routes.active li {
+    background-color: rgba(255, 255, 255, 0.1); /* Highlight active route */
+    transition: background 0.3s;
     }
+    
 
 
 </style>

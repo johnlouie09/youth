@@ -55,7 +55,33 @@ const router = createRouter({
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
       component: () => import('../views/Admin.vue'),
-    },
+      children: [
+        {
+          path: 'dashboard', // Will be /parent/child-a
+          component: () => import('../components/adminComponents/Dashboard.vue'),
+        },
+        {
+          path: 'officials', // Will be /parent/child-a
+          component: () => import('../components/adminComponents/Officials.vue'),
+        },
+        {
+          path: 'announcements', // Will be /parent/child-a
+          component: () => import('../components/adminComponents/Announcements.vue'),
+        },
+        {
+          path: 'achievements', // Will be /parent/child-a
+          component: () => import('../components/adminComponents/Achievements.vue'),
+        },
+        {
+          path: 'settings', // Will be /parent/child-a
+          component: () => import('../components/adminComponents/Settings.vue'),
+        },
+        {
+          path: 'notices', // Will be /parent/child-a
+          component: () => import('../components/adminComponents/Notices.vue'),
+        }
+      ]
+    }
   ],
 })
 
