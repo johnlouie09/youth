@@ -1,9 +1,11 @@
 <script setup>
+import Dialogs from '../components/dialogs/Dialogs.vue';
 import Sidebar from '../components/adminComponents/Sidebar.vue';
 
 </script>
 
 <template>
+    <Dialogs/>
     <main>
         <Sidebar></Sidebar>
 
