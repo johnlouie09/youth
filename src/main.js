@@ -11,6 +11,7 @@ import { createPinia } from 'pinia'
 
 import App from './App.vue'
 import router from './router'
+import store from './stores/vuex/store';
 
 const app = createApp(App)
 
@@ -25,6 +26,7 @@ const vuetify = createVuetify({
 axios.defaults.baseURL = 'http://localhost/youth/app';
 app.use(createPinia())
 app.use(router)
+app.use(store)
 app.use(vuetify)
 
 app.mount('#app')
