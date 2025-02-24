@@ -1,17 +1,54 @@
 <script setup>
-import DashboardCards from './subcomponents/DashboardCards.vue';
-import Analytics from './subcomponents/Analytics.vue';
-import Suggestions from './subcomponents/Suggestions.vue';
+import DashboardCards from './subcomponents/dashboard/DashboardCards.vue';
+import Analytics from './subcomponents/dashboard/Analytics.vue';
+import Suggestions from './subcomponents/dashboard/Suggestions.vue';
+import { reactive } from 'vue';
+
+const data = reactive({
+    cardsData: [
+        {
+            type:'officials',
+            title:'OFFICIALS',
+            icon:'/public/adminAssets/AdminViews/OfficialIcon.svg',
+            details: [
+                {position: 'CHAIRPESON', number: 1},
+                {position: 'TREASURER', number: 1},
+                {position: 'SECRETARY', number: 1},
+                {position: 'KAGAWADS', number: 1},
+            ]
+        },
+        {
+            type:'achievements',
+            title:'ACHIEVEMENTS',
+            icon:'/public/adminAssets/AdminViews/achievements-icon.svg',
+            details: {
+                date: new Date(2025, 1),
+                quantity: 64
+            }
+        },
+        {
+            type:'announcements',
+            title:'ANNOUNCEMENTS',
+            icon:'/public/adminAssets/AdminViews/announcements-icon.svg',
+            details: {
+                date: new Date(2025, 7),
+                quantity: 98
+            }
+        }
+
+    ]
+})
 </script>
 
 <template>
     <div class="dashboard-main">
         <div class="cards">
-            <DashboardCards></DashboardCards>
-            <DashboardCards></DashboardCards>
-            <DashboardCards></DashboardCards>
+            <DashboardCards 
+                v-for="card in data.cardsData" 
+                :key="card.title" 
+                :card="card"
+            />
         </div>
-
         <div class="feats">
             <Suggestions></Suggestions>
             <div>
@@ -33,9 +70,9 @@ import Suggestions from './subcomponents/Suggestions.vue';
 }
 
 .cards {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    column-gap: 60px;
 }
 
 /* Features section */
@@ -46,13 +83,6 @@ import Suggestions from './subcomponents/Suggestions.vue';
     gap: 43px;
 }
 
-.feats div {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 16px;
-}
 
 .to-website {
     background-color: black;
