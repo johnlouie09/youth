@@ -79,7 +79,22 @@ const router = createRouter({
         {
           path: 'notices', // Will be /parent/child-a
           component: () => import('../components/adminComponents/Notices.vue'),
+        },
+
+        // DEMO ->
+        {
+          path: 'demo/message-dialog',
+          component: () => import('../components/adminComponents/dialogDemo/MessageDialog.vue')
+        },
+        {
+          path: 'demo/confirm-dialog',
+          component: () => import('../components/adminComponents/dialogDemo/ConfirmDialog.vue')
+        },
+        {
+          path: 'demo/toast',
+          component: () => import('../components/adminComponents/dialogDemo/Toast.vue')
         }
+        // <-- DEMO
       ]
     }
   ],
