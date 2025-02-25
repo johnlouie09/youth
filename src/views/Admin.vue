@@ -1,38 +1,63 @@
 <script setup>
 import Dialogs from '../components/dialogs/Dialogs.vue';
 import Sidebar from '../components/adminComponents/Sidebar.vue';
-
 </script>
 
 <template>
-    <Dialogs/>
-    <main>
-        <Sidebar></Sidebar>
+    <v-app class="mainApp">
+        <div class="adminContainer">
+            <Sidebar class="sidebar" />
 
-        <RouterView class="adminMain">
-        </RouterView>
-
-    </main>
-
+            <v-main class="adminMain">
+                <RouterView />
+            </v-main>
+        </div>
+    </v-app>
 </template>
 
 <style scoped>
-     main {
-        font-family: 'Kumbh Sans', sans-serif;
-        display: grid;
-        grid-template-columns: 15% 85%;
-        height: 100vh;
-        width: 100%;
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+    width: 8px;
+}
 
-        color: #F1F1F1;
-    }
+::-webkit-scrollbar-track {
+    background: #1e1e1e;
+    border-radius: 10px;
+}
 
-    .adminMain {
-        background: linear-gradient(
-        to bottom,
-        #101010 0%,  /* Dark Gray */
-        #101010 47%, /* Same Dark Gray */
-        #272727 100% /* Slightly lighter Gray */
-        );
-    }
+::-webkit-scrollbar-thumb {
+    background: #555;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #888;
+}
+
+/* Layout Fix */
+.mainApp {
+    font-family: 'Kumbh Sans', sans-serif;
+    height: 100vh;
+    display: flex;
+}
+
+.adminContainer {
+    display: flex;
+    width: 100%;
+    height: 100vh;
+}
+
+.sidebar {
+    width: 15%;
+    background: #1e1e1e; /* Adjust as needed */
+}
+
+.adminMain {
+    width: 85%;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    display: flex;
+    flex-direction: column;
+}
 </style>
