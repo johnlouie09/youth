@@ -4,6 +4,7 @@ import Navigation from "../landingpage/Navigation.vue";
 import ThemeSwitcher from "@/components/ThemeSwitcher.vue";
 import faqs from '../landingpage/faqs.vue'
 </script>
+
 <template>
 <v-app>
 
@@ -17,19 +18,4 @@ import faqs from '../landingpage/faqs.vue'
  </v-app>
 
 </v-app>
-</template>
-
-
-
-<template>
-    <v-app>
-        <v-app :theme="$vuetify.theme.global.name.value">
-            <v-btn>
-            <ThemeSwitcher />
-            </v-btn>
-            <Carousel/>
-            <br>
-            <Navigation/>
-        </v-app>
-    </v-app>
 </template>
