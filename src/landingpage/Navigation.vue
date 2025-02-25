@@ -41,7 +41,7 @@ onMounted(() => {
 </script>
 
 <template>
-    <v-app>
+
         <v-container>
             <v-navigation grow class="d-flex justify-center">
                 <template v-if="loading">
@@ -77,5 +77,5 @@ onMounted(() => {
                 />
             </transition>
         </v-sheet>
-    </v-app>
+
 </template>

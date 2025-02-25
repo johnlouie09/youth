@@ -19,7 +19,7 @@ onMounted(() => {
 </script>
 
 <template>
-    <v-btn @click="toggleTheme" :color="theme.global.name.value === 'dark' ? 'white' : 'yellow'">
+    <v-btn @click="toggleTheme" :color="theme.global.name.value === 'dark' ? 'white' : 'dark'">
         <v-icon>{{ theme.global.name.value === 'dark' ? 'mdi-moon-waning-crescent' : 'mdi-lightbulb' }}</v-icon>
     </v-btn>
 </template>

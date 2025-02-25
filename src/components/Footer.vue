@@ -1,13 +1,15 @@
 <template>
-    <footer class="text-white py-12 fixed bottom-0 left-0 w-full" style="background-color: rgb(35,35,35);">
-        <div class="container mx-auto flex justify-between items-center">
-            <!-- Logo and Text -->
-            <div class="flex items-center" style="margin-left: 100px;">
-                <div class="logo" style="margin-left: 20px; margin-top: 15px;">
-                    <img src="/Flogo.svg" alt="Logo" class="h-5 w-20 scale-700" />
-                </div>
-            </div>
-        </div>
-    </footer>
+    <v-footer>
+        <v-row justify="center" no-gutters>
+            <v-col class="text-center mt-4" cols="12">
+               <v-avatar image="./Group.svg"></v-avatar>
+            </v-col>
+            <v-col class="text-center mt-2" cols="12">
+                <p>&copy; {{ new Date().getFullYear() }} <span style="font-weight: bolder">YOUTH</span> All Rights Reserved</p>
+            </v-col>
+        </v-row>
+    </v-footer>
 </template>
+
+
 

@@ -1,5 +1,8 @@
 <template>
     <div class="hero-container">
+        <video class="background-video" id="bg-video" autoplay loop muted playsinline>
+            <source src="../assets/video (2).mp4" type="video/mp4">
+        </video>
         <div class="content">
             <div><img src="/Group.svg"></div>
             <h1>YOUTH ORIENTED UNIFIED TRANSPARENCY HUB</h1>
@@ -8,14 +11,21 @@
     </div>
 </template>
 
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const video = document.getElementById("bg-video");
+    video.play().catch(error => console.error("Autoplay failed:", error));
+});
+
+
+</script>
+
 <style scoped>
 .hero-container {
-    position: Relative;
-    top: 18px;
+    position: relative;
     left: 24px;
     right: 0;
-    background: linear-gradient(135deg, #1a1919 0%, #1f1d1d 100%);
-    height: 150vh;
+    height: 110vh;
     width: 1300px;
     display: flex;
     align-items: center;
@@ -23,19 +33,13 @@
     color: white;
     text-align: center;
     overflow: hidden;
-    border-radius: 20px;
+    clip-path: ellipse(130% 95% at 50% 0%);
+
 }
-.hero-container::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 75px;
-    background-color: #ffffff;
-    border-top-left-radius: 50% 50px;
-    border-top-right-radius: 50% 50px;
-}
+
+.background-video {
+    filter: brightness(60%); /* Adjust brightness as needed (0% - completely black, 100% - normal, >100% - brighter) */}
+
 .content {
     z-index: 1;
     text-align: center;
@@ -54,22 +58,28 @@
     margin-bottom: 20px;
 }
 
-
-
-
-h1 {
+h1, h2 {
+    will-change: transform, opacity;
     font-weight: bold;
-    font-size: 2.5rem;
     background: linear-gradient(to left, #3772FF 20%, #DF2935 50%, #FDCA40, #3772FF);
     background-size: 200% 100%;
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    display: inline-block; /* Ensures the gradient applies properly */
     animation: animate-gradient 2.5s linear infinite;
+}
+
+h1 {
+    font-size: 2.5rem;
+    display: inline-block; /* Ensures the gradient applies properly */
     letter-spacing: 0px;
     word-spacing: 0px;
     white-space: nowrap;
+}
+
+h2 {
+    font-size: 3rem;
+    margin-top: 5px;
 }
 
 @keyframes animate-gradient {
@@ -79,17 +89,5 @@ h1 {
     to {
         background-position: 0% 50%;
     }
-}
-
-h2 {
-    font-weight: bold;
-    font-size: 3rem;
-    margin-top: 5px;
-    background: linear-gradient(to left, #3772FF 20%, #DF2935 50%, #FDCA40, #3772FF);
-    background-size: 200% 100%;
-    background-clip: text;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    animation: animate-gradient 2.5s linear infinite;
 }
 </style>
