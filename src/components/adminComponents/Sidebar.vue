@@ -17,7 +17,7 @@ const menuObjs = [
 </script>
 
 <template>
-    <v-navigation-drawer v-model="drawer" app width="256">
+    <v-navigation-drawer v-model="drawer" app width="280" class="pa-3 pt-7 pb-7">
         <!-- Logo and Barangay Name -->
         <v-list-item class="logo-container">
             <template v-slot:prepend>
@@ -33,11 +33,18 @@ const menuObjs = [
 
         <!-- Navigation Menu -->
         <v-list density="compact" nav>
-            <v-list-item v-for="menuObj in menuObjs" :key="menuObj.menuName" :to="menuObj.to" active-class="active">
+            <v-list-item
+                v-for="menuObj in menuObjs"
+                :key="menuObj.menuName"
+                :to="menuObj.to"
+                active-class="active"
+                density="compact"
+                class="mb-6"
+            >
                 <template v-slot:prepend>
                     <v-icon>{{ menuObj.icon }}</v-icon>
                 </template>
-                <v-list-item-title>{{ menuObj.menuName }}</v-list-item-title>
+                <v-list-item-title style="font-size: 1rem;">{{ menuObj.menuName }}</v-list-item-title>
             </v-list-item>
         </v-list>
 
