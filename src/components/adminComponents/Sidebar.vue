@@ -1,158 +1,108 @@
 <script setup>
-    import { reactive } from 'vue';
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+import ThemeSwitcher from '../ThemeSwitcher.vue';
 
-    const menuObjs = reactive([
-        { menuName: "Dashboard", icon: "/public/adminAssets/sidebarIcon/dashboard.svg", to:"/admin/dashboard"},
-        { menuName: "Officials", icon: "/public/adminAssets/sidebarIcon/officials.svg", to:"/admin/officials"},
-        { menuName: "Announcements", icon: "/public/adminAssets/sidebarIcon/announcements.svg", to:"/admin/announcements" },
-        { menuName: "Achievements", icon: "/public/adminAssets/sidebarIcon/achievements.svg", to:"/admin/achievements" },
-        { menuName: "Settings and profile", icon: "/public/adminAssets/sidebarIcon/settings.svg", to:"/admin/settings" },
-        { menuName: "Notices", icon: "/public/adminAssets/sidebarIcon/notices.svg", to:"/admin/notices" }
-    ]);
+const router = useRouter();
+const drawer = ref(true);
+
+const menuObjs = [
+    { menuName: "Dashboard", icon: "mdi-view-dashboard", to: "/admin/dashboard" },
+    { menuName: "Officials", icon: "mdi-account-group", to: "/admin/officials" },
+    { menuName: "Announcements", icon: "mdi-bullhorn", to: "/admin/announcements" },
+    { menuName: "Achievements", icon: "mdi-trophy", to: "/admin/achievements" },
+    { menuName: "Settings and Profile", icon: "mdi-cog", to: "/admin/settings" },
+    { menuName: "Notices", icon: "mdi-bell", to: "/admin/notices" }
+];
 </script>
 
 <template>
-    <nav>
+    <v-navigation-drawer v-model="drawer" app width="280" class="pa-3 pt-7 pb-7">
         <!-- Logo and Barangay Name -->
-        <div class="logo-title">
-            <div class="logo-container">
-                <img src="/dist/Group.svg" alt="Barangay Logo" class="logo">
-            </div>
-            
-            <div class="barangay-name">
-                <span>BARANGAY</span>
-                <h4>SAN FRANCISCO</h4>
-            </div>
-
-            <img src="/public/adminAssets/SidebarOff.svg" alt="Sidebar Toggle" class="sidebar-icon">
-        </div>
+        <v-list-item class="logo-container">
+            <template v-slot:prepend>
+                <v-avatar size="45">
+                    <v-img src="/dist/Group.svg" alt="Barangay Logo"></v-img>
+                </v-avatar>
+            </template>
+            <v-list-item-content>
+                <v-list-item-title>BARANGAY</v-list-item-title>
+                <v-list-item-subtitle>SAN FRANCISCO</v-list-item-subtitle>
+            </v-list-item-content>
+        </v-list-item>
 
         <!-- Navigation Menu -->
-        <ul>
-            <router-link class="routes" v-for="menuObj in menuObjs" :key="menuObj.menuName" :to="menuObj.to" >
-                <li>
-                    <img :src="menuObj.icon" :alt="`${menuObj.menuName} Icon`">
-                    <span>{{ menuObj.menuName }}</span>
-                </li>
-            </router-link>
-        </ul>
+        <v-list density="compact" nav>
+            <v-list-item
+                v-for="menuObj in menuObjs"
+                :key="menuObj.menuName"
+                :to="menuObj.to"
+                active-class="active"
+                density="compact"
+                class="mb-6"
+            >
+                <template v-slot:prepend>
+                    <v-icon>{{ menuObj.icon }}</v-icon>
+                </template>
+                <v-list-item-title style="font-size: 1rem;">{{ menuObj.menuName }}</v-list-item-title>
+            </v-list-item>
+        </v-list>
 
-        <!-- Logout Button -->
-        <button class="logout-button">
-            <img src="/public/adminAssets/logout.svg" alt="Logout Icon">
-            <span>LOG OUT</span>
-        </button>
-    </nav>
+        <v-spacer></v-spacer>
+
+        <!-- Centered Theme Switcher -->
+        <div class="theme-container">
+            <ThemeSwitcher />
+        </div>
+
+        <!-- Logout Button at the Bottom Center -->
+        <v-list-item class="logout-container">
+            <v-btn block color="error" variant="outlined" @click="router.push('/logout')">
+                <v-icon left>mdi-logout</v-icon>
+                <span>LOG OUT</span>
+            </v-btn>
+        </v-list-item>
+    </v-navigation-drawer>
 </template>
 
 <style scoped>
-    nav {
-        background-color: #282828;
-        box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.25);
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 25px;
-        padding: 28px 16px;
-        position: sticky;
+.active {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+    padding: 16px;
+}
+
+.v-navigation-drawer {
+    display: flex;
+    flex-direction: column;
+    transition: width 0.3s;
+}
+
+/* Centering the Theme Switcher */
+.theme-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 16px;
+}
+
+/* Logout Button at the Bottom */
+.logout-container {
+    position: absolute;
+    bottom: 16px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding: 0 16px;
+}
+
+@media (max-width: 600px) {
+    .v-navigation-drawer {
+        width: 56px !important;
     }
-
-    /* LOGO SECTION */
-    .logo-title {
-        display: flex;
-        align-items: center;
-        width: 100%;
-        padding: 10px;
-        gap: 0.5rem;
-    }
-
-    .logo-container {
-        background-color: #2E2E2E;
-        width: 45px;
-        height: 45px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        border-radius: 0.5rem;
-    }
-
-    .logo {
-        height: 70%;
-    }
-
-    .barangay-name {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    .barangay-name span {
-        font-size: 8px;
-    }
-
-    .barangay-name h4 {
-        font-family: 'Kumbh Sans', sans-serif;
-        font-weight: 700;
-    }
-
-    .sidebar-icon {
-        height: 20px;
-        width: 20px;
-        margin-left: auto;
-        cursor: pointer;
-    }
-
-    /* MENU LIST */
-    .routes {
-        display: flex;
-        flex-direction: column;
-        width: 100%;
-        gap: 1.5rem;
-        padding: 0;
-    }
-
-    ul {
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-        gap: 24px;
-    }
-
-    li {
-        display: flex;
-        align-items: flex-start;
-        width: 100%;
-        padding: 10px 20px;
-        gap: 8px;
-        border-radius: 0.25rem;
-        transition: background 0.3s;
-    }
-
-    li:hover {
-        background-color: #777777;
-    }
-
-    /* LOGOUT BUTTON */
-    .logout-button {
-        margin-top: auto;
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-        border: 1px solid white;
-        padding: 10px 20px;
-        border-radius: 0.5rem;
-        background: none;
-        color: white;
-        cursor: pointer;
-        transition: background 0.3s;
-    }
-
-
-    .routes.active li {
-    background-color: rgba(255, 255, 255, 0.1); /* Highlight active route */
-    transition: background 0.3s;
-    }
-    
-
-
+}
 </style>
