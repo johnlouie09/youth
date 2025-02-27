@@ -64,22 +64,27 @@ const data = reactive({
           <v-card class="pa-4">
             <Analytics />
           </v-card>
-          <v-btn 
+        </v-col>
+      </v-row>
+
+      <v-btn 
             class="to-website mt-4"
             color="black"
-            block
             height="64"
           >
             GO TO SAN FRANCISCO WEBSITE
           </v-btn>
-        </v-col>
-      </v-row>
     </v-container>
 </template>
   
   <style scoped>
     .dashboard-main {
         padding: 36px 72px;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+
     }
     
     .cards {
