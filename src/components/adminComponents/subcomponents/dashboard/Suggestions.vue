@@ -1,22 +1,43 @@
 <script setup>
+import { ref } from 'vue';
+const tab = ref(0);
+const messages = ref(
+    {
+        title: "Youth Skills Development Program",
+        description: "Implement monthly workshops on practical skills such as basic coding, graphic design, entrepreneurship, and financial literacy. This will help equip ...",
+        time: "1 hr ago"
+    }
+
+);
 </script>
 
 <template>
-    <div class="suggestions-box">
-        <h2>YOUTH SUGGESTIONS NOTIFICATIONS</h2>
-        <ul>
-            <li class="active">UNREAD</li>
-            <li>ALL</li>
-        </ul>
-        <div class="messages">
-            <article v-for="n in 9">
-                <h3>Youth Skills Development Program</h3>
-                <p>Implement monthly workshops on practical skills such as basic coding, graphic design, entrepreneurship, and financial literacy. This will help equip ...........</p>
-                <span>1 hr ago</span>
-            </article>
-        </div>
-    </div>
+    <v-container fluid class="pt-0">
+        <v-card class="pa-9 pb-4">
+            <h2 class="suggestions-title text-center font-weight-bold">YOUTH SUGGESTIONS NOTIFICATIONS</h2>
+            
+            <v-tabs v-model="tab" grow>
+                <v-tab>UNREAD</v-tab>
+                <v-tab>ALL</v-tab>
+            </v-tabs>
+            
+            <v-container class="overflow-y-auto" style="max-height: 500px;">
+                <v-list>
+                    <v-list-item v-for="n of 10" class="mb-3 rounded">
+                        <v-list-item-title class="font-weight-bold">{{ messages.title }}</v-list-item-title>
+                        <v-list-item-subtitle>{{ messages.description}}</v-list-item-subtitle>
+                        <span class="text-right text-caption font-weight-bold">{{ messages.time }}</span>
+                    </v-list-item>
+                </v-list>
+            </v-container>
+        </v-card>
+    </v-container>
 </template>
+
+<style scoped>
+
+</style>
+
 
 
 <style scoped>
@@ -43,92 +64,11 @@
         background: #888;  /* Lighter gray on hover */
     }
 
-    .suggestions-box {
-        height: 90%;
-        width: 100%;
+    .v-list-item {
+    padding: 16px;
 
-        background-color: #2C2C2C;
-        border: 1px solid #373737;
-        border-radius: .5rem;
-        box-shadow: 0px 15px 15px 0px rgba(0, 0, 0, 0.25);
-        
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-start;
-        align-items: flex-start;
-
-        padding: 36px;
-        padding-bottom: 16px;  
-        
-        gap: 24px;
+    .suggestions-title {
+        padding: 3rem 2rem;
     }
-
-    h2 {
-        font-weight: bolder;
-        font-size: 1.25rem;
-        width: 100%;
-        text-align: center;
-    }
-
-    ul {
-        width: 100%;
-        display: flex;
-        gap: 1rem;
-    }
-
-    ul li {
-        padding: 12px 28px;
-        border-bottom: 2px solid #3F3F3F;
-        font-weight: bold;
-    }
-
-    .active {
-        border-bottom: 2px solid #3772FF;
-    }
-
-    .messages {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-
-        height: 500px;
-        width: 100%;
-        overflow-y: scroll;
-    }
-
-    .messages article{
-        background-color: #202020;
-
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        justify-content: center;
-        gap: 5px;
-        
-
-        padding: 1.5rem;
-        border-radius: .5rem;
-
-        
-    }
-
-    article h3 {
-        font-size: 1.25rem;
-        font-weight: bolder;
-    }
-
-    article p, article span {
-        font-size: .75rem;
-    }
-
-    article span {
-        width: 100%;
-        text-align: right;
-        font-weight: bold;
-    }
-
-
-
-
-
+}
 </style>
