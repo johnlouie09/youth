@@ -57,30 +57,33 @@ const router = createRouter({
       component: () => import('../views/Admin.vue'),
       children: [
         {
-          path: 'dashboard', // Will be /parent/child-a
+          path: 'dashboard',
           component: () => import('../components/adminComponents/Dashboard.vue'),
         },
         {
-          path: 'officials', // Will be /parent/child-a
+          path: 'officials', 
           component: () => import('../components/adminComponents/Officials.vue'),
         },
         {
-          path: 'announcements', // Will be /parent/child-a
+          path: 'announcements',  
           component: () => import('../components/adminComponents/Announcements.vue'),
         },
         {
-          path: 'achievements', // Will be /parent/child-a
+          path: 'achievements',
           component: () => import('../components/adminComponents/Achievements.vue'),
         },
         {
-          path: 'settings', // Will be /parent/child-a
+          path: 'settings', 
           component: () => import('../components/adminComponents/Settings.vue'),
         },
         {
-          path: 'notices', // Will be /parent/child-a
+          path: 'notices', 
           component: () => import('../components/adminComponents/Notices.vue'),
         },
-
+        {
+          path: 'officials/johndoe',
+          component: () => import('../components/adminComponents/subcomponents/officials/editingOfficial.vue'),
+        },
         // DEMO ->
         {
           path: 'demo/message-dialog',
@@ -91,9 +94,10 @@ const router = createRouter({
           component: () => import('../components/adminComponents/dialogDemo/ConfirmDialog.vue')
         },
         {
-          path: 'demo/toast',
+          path: 'demo/demoo',
           component: () => import('../components/adminComponents/dialogDemo/Toast.vue')
-        }
+        },
+
         // <-- DEMO
       ]
     }
