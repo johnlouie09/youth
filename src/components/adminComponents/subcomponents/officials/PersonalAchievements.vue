@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from 'vue';
+import AddPersonalAchievement from './InputForms/AddPersonalAchievement.vue';
 
 const hoverIndex = ref(null);
 
@@ -67,10 +68,9 @@ const achievements = ref([
       </v-card>
     </div>
 
-    <v-btn class="add-pa-button">
-      <v-icon>mdi-plus-circle-outline</v-icon>
-      <span class="ml-4">ADD NEW PERSONAL ACHIEVEMENTS</span>
-    </v-btn>
+    <add-personal-achievement></add-personal-achievement>
+
+    
   </v-card>
 </template>
 

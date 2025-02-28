@@ -15,7 +15,6 @@
         <div class="back" @click="$router.push('/admin/officials')">
             <v-icon>mdi-arrow-left</v-icon>
         </div>
-
     </v-container>
 </template>
 

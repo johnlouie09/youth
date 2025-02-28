@@ -1,5 +1,6 @@
 <script setup>
     import { ref } from 'vue';
+    import AddEducation from './InputForms/AddEducation.vue';
     const educationalBackgrounds = ref([
     { university: "Ateneo de Ngga University", degree: "Bachelor of Public Administration (BPA)", years: "2020 - 2024", icon: "/public/ADNU.png"},
     { university: "University of the Philippines", degree: "BS Computer Science", years: "2018 - 2022", icon: "/public/ADNU.png" },
@@ -50,11 +51,7 @@
             </v-card>
         </div>
 
-        <v-btn class="add-ebg-button">
-            <v-icon>mdi-plus-circle-outline</v-icon>
-            <span class="ml-4">ADD NEW EDUCATIONAL BACKGROUND</span>
-        </v-btn>
-
+        <AddEducation></AddEducation>
     </v-card>
 
 
@@ -73,16 +70,6 @@
     gap: 3rem;
 }
 
-.add-ebg-button {
-    border-radius: .5rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 2rem 1.5rem;
-    align-items: center;
-    margin: auto;
-    font-size: .7rem;
-}
 
 .educational-cards {
     padding: 0 6rem;
