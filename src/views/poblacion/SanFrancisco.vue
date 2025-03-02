@@ -5,11 +5,13 @@ import Cards from "../../components/Cards.vue";
 import Achievements from "../../components/Achievements.vue";
 import ThemeSwitcher from "../../components/ThemeSwitcher.vue";
 import { reactive } from "vue";
+import { useStore } from 'vuex';
 
+const vuexStore = useStore();
 
 const barangay = reactive({
     name : 'San Francisco',
-    img : '/public/San_Francisco_Barangay_Hall.JPG',
+    img : `${vuexStore.getters['base']}San_Francisco_Barangay_Hall.JPG`,
     announcements : [
         {}
     ],
@@ -84,37 +86,37 @@ const barangay = reactive({
     },
     achievements: [
     {
-        img: '/public/Sangguniang_Kabataan_logo.svg',
+        img: `${vuexStore.getters['base']}Sangguniang_Kabataan_logo.svg`,
         title: "Basketball",
         subtitle: "Kung walang nilaga sana tayo nalang...",
         info: "I'm a thing. But, like most politicians, he promised more than he could deliver. You won't have time for sleeping, soldier, not with all the bed making you'll be doing. Then we'll go with that data file! Hey, you add a one and two zeros to that or we walk! You're going to do his laundry? I've got to find a way to escape."
     },
     {
-        img: '/public/Sangguniang_Kabataan_logo.svg',
+        img: `${vuexStore.getters['base']}Sangguniang_Kabataan_logo.svg`,
         title: "Volleyball",
         subtitle: "Bilog ang bola, bilog din ang mundo...",
         info: "I'm just a ball, but I bring people together. Whether it's a spike or a dig, teamwork makes the dream work. Now, if only life had a referee like our games..."
     },
     {
-        img: '/public/Sangguniang_Kabataan_logo.svg',
+        img: `${vuexStore.getters['base']}Sangguniang_Kabataan_logo.svg`,
         title: "Chess",
         subtitle: "Minsan pawns lang tayo sa buhay...",
         info: "It's all about strategy and patience. A single move can change everything. The real question is, are you thinking three steps ahead, or just reacting to life?"
     },
     {
-        img: '/public/Sangguniang_Kabataan_logo.svg',
+        img: `${vuexStore.getters['base']}Sangguniang_Kabataan_logo.svg`,
         title: "E-Sports",
         subtitle: "GG EZ or GG WP? Ikaw bahala...",
         info: "The digital battlefield is ruthless, but so is life. Adapt, improve, and respawn stronger. Just remember, lag is not an excuse—it's a challenge."
     },
     {
-        img: '/public/Sangguniang_Kabataan_logo.svg',
+        img: `${vuexStore.getters['base']}Sangguniang_Kabataan_logo.svg`,
         title: "Badminton",
         subtitle: "Ang smash ko parang feelings mo—di mo maibalik...",
         info: "A game of speed, reflexes, and precision. One flick of the wrist can change the rally. Just like in life, the best way to win is to stay light on your feet and strike at the right moment."
     },
     {
-        img: '/public/Sangguniang_Kabataan_logo.svg',
+        img: `${vuexStore.getters['base']}Sangguniang_Kabataan_logo.svg`,
         title: "Marathon",
         subtitle: "Takbo lang, parang may forever...",
         info: "Endurance is the name of the game. It’s not about who’s the fastest, but who keeps going. Just like life, every step forward is a win, no matter the pace."
@@ -128,7 +130,7 @@ const barangay = reactive({
 <template>
     <v-app :theme="$vuetify.theme.global.name.value">
         <v-app-bar app color="black">
-            <v-img src="/youth.svg" style="scale: 300%; margin-left: -300px;"></v-img>
+            <v-img :src="`${$store.getters['base']}youth.svg`" style="scale: 300%; margin-left: -300px;"></v-img>
             <v-spacer></v-spacer>
             <v-btn>
                 <ThemeSwitcher />
@@ -139,14 +141,14 @@ const barangay = reactive({
             <img class="w-full object-fill" :src="barangayHall" alt="" style="height: 350px;" />
 
             <div class="absolute left-0 top-1/2 transform -translate-y-1/2" style="margin-left: 100px; scale: 2.5;">
-                <img class="w-24 h-auto" src="/Logoseal.svg" alt="logo" />
+                <img class="w-24 h-auto" :src="`${$store.getters['base']}Logoseal.svg`" alt="logo" />
             </div>
 
             <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white text-5xl font-bold">
                 {{ `Barangay ${barangay.name}` }}
             </div>
             <div class="absolute right-0 top-1/2 transform -translate-y-1/2" style="margin-right: 100px; scale: 2.5;">
-                <img class="w-24 h-auto" src="/Logoseal.svg" alt="logo" />
+                <img class="w-24 h-auto" :src="`${$store.getters['base']}Logoseal.svg`" alt="logo" />
             </div>
         </div>
 

@@ -48,7 +48,7 @@ const skPositions = ref([
                     @click="openDialog"
                 >
                     <v-img
-                        src="/Sangguniang_Kabataan_logo.svg"
+                        :src="`${$store.getters['base']}Sangguniang_Kabataan_logo.svg`"
                         class="card-image"
                         cover
                         height="70%"

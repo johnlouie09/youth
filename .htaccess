@@ -1,0 +1,15 @@
+RewriteEngine On
+RewriteBase /youth/
+
+# Exclude assets from rewrite rule
+RewriteCond %{REQUEST_URI} !\.(css|js|svg|jpg|jpeg|png|gif|woff2|ico|ttf)$ [NC]
+
+# Redirect all requests to index.html
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ /youth/dist/index.html [L]
+
+# Exclude the dist and app directories from the rewrite rule
+RewriteCond %{REQUEST_URI} !^/youth/dist/
+RewriteCond %{REQUEST_URI} !^/youth/app/
+RewriteRule ^(.*)$ /youth/dist/$1 [L]

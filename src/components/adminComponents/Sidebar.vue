@@ -22,7 +22,7 @@ const menuObjs = [
         <v-list-item class="logo-container">
             <template v-slot:prepend>
                 <v-avatar size="45">
-                    <v-img src="/dist/Group.svg" alt="Barangay Logo"></v-img>
+                    <v-img :src="`${$store.getters['base']}Group.svg`" alt="Barangay Logo"></v-img>
                 </v-avatar>
             </template>
             <v-list-item-content>
