@@ -31,6 +31,7 @@ const skPositions = ref([
         max-width="1200"
         style="border-radius: 20px;"
         height="300"
+        position="relative"
     >
         <v-card-title class="font-bold" font-bold="font-bold">
             SANGGUNIANG KABATAAN OFFICIALS
@@ -69,7 +70,7 @@ const skPositions = ref([
                     class="pa-4"
                     selected-class="bg-success"
                     show-arrows
-                    style="width: 820px; margin-top: 1px;"
+                    style="width: 820px; margin-top: 1px; position:relative;"
                 >
                     <v-slide-group-item
                         v-for="(position, index) in skPositions"

@@ -2,10 +2,10 @@
 import { useTheme } from 'vuetify';
 import { computed, ref } from 'vue';
 import ThemeSwitcher from './ThemeSwitcher.vue';
-
+import FeedbackForm from './FeedbackForm.vue';
 const drawer = ref(false);
 const theme = useTheme();
-
+const showFeedbackForm = ref(false);
 // Compute overlay color based on theme mode
 const overlayColor = computed(() => {
     return theme.global.current.value.dark ? 'rgba(0, 0, 0, 0.6)' : 'rgba(255, 255, 255, 0.3)';
@@ -35,8 +35,10 @@ const overlayColor = computed(() => {
             <v-list density="compact" nav>
                 <v-list-item prepend-icon="mdi-view-dashboard" title="Home" value="home"></v-list-item>
                 <v-list-item prepend-icon="mdi-forum" title="About" value="about"></v-list-item>
+                <FeedbackForm />
                 <v-list><ThemeSwitcher/></v-list>
             </v-list>
+
         </v-navigation-drawer>
 
         <v-btn icon class="menu-btn" @click.stop="drawer = !drawer">
