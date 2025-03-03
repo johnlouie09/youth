@@ -74,6 +74,7 @@ const menuObjs = [
     display: flex;
     align-items: center;
     padding: 16px;
+    margin-bottom: 5%;
 }
 
 .v-navigation-drawer {
@@ -93,7 +94,7 @@ const menuObjs = [
 /* Logout Button at the Bottom */
 .logout-container {
     position: absolute;
-    bottom: 16px;
+    bottom: 3rem;
     width: 100%;
     display: flex;
     justify-content: center;
