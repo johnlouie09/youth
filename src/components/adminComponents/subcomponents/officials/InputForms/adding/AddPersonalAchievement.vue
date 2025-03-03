@@ -1,3 +1,20 @@
+<script setup>
+import { ref, computed } from 'vue';
+import { VDateInput } from 'vuetify/lib/labs/components.mjs';
+
+const dialog = ref(false);
+const achievement = ref({
+    title: '',
+    date: null // Stores YYYY-MM
+});
+
+
+const submitForm = () => {
+    console.log("Submitted Data:", achievement.value);
+    dialog.value = false; // Close dialog after submission
+};
+</script>
+
 <template>
     <v-container>
         <v-btn class="add-ebg-button" @click="dialog = true">
@@ -11,7 +28,7 @@
                     NEW PERSONAL ACHIEVEMENT
                 </v-card-title>
                 <v-card-text>
-                    <v-form ref="form">
+                    <v-form>
                         <v-text-field 
                             v-model="achievement.title" 
                             label="Achievement Title" 
@@ -20,11 +37,12 @@
 
                         <!-- Month & Year Picker -->
                         <v-date-input
+                            v-model="achievement.date"
                             label="Select a date"
                             prepend-icon=""
                             prepend-inner-icon="$calendar"
                             variant="solo"
-                        ></v-date-input>
+                        />
                     </v-form>
                 </v-card-text>
                 <v-card-actions>
@@ -36,23 +54,6 @@
     </v-container>
 </template>
 
-<script setup>
-import { ref, computed } from 'vue';
-import { VDateInput } from 'vuetify/lib/labs/components.mjs';
-
-const dialog = ref(false);
-const model = ref(null)
-const achievement = ref({
-    title: '',
-    date: null // Stores YYYY-MM
-});
-
-
-const submitForm = () => {
-    console.log("Submitted Data:", achievement.value);
-    dialog.value = false; // Close dialog after submission
-};
-</script>
 
 <style scoped>
 .v-dialog {
