@@ -34,7 +34,9 @@ export default createStore({
      * Retrieve and compute derived state values.
      */
     getters: {
-
+        base(state) {
+            return import.meta.env.BASE_URL;
+        }
     },
 
 

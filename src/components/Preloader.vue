@@ -44,7 +44,7 @@ onMounted(() => {
         <div class="mil-preloader-animation">
             <div class="mil-pos-abs mil-animation-2">
                 <div class="mil-reveal-frame">
-                    <img src="/youth.svg" alt="Youth Logo" class="preloader-svg" />
+                    <img :src="`${$store.getters['base']}youth.svg`" alt="Youth Logo" class="preloader-svg" />
                 </div>
             </div>
         </div>

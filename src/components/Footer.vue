@@ -4,7 +4,7 @@
             <!-- Logo and Text -->
             <div class="flex items-center" style="margin-left: 100px;">
                 <div class="logo" style="margin-left: 20px; margin-top: 15px;">
-                    <img src="/Flogo.svg" alt="Logo" class="h-5 w-20 scale-700" />
+                    <img :src="`${$store.getters['base']}Flogo.svg`" alt="Logo" class="h-5 w-20 scale-700" />
                 </div>
             </div>
         </div>

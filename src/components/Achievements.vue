@@ -29,7 +29,7 @@ const toggleShow = (index) => {
                     <v-img
                         height="200"
                         style="scale: 35%"
-                        src="/Sangguniang_Kabataan_logo.svg"
+                        :src="`${$store.getters['base']}Sangguniang_Kabataan_logo.svg`"
                     ></v-img>
 
                     <v-card-title class="overlay-titleee">
