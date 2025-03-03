@@ -82,7 +82,7 @@ const router = createRouter({
         },
         {
           path: 'officials/johndoe',
-          component: () => import('../components/adminComponents/subcomponents/officials/editingOfficial.vue'),
+          component: () => import('../components/adminComponents/subcomponents/officials/EditingOfficial.vue'),
         },
         // DEMO ->
         {
