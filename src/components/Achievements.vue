@@ -25,7 +25,7 @@ const toggleShow = (index) => {
     <v-container class="container">
         <v-row>
             <v-col v-for="(achievement, index) in props.achievements" :key="index" cols="12" md="4">
-                <v-card class="custom-card mx-auto" max-width="435">
+                <v-card class="custom-card mx-auto" max-width="435" elevation="10">
                     <v-img
                         height="200"
                         style="scale: 35%"

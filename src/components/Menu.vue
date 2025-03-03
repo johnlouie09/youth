@@ -1,16 +1,21 @@
 <script setup>
 import { useTheme } from 'vuetify';
 import { computed, ref } from 'vue';
+import { useRoute } from 'vue-router';
 import ThemeSwitcher from './ThemeSwitcher.vue';
+import FeedbackForm from './FeedbackForm.vue';
 
 const drawer = ref(false);
 const theme = useTheme();
+const route = useRoute(); // Get current route
+const showFeedbackForm = computed(() => route.path === "/san-francisco"); // Show only on this route
 
 // Compute overlay color based on theme mode
 const overlayColor = computed(() => {
     return theme.global.current.value.dark ? 'rgba(0, 0, 0, 0.6)' : 'rgba(255, 255, 255, 0.3)';
 });
 </script>
+
 
 <template>
     <div>
@@ -30,11 +35,13 @@ const overlayColor = computed(() => {
                 </template>
             </v-list-item>
 
-
-
             <v-list density="compact" nav>
                 <v-list-item prepend-icon="mdi-view-dashboard" title="Home" value="home"></v-list-item>
                 <v-list-item prepend-icon="mdi-forum" title="About" value="about"></v-list-item>
+
+                <!-- Show feedback form only on /san-francisco -->
+                <FeedbackForm v-if="showFeedbackForm" />
+
                 <v-list><ThemeSwitcher/></v-list>
             </v-list>
         </v-navigation-drawer>
@@ -42,9 +49,9 @@ const overlayColor = computed(() => {
         <v-btn icon class="menu-btn" @click.stop="drawer = !drawer">
             <v-icon>{{ drawer ? 'mdi-alpha-x-box' : 'mdi-microsoft-xbox-controller-menu' }}</v-icon>
         </v-btn>
-
     </div>
 </template>
+
 
 <style scoped>
 /* Drawer Styling */

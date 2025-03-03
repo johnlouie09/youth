@@ -1,5 +1,5 @@
 <template>
-    <div class="hero-container">
+    <div class="hero-container elevation-10">
         <video class="background-video" id="bg-video" autoplay loop muted playsinline>
             <source src="../assets/video (2).mp4" type="video/mp4">
         </video>
@@ -23,10 +23,8 @@ document.addEventListener("DOMContentLoaded", function() {
 <style scoped>
 .hero-container {
     position: relative;
-    left: 24px;
-    right: 0;
+    padding: 20px;
     height: 110vh;
-    width: 1300px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -34,11 +32,11 @@ document.addEventListener("DOMContentLoaded", function() {
     text-align: center;
     overflow: hidden;
     clip-path: ellipse(130% 95% at 50% 0%);
-
 }
 
 .background-video {
-    filter: brightness(60%); /* Adjust brightness as needed (0% - completely black, 100% - normal, >100% - brighter) */}
+    filter: brightness(60%);
+}
 
 .content {
     z-index: 1;
