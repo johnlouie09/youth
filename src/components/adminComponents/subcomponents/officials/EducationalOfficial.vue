@@ -1,20 +1,27 @@
 <script setup>
     import { ref } from 'vue';
-    import AddEducation from './InputForms/AddEducation.vue';
+    import AddEducation from './InputForms/adding/AddEducation.vue';
+    import UpdateEducational from './InputForms/updating/UpdateEducational.vue';
+
+
+    // Dummy Data
     const educationalBackgrounds = ref([
-    { university: "Ateneo de Ngga University", degree: "Bachelor of Public Administration (BPA)", years: "2020 - 2024", icon: "/public/ADNU.png"},
-    { university: "University of the Philippines", degree: "BS Computer Science", years: "2018 - 2022", icon: "/public/ADNU.png" },
-    { university: "De La Salle Univdfersity", degree: "BA Communication Arts", years: "2019 - 2023", icon: "/public/ADNU.png" },
-    { university: "Ateneo de Naga University", degree: "Bachelor of Public Administration (BPA)", years: "2020 - 2024", icon: "/public/ADNU.png" },
-    { university: "University of the Philippines", degree: "BS Computer Science", years: "2018 - 2022", icon: "/public/ADNU.png" },
-    { university: "De La Salle University", degree: "BA Communication Arts", years: "2019 - 2023", icon: "/public/ADNU.png" },
-    { university: "Ateneo de Naga University", degree: "Bachelor of Public Administration (BPA)", years: "2020 - 2024", icon: "/public/ADNU.png" },
-    { university: "University of the Philippines", degree: "BS Computer Science", years: "2018 - 2022", icon: "/public/ADNU.png" },
-    { university: "De La Salle University", degree: "BA Communication Arts", years: "2019 - 2023", icon: "/public/ADNU.png" },
+        { school: "Ateneo de Ngga Kindergarten",  years: {start: 2005, end: 2007}, icon: "/public/ADNU.png" },
+        { school: "Ateneo de Ngga Elementary School",  years: {start: 2007, end: 2013}, icon: "/public/ADNU.png" },
+        { school: "Ateneo de Ngga High School",  years: {start: 2013, end: 2017}, icon: "/public/ADNU.png" },
+        { school: "Ateneo de Ngga Senior High", detail: "Computer System Servicing", years: {start: 2017, end: 2019}, icon: "/public/ADNU.png" },
+        { school: "Ateneo de Ngga University", detail: "Bachelor of Public Administration (BPA)",  years: {start: 2020, end: 2024}, icon: "/public/ADNU.png" }
     ]);
 
-    const hoverIndex = ref(null);
 
+
+    const editingIndex = ref(null); // Track the index of the item being edited
+    // Function to open the update form
+    const editEducation = (index) => {
+        editingIndex.value = index;
+    };
+
+    const hoverIndex = ref(null);
 </script>
 
 <template>
@@ -36,38 +43,40 @@
             >
                 <img :src="item.icon" alt="" width="70px">
                 <article>
-                    <h2>{{ item.university }}</h2>
-                    <p>{{ item.degree }}</p>
-                    <h3>{{ item.years }}</h3>
+                    <h2>{{ item.school }}</h2>
+                    <p>{{ item.detail }}</p>
+                    <h3>{{ item.years.start }} - {{ item.years.end }}</h3>
                 </article>
 
                 <!-- Actions appear with transition -->
                 <transition name="fade">
                     <div v-if="hoverIndex === index" class="educational-card-actions">
-                        <v-icon class="edit-icon" size="30">mdi-pencil-circle</v-icon>
+                        <v-icon class="edit-icon" size="30" @click="editEducation(index)">mdi-pencil-circle</v-icon>
                         <v-icon class="delete-icon" size="30">mdi-delete-circle</v-icon>
                     </div>
                 </transition>
+
+                <!-- Show UpdateEducational when editing -->
+                <UpdateEducational 
+                v-if="editingIndex === index" 
+                :education="item" 
+                @close="editingIndex = null"
+                />
             </v-card>
         </div>
-
         <AddEducation></AddEducation>
     </v-card>
-
-
-
 </template>
 
 <style scoped>
 .educational-section {
     display: flex;
     flex-direction: column;
-
     justify-content: center;
     width: 75%;
     border-radius: 1rem;
     padding: 2rem 0;
-    gap: 3rem;
+    gap: 2rem;
 }
 
 
@@ -91,7 +100,7 @@
     padding: 2.5rem 2rem;
     border-radius: .5rem;
     gap: 1.75rem;
-    border: 1px solid rgb(151, 151, 151);
+    border: 1px solid rgb(43, 42, 42);
     min-width: 450px;
 }
 

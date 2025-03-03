@@ -11,7 +11,7 @@ defineProps({
         </v-card-title>
         <v-card-text class="d-flex flex-column align-center mt-4">
             <v-img 
-                src="/Sangguniang_Kabataan_logo.svg" 
+                :src="official.img"
                 alt="SK Logo" 
                 contain 
                 height="100" 

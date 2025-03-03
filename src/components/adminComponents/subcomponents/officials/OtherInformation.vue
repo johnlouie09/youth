@@ -1,46 +1,27 @@
 <script setup>
 import { ref } from 'vue';
+import AddOtherInfo from './InputForms/adding/AddOtherInfo.vue';
+import UpdatingInfo from './InputForms/updating/UpdatingInfo.vue';
 
 // Dummy Data for Testing
-const dummyCards = ref([
+const dummyInfo = ref([
     {
         title: "My Favorite Book",
         icon: "mdi-book-open-variant",
-        type: "favoriteBook",
-        details: ["Atomic Habits by James Clear", "Deep Work by Cal Newport"]
+        details: ["Atomic Habits by James Clear", "Deep Work by Cal Newport", "Atomic Habits by James Clear", "Deep Work by Cal Newport", "Atomic Habits by James Clear", "Deep Work by Cal Newport", "Atomic Habits by James Clear", "Deep Work by Cal Newport"]
     },
     {
         title: "Hobbies",
         icon: "mdi-run",
-        type: "hobby",
-        details: ["Running", "Cycling", "Playing Piano"]
-    },
-    {
-        title: "My Favorite Book",
-        icon: "mdi-book-open-variant",
-        type: "favoriteBook",
-        details: ["Atomic Habits by James Clear", "Deep Work by Cal Newport"]
-    },
-    {
-        title: "Hobbies",
-        icon: "mdi-run",
-        type: "hobby",
-        details: ["Running", "Cycling", "Playing Piano"]
-    },
-        {
-        title: "My Favorite Book",
-        icon: "mdi-book-open-variant",
-        type: "favoriteBook",
-        details: ["Atomic Habits by James Clear", "Deep Work by Cal Newport"]
-    },
-    {
-        title: "Hobbies",
-        icon: "mdi-run",
-        type: "hobby",
         details: ["Running", "Cycling", "Playing Piano"]
     }
 ]);
 
+const editingIndex = ref(null); // Track the index of the item being edited
+// Function to open the update form
+const editInfo = (index) => {
+    editingIndex.value = index;
+};
 const hoverIndex = ref(null);
 </script>
 
@@ -54,7 +35,7 @@ const hoverIndex = ref(null);
         <div class="other-info-cards">
             <v-card 
                 class="info-card" 
-                v-for="(card, index) in dummyCards" 
+                v-for="(card, index) in dummyInfo" 
                 :key="index"
                 @mouseover="hoverIndex = index" 
                 @mouseleave="hoverIndex = null"
@@ -67,9 +48,8 @@ const hoverIndex = ref(null);
                 <v-card-text class="card-body">
                     <v-icon :icon="card.icon" size="75"></v-icon>
                     <div>
-                        <h4>{{ card.title }}</h4>
                         <ul>
-                            <li v-for="(detail, i) in card.details" :key="i">{{ detail }}</li>
+                            <li class="text-left" v-for="(detail, i) in card.details" :key="i">{{ detail }}</li>
                         </ul>
                     </div>
                 </v-card-text>
@@ -77,17 +57,21 @@ const hoverIndex = ref(null);
                 <!-- Actions appear with transition -->
                 <transition name="fade">
                     <div v-if="hoverIndex === index" class="educational-card-actions">
-                        <v-icon class="edit-icon" size="30">mdi-pencil-circle</v-icon>
+                        <v-icon class="edit-icon" size="30" @click="editInfo(index)">mdi-pencil-circle</v-icon>
                         <v-icon class="delete-icon" size="30">mdi-delete-circle</v-icon>
                     </div>
                 </transition>
+
+                <!-- Show UpdateInfo when editing -->
+               <UpdatingInfo
+                v-if="editingIndex === index" 
+                :info="card"
+                @close="editingIndex = null"
+               />
             </v-card>
         </div>
 
-        <v-btn class="add-oi-button">
-            <v-icon>mdi-plus-circle-outline</v-icon>
-            <span class="ml-4">ADD NEW EDUCATIONAL BACKGROUND</span>
-        </v-btn>
+        <add-other-info></add-other-info>
     </v-card>
 </template>
 
@@ -105,7 +89,7 @@ const hoverIndex = ref(null);
 .other-info-cards {
     padding: 0 6rem;
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: space-evenly;
     gap: 2rem;
     flex-wrap: wrap;
@@ -123,7 +107,6 @@ const hoverIndex = ref(null);
 
 /* Base Card Styling */
 .info-card {
-    height: 256px;
     background-color: var(--v-theme-surface);
     border-radius: 0.5rem;
     box-shadow: 0px 15px 15px 0px rgba(0, 0, 0, 0.25);
