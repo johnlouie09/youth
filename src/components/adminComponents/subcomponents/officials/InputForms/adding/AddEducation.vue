@@ -1,3 +1,24 @@
+<script setup>
+import { ref } from 'vue';
+const dialog = ref(false);
+const education = ref({
+    school: '',
+    img: null,
+    detail: '',
+    year: {start: 1999, end: null},
+});
+
+const currentYear = new Date().getFullYear();
+const years = Array.from({ length: 50 }, (_, i) => (currentYear - i).toString());
+
+const submitForm = () => {
+    console.log("Submitted Data:", education.value);
+    dialog.value = false; // Close dialog after submission
+};
+</script>
+
+
+
 <template>
     <v-container>
         <v-btn class="add-ebg-button" @click="dialog = true" >
@@ -12,18 +33,18 @@
                 </v-card-title>
                 <v-card-text>
                     <v-form ref="form">
-                        <v-text-field v-model="education.schoolName" label="School Name" required></v-text-field>
+                        <v-text-field v-model="education.school" label="School Name" required></v-text-field>
 
-                        <v-file-input v-model="education.schoolLogo" label="Upload School Logo" accept="image/*"></v-file-input>
+                        <v-file-input v-model="education.img" label="Upload School Logo" accept="image/*"></v-file-input>
 
-                        <v-text-field v-model="education.degree" label="Degree" required></v-text-field>
+                        <v-text-field v-model="education.detail" label="Degree" required></v-text-field>
 
                         <v-row>
                             <v-col>
-                                <v-select v-model="education.startYear" :items="years" label="Start Year" required></v-select>
+                                <v-select v-model="education.year.start" :items="years" label="Start Year" required></v-select>
                             </v-col>
                             <v-col>
-                                <v-select v-model="education.endYear" :items="years" label="End Year" required></v-select>
+                                <v-select v-model="education.year.end" :items="years" label="End Year" required></v-select>
                             </v-col>
                         </v-row>
                     </v-form>
@@ -37,25 +58,7 @@
     </v-container>
 </template>
 
-<script setup>
-import { ref } from 'vue';
-const dialog = ref(false);
-const education = ref({
-    schoolName: '',
-    schoolLogo: null,
-    degree: '',
-    startYear: '',
-    endYear: ''
-});
 
-const currentYear = new Date().getFullYear();
-const years = Array.from({ length: 50 }, (_, i) => (currentYear - i).toString());
-
-const submitForm = () => {
-    console.log("Submitted Data:", education.value);
-    dialog.value = false; // Close dialog after submission
-};
-</script>
 
 <style scoped>
 .v-dialog {
