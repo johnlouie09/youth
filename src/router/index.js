@@ -22,6 +22,11 @@ const router = createRouter({
     //   name: 'SanFrancisco',
     //   component: SanFrancisco,
     // },
+    {
+      path: '/:catchAll(.*)',
+      name: 'NotFound',
+      component: () => import('../components/404.vue'),
+    },
 
 
     {
