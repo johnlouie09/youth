@@ -1,3 +1,10 @@
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const video = document.getElementById("bg-video");
+        video.play().catch(error => console.error("Autoplay failed:", error));
+    });
+</script>
+
 <template>
     <div class="hero-container elevation-10">
         <video class="background-video" id="bg-video" autoplay loop muted playsinline>
@@ -10,15 +17,6 @@
         </div>
     </div>
 </template>
-
-<script>
-document.addEventListener("DOMContentLoaded", function() {
-    const video = document.getElementById("bg-video");
-    video.play().catch(error => console.error("Autoplay failed:", error));
-});
-
-
-</script>
 
 <style scoped>
 .hero-container {
