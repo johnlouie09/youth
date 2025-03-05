@@ -1,141 +1,39 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, watchEffect } from 'vue';
+import axios from 'axios';
 import addBarangayAchievement from './subcomponents/achievement/inputForm/addBarangayAchievement.vue';
 import updateBarangayAchievement from './subcomponents/achievement/inputForm/updateBarangayAchievement.vue';
 
 const hoverIndex = ref(null);
 const editingAchievement = ref(null); // Track the selected achievement for editing
+const barangayId = 1;
 
-const achievements = ref({
-  2024: {
-    December: [
-      {
-        img: "/public/ex.jpg",
-        title: "Pasko sa Barangay",
-        subtitle: "Paskong puno ng saya!",
-        info: "A Christmas party for the community featuring food, games, and entertainment."
-      },
-      {
-        img: "/public/ex.jpg",
-        title: "Charity Gift Drive",
-        subtitle: "Spreading holiday cheer!",
-        info: "A volunteer event to distribute gifts to children and families in need."
-      },
-      {
-        img: "/public/ex.jpg",
-        title: "Christmas Caroling",
-        subtitle: "Songs of joy and love!",
-        info: "A community caroling event to spread holiday cheer."
-      }
-    ],
-    November: [
-      {
-        img: "/public/ex.jpg",
-        title: "Community Outreach Program",
-        subtitle: "Tulong-tulong tayo!",
-        info: "A volunteer event where youth groups help underprivileged communities."
-      },
-      {
-        img: "/public/ex.jpg",
-        title: "Barangay Fiesta",
-        subtitle: "Sama-sama sa saya!",
-        info: "A celebration of community spirit with food, games, and cultural presentations."
-      },
-      {
-        img: "/public/ex.jpg",
-        title: "Medical Mission",
-        subtitle: "Health for all!",
-        info: "Free medical check-ups and consultations for the community."
-      }
-    ],
-    October: [
-      {
-        img: "/public/ex.jpg",
-        title: "Halloween Costume Contest",
-        subtitle: "Sino ang pinakanakakatakot?",
-        info: "A contest for the best and scariest Halloween costumes."
-      },
-      {
-        img: "/public/ex.jpg",
-        title: "Haunted House Experience",
-        subtitle: "Enter if you dare!",
-        info: "A spooky haunted house event for thrill-seekers."
-      },
-      {
-        img: "/public/ex.jpg",
-        title: "Pumpkin Carving Contest",
-        subtitle: "Get creative with your pumpkins!",
-        info: "A fun event where participants showcase their carving skills."
-      }
-    ],
-    September :[],
-    July :[],
-    June :[],
-    May :[],
-  },
-  2025: {
-    March: [
-      {
-        img: "/public/ex.jpg",
-        title: "Music Fest",
-        subtitle: "Sali na at ipakita ang talento!",
-        info: "A music festival where locammunity effort to clean public spaces and promote envirmmunity effort to clean public spaces and promote envirl talents showcased their singing and instrumental skills."
-      },
-      {
-        img: "/public/ex.jpg",
-        title: "Community Art Exhibit",
-        subtitle: "Art for a cause!",
-        info: "A showcase of artworks created by young artists in the community."
-      },
-      {
-        img: "/public/ex.jpg",
-        title: "Basketball League Kickoff",
-        subtitle: "The road to the championship begins!",
-        info: "The opening event for the barangay-wide basketball league."
-      }
-    ],
-    February: [
-      {
-        img: "/public/ex.jpg",
-        title: "Chess Tournament",
-        subtitle: "Matalino ka ba? Eh sa chess?",
-        info: "Checkmate! This tournament brought out the best strategists."
-      },
-      {
-        img: "/public/ex.jpg",
-        title: "Love and Friendship Day",
-        subtitle: "A celebration of love and camaraderie!",
-        info: "An event featuring activities that promote friendship and community spirit."
-      },
-      {
-        img: "/public/ex.jpg",
-        title: "Clean-Up Drive",
-        subtitle: "Linisin natin ang ating bayan!",
-        info: "A coonmental responsibility."
-      }
-    ],
-    January: [
-      {
-        img: "/public/ex.jpg",
-        title: "Basketball Championship",
-        subtitle: "Kung walang nilaga sana tayo nalang...",
-        info: "The grand finals of the basketball tournament! The best teams clashed in an intense battle for the championship title."
-      },
-      {
-        img: "/public/ex.jpg",
-        title: "New Year’s Fitness Challenge",
-        subtitle: "Start the year strong!",
-        info: "A fitness event promoting health and wellness."
-      },
-      {
-        img: "/public/ex.jpg",
-        title: "Youth Leadership Seminar",
-        subtitle: "Empowering future leaders!",
-        info: "Workshops to build leadership and problem-solving skills among the youth."
-      }
-    ]
-  },
-});
+
+const achievements = ref({});
+const loading = ref(false);
+const error = ref(null);
+
+const fetchBarangayAchievements = async () => {
+    try {
+        loading.value = true;
+        error.value = null;
+        const response = await axios.get(`/api/getBarangayAchievement.php?barangay_id=${barangayId}`);
+
+        if (response.data.success) {
+            achievements.value = response.data.data;
+        } else {
+            error.value = 'Failed to fetch barangays';
+        }
+    } catch (err) {
+        error.value = 'Error connecting to the server';
+        console.error('Error:', err);
+    } finally {
+        loading.value = false;
+    }
+};
+
+fetchBarangayAchievements();
+
 
 // Function to handle edit button click
 const startEditing = (year, month, achievement) => {
