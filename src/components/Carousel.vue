@@ -5,6 +5,9 @@ import "swiper/css";
 import "swiper/css/effect-coverflow";
 import "swiper/css/autoplay";
 import { EffectCoverflow, Autoplay } from "swiper/modules";
+import { useStore } from 'vuex';
+
+const vuexStore = useStore();
 
 // Reference to the Swiper container
 const swiperContainer = ref(null);
@@ -13,7 +16,7 @@ const swiperContainer = ref(null);
 const movies = computed(() =>
     Array.from({ length: 15 }, (_, i) => ({
         id: i + 1,
-        src: `/${i + 1}.jpg`,
+        src: `${vuexStore.getters['base']}${i + 1}.jpg`,
         title: `Movie ${i + 1}`,
     }))
 );
@@ -45,7 +48,7 @@ onMounted(() => {
         <div ref="swiperContainer" class="swiper mySwiper">
             <div class="swiper-wrapper">
                 <div class="swiper-slide" v-for="n in 7" :key="n">
-                    <img :src="`/${n}.jpg`" :alt="`Movie ${n}`" />
+                    <img :src="`${$store.getters['base']}${n}.jpg`" :alt="`Movie ${n}`" />
                 </div>
             </div>
         </div>

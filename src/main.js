@@ -23,7 +23,10 @@ const vuetify = createVuetify({
     },
 })
 
-axios.defaults.baseURL = 'http://localhost/youth/app';
+axios.defaults.baseURL = import.meta.env.PROD
+    ? `${import.meta.env.BASE_URL}/app`
+    : 'http://localhost/youth/app';
+
 app.use(createPinia())
 app.use(router)
 app.use(store)

@@ -22,7 +22,7 @@ defineExpose({
         <v-card style="border-radius: 20px;" border="primary lg">
             <v-card-title class="d-flex align-center">
                 <v-avatar size="200">
-                    <img src="/Sangguniang_Kabataan_logo.svg" alt="Profile Picture">
+                    <img :src="`${$store.getters['base']}Sangguniang_Kabataan_logo.svg`" alt="Profile Picture">
                 </v-avatar>
                 <div class="ml-3 text-wrap">
                     <span class="headline font-weight-bold">SK.CHAIRPERSON</span>
