@@ -12,7 +12,7 @@
 
 
     </v-container>
-</template>Oth
+</template>
 
 <script setup>
 import { ref } from "vue";

@@ -17,7 +17,7 @@ const fetchBarangayAchievements = async () => {
     try {
         loading.value = true;
         error.value = null;
-        const response = await axios.get(`/api/getBarangayAchievement.php?barangay_id=${barangayId}`);
+        const response = await axios.get(`/api/BarangayAchievement.php?barangay_id=${barangayId}`);
 
         if (response.data.success) {
             achievements.value = response.data.data;

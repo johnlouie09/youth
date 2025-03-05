@@ -1,6 +1,8 @@
 <script setup>
 import { ref, watch } from 'vue';
 
+import axios from 'axios';
+
 const props = defineProps({
   year: String,
   month: String,
@@ -9,34 +11,60 @@ const props = defineProps({
 
 const dialog = ref(true);
 const initialBarangayAchievement = ref({
+    id: props.barangayAchievement.id,  // Ensure id is included
     img: props.barangayAchievement.img,
     title: props.barangayAchievement.title,
     subtitle: props.barangayAchievement.subtitle,
     info: props.barangayAchievement.info,
+    date: props.barangayAchievement.date
 });
 
 // Reactive state for form
-const barangayAchievement = ref(JSON.parse(JSON.stringify(initialBarangayAchievement.value)));
+const barangayAchievementUpdate = ref(JSON.parse(JSON.stringify(initialBarangayAchievement.value)));
 const hasChanges = ref(false);
 
 // Save changes and update initial values
-const saveChanges = () => {
-    Object.assign(initialBarangayAchievement, { ...barangayAchievement.value });
-    hasChanges.value = false;
+const updateAchievement = async (achievement) => {
+    try {
+        const response = await axios.put('http://localhost/youth/app/api/BarangayAchievement.php', {
+            id: achievement.id,
+            title: achievement.title,
+            subtitle: achievement.subtitle,
+            info: achievement.info,
+            img: achievement.img,  // Ensure this is a valid image URL or Base64 string
+            date: achievement.date
+        });
+
+        if (response.data.success) {
+            console.log('Achievement updated successfully:', response.data.message);
+        } else {
+            console.error('Update failed:', response.data.error);
+        }
+    } catch (error) {
+        console.error('Error updating achievement:', error);
+    }
+
     emit('close');
 };
 
+
 // Watch for changes to enable the Save/Discard buttons
-watch(barangayAchievement, (newVal) => {
+watch(barangayAchievementUpdate, (newVal) => {
     hasChanges.value = JSON.stringify(newVal) !== JSON.stringify(initialBarangayAchievement);
 }, { deep: true });
 
 // Discard changes and reset form
 const discardChanges = () => {
-    barangayAchievement.value = JSON.parse(JSON.stringify(initialBarangayAchievement.value));
+    barangayAchievementUpdate.value = JSON.parse(JSON.stringify(initialBarangayAchievement.value));
     hasChanges.value = false;
 };
 
+const handleImageUpload = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+        barangayAchievementUpdate.value.img = URL.createObjectURL(file);
+    }
+};
 
 const emit = defineEmits(['close']); // Define an event for closing
 const closeForm = () => {
@@ -62,21 +90,21 @@ const closeForm = () => {
                         <v-card elevation="5" class="form-container">
                             <label class="image-upload" @click="$refs.fileInput.click()">
                                 <input type="file" ref="fileInput" accept="image/*" @change="handleImageUpload" hidden>
-                                <img :src="barangayAchievement.img" alt="Uploaded Image">
+                                <img :src="barangayAchievementUpdate.img" alt="Uploaded Image">
                             </label>
 
                             <article>
                                 <v-text-field 
-                                    v-model="barangayAchievement.title" 
+                                    v-model="barangayAchievementUpdate.title" 
                                     label="Barangay Achievement Title" 
                                     required>
                                 </v-text-field>
                                 <v-text-field 
-                                    v-model="barangayAchievement.subtitle" 
+                                    v-model="barangayAchievementUpdate.subtitle" 
                                     label="Barangay Achievement Subtitle" 
                                     required>
                                 </v-text-field>
-                                <v-textarea v-model="barangayAchievement.info" label="Info">
+                                <v-textarea v-model="barangayAchievementUpdate.info" label="Info">
                                 </v-textarea>
                             </article>
                             <v-btn color="error" class="ma-auto" @click="closeForm" width="30%">Cancel</v-btn>
@@ -88,7 +116,7 @@ const closeForm = () => {
                     <!-- Action Buttons -->
                     <v-card-actions v-if="hasChanges" class="actions">
                         <v-btn color="grey" @click="discardChanges">Discard Changes</v-btn>
-                        <v-btn color="primary" @click="saveChanges">Save Changes</v-btn>
+                        <v-btn color="primary" @click="updateAchievement(barangayAchievementUpdate)">Save Changes</v-btn>
                     </v-card-actions>
                 </v-card-text>
             </v-card>
