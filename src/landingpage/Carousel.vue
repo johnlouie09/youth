@@ -1,7 +1,7 @@
 <template>
     <div class="hero-container elevation-10">
         <video class="background-video" id="bg-video" autoplay loop muted playsinline>
-            <source src="../assets/video (2).mp4" type="video/mp4">
+            <source src="/Collage (1).mp4" type="video/mp4">
         </video>
         <div class="content">
             <div><img src="/Group.svg"></div>
@@ -35,7 +35,8 @@ document.addEventListener("DOMContentLoaded", function() {
 }
 
 .background-video {
-    filter: brightness(60%);
+    filter: brightness(70%);
+
 }
 
 .content {
