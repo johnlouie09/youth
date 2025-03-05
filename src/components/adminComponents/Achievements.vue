@@ -149,137 +149,138 @@ const closeEditing = () => {
 </script>
 
 <template>
-  <div class="achievement-main">
-      <h1>ACHIEVEMENTS</h1>
+  <v-container class="achievement-main">
+    <h1>ACHIEVEMENTS</h1>
 
-      <div class="year" v-for="year in Object.keys(achievements).sort().reverse()" :key="year">
-          <v-sheet class="month" v-for="month in Object.keys(achievements[year]).sort((a, b) => 
-              new Date(`${b} 1, ${year}`).getTime() - new Date(`${a} 1, ${year}`).getTime()
-          )" :key="month">
-              <div class="title">
-                  {{ `${month.toUpperCase()} - ${year}` }}
-              </div>
+    <div class="year" v-for="year in Object.keys(achievements).sort().reverse()" :key="year">
+        <v-sheet class="month" v-for="month in Object.keys(achievements[year]).sort((a, b) => 
+            new Date(`${b} 1, ${year}`).getTime() - new Date(`${a} 1, ${year}`).getTime()
+        )" :key="month">
+            <div class="title">
+                {{ `${month.toUpperCase()} - ${year}` }}
+            </div>
 
-              <div class="achievements">
-                  <v-card elevation="15" 
-                      v-for="achievement in achievements[year][month]" 
-                      :key="achievement.title" 
-                      class="card"
-                      @mouseover="hoverIndex = achievement.title" 
-                      @mouseleave="hoverIndex = null">
-                      
-                      <img :src="achievement.img" alt="">
-                      <article>
-                          <h3>{{ achievement.title }}</h3>
-                          <h5>{{ achievement.subtitle }}</h5>
-                          <p>{{ achievement.info }}</p>
-                      </article>
-                      
-                      <div class="btns" v-if="hoverIndex === achievement.title">
-                          <v-btn color="teal-lighten-1" @click="startEditing(year, month, achievement)">EDIT</v-btn>
-                          <v-btn color="red-lighten-1">DELETE</v-btn>
-                      </div>
-                  </v-card>
-              </div>
+            <div class="achievements">
+                <v-card elevation="15" 
+                    v-for="achievement in achievements[year][month]" 
+                    :key="achievement.title" 
+                    class="card"
+                    @mouseover="hoverIndex = achievement.title" 
+                    @mouseleave="hoverIndex = null">
+                    
+                    <img :src="achievement.img" alt="">
+                    <article>
+                        <h3>{{ achievement.title }}</h3>
+                        <h5>{{ achievement.subtitle }}</h5>
+                        <p>{{ achievement.info }}</p>
+                    </article>
+                    
+                    <div class="btns" v-if="hoverIndex === achievement.title">
+                        <v-btn color="teal-lighten-1" @click="startEditing(year, month, achievement)">EDIT</v-btn>
+                        <v-btn color="red-lighten-1">DELETE</v-btn>
+                    </div>
+                </v-card>
+            </div>
 
-              <addBarangayAchievement :year="year" :month="month"></addBarangayAchievement>
-          </v-sheet>
-      </div>
+            <addBarangayAchievement :year="year" :month="month"></addBarangayAchievement>
+        </v-sheet>
+    </div>
 
-      <!-- Show Editing Component When Editing -->
-      <updateBarangayAchievement 
-          v-if="editingAchievement" 
-          :year="editingAchievement.year" 
-          :month="editingAchievement.month" 
-          :barangayAchievement="editingAchievement"
-          @close="closeEditing" />
-  </div>
+    <!-- Show Editing Component When Editing -->
+    <updateBarangayAchievement 
+        v-if="editingAchievement" 
+        :year="editingAchievement.year" 
+        :month="editingAchievement.month" 
+        :barangayAchievement="editingAchievement"
+        @close="closeEditing" />
+  </v-container>
 </template>
 
 
 <style scoped>
 .achievement-main {
-    padding: 4rem 6rem;
-    display: flex;
-    flex-direction: column;
-    gap: 3rem;
+  padding: 4rem 6rem;
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
 }
 
 h1 {
-    font-size: 2.5rem;
-    font-weight: bolder;
+  text-align: center;
+  font-size: 2rem;
+  font-weight: bolder;
 }
 
 .month {
-    width: fit-content;
-    padding: 4rem 2rem;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    border-radius: 2rem;
-    align-items: center;
-    gap: 2.5rem;
-    width: 100%;
+  width: fit-content;
+  padding: 1rem 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  border-radius: 2rem;
+  align-items: center;
+  gap: 2.5rem;
+  width: 100%;
 }
 
 .month .title {
-    border-bottom: 4px solid #DAA2E8;
-    font-size: 1.5rem;
-    font-weight: bolder;
-    padding: 1rem 0;
-    text-align: center;
-    width: 100%;
+  border-bottom: 4px solid #DAA2E8;
+  font-size: 1.5rem;
+  font-weight: bolder;
+  padding: 1rem 0;
+  text-align: center;
+  width: 100%;
 }
 
 .achievements {
-    width: 90%;
-    display: flex;
-    justify-content: space-evenly;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 2.5rem;
+  width: 90%;
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 2.5rem;
 }
 
 .achievements .card {
-    width: 362px;
-    padding: 2rem 2rem;
-    border-radius: .5rem;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1rem;
-    position: relative;
-    transition: transform 0.3s ease-in-out;
+  width: 362px;
+  padding: 2rem 2rem;
+  border-radius: .5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  position: relative;
+  transition: transform 0.3s ease-in-out;
 }
 
 .achievements .card:hover {
-    transform: translateY(-5px);
+  transform: translateY(-5px);
 }
 
 .card img{
-    width: 100%;
-    height: 187px;
+  width: 100%;
+  height: 187px;
 
 }
 
 article h3 {
-    font: 1.25rem;
-    font-weight: bold;
+  font: 1.25rem;
+  font-weight: bold;
 }
 
 article {
-    width: 100%;
+  width: 100%;
 }
 
 article h4 {
-    font-size: 1rem;
+  font-size: 1rem;
 }
 
 article p {
-    height: 50px;
-    max-height: 50px;
-    font-size: .75rem;
-    overflow: hidden;
+  height: 50px;
+  max-height: 50px;
+  font-size: .75rem;
+  overflow: hidden;
 }
 
 .btns {
@@ -289,20 +290,20 @@ article p {
 }
 
 .achievements .card:hover .edit {
-    opacity: 1;
-    transform: translateY(0);
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .achievements {
-    display: flex;
+  display: flex;
 
 }
 
 .year {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    gap: 3rem;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 7rem;
 }
 </style>
 
