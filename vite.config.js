@@ -22,9 +22,7 @@ export default ({mode}) => {
     },
     base: isProduction ? '/youth/' : '/',
     server: {
-      host: 'localhost',
-      port: 5179,
-      strictPort: true
+      host: 'localhost'
     },
     build: {
       outDir: 'dist'
