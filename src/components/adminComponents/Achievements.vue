@@ -3,6 +3,7 @@ import { ref, watchEffect } from 'vue';
 import axios from 'axios';
 import addBarangayAchievement from './subcomponents/achievement/inputForm/addBarangayAchievement.vue';
 import updateBarangayAchievement from './subcomponents/achievement/inputForm/updateBarangayAchievement.vue';
+import DialogConfirm from '../dialogs/DialogConfirm.vue';
 
 const hoverIndex = ref(null);
 const editingAchievement = ref(null); // Track the selected achievement for editing
@@ -31,8 +32,28 @@ const fetchBarangayAchievements = async () => {
         loading.value = false;
     }
 };
-
 fetchBarangayAchievements();
+
+const deleteBarangayAchievement = async (achievementId) => {
+  try {
+    const response = await axios.delete(
+      'http://localhost/youth/app/api/BarangayAchievement.php',
+      {
+        data: { id: achievementId }
+      }
+    );
+    if (response.data.success) {
+      console.log('Achievement deleted successfully:', response.data.message);
+      // Refresh the achievements list
+      await fetchBarangayAchievements();
+    } else {
+      console.error('Deletion failed:', response.data.error);
+    }
+  } catch (error) {
+    console.error('Error deleting achievement:', error);
+  }
+};
+
 
 
 // Function to handle edit button click
@@ -75,23 +96,29 @@ const closeEditing = () => {
                     
                     <div class="btns" v-if="hoverIndex === achievement.title">
                         <v-btn color="teal-lighten-1" @click="startEditing(year, month, achievement)">EDIT</v-btn>
-                        <v-btn color="red-lighten-1">DELETE</v-btn>
+                        <v-btn color="red-lighten-1" @click="deleteBarangayAchievement(achievement.id)">DELETE</v-btn>
                     </div>
                 </v-card>
             </div>
 
-            <addBarangayAchievement :year="year" :month="month"></addBarangayAchievement>
+            <addBarangayAchievement 
+            :year= "parseInt(year)" :month="new Date(`${month} 1, ${year}`).getMonth() + 1" 
+            :barangayId="barangayId"
+            @achievementAdded="fetchBarangayAchievements"
+            ></addBarangayAchievement>
         </v-sheet>
     </div>
 
     <!-- Show Editing Component When Editing -->
     <updateBarangayAchievement 
         v-if="editingAchievement" 
-        :year="editingAchievement.year" 
-        :month="editingAchievement.month" 
         :barangayAchievement="editingAchievement"
-        @close="closeEditing" />
+        @close="closeEditing"
+        @achievementUpdated="fetchBarangayAchievements"
+        />
   </v-container>
+
+
 </template>
 
 
@@ -122,7 +149,7 @@ h1 {
 }
 
 .month .title {
-  border-bottom: 4px solid #DAA2E8;
+  border-bottom: 4px solid #616bfc;
   font-size: 1.5rem;
   font-weight: bolder;
   padding: 1rem 0;
@@ -204,5 +231,8 @@ article p {
   gap: 7rem;
 }
 </style>
+
+
+
 
 
