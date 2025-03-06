@@ -1,18 +1,48 @@
 <script setup>
 import { ref } from 'vue';
+import axios from 'axios';
 
 const props = defineProps({
   year: String,
-  month: String
+  month: String,
+  barangayId: Number
 });
 
 const dialog = ref(false);
 const barangayAchievement = ref({
-    img: null,
+    barangay_id: props.barangayId,
+    img: 'ex.jpg',
     title: '',
     subtitle: '',
     info: '',
+    date: new Date(props.year, props.month, 0)
 });
+
+const submitAchievement = async (newAchievement) => {
+  try {
+        const response = await axios.post(
+        'http://localhost/youth/app/api/BarangayAchievement.php',{
+            barangay_id: newAchievement.barangay_id,
+            title: newAchievement.title,
+            subtitle: newAchievement.subtitle,
+            info: newAchievement.info,
+            img: newAchievement.img,  // Ensure this is a valid image URL or Base64 string
+            date: newAchievement.date
+        }
+        );
+        if (response.data.success) {
+            console.log('Achievement updated successfully:', response.data.message);
+            emit('achievementAdded');
+        } else {
+            console.error('Update failed:', response.data.error);
+        }
+    } catch (error) {
+        console.error('Error updating achievement:', error);
+    }
+
+    console.log("Submitted Data:", newAchievement.value);
+    dialog.value = false; // Close dialog after submission
+};
 
 const handleImageUpload = (event) => {
     const file = event.target.files[0];
@@ -22,14 +52,11 @@ const handleImageUpload = (event) => {
             imageUrl.value = reader.result;
         };
         reader.readAsDataURL(file);
-        barangayAchievement.value.img = file;
+        // barangayAchievement.value.img = file;
     }
 };
 
-const submitForm = () => {
-    console.log("Submitted Data:", barangayAchievement.value);
-    dialog.value = false; // Close dialog after submission
-};
+const emit = defineEmits(['achievementAdded']);
 </script>
 
 <template>
@@ -71,7 +98,7 @@ const submitForm = () => {
                 </v-card-text>
                 <v-card-actions>
                     <v-btn color="grey" @click="dialog = false">Cancel</v-btn>
-                    <v-btn color="primary" @click="submitForm">Submit</v-btn>
+                    <v-btn color="primary" @click="submitAchievement(barangayAchievement)">Submit</v-btn>
                 </v-card-actions>
             </v-card>
         </v-dialog>
