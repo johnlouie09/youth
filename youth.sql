@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 05, 2025 at 10:51 PM
+-- Generation Time: Mar 06, 2025 at 05:35 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -119,11 +119,13 @@ INSERT INTO `barangay_achievement` (`id`, `barangay_id`, `title`, `subtitle`, `i
 (12, 1, 'Year-End Recognition', 'Honoring outstanding citizens', 'Outstanding youth and barangay officials were awarded.', 'recognition.jpg', '2024-12-15'),
 (13, 1, 'Job Fair 2025', 'Providing employment opportunities', 'Over 100 people found job opportunities.', 'job_fair.jpg', '2025-01-10'),
 (14, 1, 'Anti-Drug Campaign', 'Spreading awareness on drug prevention', 'An awareness seminar on the dangers of drugs was held.', 'anti_drug.jpg', '2025-01-25'),
-(15, 1, 'Sports Clinic', 'Training young athletes', 'A sports training program was conducted for young athletes.', 'sports_clinic.jpg', '2025-02-05'),
-(16, 1, 'IT Skills Training', 'Equipping youth with digital skills', 'Students were trained in basic coding and graphic design.', 'it_training.jpg', '2025-02-12'),
 (17, 1, 'Fire Safety Seminar', 'Educating residents on fire prevention', 'Residents were taught fire prevention techniques.', 'fire_safety.jpg', '2025-02-18'),
 (18, 1, 'Community Garden Project', 'Promoting urban gardening', 'A community garden was established in the barangay.', '/public/ex.jpg', '2025-02-22'),
-(19, 1, 'Ginawsssa q naman lahat huhuhuHU', 'Celebrating women in leadership', 'A forum was conducted to discuss women’s rights and empowerment.', '/public/ex.jpg', '2025-02-28');
+(19, 1, 'Ginawaaa q naman lahat huhuhuhu', 'Celebrating women in leadership', 'A forum was conducted to discuss women’s rights and empowerment.', '/public/ex.jpg', '2025-02-28'),
+(33, 1, 'gndfhfbh', 'cxcbxcbx', 'cxvxcxb', '', '2025-01-30'),
+(34, 1, 'dsf', 'dfsdf', 'dfsdfdf', 'uploads/1741268139-Frame 172.png', '0000-00-00'),
+(35, 1, 'adfad', 'asd', 'asdas', 'uploads/1741268170-Frame 172.png', '0000-00-00'),
+(36, 1, 'dsads', 'dssda', 'sdsd', 'uploads/1741268195-Homepage.jpg', '0000-00-00');
 
 -- --------------------------------------------------------
 
@@ -187,15 +189,35 @@ CREATE TABLE `projects` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `sk_chairpersons`
+-- Table structure for table `sk_education`
 --
 
-CREATE TABLE `sk_chairpersons` (
+CREATE TABLE `sk_education` (
+  `id` int(11) NOT NULL,
+  `sk_official_id` int(11) NOT NULL,
+  `school_name` varchar(100) NOT NULL,
+  `detail` varchar(100) NOT NULL,
+  `start_year` int(10) NOT NULL,
+  `end_year` int(11) NOT NULL,
+  `school_id` varchar(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `sk_officials`
+--
+
+CREATE TABLE `sk_officials` (
   `id` int(11) NOT NULL,
   `barangay_id` int(11) NOT NULL,
   `full_name` varchar(150) NOT NULL,
+  `position` enum('SK Chairperson','SK Secretary','SK Treasurer','SK Kagawad') NOT NULL,
   `contact_number` int(12) DEFAULT NULL,
   `email` varchar(100) NOT NULL,
+  `birthday` date DEFAULT NULL,
+  `motto` text NOT NULL,
+  `img` text NOT NULL,
   `term_start` date DEFAULT NULL,
   `term_end` date DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
@@ -203,48 +225,32 @@ CREATE TABLE `sk_chairpersons` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `sk_chairpersons`
+-- Dumping data for table `sk_officials`
 --
 
-INSERT INTO `sk_chairpersons` (`id`, `barangay_id`, `full_name`, `contact_number`, `email`, `term_start`, `term_end`, `created_at`, `updated_at`) VALUES
-(1, 1, 'Dessa Mare P. Lontayao', 0, '', NULL, NULL, '2025-02-21 06:16:33', '2025-02-21 06:43:34'),
-(2, 2, 'Irish N. Zaragoza', 0, '', NULL, NULL, '2025-02-21 06:41:36', '2025-02-21 06:41:36'),
-(3, 3, 'Anthony T. Balbuena', 0, '', NULL, NULL, '2025-02-21 06:41:36', '2025-02-21 06:41:36'),
-(4, 4, 'Aiden Osward M. Basagre', 0, '', NULL, NULL, '2025-02-21 06:41:36', '2025-02-21 06:41:36'),
-(5, 5, 'Neil Christian D. Vargas', 0, '', NULL, NULL, '2025-02-21 06:41:36', '2025-02-21 06:41:36'),
-(6, 6, 'Jade Dustin F. Villareal', 0, '', NULL, NULL, '2025-02-21 06:41:36', '2025-02-21 06:41:36'),
-(7, 7, 'Kim Roland P. Vargas', 0, '', NULL, NULL, '2025-02-21 06:41:36', '2025-02-21 06:41:36'),
-(8, 8, 'Leiriz C. Ibarreta', 0, '', NULL, NULL, '2025-02-21 06:41:36', '2025-02-21 06:41:36'),
-(9, 9, 'Bea Franchezka Naldo', 0, '', NULL, NULL, '2025-02-21 06:41:36', '2025-02-21 06:41:36'),
-(10, 10, 'Rex A. Embestro', 0, '', NULL, NULL, '2025-02-21 06:41:36', '2025-02-21 06:41:36'),
-(11, 11, 'Rico Maniscan', 0, '', NULL, NULL, '2025-02-21 06:41:36', '2025-02-21 06:41:36'),
-(12, 12, 'Jhustine A. Robles', 0, '', NULL, NULL, '2025-02-21 06:41:36', '2025-02-21 06:41:36'),
-(13, 13, 'James Lorren J. Brondial', 0, '', NULL, NULL, '2025-02-21 06:41:36', '2025-02-21 06:41:36'),
-(14, 14, 'Eddel Mae D. Brago', 0, '', NULL, NULL, '2025-02-21 06:41:36', '2025-02-21 06:41:36'),
-(15, 15, 'Princes Leonard W. Llagas', 0, '', NULL, NULL, '2025-02-21 06:41:36', '2025-02-21 06:41:36'),
-(16, 16, 'Diana Rose A. Canlas', 0, '', NULL, NULL, '2025-02-21 06:41:36', '2025-02-21 06:41:36'),
-(17, 17, 'Mary Grace A. Biag', 0, '', NULL, NULL, '2025-02-21 06:41:36', '2025-02-21 06:41:36'),
-(18, 18, 'Jean-Lyka C. Villanueva', 0, '', NULL, NULL, '2025-02-21 06:41:36', '2025-02-21 06:41:36'),
-(19, 19, 'James S. Tasarra', 0, '', NULL, NULL, '2025-02-21 06:41:36', '2025-02-21 06:41:36'),
-(20, 20, 'Aliza Mae P. Viñas', 0, '', NULL, NULL, '2025-02-21 06:41:36', '2025-02-21 06:41:36'),
-(21, 21, 'Erika Mae V. Molina', 0, '', NULL, NULL, '2025-02-21 06:41:36', '2025-02-21 06:41:36'),
-(22, 22, 'Jessa Mae C. Matubis', 0, '', NULL, NULL, '2025-02-21 06:41:36', '2025-02-21 06:41:36');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `sk_members`
---
-
-CREATE TABLE `sk_members` (
-  `id` int(11) NOT NULL,
-  `barangay_id` int(11) NOT NULL,
-  `full_name` varchar(150) NOT NULL,
-  `position` enum('SK Secretary','SK Treasurer','SK Kagawad','') NOT NULL,
-  `contact_number` varchar(20) DEFAULT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+INSERT INTO `sk_officials` (`id`, `barangay_id`, `full_name`, `position`, `contact_number`, `email`, `birthday`, `motto`, `img`, `term_start`, `term_end`, `created_at`, `updated_at`) VALUES
+(1, 1, 'Dessa Mare P. Lontayao', 'SK Chairperson', 0, '', NULL, '', '', NULL, NULL, '2025-02-21 06:16:33', '2025-02-21 06:43:34'),
+(2, 2, 'Irish N. Zaragoza', 'SK Chairperson', 0, '', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-02-21 06:41:36'),
+(3, 3, 'Anthony T. Balbuena', 'SK Chairperson', 0, '', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-02-21 06:41:36'),
+(4, 4, 'Aiden Osward M. Basagre', 'SK Chairperson', 0, '', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-02-21 06:41:36'),
+(5, 5, 'Neil Christian D. Vargas', 'SK Chairperson', 0, '', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-02-21 06:41:36'),
+(6, 6, 'Jade Dustin F. Villareal', 'SK Chairperson', 0, '', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-02-21 06:41:36'),
+(7, 7, 'Kim Roland P. Vargas', 'SK Chairperson', 0, '', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-02-21 06:41:36'),
+(8, 8, 'Leiriz C. Ibarreta', 'SK Chairperson', 0, '', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-02-21 06:41:36'),
+(9, 9, 'Bea Franchezka Naldo', 'SK Chairperson', 0, '', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-02-21 06:41:36'),
+(10, 10, 'Rex A. Embestro', 'SK Chairperson', 0, '', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-02-21 06:41:36'),
+(11, 11, 'Rico Maniscan', 'SK Chairperson', 0, '', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-02-21 06:41:36'),
+(12, 12, 'Jhustine A. Robles', 'SK Chairperson', 0, '', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-02-21 06:41:36'),
+(13, 13, 'James Lorren J. Brondial', 'SK Chairperson', 0, '', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-02-21 06:41:36'),
+(14, 14, 'Eddel Mae D. Brago', 'SK Chairperson', 0, '', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-02-21 06:41:36'),
+(15, 15, 'Princes Leonard W. Llagas', 'SK Chairperson', 0, '', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-02-21 06:41:36'),
+(16, 16, 'Diana Rose A. Canlas', 'SK Chairperson', 0, '', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-02-21 06:41:36'),
+(17, 17, 'Mary Grace A. Biag', 'SK Chairperson', 0, '', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-02-21 06:41:36'),
+(18, 18, 'Jean-Lyka C. Villanueva', 'SK Chairperson', 0, '', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-02-21 06:41:36'),
+(19, 19, 'James S. Tasarra', 'SK Chairperson', 0, '', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-02-21 06:41:36'),
+(20, 20, 'Aliza Mae P. Viñas', 'SK Chairperson', 0, '', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-02-21 06:41:36'),
+(21, 21, 'Erika Mae V. Molina', 'SK Chairperson', 0, '', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-02-21 06:41:36'),
+(22, 22, 'Jessa Mae C. Matubis', 'SK Chairperson', 0, '', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-02-21 06:41:36');
 
 --
 -- Indexes for dumped tables
@@ -291,16 +297,16 @@ ALTER TABLE `projects`
   ADD KEY `barangay_id` (`barangay_id`);
 
 --
--- Indexes for table `sk_chairpersons`
+-- Indexes for table `sk_education`
 --
-ALTER TABLE `sk_chairpersons`
+ALTER TABLE `sk_education`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `barangay_id` (`barangay_id`);
+  ADD KEY `sk_official_id` (`sk_official_id`);
 
 --
--- Indexes for table `sk_members`
+-- Indexes for table `sk_officials`
 --
-ALTER TABLE `sk_members`
+ALTER TABLE `sk_officials`
   ADD PRIMARY KEY (`id`),
   ADD KEY `barangay_id` (`barangay_id`);
 
@@ -324,7 +330,7 @@ ALTER TABLE `barangays`
 -- AUTO_INCREMENT for table `barangay_achievement`
 --
 ALTER TABLE `barangay_achievement`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
 
 --
 -- AUTO_INCREMENT for table `clusters`
@@ -345,16 +351,16 @@ ALTER TABLE `projects`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `sk_chairpersons`
+-- AUTO_INCREMENT for table `sk_education`
 --
-ALTER TABLE `sk_chairpersons`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+ALTER TABLE `sk_education`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `sk_members`
+-- AUTO_INCREMENT for table `sk_officials`
 --
-ALTER TABLE `sk_members`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `sk_officials`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- Constraints for dumped tables
@@ -379,16 +385,16 @@ ALTER TABLE `projects`
   ADD CONSTRAINT `projects_ibfk_1` FOREIGN KEY (`barangay_id`) REFERENCES `barangays` (`id`) ON DELETE CASCADE;
 
 --
--- Constraints for table `sk_chairpersons`
+-- Constraints for table `sk_education`
 --
-ALTER TABLE `sk_chairpersons`
-  ADD CONSTRAINT `sk_chairpersons_ibfk_1` FOREIGN KEY (`barangay_id`) REFERENCES `barangays` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `sk_education`
+  ADD CONSTRAINT `sk_education_ibfk_1` FOREIGN KEY (`sk_official_id`) REFERENCES `sk_officials` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Constraints for table `sk_members`
+-- Constraints for table `sk_officials`
 --
-ALTER TABLE `sk_members`
-  ADD CONSTRAINT `sk_members_ibfk_1` FOREIGN KEY (`barangay_id`) REFERENCES `barangays` (`id`) ON DELETE CASCADE;
+ALTER TABLE `sk_officials`
+  ADD CONSTRAINT `sk_officials_ibfk_1` FOREIGN KEY (`barangay_id`) REFERENCES `barangays` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
