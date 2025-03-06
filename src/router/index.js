@@ -12,6 +12,11 @@ const router = createRouter({
       alias: ['/home']
     },
     {
+      path: '/login',
+      name: 'login',
+      component: () => import('../Login.vue'),
+    },
+    {
 
 
       path: '/contact',
