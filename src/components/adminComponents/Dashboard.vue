@@ -41,58 +41,57 @@ const data = reactive({
 
 <template>
     <v-container class="dashboard-main" fluid>
-      <!-- Cards Section -->
-      <v-row class="cards" justify="center">
-        <v-col 
-          v-for="card in data.cardsData" 
-          :key="card.title" 
-          cols="12" md="4"
-        >
-          <DashboardCards :card="card" />
-        </v-col>
-      </v-row>
-  
-      <!-- Features Section -->
-      <v-row class="feats" justify="space-between">
-        <!-- Suggestions -->
-        <v-col cols="12" md="5">
-          <Suggestions />
-        </v-col>
-  
-        <!-- Analytics & Button -->
-        <v-col cols="12" md="7">
-          <v-card class="pa-4">
-            <Analytics />
-          </v-card>
-        </v-col>
-      </v-row>
+        <!-- Cards Section -->
+        <v-row class="cards" justify="center">
+            <v-col
+                v-for="card in data.cardsData"
+                :key="card.title"
+                cols="12" md="4"
+            >
+                <DashboardCards :card="card" />
+            </v-col>
+        </v-row>
 
-      <v-btn 
+        <!-- Features Section -->
+        <v-row class="feats" justify="space-between">
+            <!-- Suggestions -->
+            <v-col cols="12" md="5">
+                <Suggestions />
+            </v-col>
+
+            <!-- Analytics & Button -->
+            <v-col cols="12" md="7">
+                <v-card class="pa-4">
+                    <Analytics />
+                </v-card>
+            </v-col>
+        </v-row>
+
+        <v-btn
             class="to-website mt-4"
             color="black"
             height="64"
-          >
+        >
             GO TO SAN FRANCISCO WEBSITE
-          </v-btn>
+        </v-btn>
     </v-container>
 </template>
   
-  <style scoped>
-    .dashboard-main {
-        padding: 36px 72px;
-        display: flex;
-        flex-direction: column;
-        justify-content: flex-start;
-        align-items: center;
+<style scoped>
+.dashboard-main {
+    padding: 36px 72px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+}
 
-    }
-    
-    .cards {
-        width: 100%;
-    }
-    
-    .feats {
-        width: 100%;
-    }
-  </style>
+.cards {
+    width: 100%;
+}
+
+.feats {
+    width: 100%;
+}
+</style>
   

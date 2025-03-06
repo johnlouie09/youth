@@ -25,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         exit;
     }
 
-    $query = "SELECT * FROM barangay_achievement WHERE barangay_id = ? ORDER BY date DESC";
+    $query = "SELECT * FROM achievements WHERE barangay_id = ? ORDER BY date DESC";
     $stmt = $conn->prepare($query);
     $stmt->bind_param('i', $barangayId);
     $stmt->execute();
