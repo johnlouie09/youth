@@ -4,8 +4,6 @@ import { ref, watch } from 'vue';
 import axios from 'axios';
 
 const props = defineProps({
-  year: String,
-  month: String,
   barangayAchievement: Object
 });
 
@@ -31,20 +29,20 @@ const updateAchievement = async (achievement) => {
             title: achievement.title,
             subtitle: achievement.subtitle,
             info: achievement.info,
-            img: achievement.img,  // Ensure this is a valid image URL or Base64 string
+            img: achievement.img,  // 
             date: achievement.date
         });
 
         if (response.data.success) {
             console.log('Achievement updated successfully:', response.data.message);
+            emit('achievementUpdated');
+            emit('close')
         } else {
             console.error('Update failed:', response.data.error);
         }
     } catch (error) {
         console.error('Error updating achievement:', error);
     }
-
-    emit('close');
 };
 
 
@@ -64,9 +62,11 @@ const handleImageUpload = (event) => {
     if (file) {
         barangayAchievementUpdate.value.img = URL.createObjectURL(file);
     }
-};
+};;
 
-const emit = defineEmits(['close']); // Define an event for closing
+const emit = defineEmits(['close', 'achievementUpdated']);
+
+
 const closeForm = () => {
     emit('close'); // Emit event when closing
 };
