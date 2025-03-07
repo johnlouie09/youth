@@ -27,7 +27,7 @@ abstract class Model
     private static function setConnection(): void
     {
         if (self::$conn === null) {
-            require_once __DIR__ . '/../config/database.php';
+            require __DIR__ . '/../config/database.php';
 
             if (isset($conn)) {
                 self::$conn = $conn;

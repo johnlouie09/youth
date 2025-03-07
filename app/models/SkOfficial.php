@@ -7,7 +7,7 @@ class SkOfficial extends Model
     /** static data */
     public static $table = 'sk_officials';
     public static $table_columns = [];
-    protected static $basic_columns = ['id', 'slug', 'full_name', 'img'];
+    protected static $basic_columns = ['id', 'full_name'];
 
     /** properties */
     protected $barangay_id    = 0;
@@ -63,6 +63,16 @@ class SkOfficial extends Model
         return $this->slug;
     }
 
+
+    /**
+     * Gets SkOfficial fullname.
+     * @return int
+     */
+    public function getFullname()
+    {
+        return $this->full_name;
+    }
+
     // TODO: COMPLETE ALL GETTER METHODS FOR ALL PROPERTIES
 
 
@@ -81,13 +91,24 @@ class SkOfficial extends Model
 
 
     /**
-     * Sets SkOfficial slug..
+     * Sets SkOfficial slug.
      * @param $slug
      * @return void
      */
     public function setSlug($slug)
     {
         $this->slug = $slug;
+    }
+
+
+    /**
+     * Sets SkOfficial full_name.
+     * @param $fullname
+     * @return void
+     */
+    public function setFullname($fullname)
+    {
+        $this->full_name = $fullname;
     }
 
     // TODO: COMPLETE ALL SETTER METHODS FOR ALL PROPERTIES
