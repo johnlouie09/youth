@@ -1,22 +1,3 @@
-<script setup>
-import { useTheme } from 'vuetify';
-import { computed, ref } from 'vue';
-import { useRoute } from 'vue-router';
-import ThemeSwitcher from './ThemeSwitcher.vue';
-import FeedbackForm from './FeedbackForm.vue';
-
-const drawer = ref(false);
-const theme = useTheme();
-const route = useRoute(); // Get current route
-const showFeedbackForm = computed(() => route.path === "/san-francisco"); // Show only on this route
-
-// Compute overlay color based on theme mode
-const overlayColor = computed(() => {
-    return theme.global.current.value.dark ? 'rgba(0, 0, 0, 0.6)' : 'rgba(255, 255, 255, 0.3)';
-});
-</script>
-
-
 <template>
     <div>
         <div
@@ -51,7 +32,35 @@ const overlayColor = computed(() => {
         </v-btn>
     </div>
 </template>
+<script>
+import { useTheme } from 'vuetify';
+import ThemeSwitcher from './ThemeSwitcher.vue';
+import FeedbackForm from './FeedbackForm.vue';
 
+export default {
+    components: {
+        ThemeSwitcher,
+        FeedbackForm
+    },
+    data() {
+        return {
+            drawer: false,
+        };
+    },
+    computed: {
+        showFeedbackForm() {
+            return this.$route.path === '/san-francisco';
+        },
+        overlayColor() {
+            return this.theme.global.current.value.dark ? 'rgba(0, 0, 0, 0.6)' : 'rgba(255, 255, 255, 0.3)';
+        }
+    },
+    setup() {
+        const theme = useTheme();
+        return { theme };
+    }
+};
+</script>
 
 <style scoped>
 /* Drawer Styling */
@@ -71,19 +80,18 @@ const overlayColor = computed(() => {
     z-index: 1099;
     transition: opacity 0.3s ease-in-out;
 }
-/* Position the menu button at the top left */
+
+/* Position the menu button at the top right */
 .menu-btn {
     position: fixed;
-    top: 16px; /* Adjust as needed */
-    right: 16px; /* Adjust as needed */
-    z-index: 1200; /* Higher than overlay & drawer */
-
+    top: 16px;
+    right: 16px;
+    z-index: 1200;
 }
+
 .avatar-container {
     display: flex;
     justify-content: center;
     align-items: center;
-  
 }
-
 </style>

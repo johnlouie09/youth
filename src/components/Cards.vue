@@ -1,29 +1,3 @@
-<script setup>
-import { ref } from 'vue';
-import DialogComponent from './DialogComponent.vue';
-
-const dialogComponent = ref(null);
-
-const openDialog = () => {
-    dialogComponent.value.openDialog();
-};
-
-const model = ref(null);
-const skPositions = ref([
-    "SK Secretary",
-    "SK Treasurer",
-    "SK Kagawad 1",
-    "SK Kagawad 2",
-    "SK Kagawad 3",
-    "SK Kagawad 4",
-    "SK Kagawad 5",
-    "SK Kagawad 6",
-    "SK Kagawad 7",
-    "SK Kagawad 8"
-]);
-
-</script>
-
 <template>
     <v-sheet
         class="mx-auto"
@@ -77,7 +51,6 @@ const skPositions = ref([
                         :key="index"
                         v-slot="{ isSelected, toggle, selectedClass }"
                     >
-
                         <v-card
                             class="custom-card"
                             hover
@@ -100,7 +73,6 @@ const skPositions = ref([
                                     {{ position }}
                                 </div>
                             </div>
-                            
                         </v-card>
                     </v-slide-group-item>
                 </v-slide-group>
@@ -108,9 +80,43 @@ const skPositions = ref([
         </v-row>
         <DialogComponent ref="dialogComponent"/>
     </v-sheet>
-
 </template>
+<script>
 
+import DialogComponent from './DialogComponent.vue';
+
+export default {
+    components: {
+        DialogComponent
+    },
+    data() {
+        return {
+            dialogComponent: null,
+            model: null,
+            skPositions: [
+                "SK Secretary",
+                "SK Treasurer",
+                "SK Kagawad 1",
+                "SK Kagawad 2",
+                "SK Kagawad 3",
+                "SK Kagawad 4",
+                "SK Kagawad 5",
+                "SK Kagawad 6",
+                "SK Kagawad 7",
+                "SK Kagawad 8"
+            ]
+        };
+    },
+    methods: {
+        openDialog() {
+            this.dialogComponent.openDialog();
+        }
+    },
+    mounted() {
+        this.dialogComponent = this.$refs.dialogComponent;
+    }
+};
+</script>
 
 <style scoped>
 @import "@/assets/cards.css";
@@ -119,9 +125,6 @@ const skPositions = ref([
     background-image: linear-gradient(45deg, #3772FF 2%, #DF2935 20%, #FDCA40 35%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-font-weight: bold;
-
+    font-weight: bold;
 }
-
-
 </style>
