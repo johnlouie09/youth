@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 06, 2025 at 05:35 PM
+-- Generation Time: Mar 06, 2025 at 10:00 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -211,9 +211,10 @@ CREATE TABLE `sk_education` (
 CREATE TABLE `sk_officials` (
   `id` int(11) NOT NULL,
   `barangay_id` int(11) NOT NULL,
+  `slug` varchar(35) NOT NULL,
   `full_name` varchar(150) NOT NULL,
   `position` enum('SK Chairperson','SK Secretary','SK Treasurer','SK Kagawad') NOT NULL,
-  `contact_number` int(12) DEFAULT NULL,
+  `contact_number` bigint(11) UNSIGNED NOT NULL,
   `email` varchar(100) NOT NULL,
   `birthday` date DEFAULT NULL,
   `motto` text NOT NULL,
@@ -228,29 +229,29 @@ CREATE TABLE `sk_officials` (
 -- Dumping data for table `sk_officials`
 --
 
-INSERT INTO `sk_officials` (`id`, `barangay_id`, `full_name`, `position`, `contact_number`, `email`, `birthday`, `motto`, `img`, `term_start`, `term_end`, `created_at`, `updated_at`) VALUES
-(1, 1, 'Dessa Mare P. Lontayao', 'SK Chairperson', 0, '', NULL, '', '', NULL, NULL, '2025-02-21 06:16:33', '2025-02-21 06:43:34'),
-(2, 2, 'Irish N. Zaragoza', 'SK Chairperson', 0, '', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-02-21 06:41:36'),
-(3, 3, 'Anthony T. Balbuena', 'SK Chairperson', 0, '', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-02-21 06:41:36'),
-(4, 4, 'Aiden Osward M. Basagre', 'SK Chairperson', 0, '', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-02-21 06:41:36'),
-(5, 5, 'Neil Christian D. Vargas', 'SK Chairperson', 0, '', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-02-21 06:41:36'),
-(6, 6, 'Jade Dustin F. Villareal', 'SK Chairperson', 0, '', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-02-21 06:41:36'),
-(7, 7, 'Kim Roland P. Vargas', 'SK Chairperson', 0, '', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-02-21 06:41:36'),
-(8, 8, 'Leiriz C. Ibarreta', 'SK Chairperson', 0, '', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-02-21 06:41:36'),
-(9, 9, 'Bea Franchezka Naldo', 'SK Chairperson', 0, '', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-02-21 06:41:36'),
-(10, 10, 'Rex A. Embestro', 'SK Chairperson', 0, '', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-02-21 06:41:36'),
-(11, 11, 'Rico Maniscan', 'SK Chairperson', 0, '', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-02-21 06:41:36'),
-(12, 12, 'Jhustine A. Robles', 'SK Chairperson', 0, '', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-02-21 06:41:36'),
-(13, 13, 'James Lorren J. Brondial', 'SK Chairperson', 0, '', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-02-21 06:41:36'),
-(14, 14, 'Eddel Mae D. Brago', 'SK Chairperson', 0, '', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-02-21 06:41:36'),
-(15, 15, 'Princes Leonard W. Llagas', 'SK Chairperson', 0, '', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-02-21 06:41:36'),
-(16, 16, 'Diana Rose A. Canlas', 'SK Chairperson', 0, '', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-02-21 06:41:36'),
-(17, 17, 'Mary Grace A. Biag', 'SK Chairperson', 0, '', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-02-21 06:41:36'),
-(18, 18, 'Jean-Lyka C. Villanueva', 'SK Chairperson', 0, '', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-02-21 06:41:36'),
-(19, 19, 'James S. Tasarra', 'SK Chairperson', 0, '', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-02-21 06:41:36'),
-(20, 20, 'Aliza Mae P. Viñas', 'SK Chairperson', 0, '', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-02-21 06:41:36'),
-(21, 21, 'Erika Mae V. Molina', 'SK Chairperson', 0, '', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-02-21 06:41:36'),
-(22, 22, 'Jessa Mae C. Matubis', 'SK Chairperson', 0, '', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-02-21 06:41:36');
+INSERT INTO `sk_officials` (`id`, `barangay_id`, `slug`, `full_name`, `position`, `contact_number`, `email`, `birthday`, `motto`, `img`, `term_start`, `term_end`, `created_at`, `updated_at`) VALUES
+(1, 1, 'dessa-mare', 'Dessa Mare P. Lontayao', 'SK Chairperson', 9274668490, '', NULL, '', '', NULL, NULL, '2025-02-21 06:16:33', '2025-03-06 20:01:18'),
+(2, 2, 'irish', 'Irish N. Zaragoza', 'SK Chairperson', 9082565497, '', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-03-06 20:05:24'),
+(3, 3, 'anthony', 'Anthony T. Balbuena', 'SK Chairperson', 9915612246, '', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-03-06 20:08:14'),
+(4, 4, 'aiden-osward', 'Aiden Osward M. Basagre', 'SK Chairperson', 9617360226, '', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-03-06 20:10:42'),
+(5, 5, 'neil-christian', 'Neil Christian D. Vargas', 'SK Chairperson', 9773292890, '', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-03-06 20:12:19'),
+(6, 6, 'jade-dustin', 'Jade Dustin F. Villareal', 'SK Chairperson', 9291118624, '', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-03-06 20:13:07'),
+(7, 7, 'kim-roland', 'Kim Roland P. Vargas', 'SK Chairperson', 9618808019, '', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-03-06 20:15:33'),
+(8, 8, 'leiriz', 'Leiriz C. Ibarreta', 'SK Chairperson', 9508374203, '', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-03-06 20:16:15'),
+(9, 9, 'bea-franchezka', 'Bea Franchezka Naldo', 'SK Chairperson', 9484018819, '', NULL, 'Unified Youth for One Santiago', '', NULL, NULL, '2025-02-21 06:41:36', '2025-03-06 20:56:24'),
+(10, 10, 'rex', 'Rex A. Embestro', 'SK Chairperson', 9915618021, '', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-03-06 20:17:45'),
+(11, 11, 'rico', 'Rico Maniscan', 'SK Chairperson', 0, '', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-03-06 19:52:30'),
+(12, 12, 'jhustine', 'Jhustine A. Robles', 'SK Chairperson', 9674164962, '', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-03-06 20:19:55'),
+(13, 13, 'james-lorren', 'James Lorren J. Brondial', 'SK Chairperson', 9092168955, '', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-03-06 20:20:40'),
+(14, 14, 'eddel-mae', 'Eddel Mae D. Brago', 'SK Chairperson', 9203025407, '', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-03-06 20:23:03'),
+(15, 15, 'prince-leonard', 'Prince Leonard W. Llagas', 'SK Chairperson', 9518971664, '', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-03-06 20:28:48'),
+(16, 16, 'diana-rose', 'Diana Rose A. Canlas', 'SK Chairperson', 9950653343, '', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-03-06 20:40:15'),
+(17, 17, 'mary-grace', 'Mary Grace A. Biag', 'SK Chairperson', 9916828638, '', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-03-06 20:40:29'),
+(18, 18, 'jean-lyka', 'Jean-Lyka C. Villanueva', 'SK Chairperson', 9919459266, '', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-03-06 20:40:41'),
+(19, 19, 'james', 'James S. Tasarra', 'SK Chairperson', 9630466338, '', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-03-06 20:40:52'),
+(20, 20, 'aliza-mae', 'Aliza Mae P. Viñas', 'SK Chairperson', 9383706542, '', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-03-06 20:41:02'),
+(21, 21, 'erika-mae', 'Erika Mae V. Molina', 'SK Chairperson', 9389182048, '', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-03-06 20:41:13'),
+(22, 22, 'jessa-mae', 'Jessa Mae C. Matubis', 'SK Chairperson', 9486804219, '', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-03-06 20:41:22');
 
 --
 -- Indexes for dumped tables
