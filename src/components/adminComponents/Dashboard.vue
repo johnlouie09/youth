@@ -1,50 +1,9 @@
-<script setup>
-import DashboardCards from './subcomponents/dashboard/DashboardCards.vue';
-import Analytics from './subcomponents/dashboard/Analytics.vue';
-import Suggestions from './subcomponents/dashboard/Suggestions.vue';
-import { reactive } from 'vue';
-
-const data = reactive({
-    cardsData: [
-        {
-            type: 'officials',
-            title: 'OFFICIALS',
-            icon: 'mdi-account-group',  // Changed to MDI icon
-            details: [
-                { position: 'CHAIRPERSON', number: 1 },
-                { position: 'TREASURER', number: 1 },
-                { position: 'SECRETARY', number: 1 },
-                { position: 'KAGAWADS', number: 1 },
-            ]
-        },
-        {
-            type: 'achievements',
-            title: 'ACHIEVEMENTS',
-            icon: 'mdi-trophy', // Changed to MDI icon
-            details: {
-                date: new Date(2025, 1),
-                quantity: 64
-            }
-        },
-        {
-            type: 'announcements',
-            title: 'ANNOUNCEMENTS',
-            icon: 'mdi-bullhorn', // Changed to MDI icon
-            details: {
-                date: new Date(2025, 7),
-                quantity: 98
-            }
-        }
-    ]
-});
-</script>
-
 <template>
     <v-container class="dashboard-main" fluid>
         <!-- Cards Section -->
         <v-row class="cards" justify="center">
             <v-col
-                v-for="card in data.cardsData"
+                v-for="card in cardsData"
                 :key="card.title"
                 cols="12" md="4"
             >
@@ -76,7 +35,58 @@ const data = reactive({
         </v-btn>
     </v-container>
 </template>
-  
+
+<script>
+import DashboardCards from './subcomponents/dashboard/DashboardCards.vue';
+import Analytics from './subcomponents/dashboard/Analytics.vue';
+import Suggestions from './subcomponents/dashboard/Suggestions.vue';
+
+export default {
+    components: {
+        DashboardCards,
+        Analytics,
+        Suggestions
+    },
+    data() {
+        return {
+            cardsData: [
+                {
+                    type: 'officials',
+                    title: 'OFFICIALS',
+                    icon: 'mdi-account-group', // Changed to MDI icon
+                    details: [
+                        { position: 'CHAIRPERSON', number: 1 },
+                        { position: 'TREASURER', number: 1 },
+                        { position: 'SECRETARY', number: 1 },
+                        { position: 'KAGAWADS', number: 1 },
+                    ]
+                },
+                {
+                    type: 'achievements',
+                    title: 'ACHIEVEMENTS',
+                    icon: 'mdi-trophy', // Changed to MDI icon
+                    details: {
+                        date: new Date(2025, 1),
+                        quantity: 64
+                    }
+                },
+                {
+                    type: 'announcements',
+                    title: 'ANNOUNCEMENTS',
+                    icon: 'mdi-bullhorn', // Changed to MDI icon
+                    details: {
+                        date: new Date(2025, 7),
+                        quantity: 98
+                    }
+                }
+            ]
+        };
+    }
+};
+</script>
+
+
+
 <style scoped>
 .dashboard-main {
     padding: 36px 72px;
@@ -94,4 +104,3 @@ const data = reactive({
     width: 100%;
 }
 </style>
-  

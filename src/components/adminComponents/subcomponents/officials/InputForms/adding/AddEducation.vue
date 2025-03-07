@@ -1,27 +1,6 @@
-<script setup>
-import { ref } from 'vue';
-const dialog = ref(false);
-const education = ref({
-    school: '',
-    img: null,
-    detail: '',
-    year: {start: 1999, end: null},
-});
-
-const currentYear = new Date().getFullYear();
-const years = Array.from({ length: 50 }, (_, i) => (currentYear - i).toString());
-
-const submitForm = () => {
-    console.log("Submitted Data:", education.value);
-    dialog.value = false; // Close dialog after submission
-};
-</script>
-
-
-
 <template>
     <v-container>
-        <v-btn class="add-ebg-button" @click="dialog = true" >
+        <v-btn class="add-ebg-button" @click="dialog = true">
             <v-icon>mdi-plus-circle-outline</v-icon>
             <span class="ml-4">ADD NEW EDUCATIONAL BACKGROUND</span>
         </v-btn>
@@ -58,6 +37,30 @@ const submitForm = () => {
     </v-container>
 </template>
 
+<script>
+export default {
+    data() {
+        return {
+            dialog: false,
+            education: {
+                school: '',
+                img: null,
+                detail: '',
+                year: { start: 1999, end: null },
+            },
+            currentYear: new Date().getFullYear(),
+            years: Array.from({ length: 50 }, (_, i) => (new Date().getFullYear() - i).toString())
+        };
+    },
+    methods: {
+        submitForm() {
+            console.log("Submitted Data:", this.education);
+            this.dialog = false; // Close dialog after submission
+        }
+    }
+};
+</script>
+
 
 
 <style scoped>
@@ -76,7 +79,6 @@ const submitForm = () => {
     align-items: center;
     justify-content: center;
     padding: 2rem 1.5rem;
-    align-items: center;
     margin: auto;
     font-size: .7rem;
 }
