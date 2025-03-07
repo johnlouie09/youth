@@ -1,116 +1,137 @@
 <?php
 
-class SkOfficial
+require_once __DIR__ . '/Model.php';
+
+class SkOfficial extends Model
 {
-    private static $conn;
-    private static $table = 'sk_officials';
+    /** static data */
+    public static $table = 'sk_officials';
+    public static $table_columns = [];
+    protected static $basic_columns = ['id', 'slug', 'full_name', 'img'];
 
-    /*********************************************************************************************
-     * Initialize database connection
-     *
-     * @return mysqli Database connection
+    /** properties */
+    protected $barangay_id    = 0;
+    protected $slug           = '';
+    protected $full_name      = '';
+    protected $position       = '';
+    protected $contact_number = '';
+    protected $email          = '';
+    protected $birthday       = '';
+    protected $motto          = '';
+    protected $img            = '';
+    protected $term_start     = '';
+    protected $term_end       = '';
+
+
+    /**
+     * Constructor
+     * @param $id
      */
-    private static function getConnection()
+    public function __construct($id = 0)
     {
-        if (!isset(self::$conn)) {
-            // include database configuration
-            require_once '../app/config/database.php';
+        parent::__construct();
 
-            self::$conn = new mysqli($config['host'], $config['user'], $config['pass'], $config['dbname']);
-
-            if (self::$conn->connect_error) {
-                die("Connection failed: " . self::$conn->connect_error);
+        if ($id > 0) {
+            $stmt = $this->getConnection()->prepare("SELECT * FROM `" . self::$table . "` WHERE `id` = ?");
+            $stmt->bind_param("i", $id);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            if ($result->num_rows > 0) {
+                $row = $result->fetch_assoc();
+                $this->hydrate($row);
             }
         }
-
-        return self::$conn;
     }
 
-    /*********************************************************************************************
-     * Authenticate user login
-     *
-     * @param string $username Username
-     * @param string $password Password
-     * @return array|false User data if authenticated, false otherwise
+
+    /**
+     * Gets SkOfficial barangay_id.
+     * @return int
      */
-    public static function login($username, $password)
+    public function getBarangayId()
     {
-        $conn = self::getConnection();
-
-        // Prepare the query to check admin_users table
-        $query = "SELECT * FROM admin_users WHERE username = ?";
-        $stmt = $conn->prepare($query);
-        $stmt->bind_param("s", $username);
-        $stmt->execute();
-        $result = $stmt->get_result();
-
-        // Check if user exists
-        if ($result->num_rows > 0) {
-            $user = $result->fetch_assoc();
-            $stmt->close();
-
-            // Verify password
-            if (password_verify($password, $user['password']) || $user['password'] === $password) {
-                // Password is correct, create session
-                session_start();
-                $_SESSION['user_id'] = $user['id'];
-                $_SESSION['username'] = $user['username'];
-                $_SESSION['is_admin'] = ($user['username'] === 'admin');
-                $_SESSION['logged_in'] = true;
-
-                // Update last login time (optional)
-                $updateQuery = "UPDATE admin_users SET last_login = NOW() WHERE id = ?";
-                $updateStmt = $conn->prepare($updateQuery);
-                $updateStmt->bind_param("i", $user['id']);
-                $updateStmt->execute();
-                $updateStmt->close();
-
-                return $user;
-            }
-        } else {
-            $stmt->close();
-        }
-
-        return false;
+        return $this->barangay_id;
     }
 
-    /*********************************************************************************************
-     * Log out the current user
-     *
+
+    /**
+     * Gets SkOfficial slug.
+     * @return int
+     */
+    public function getSlug()
+    {
+        return $this->slug;
+    }
+
+    // TODO: COMPLETE ALL GETTER METHODS FOR ALL PROPERTIES
+
+
+
+
+
+    /**
+     * Sets SkOfficial barangay_id.
+     * @param $barangay_id
      * @return void
      */
-    public static function logout()
+    public function setBarangayId($barangay_id)
     {
-        session_start();
-        session_unset();
-        session_destroy();
+        $this->barangay_id = $barangay_id;
     }
 
-    /*********************************************************************************************
-     * Check if user is logged in
-     *
-     * @return bool True if logged in, false otherwise
-     */
-    public static function isLoggedIn()
-    {
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-        }
 
-        return isset($_SESSION['logged_in']) && $_SESSION['logged_in'] === true;
+    /**
+     * Sets SkOfficial slug..
+     * @param $slug
+     * @return void
+     */
+    public function setSlug($slug)
+    {
+        $this->slug = $slug;
     }
 
-    /*********************************************************************************************
-     * Check if current user is an admin
-     *
-     * @return bool True if admin, false otherwise
+    // TODO: COMPLETE ALL SETTER METHODS FOR ALL PROPERTIES
+
+
+
+
+
+
+    /**
+     * Get all SkOfficial.
+     * @param $assoc
+     * @param $assoc_basic
+     * @return array
      */
-    public static function isAdmin()
+    public static function all($assoc = false, $assoc_basic = false)
     {
-        if (!self::isLoggedIn()) {
-            return false;
+        $sk_officials = [];
+
+        $stmt = self::getConnectionStatic()->prepare("SELECT * FROM `" . self::$table . "`");
+        $stmt->execute();
+        $result = $stmt->get_result();
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                $sk_official = new SkOfficial();
+                $sk_official->hydrate($row);
+
+                $sk_officials[] = $assoc ? $sk_official->getAssoc($assoc_basic) : $sk_official;
+            }
         }
 
-        return isset($_SESSION['is_admin']) && $_SESSION['is_admin'] === true;
+        return $sk_officials;
+    }
+
+
+    /**
+     * Find an SkOfficial by id.
+     * @param $id
+     * @return SkOfficial|null
+     */
+    public static function find($id = 0)
+    {
+        $sk_official = new SkOfficial($id);
+
+        return ($sk_official->getId() > 0) ? $sk_official : null;
     }
 }
