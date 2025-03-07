@@ -12,6 +12,8 @@ class SkOfficial extends Model
     /** properties */
     protected $barangay_id    = 0;
     protected $slug           = '';
+    protected $username       = '';
+    protected $password       = '';
     protected $full_name      = '';
     protected $position       = '';
     protected $contact_number = '';
@@ -63,20 +65,112 @@ class SkOfficial extends Model
         return $this->slug;
     }
 
-
     /**
-     * Gets SkOfficial fullname.
+     * Gets SkOfficial username.
      * @return int
      */
-    public function getFullname()
+    public function getUsername()
+    {
+        return $this->username;
+    }
+
+
+    /**
+     * Gets SkOfficial password.
+     * @return int
+     */
+    public function getPassword()
+    {
+        return $this->password;
+    }
+
+
+    /**
+     * Gets SkOfficial full_name.
+     * @return int
+     */
+    public function getFullName()
     {
         return $this->full_name;
     }
 
-    // TODO: COMPLETE ALL GETTER METHODS FOR ALL PROPERTIES
+
+    /**
+     * Gets SkOfficial position.
+     * @return int
+     */
+    public function getPosition()
+    {
+        return $this->position;
+    }
 
 
+    /**
+     * Gets SkOfficial contact_number.
+     * @return int
+     */
+    public function getContactNumber()
+    {
+        return $this->contact_number;
+    }
 
+    /**
+     * Gets SkOfficial email.
+     * @return int
+     */
+    public function getEmail()
+    {
+        return $this->email;
+    }
+
+
+    /**
+     * Gets SkOfficial birthday.
+     * @return int
+     */
+    public function getBirthday()
+    {
+        return $this->birthday;
+    }
+
+
+    /**
+     * Gets SkOfficial motto.
+     * @return int
+     */
+    public function getMotto()
+    {
+        return $this->motto;
+    }
+
+
+    /**
+     * Gets SkOfficial img.
+     * @return int
+     */
+    public function getImg()
+    {
+        return $this->img;
+    }
+
+
+    /**
+     * Gets SkOfficial term_start.
+     * @return int
+     */
+    public function getTermStart()
+    {
+        return $this->term_start;
+    }
+
+    /**
+     * Gets SkOfficial term_end.
+     * @return int
+     */
+    public function getTermEnd()
+    {
+        return $this->term_end;
+    }
 
 
     /**
@@ -102,20 +196,124 @@ class SkOfficial extends Model
 
 
     /**
-     * Sets SkOfficial full_name.
-     * @param $fullname
+     * Sets SkOfficial username.
+     * @param $username
      * @return void
      */
-    public function setFullname($fullname)
+    public function setUsername($username)
     {
-        $this->full_name = $fullname;
+        $this->username = $username;
     }
 
-    // TODO: COMPLETE ALL SETTER METHODS FOR ALL PROPERTIES
+
+    /**
+     * Sets SkOfficial password.
+     * @param $password
+     * @return void
+     */
+    public function setPassword($password)
+    {
+        $this->password = $password;
+    }
 
 
+    /**
+     * Sets SkOfficial full_name.
+     * @param $full_name
+     * @return void
+     */
+    public function setFullName($full_name)
+    {
+        $this->full_name = $full_name;
+    }
 
 
+    /**
+     * Sets SkOfficial position.
+     * @param $position
+     * @return void
+     */
+    public function setPosition($position)
+    {
+        $this->position = $position;
+    }
+
+
+    /**
+     * Sets SkOfficial contact_number.
+     * @param $contact_number
+     * @return void
+     */
+    public function setContactNumber($contact_number)
+    {
+        $this->contact_number = $contact_number;
+    }
+
+
+    /**
+     * Sets SkOfficial email.
+     * @param $email
+     * @return void
+     */
+    public function setEmail($email)
+    {
+        $this->email = $email;
+    }
+
+
+    /**
+     * Sets SkOfficial birthday.
+     * @param $birthday
+     * @return void
+     */
+    public function setBirhtday($birthday)
+    {
+        $this->birthday = $birthday;
+    }
+
+
+    /**
+     * Sets SkOfficial motto.
+     * @param $motto
+     * @return void
+     */
+    public function setMotto($motto)
+    {
+        $this->motto = $motto;
+    }
+
+
+    /**
+     * Sets SkOfficial img.
+     * @param $img
+     * @return void
+     */
+    public function setImg($img)
+    {
+        $this->img = $img;
+    }
+
+
+    /**
+     * Sets SkOfficial term_start.
+     * @param $term_start
+     * @return void
+     */
+    public function setTermStart($term_start)
+    {
+        $this->term_start = $term_start;
+    }
+
+
+    /**
+     * Sets SkOfficial term_end.
+     * @param $term_end
+     * @return void
+     */
+    public function setTermEnd($term_end)
+    {
+        $this->term_end = $term_end;
+    }
 
 
     /**
