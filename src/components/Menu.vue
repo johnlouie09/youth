@@ -17,7 +17,9 @@
             </v-list-item>
 
             <v-list density="compact" nav>
-                <v-list-item prepend-icon="mdi-view-dashboard" title="Home" value="home"></v-list-item>
+                <router-link to="/">   <v-list-item prepend-icon="mdi-view-dashboard" title="Home" value="home">
+
+                </v-list-item></router-link>
                 <v-list-item prepend-icon="mdi-forum" title="About" value="about"></v-list-item>
 
                 <!-- Show feedback form only on /san-francisco -->
