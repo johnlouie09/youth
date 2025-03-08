@@ -1,5 +1,7 @@
 <?php
 
+if (session_status() == PHP_SESSION_NONE) { session_start(); }
+
 abstract class Model
 {
     /** static data */
