@@ -1,25 +1,3 @@
-<script setup>
-import { ref, defineExpose } from 'vue';
-
-const isDialogOpen = ref(false);
-const openDialog = () => {
-    isDialogOpen.value = true;
-};
-const closeDialog = () => {
-    isDialogOpen.value = false;
-};
-
-defineExpose({
-    openDialog
-});
-
-const profileData = ref([
-    { title: 'Hobbies', items: ['Playing Basketball', 'Writing Poem'] },
-    { title: 'Favorite Show', items: ['The Crown'] },
-    { title: 'Favorite Book', items: ['No Longer Human'] },
-    { title: 'Inspirational Figure', items: ['iShowSpeed'] }
-]);
-</script>
 <template>
     <v-dialog v-model="isDialogOpen" max-width="900px">
         <v-card style="border-radius: 20px;" border="primary lg">
@@ -93,50 +71,11 @@ const profileData = ref([
                                         <v-card-subtitle>Ateneo de Naga University Grade School</v-card-subtitle>
                                     </v-card>
                                 </v-timeline-item>
-
                             </v-timeline>
                         </v-card-text>
                     </v-sheet>
                 </div>
-                <div class="d-flex justify-center mb-6">
-                    <v-sheet width="800" elevation="10" style="border-radius: 20px; overflow: auto; text-align: start; padding: 16px;">
-                        <v-card-title class="text-center d-flex align-start justify-center">
-                            <v-icon class="mr-2">mdi-trophy</v-icon>PERSONAL ACHIEVEMENTS
-                        </v-card-title>
-                        <v-divider class="border-opacity-25 my-3" color="info"></v-divider>
-                        <v-container>
-                            <v-list dense>
-                                <v-list-item>
-                                    <v-list-item-content>
-                                        <v-list-item-title class="font-weight-bold">
-                                            Certificate of Completion: SK Mandatory Training
-                                        </v-list-item-title>
-                                        <v-list-item-subtitle>July 15, 2023</v-list-item-subtitle>
-                                    </v-list-item-content>
-                                </v-list-item>
 
-                                <v-list-item>
-                                    <v-list-item-content>
-                                        <v-list-item-title class="font-weight-bold">
-                                            Certificate of Recognition: Successful Organization of the Barangay Youth Sports Festival
-                                        </v-list-item-title>
-                                        <v-list-item-subtitle>November 25, 2023</v-list-item-subtitle>
-                                    </v-list-item-content>
-                                </v-list-item>
-
-                                <v-list-item>
-                                    <v-list-item-content>
-                                        <v-list-item-title class="font-weight-bold">
-                                            Certificate of Participation: Leadership and Governance Workshop
-                                        </v-list-item-title>
-                                        <v-list-item-subtitle>September 10, 2023</v-list-item-subtitle>
-                                    </v-list-item-content>
-                                </v-list-item>
-
-                            </v-list>
-                        </v-container>
-                    </v-sheet>
-                </div>
                 <div class="d-flex justify-center mb-6">
                     <v-sheet width="800" elevation="10" class="profile-sheet">
                         <v-card-title class="text-center">
@@ -157,7 +96,6 @@ const profileData = ref([
                         </v-container>
                     </v-sheet>
                 </div>
-
             </v-card-text>
             <v-card-actions>
                 <v-btn color="blue" @click="closeDialog">Close</v-btn>
@@ -165,8 +103,30 @@ const profileData = ref([
         </v-card>
     </v-dialog>
 </template>
+
+<script>
+export default {
+    data() {
+        return {
+            isDialogOpen: false,
+            profileData: [
+                { title: 'Hobbies', items: ['Playing Basketball', 'Writing Poem'] },
+                { title: 'Favorite Show', items: ['The Crown'] },
+                { title: 'Favorite Book', items: ['No Longer Human'] },
+                { title: 'Inspirational Figure', items: ['iShowSpeed'] }
+            ]
+        };
+    },
+    methods: {
+        openDialog() {
+            this.isDialogOpen = true;
+        },
+        closeDialog() {
+            this.isDialogOpen = false;
+        }
+    }
+};
+</script>
+
 <style scoped>
-
 </style>
-
-

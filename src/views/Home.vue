@@ -1,15 +1,23 @@
-<script setup>
-import Carousel from "../landingpage/Carousel.vue";
-import Navigation from "../landingpage/Navigation.vue";
-import Faqs from '../landingpage/faqs.vue';
-</script>
-
 <template>
     <v-app :theme="$vuetify.theme.name">
-        <Carousel/>
+        <Carousel />
         <br>
-        <Navigation/>
+        <Navigation />
         <br>
-        <Faqs/>
+        <Faqs />
     </v-app>
 </template>
+
+<script>
+import Carousel from "../landingpage/Carousel.vue";
+import Navigation from "../landingpage/Navigation.vue";
+import Faqs from "../landingpage/faqs.vue";
+
+export default {
+    components: {
+        Carousel,
+        Navigation,
+        Faqs
+    }
+};
+</script>

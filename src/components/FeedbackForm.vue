@@ -1,38 +1,3 @@
-<script setup>
-import { ref } from 'vue';
-
-const form = ref(null);
-const firstName = ref('');
-const lastName = ref('');
-const middleInitial = ref('');
-const address = ref('');
-const age = ref(null);
-const description = ref('');
-const isSubmitted = ref(false);
-const dialog = ref(false);
-
-const submitForm = () => {
-    form.value.validate().then(valid => {
-        if (!valid) return;
-
-        const formData = {
-            firstName: firstName.value,
-            lastName: lastName.value,
-            middleInitial: middleInitial.value,
-            address: address.value,
-            age: age.value,
-            description: description.value,
-        };
-
-        console.log("Form submitted:", formData);
-        isSubmitted.value = true;
-        setTimeout(() => {
-            isSubmitted.value = false;
-            dialog.value = false;
-        }, 2000);
-    });
-};
-</script>
 
 <template>
     <div>
@@ -60,6 +25,46 @@ const submitForm = () => {
         </v-dialog>
     </div>
 </template>
+<script>
+export default {
+    data() {
+        return {
+            form: null,
+            firstName: '',
+            lastName: '',
+            middleInitial: '',
+            address: '',
+            age: null,
+            description: '',
+            isSubmitted: false,
+            dialog: false
+        };
+    },
+    methods: {
+        submitForm() {
+            this.$refs.form.validate().then(valid => {
+                if (!valid) return;
+
+                const formData = {
+                    firstName: this.firstName,
+                    lastName: this.lastName,
+                    middleInitial: this.middleInitial,
+                    address: this.address,
+                    age: this.age,
+                    description: this.description
+                };
+
+                console.log("Form submitted:", formData);
+                this.isSubmitted = true;
+                setTimeout(() => {
+                    this.isSubmitted = false;
+                    this.dialog = false;
+                }, 2000);
+            });
+        }
+    }
+};
+</script>
 
 <style scoped>
 .success-message {
