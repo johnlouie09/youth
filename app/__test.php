@@ -6,6 +6,14 @@ echo "<pre>";
 require_once __DIR__ . '/models/SkOfficial.php';
 
 
+/** Find By Unique Column */
+$sk_official = SkOfficial::findBy('slug', 'dessa-mare');
+if ($sk_official !== null) {
+    print_r($sk_official->getAssoc(true));
+}
+echo "<hr>";
+
+
 /** Get all records as object */
 $sk_officials = SkOfficial::all();
 echo "<h1>All SK Officials (Objects):</h1>";
