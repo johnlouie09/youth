@@ -149,4 +149,51 @@ abstract class Model
         }
         return $arr;
     }
+
+
+    /**
+     * Retrieves an object by its id.
+     * @param int $id
+     * @return static|null
+     * @throws Exception
+     */
+    public static function find(int $id): ?static
+    {
+        $object = new static($id);
+
+        return ($object->getId() > 0) ? $object : null;
+    }
+
+
+    /**
+     * Retrieves an object by a given unique column.
+     * @param string $column
+     * @param mixed $value
+     * @param int[] $except_ids
+     * @return static|null
+     */
+    public static function findBy(string $column, mixed $value, array $except_ids = []): null|static
+    {
+        $object = null;
+
+        if (in_array($column, static::getTableColumns())) {
+            $query  = "SELECT * FROM `" . static::$table. "` ";
+            $query .= "WHERE `" . $column . "` = ? ";
+            if (sizeof($except_ids) > 0) {
+                $query .= "AND `id` NOT IN(" . implode(', ', $except_ids) . ") ";
+            }
+            $query .= "LIMIT 1";
+            $stmt = static::getConnectionStatic()->prepare($query);
+            $stmt->bind_param('s', $value);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            if ($result->num_rows > 0) {
+                $row = $result->fetch_assoc();
+                $object = new static();
+                $object->hydrate($row);
+            }
+        }
+
+        return $object;
+    }
 }
