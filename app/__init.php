@@ -1,59 +1,50 @@
 <?php
+// Enable CORS
 header('Access-Control-Allow-Origin: http://localhost:5173');
 header("Access-Control-Allow-Credentials: true");
 header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE');
 header('Access-Control-Allow-Headers: Content-Type');
-
 session_start();
 
 require_once 'config/database.php';
-require_once 'models/SkOfficial.php';
 
 /**
- * Restricts access to authenticated users only
- * @return SkOfficialController
+ * Returns the current authenticated user
+ * @return mixed Current authenticated SkOfficial or null
  */
-function requireAuthentication(): SkOfficialController
-{
-    $loggedIn = SkOfficial::getLoggedIn();
-
-    if ($loggedIn === null) {
-        header('HTTP/1.1 401 Unauthorized');
-        header('Content-Type: application/json');
-        echo json_encode([
-            'status' => 401,
-            'message' => 'Authentication required',
-            'data' => ['authenticated' => false]
-        ]);
-        exit;
-    }
-
-    return $loggedIn;
+function getUser() {
+    require_once 'models/SkOfficial.php';
+    return SkOfficial::getLoggedIn();
 }
 
 /**
- * Returns a standard error response
- * @param string $statusCode HTTP status code
- * @param string $message Error message
- * #[NoReturn]
+ * Denies access with 401 Unauthorized response
+ * @return void
  */
-function returnError(string $statusCode, string $message): void
-{
-    header($statusCode);
+function denyAccess() {
+    header('HTTP/1.1 401 Unauthorized');
     header('Content-Type: application/json');
     echo json_encode([
-        'status' => intval(substr($statusCode, 9)),
-        'message' => $message,
-        'data' => null
+        'status' => 401,
+        'message' => 'Authentication required',
+        'data' => ['authenticated' => false]
     ]);
     exit;
 }
 
 /**
- * Returns the current authenticated user
- * @return SkOfficialController
+ * Returns an error response
+ * @param string $statusCode HTTP status code
+ * @param string $message Error message
+ * @return void
  */
-function getUser(): SkOfficialController
-{
-    return SkOfficial::getLoggedIn();
+function returnError(string $statusCode, string $message): void {
+    header($statusCode);
+    header('Content-Type: application/json');
+    echo json_encode([
+        'status' => intval(substr($statusCode, 9, 3)),
+        'message' => $message,
+        'data' => null
+    ]);
+    exit;
 }
