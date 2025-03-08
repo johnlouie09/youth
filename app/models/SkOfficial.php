@@ -58,7 +58,7 @@ class SkOfficial extends Model
 
     /**
      * Gets SkOfficial slug.
-     * @return int
+     * @return string
      */
     public function getSlug()
     {
@@ -67,7 +67,7 @@ class SkOfficial extends Model
 
     /**
      * Gets SkOfficial username.
-     * @return int
+     * @return string
      */
     public function getUsername()
     {
@@ -77,7 +77,7 @@ class SkOfficial extends Model
 
     /**
      * Gets SkOfficial password.
-     * @return int
+     * @return string
      */
     public function getPassword()
     {
@@ -87,7 +87,7 @@ class SkOfficial extends Model
 
     /**
      * Gets SkOfficial full_name.
-     * @return int
+     * @return string
      */
     public function getFullName()
     {
@@ -97,7 +97,7 @@ class SkOfficial extends Model
 
     /**
      * Gets SkOfficial position.
-     * @return int
+     * @return string
      */
     public function getPosition()
     {
@@ -107,7 +107,7 @@ class SkOfficial extends Model
 
     /**
      * Gets SkOfficial contact_number.
-     * @return int
+     * @return string
      */
     public function getContactNumber()
     {
@@ -116,7 +116,7 @@ class SkOfficial extends Model
 
     /**
      * Gets SkOfficial email.
-     * @return int
+     * @return string
      */
     public function getEmail()
     {
@@ -126,7 +126,7 @@ class SkOfficial extends Model
 
     /**
      * Gets SkOfficial birthday.
-     * @return int
+     * @return string
      */
     public function getBirthday()
     {
@@ -136,7 +136,7 @@ class SkOfficial extends Model
 
     /**
      * Gets SkOfficial motto.
-     * @return int
+     * @return string
      */
     public function getMotto()
     {
@@ -146,7 +146,7 @@ class SkOfficial extends Model
 
     /**
      * Gets SkOfficial img.
-     * @return int
+     * @return string
      */
     public function getImg()
     {
@@ -156,7 +156,7 @@ class SkOfficial extends Model
 
     /**
      * Gets SkOfficial term_start.
-     * @return int
+     * @return string
      */
     public function getTermStart()
     {
@@ -165,7 +165,7 @@ class SkOfficial extends Model
 
     /**
      * Gets SkOfficial term_end.
-     * @return int
+     * @return string
      */
     public function getTermEnd()
     {
@@ -339,18 +339,5 @@ class SkOfficial extends Model
         }
 
         return $sk_officials;
-    }
-
-
-    /**
-     * Find an SkOfficial by id.
-     * @param $id
-     * @return SkOfficial|null
-     */
-    public static function find($id = 0)
-    {
-        $sk_official = new SkOfficial($id);
-
-        return ($sk_official->getId() > 0) ? $sk_official : null;
     }
 }
