@@ -270,7 +270,7 @@ class SkOfficial extends Model
      * @param $birthday
      * @return void
      */
-    public function setBirhtday($birthday)
+    public function setBirthday($birthday)
     {
         $this->birthday = $birthday;
     }
