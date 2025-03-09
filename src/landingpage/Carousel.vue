@@ -21,8 +21,8 @@
 <style scoped>
 .hero-container {
     position: relative;
-    padding: 20px;
-    height: 110vh;
+    width: 100%;
+    height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;

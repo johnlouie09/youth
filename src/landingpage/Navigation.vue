@@ -1,40 +1,3 @@
-<template>
-    <v-container>
-        <v-navigation grow class="d-flex justify-center">
-            <template v-if="loading">
-                <v-progress-circular indeterminate color="primary"></v-progress-circular>
-            </template>
-
-            <template v-else-if="error">
-                <v-alert type="error">{{ error }}</v-alert>
-            </template>
-
-            <template v-else>
-                <v-btn
-                    v-for="cluster in clusters"
-                    :key="cluster.id"
-                    @click="changeCluster(cluster)"
-                    :class="{ 'active-btn': selectedCluster?.id === cluster.id, 'custom-btn': true }"
-                    class="mx-2"
-                >
-                    <span class="overlay-titles">{{ cluster.name }}</span>
-                </v-btn>
-            </template>
-        </v-navigation>
-    </v-container>
-
-    <v-sheet class="mx-auto" width="1200" style="border-radius: 20px;" height="700">
-        <transition name="slide" mode="out-in">
-            <Barangays
-                v-if="selectedCluster"
-                style="padding: 50px;"
-                :cluster-id="selectedCluster.id"
-                :key="selectedCluster.id"
-            />
-        </transition>
-    </v-sheet>
-</template>
-
 <script>
 import axios from 'axios';
 import Barangays from './Barangays.vue';
@@ -82,4 +45,107 @@ export default {
     }
 };
 </script>
+
+<template>
+    <div class="main-navigation">
+        <v-navigation class="barangay-navigation">
+            <template v-if="loading">
+                <v-progress-circular indeterminate color="primary"></v-progress-circular>
+            </template>
+
+            <template v-else-if="error">
+                <v-alert type="error">{{ error }}</v-alert>
+            </template>
+
+            <template v-else>
+                <v-btn
+                    v-for="cluster in clusters"
+                    :key="cluster.id"
+                    @click="changeCluster(cluster)"
+                    :class="{ 'active-btn': selectedCluster?.id === cluster.id, 'custom-btn': true }"
+                    class="cluster-btn"
+                >
+                    <span class="overlay-titles">{{ cluster.name }}</span>
+                </v-btn>
+            </template>
+        </v-navigation>
+    
+
+        <div class="barangays">
+            <transition name="slide" mode="out-in">
+                <Barangays
+                    v-if="selectedCluster"
+                    :cluster-id="selectedCluster.id"
+                    :key="selectedCluster.id"
+                />
+            </transition>
+        </div>
+    </div>
+</template>
+
+<style scoped>
+    .main-navigation {
+        position: relative;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 3rem;
+        padding: 5rem 15rem;
+        /* Remove any box-shadow from here */
+    }
+
+    /* Left glow */
+    /* .main-navigation::before {
+        content: "";
+        position: absolute;
+        top: 0;     
+        bottom: 0;   
+        left: -100px;     
+        width: 200px;     
+        height: 100%;
+        border-radius: 50%;
+        background: linear-gradient(to right, #FDCA40, transparent);
+        filter: blur(75px); 
+        pointer-events: none;
+    } */
+
+    /* Right glow */
+    /* .main-navigation::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        right: -100px;
+        width: 200px;
+        height: 100%;
+        border-radius: 50%;
+        background: linear-gradient(to left,#DF2935, transparent);
+        filter: blur(75px);
+        pointer-events: none;
+    } */
+
+    /* Hide glow when in light mode */
+    :global(.theme--light) .main-navigation::before,
+    :global(.theme--light) .main-navigation::after {
+        display: none;
+    }
+    .barangay-navigation {
+        width: 80%;
+        display: flex;
+        justify-content: space-around;
+    }
+
+    .barangay-navigation .cluster-btn {
+        font-size: 1rem;
+        padding: 1rem 1.5rem;
+        height: auto;
+    }
+
+    .barangays {
+        width: 100%;
+        display: flex;
+    }
+</style>
 
