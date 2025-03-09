@@ -86,8 +86,9 @@ export default {
 /* Position the menu button at the top right */
 .menu-btn {
     position: fixed;
-    top: 16px;
-    right: 16px;
+    top: 0;
+    right: 0;
+    margin: 2rem;
     z-index: 1200;
 }
 

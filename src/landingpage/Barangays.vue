@@ -1,5 +1,5 @@
 <template>
-    <v-row>
+    <div class="barangays-cluster">
         <v-col v-if="loading" cols="12" class="text-center">
             <v-progress-circular indeterminate color="primary"></v-progress-circular>
         </v-col>
@@ -8,19 +8,10 @@
             <v-alert type="error">{{ error }}</v-alert>
         </v-col>
 
-        <template v-else>
-            <v-col v-for="barangay in barangays" :key="barangay.id" cols="12" md="4">
-                <router-link
-                    :to="barangay.name.toLowerCase().replace(/\s+/g, '-')"
-                    class="d-block"
-                >
-                    <v-card elevation="10" class="custom-card ma-2 hoverable" :max-width="350" height="200px">
-                        <v-card-title class="overlay-titles-barrangays">{{ barangay.name }}</v-card-title>
-                    </v-card>
-                </router-link>
-            </v-col>
-        </template>
-    </v-row>
+        <v-card v-else v-for="barangay in barangays" :key="barangay.id" elevation="10" class="barangay custom-card hoverable" width="350px" height="262px" :to="barangay.name.toLowerCase().replace(/\s+/g, '-')">
+            <v-card-title class="overlay-titles-barrangays">{{ barangay.name }}</v-card-title>
+        </v-card>
+    </div>
 </template>
 
 <script>
@@ -75,6 +66,24 @@ export default {
 
 
 <style scoped>
+.barangay {
+    width: 100%;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.barangays-cluster {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    align-items: center;
+    gap: 2rem;
+}
+
 .custom-card {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
