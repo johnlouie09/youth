@@ -19,6 +19,7 @@
     "chart.js": "^4.4.8",
     "flickity": "^3.0.0",
     "gsap": "^3.12.7",
+    "jquery": "^3.7.1",
     "pinia": "^2.3.1",
     "swiper": "^11.2.3",
     "tailwindcss": "^4.0.0",
