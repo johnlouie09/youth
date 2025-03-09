@@ -4,7 +4,7 @@ require_once '../__init.php';
 $authUser = getUser();
 if (!$authUser) {
     denyAccess();
-} else if ($authUser->getPosition() !== 'position') {
+} else if ($authUser->getPosition() !== 'SK Chairperson') {
     denyAccess();
 } else {
     require_once '../models/SkOfficial.php';
@@ -15,14 +15,13 @@ if (!$authUser) {
         denyAccess();
     } else {
         if (isset($_POST['authenticate'])) {
-            $data = json_decode(file_get_contents('php://input'), true);
-            if (!isset($data['identifier']) || !isset($data['password'])) {
+            if (!isset($_POST['identifier']) || !isset($_POST['password'])) {
                 returnError('HTTP/1.1 400 Bad Request', 'Missing required fields: identifier and password');
             }
 
-            $identifier = trim($data['identifier']);
-            $password = trim($data['password']);
-            $remember = isset($data['remember']) ? (bool)$data['remember'] : false;
+            $identifier = trim($_POST['identifier']);
+            $password = trim($_POST['password']);
+            $remember = isset($_POST['remember']) ? (bool)$_POST['remember'] : false;
 
             try {
                 $official = SkOfficial::login($identifier, $password, $remember);
