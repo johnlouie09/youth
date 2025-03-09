@@ -1,30 +1,7 @@
-<script setup>
-import { ref, watch } from 'vue';
-
-const props = defineProps({
-    achievements: {
-        type: Array,
-        required: true,
-    },
-});
-
-// Create a reactive array to track each card's expanded state
-const showStates = ref([]);
-
-// Watch for changes in props.achievements and initialize showStates
-watch(() => props.achievements, (newAchievements) => {
-    showStates.value = newAchievements.map(() => false); 
-}, { immediate: true });
-
-const toggleShow = (index) => {
-    showStates.value[index] = !showStates.value[index];
-};
-</script>
-
 <template>
     <v-container class="container">
         <v-row>
-            <v-col v-for="(achievement, index) in props.achievements" :key="index" cols="12" md="4">
+            <v-col v-for="(achievement, index) in achievements" :key="index" cols="12" md="4">
                 <v-card class="custom-card mx-auto" max-width="435" elevation="10">
                     <v-img
                         height="200"
@@ -59,6 +36,38 @@ const toggleShow = (index) => {
         </v-row>
     </v-container>
 </template>
+<script>
+export default {
+    props: {
+        achievements: {
+            type: Array,
+            required: true,
+        },
+    },
+    data() {
+        return {
+            showStates: []
+        };
+    },
+    mounted() {
+        this.showStates = this.achievements.map(() => false);
+    },
+    watch: {
+        achievements: {
+            handler(newAchievements) {
+                this.showStates = newAchievements.map(() => false);
+            },
+            immediate: true
+        }
+    },
+    methods: {
+        toggleShow(index) {
+            this.showStates[index] = !this.showStates[index];
+            this.$forceUpdate();
+        }
+    }
+};
+</script>
 
 <style>
 @import "../assets/Achievements.css";

@@ -8,7 +8,7 @@
 <template>
     <div class="hero-container elevation-10">
         <video class="background-video" id="bg-video" autoplay loop muted playsinline>
-            <source src="/Collage (1).mp4" type="video/mp4">
+            <source src="/looping_video_10s (1).mp4" type="video/mp4">
         </video>
         <div class="content">
             <div><img src="/Group.svg"></div>

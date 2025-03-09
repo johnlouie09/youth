@@ -1,45 +1,3 @@
-<script setup>
-import { onMounted, ref, computed } from "vue";
-import Swiper from "swiper";
-import "swiper/css";
-import "swiper/css/effect-coverflow";
-import "swiper/css/autoplay";
-import { EffectCoverflow, Autoplay } from "swiper/modules";
-
-// Reference to the Swiper container
-const swiperContainer = ref(null);
-
-// Dynamically generate movie items
-const movies = computed(() =>
-    Array.from({ length: 15 }, (_, i) => ({
-        id: i + 1,
-        src: `/${i + 1}.jpg`,
-        title: `Movie ${i + 1}`,
-    }))
-);
-
-onMounted(() => {
-    new Swiper(swiperContainer.value, {
-        modules: [EffectCoverflow, Autoplay],
-        effect: "coverflow",
-        grabCursor: true,
-        centeredSlides: true,
-        slidesPerView: "auto",
-        coverflowEffect: {
-            rotate: 15,
-            stretch: 0,
-            depth: 300,
-            modifier: 1,
-            slideShadows: false,
-        },
-        loop: true,
-        autoplay: {
-            delay: 5000,
-        },
-    });
-});
-</script>
-
 <template>
     <div class="carousel-container">
         <div ref="swiperContainer" class="swiper mySwiper">
@@ -51,6 +9,54 @@ onMounted(() => {
         </div>
     </div>
 </template>
+
+<script>
+import { Swiper } from "swiper";
+import "swiper/css";
+import "swiper/css/effect-coverflow";
+import "swiper/css/autoplay";
+import { EffectCoverflow, Autoplay } from "swiper/modules";
+
+export default {
+    data() {
+        return {
+            movies: Array.from({ length: 15 }, (_, i) => ({
+                id: i + 1,
+                src: `/${i + 1}.jpg`,
+                title: `Movie ${i + 1}`,
+            })),
+        };
+    },
+    mounted() {
+        this.$nextTick(() => {
+            this.initSwiper();
+        });
+    },
+    methods: {
+        initSwiper() {
+            new Swiper(this.$refs.swiperContainer, {
+                modules: [EffectCoverflow, Autoplay],
+                effect: "coverflow",
+                grabCursor: true,
+                centeredSlides: true,
+                slidesPerView: "auto",
+                coverflowEffect: {
+                    rotate: 15,
+                    stretch: 0,
+                    depth: 300,
+                    modifier: 1,
+                    slideShadows: false,
+                },
+                loop: true,
+                autoplay: {
+                    delay: 5000,
+                    disableOnInteraction: false,
+                },
+            });
+        },
+    },
+};
+</script>
 
 <style scoped>
 .carousel-container {
@@ -78,6 +84,4 @@ onMounted(() => {
     display: block;
     width: 100%;
 }
-
 </style>
-
