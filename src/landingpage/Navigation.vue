@@ -97,22 +97,22 @@ export default {
     }
 
     /* Left glow */
-    .main-navigation::before {
+    /* .main-navigation::before {
         content: "";
         position: absolute;
-        top: 0;        /* Adjust as needed to avoid top glow */
-        bottom: 0;     /* Adjust as needed to avoid bottom glow */
-        left: -100px;     /* Move outside the container a bit */
-        width: 200px;     /* Make the glow wider */
+        top: 0;     
+        bottom: 0;   
+        left: -100px;     
+        width: 200px;     
         height: 100%;
         border-radius: 50%;
         background: linear-gradient(to right, #FDCA40, transparent);
-        filter: blur(75px);  /* Apply a strong blur for a soft glow */
+        filter: blur(75px); 
         pointer-events: none;
-    }
+    } */
 
     /* Right glow */
-    .main-navigation::after {
+    /* .main-navigation::after {
         content: "";
         position: absolute;
         top: 0;
@@ -124,8 +124,13 @@ export default {
         background: linear-gradient(to left,#DF2935, transparent);
         filter: blur(75px);
         pointer-events: none;
-    }
+    } */
 
+    /* Hide glow when in light mode */
+    :global(.theme--light) .main-navigation::before,
+    :global(.theme--light) .main-navigation::after {
+        display: none;
+    }
     .barangay-navigation {
         width: 80%;
         display: flex;

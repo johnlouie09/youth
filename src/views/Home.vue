@@ -1,9 +1,9 @@
 <template>
-    <div class="home-main pa-0 ma-0" :theme="$vuetify.theme.name">
+    <v-container class="home-main pa-0 ma-0" :theme="$vuetify.theme.name" dark fluid>
         <Carousel />
         <Navigation />
         <Faqs />
-    </div>
+    </v-container>
 </template>
 
 <script>
@@ -22,12 +22,12 @@ export default {
 
 <style scoped>
     .home-main {
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        gap: 5rem;
-        margin: 0px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 5rem;
+    margin: 0;
     }
 </style>

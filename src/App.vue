@@ -14,6 +14,7 @@ import Footer from "./components/Footer.vue";
 
 export default {
     components: {
+        Menu,
         Preloader,
         Menu,
         Footer

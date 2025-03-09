@@ -22,7 +22,7 @@
 .hero-container {
     position: relative;
     width: 100%;
-    height: 771px;
+    height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
