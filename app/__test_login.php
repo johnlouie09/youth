@@ -11,9 +11,9 @@ echo "<pre>";
 require_once __DIR__ . '/models/SkOfficial.php';
 
 
-$username = 'dessa';
-$email    = 'dessa@example.com';
-$password = '123456';
+$username = 'irish';
+$email    = 'irish@example.com';
+$password = '123';
 $remember = false;
 
 try {

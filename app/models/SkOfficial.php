@@ -7,7 +7,7 @@ class SkOfficial extends Model
     /** static data */
     public    static $table                = 'sk_officials';
     public    static $table_columns        = [];
-    protected static $basic_columns        = ['id', 'full_name'];
+    protected static $basic_columns        = ['id', 'full_name', 'username', 'email'];
     private   static $session_username_key = 'kh0vlaf86ytb7hg9';
     private   static $session_password_key = 'f06vtd9gx1r41tsg';
     private   static $logged_in            = null;
