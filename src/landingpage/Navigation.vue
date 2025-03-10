@@ -1,45 +1,3 @@
-<script setup>
-import { ref, onMounted } from 'vue';
-import axios from 'axios';
-import Barangays from './Barangays.vue';
-
-const clusters = ref([]);
-const selectedCluster = ref(null);
-const loading = ref(false);
-const error = ref(null);
-
-const fetchClusters = async () => {
-    try {
-        loading.value = true;
-        error.value = null;
-        const response = await axios.get('/api/getClusters.php');
-
-        if (response.data.success) {
-            clusters.value = response.data.data;
-            // Set default selected cluster to first cluster
-            if (clusters.value.length > 0 && !selectedCluster.value) {
-                selectedCluster.value = clusters.value[0];
-            }
-        } else {
-            error.value = 'Failed to fetch clusters';
-        }
-    } catch (err) {
-        error.value = 'Error connecting to the server';
-        console.error('Error:', err);
-    } finally {
-        loading.value = false;
-    }
-};
-
-const changeCluster = (cluster) => {
-    selectedCluster.value = cluster;
-};
-
-onMounted(() => {
-    fetchClusters();
-});
-</script>
-
 <template>
     <v-app>
         <v-container>
@@ -54,11 +12,11 @@ onMounted(() => {
 
                 <template v-else>
                     <v-btn
-                            v-for="cluster in clusters"
-                            :key="cluster.id"
-                            @click="changeCluster(cluster)"
-                            :class="{ 'active-btn': selectedCluster?.id === cluster.id, 'custom-btn': true }"
-                            class="mx-2"
+                        v-for="cluster in clusters"
+                        :key="cluster.id"
+                        @click="changeCluster(cluster)"
+                        :class="{ 'active-btn': selectedCluster?.id === cluster.id, 'custom-btn': true }"
+                        class="mx-2"
                     >
                         <span class="overlay-titles">{{ cluster.name }}</span>
                     </v-btn>
@@ -70,12 +28,64 @@ onMounted(() => {
             <!-- Apply transition -->
             <transition name="slide" mode="out-in">
                 <Barangays
-                v-if="selectedCluster"
-                style="padding: 50px;"
-                :cluster-id="selectedCluster.id"
-                :key="selectedCluster.id"
+                    v-if="selectedCluster"
+                    style="padding: 50px;"
+                    :cluster-id="selectedCluster.id"
+                    :key="selectedCluster.id"
                 />
             </transition>
         </v-sheet>
     </v-app>
 </template>
+
+<script>
+import Barangays from './Barangays.vue';
+import $ from 'jquery';
+
+export default {
+    components: { Barangays },
+    data() {
+        return {
+            clusters: [],
+            selectedCluster: null,
+            loading: false,
+            error: null
+        };
+    },
+    methods: {
+        fetchClusters() {
+            this.loading = true;
+            this.error = null;
+
+            $.ajax({
+                url: '/api/getClusters.php',
+                method: 'GET',
+                dataType: 'json',
+                success: (response) => {
+                    if (response.success) {
+                        this.clusters = response.data;
+                        // Set default selected cluster to first cluster
+                        if (this.clusters.length > 0 && !this.selectedCluster) {
+                            this.selectedCluster = this.clusters[0];
+                        }
+                    } else {
+                        this.error = 'Failed to fetch clusters';
+                    }
+                },
+                error: () => {
+                    this.error = 'Error connecting to the server';
+                },
+                complete: () => {
+                    this.loading = false;
+                }
+            });
+        },
+        changeCluster(cluster) {
+            this.selectedCluster = cluster;
+        }
+    },
+    mounted() {
+        this.fetchClusters();
+    }
+};
+</script>
