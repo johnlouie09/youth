@@ -52,7 +52,7 @@ const testData = reactive({
 const testLogin = () => {
     $.ajax({
         type: 'POST', xhrFields: { withCredentials: true },
-        url : `${api_base}?sk-official&login`,
+        url : `${api_base}?e=sk-official&a=login`,
         data: {
             identifier: 'dessa',
             password  : '123456',
@@ -77,7 +77,7 @@ const testLogin = () => {
 const testGetSession = () => {
     $.ajax({
         type: 'GET', xhrFields: { withCredentials: true },
-        url : `${api_base}?sk-official&session`,
+        url : `${api_base}?e=sk-official&a=session`,
         data: {
 
         },
@@ -101,7 +101,7 @@ const testLogout = () => {
     if (testData.skOfficial) {
         $.ajax({
             type: 'POST', xhrFields: { withCredentials: true },
-            url : `${api_base}?sk-official&logout`,
+            url : `${api_base}?e=sk-official&a=logout`,
             data: {
                 username: testData.skOfficial.username,
             },

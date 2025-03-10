@@ -6,8 +6,11 @@ if (!defined('__BASE')) { exit(); }
 /** imports */
 require_once __DIR__ . '/models/SkOfficial.php';
 
+/** Extract Action */
+$action = $_GET['a'] ?? '';
+
 /** Login Request *********************************************/
-if (isset($_GET['login']))
+if ($action === 'login')
 {
     // get inputs
     $identifier = $_POST['identifier'] ?? '';
@@ -34,7 +37,7 @@ if (isset($_GET['login']))
 
 
 /** Session Request *******************************************/
-else if (isset($_GET['session']))
+else if ($action === 'session')
 {
     $sk_official = SkOfficial::getLoggedIn();
 
@@ -50,7 +53,7 @@ else if (isset($_GET['session']))
 
 
 /** Logout Request ********************************************/
-else if (isset($_GET['logout']))
+else if ($action === 'logout')
 {
     // get inputs
     $username = $_POST['username'] ?? '';
@@ -70,4 +73,10 @@ else if (isset($_GET['logout']))
     returnSuccess([
         'logged_out' => true
     ]);
+}
+
+/** Invalid Request *******************************************/
+else
+{
+    returnError('Action Not Found.', 404);
 }

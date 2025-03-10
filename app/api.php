@@ -50,19 +50,21 @@ function returnError(string $message, int $status = 500): void
     exit;
 }
 
+/** Extract Main Endpoint */
+$endpoint = $_GET['e'] ?? '';
 
 /** Main Endpoints */
-if (isset($_GET['sk-official']))
+if ($endpoint == 'sk-official')
 {
     require_once __DIR__ . '/api--sk-official.php';
 }
 
-/*else if (isset($_GET['barangay']))
+/* if ($endpoint == 'barangay')
 {
     require_once __DIR__ . '/api--barangay.php';
 }*/
 
 else
 {
-    returnError('Endpoint not found.', 404);
+    returnError('Main Endpoint Not Found.', 404);
 }
