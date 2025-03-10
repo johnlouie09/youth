@@ -1,11 +1,12 @@
 <template>
     <v-app :theme="$vuetify.theme.global.name.value">
         <div class="relative flex justify-center items-center overflow-hidden">
-            <img class="w-full object-fill" :src="barangayHall" alt="" style="height: 350px;" />
+            <img class="w-full brightness-75 object-fill" :src="barangayHall" alt="" style="height: 350px;"  />
             <div class="absolute left-0 top-1/2 transform -translate-y-1/2" style="margin-left: 100px; scale: 2.5;">
                 <img class="w-24 h-auto" src="/Logoseal.svg" alt="logo" />
             </div>
-            <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white text-5xl font-bold">
+            <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2
+            text-white text-6xl font-extrabold tracking-wide drop-shadow-lg">
                 {{ `Barangay ${barangay.name}` }}
             </div>
             <div class="absolute right-0 top-1/2 transform -translate-y-1/2" style="margin-right: 100px; scale: 2.5;">
@@ -14,9 +15,10 @@
         </div>
 
         <br>
-
+<br>
         <div>
-            <h1 class="gradient-text">Announcements</h1>
+            <h1 class="text-6xl" style="letter-spacing: 1.5px;">Announcements</h1>
+            <br>
             <Carousel />
             <br>
             <Cards />
@@ -24,7 +26,7 @@
 
         <br>
 
-        <h1 class="gradient-text">Achievements</h1>
+        <h1 class="text-6xl" style="letter-spacing: 1.5px;">Achievements</h1>
         <Achievements :achievements="barangay.achievements" />
     </v-app>
 </template>
@@ -161,10 +163,5 @@ export default {
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
-.font-bold {
-    background-image: linear-gradient(45deg, #3772FF 2%, #DF2935 20%, #FDCA40 35%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    font-weight: bold;
-}
+
 </style>
