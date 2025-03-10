@@ -1,9 +1,12 @@
 <?php
 require_once '../../app/config/database.php';
 
-header('Content-Type: application/json');
-header('Access-Control-Allow-Origin: *');
-header('Access-Control-Allow-Methods: GET');
+header("Access-Control-Allow-Origin: *"); // Allow any origin (for development)
+header("Access-Control-Allow-Methods: GET, POST, OPTIONS"); // Allow common HTTP methods
+header("Access-Control-Allow-Headers: Content-Type, x-requested-with"); // Allow necessary headers
+
+// Handle preflight (OPTIONS) requests
+
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $clusterId = isset($_GET['cluster_id']) ? (int)$_GET['cluster_id'] : null;
