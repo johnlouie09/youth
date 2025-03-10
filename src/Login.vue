@@ -48,6 +48,8 @@
   
   <script>
   import $ from 'jquery';
+  const api_base = 'http://localhost/youth/app/api.php';
+
   
   export default {
     name: "Login",
@@ -86,13 +88,12 @@
           return; // Stop submission if validation fails
         }
         await $.ajax({
-          url: `../../app/controllers/SKOfficialController.php`, // suppose to be using vuex but I'm not yet familliar with vuex HAHAHAH sorry
+          url: `${api_base}?e=sk-official&a=login`, // appending the query parameter
           type: 'POST',
           xhrFields: {
             withCredentials: true
           },
           data: {
-            authenticate: true,
             identifier: this.username,
             password: this.password,
             remember: true
@@ -105,6 +106,7 @@
           }
         });
       }
+
     }
   };
   </script>
