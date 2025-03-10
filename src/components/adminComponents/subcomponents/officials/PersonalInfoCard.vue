@@ -1,48 +1,3 @@
-<script setup>
-import { ref, computed } from 'vue';
-
-const originalInfo = ref({
-    name: "John Doe Dela Cruz",
-    email: "johnjohn@email.com",
-    birthday: "1999-05-15",
-    motto: "Lorem ipsum dolor sit amet consecteture. Sed ultrices ultrices volutpat lobortis nunc dictumst nulla neque.",
-    img: "/public/Sangguniang_Kabataan_logo.svg"
-});
-
-// Reactive copy (user can modify this)
-const personalInfo = ref({ ...originalInfo.value });
-
-// Check if any changes were made
-const hasChangesPersonalInfo = computed(() => {
-    return JSON.stringify(personalInfo.value) !== JSON.stringify(originalInfo.value);
-});
-
-// Function to save changes
-const saveChanges = () => {
-    originalInfo.value = { ...personalInfo.value };
-};
-
-// Function to discard changes
-const discardChanges = () => {
-    personalInfo.value = { ...originalInfo.value };
-};
-
-// Trigger file input when clicking the icon
-const triggerFileInput = () => {
-    fileInput.value.click();
-};
-
-// Handle file upload and preview
-const handleFileUpload = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-        personalInfo.value.icon = URL.createObjectURL(file);
-    }
-};
-
-const fileInput = ref(null); // Reference for the hidden file input
-</script>
-
 <template>
     <!-- Intro Section -->
     <v-card justify="center" class="intro pa-4 info-card">
@@ -92,6 +47,50 @@ const fileInput = ref(null); // Reference for the hidden file input
         </v-card-text>
     </v-card>
 </template>
+
+<script>
+export default {
+    data() {
+        return {
+            originalInfo: {
+                name: "John Doe Dela Cruz",
+                email: "johnjohn@email.com",
+                birthday: "1999-05-15",
+                motto: "Lorem ipsum dolor sit amet consecteture. Sed ultrices ultrices volutpat lobortis nunc dictumst nulla neque.",
+                img: "/public/Sangguniang_Kabataan_logo.svg"
+            },
+            personalInfo: {},
+            fileInput: null
+        };
+    },
+    computed: {
+        hasChangesPersonalInfo() {
+            return JSON.stringify(this.personalInfo) !== JSON.stringify(this.originalInfo);
+        }
+    },
+    methods: {
+        saveChanges() {
+            this.originalInfo = { ...this.personalInfo };
+        },
+        discardChanges() {
+            this.personalInfo = { ...this.originalInfo };
+        },
+        triggerFileInput() {
+            this.$refs.fileInput.click();
+        },
+        handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                this.personalInfo.img = URL.createObjectURL(file);
+            }
+        }
+    },
+    mounted() {
+        this.personalInfo = { ...this.originalInfo };
+    }
+};
+</script>
+
 
 <style scoped>
 /* Intro Section */

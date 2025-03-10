@@ -1,66 +1,3 @@
-<script setup>
-import { ref, watch } from 'vue';
-
-const dialog = ref(true);
-const props = defineProps({
-    info: Object
-});
-
-const initialOtherInfo = {
-    title: props.info.title,
-    icon: props.info.icon,
-    details: [...props.info.details],
-};
-
-const otherInfo = ref(JSON.parse(JSON.stringify(initialOtherInfo)));
-const hasChanges = ref(false);
-const newDetail = ref("");
-
-watch(otherInfo, (newVal) => {
-    hasChanges.value = JSON.stringify(newVal) !== JSON.stringify(initialOtherInfo);
-}, { deep: true });
-
-const saveChanges = () => {
-    Object.assign(initialOtherInfo, JSON.parse(JSON.stringify(otherInfo.value)));
-    hasChanges.value = false;
-    emit('close');
-};
-
-const discardChanges = () => {
-    otherInfo.value = JSON.parse(JSON.stringify(initialOtherInfo));
-    hasChanges.value = false;
-    newDetail.value = "";
-};
-
-const fileInput = ref(null);
-const handleFileUpload = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-        otherInfo.value.icon = URL.createObjectURL(file);
-    }
-};
-
-const triggerFileInput = () => {
-    fileInput.value.click();
-};
-
-const addDetail = () => {
-    if (newDetail.value.trim() !== "") {
-        otherInfo.value.details.push(newDetail.value.trim());
-        newDetail.value = "";
-    }
-};
-
-const removeDetail = (index) => {
-    otherInfo.value.details.splice(index, 1);
-};
-
-const emit = defineEmits(['close']);
-const closeForm = () => {
-    emit('close');
-};
-</script>
-
 <template>
     <v-dialog v-model="dialog" max-width="900px" persistent="">
         <v-card class="info-card">
@@ -100,6 +37,73 @@ const closeForm = () => {
         </v-card>
     </v-dialog>
 </template>
+
+<script>
+export default {
+    props: {
+        info: Object
+    },
+    data() {
+        return {
+            dialog: true,
+            initialOtherInfo: {
+                title: this.info.title,
+                icon: this.info.icon,
+                details: [...this.info.details]
+            },
+            otherInfo: JSON.parse(JSON.stringify({
+                title: this.info.title,
+                icon: this.info.icon,
+                details: [...this.info.details]
+            })),
+            hasChanges: false,
+            newDetail: "",
+            fileInput: null
+        };
+    },
+    watch: {
+        otherInfo: {
+            deep: true,
+            handler(newVal) {
+                this.hasChanges = JSON.stringify(newVal) !== JSON.stringify(this.initialOtherInfo);
+            }
+        }
+    },
+    methods: {
+        saveChanges() {
+            Object.assign(this.initialOtherInfo, JSON.parse(JSON.stringify(this.otherInfo)));
+            this.hasChanges = false;
+            this.$emit('close');
+        },
+        discardChanges() {
+            this.otherInfo = JSON.parse(JSON.stringify(this.initialOtherInfo));
+            this.hasChanges = false;
+            this.newDetail = "";
+        },
+        handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                this.otherInfo.icon = URL.createObjectURL(file);
+            }
+        },
+        triggerFileInput() {
+            this.$refs.fileInput.click();
+        },
+        addDetail() {
+            if (this.newDetail.trim() !== "") {
+                this.otherInfo.details.push(this.newDetail.trim());
+                this.newDetail = "";
+            }
+        },
+        removeDetail(index) {
+            this.otherInfo.details.splice(index, 1);
+        },
+        closeForm() {
+            this.$emit('close');
+        }
+    }
+};
+</script>
 
 <style scoped>
 /* Make scrollbar small */

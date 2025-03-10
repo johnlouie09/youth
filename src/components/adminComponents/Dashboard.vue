@@ -175,7 +175,7 @@ testGetSession();
         </v-btn>
     </v-container>
 </template>
-  
+
 <style scoped>
 .dashboard-main {
     padding: 36px 72px;
@@ -193,4 +193,3 @@ testGetSession();
     width: 100%;
 }
 </style>
-  

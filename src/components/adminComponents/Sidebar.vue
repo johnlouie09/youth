@@ -1,21 +1,3 @@
-<script setup>
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
-import ThemeSwitcher from '../ThemeSwitcher.vue';
-
-const router = useRouter();
-const drawer = ref(true);
-
-const menuObjs = [
-    { menuName: "Dashboard", icon: "mdi-view-dashboard", to: "/admin/dashboard" },
-    { menuName: "Officials", icon: "mdi-account-group", to: "/admin/officials" },
-    { menuName: "Announcements", icon: "mdi-bullhorn", to: "/admin/announcements" },
-    { menuName: "Achievements", icon: "mdi-trophy", to: "/admin/achievements" },
-    { menuName: "Settings and Profile", icon: "mdi-cog", to: "/admin/settings" },
-    { menuName: "Notices", icon: "mdi-bell", to: "/admin/notices" }
-];
-</script>
-
 <template>
     <v-navigation-drawer v-model="drawer" app width="280" class="pa-3 pt-7 pb-7">
         <!-- Logo and Barangay Name -->
@@ -57,13 +39,40 @@ const menuObjs = [
 
         <!-- Logout Button at the Bottom Center -->
         <v-list-item class="logout-container">
-            <v-btn block color="error" variant="outlined" @click="router.push('/logout')">
+            <v-btn block color="error" variant="outlined" @click="logout">
                 <v-icon left>mdi-logout</v-icon>
                 <span>LOG OUT</span>
             </v-btn>
         </v-list-item>
     </v-navigation-drawer>
 </template>
+
+<script>
+import ThemeSwitcher from '../ThemeSwitcher.vue';
+
+export default {
+    components: { ThemeSwitcher },
+    data() {
+        return {
+            drawer: true,
+            menuObjs: [
+                { menuName: "Dashboard", icon: "mdi-view-dashboard", to: "/admin/dashboard" },
+                { menuName: "Officials", icon: "mdi-account-group", to: "/admin/officials" },
+                { menuName: "Announcements", icon: "mdi-bullhorn", to: "/admin/announcements" },
+                { menuName: "Achievements", icon: "mdi-trophy", to: "/admin/achievements" },
+                { menuName: "Settings and Profile", icon: "mdi-cog", to: "/admin/settings" },
+                { menuName: "Notices", icon: "mdi-bell", to: "/admin/notices" }
+            ]
+        };
+    },
+    methods: {
+        logout() {
+            this.$router.push('/logout');
+        }
+    }
+};
+</script>
+
 
 <style scoped>
 .active {

@@ -14,12 +14,20 @@
     </v-container>
 </template>
 
-<script setup>
-import { ref } from "vue";
+<script>
 import PersonalInfoCard from "./PersonalInfoCard.vue";
 import EducationalOfficial from "./EducationalOfficial.vue";
 import PersonalAchievements from "./PersonalAchievements.vue";
 import OtherInformation from "./OtherInformation.vue";
+
+export default {
+    components: {
+        PersonalInfoCard,
+        EducationalOfficial,
+        PersonalAchievements,
+        OtherInformation
+    }
+};
 </script>
 
 <style scoped>

@@ -1,30 +1,3 @@
-<script setup>
-import { ref } from 'vue';
-import AddOtherInfo from './InputForms/adding/AddOtherInfo.vue';
-import UpdatingInfo from './InputForms/updating/UpdatingInfo.vue';
-
-// Dummy Data for Testing
-const dummyInfo = ref([
-    {
-        title: "My Favorite Book",
-        icon: "mdi-book-open-variant",
-        details: ["Atomic Habits by James Clear", "Deep Work by Cal Newport", "Atomic Habits by James Clear", "Deep Work by Cal Newport", "Atomic Habits by James Clear", "Deep Work by Cal Newport", "Atomic Habits by James Clear", "Deep Work by Cal Newport"]
-    },
-    {
-        title: "Hobbies",
-        icon: "mdi-run",
-        details: ["Running", "Cycling", "Playing Piano"]
-    }
-]);
-
-const editingIndex = ref(null); // Track the index of the item being edited
-// Function to open the update form
-const editInfo = (index) => {
-    editingIndex.value = index;
-};
-const hoverIndex = ref(null);
-</script>
-
 <template>
     <v-card class="other-information-section" elevation="10">
         <v-card-title class="title d-flex align-center justify-center">
@@ -33,14 +6,13 @@ const hoverIndex = ref(null);
         </v-card-title>
 
         <div class="other-info-cards">
-            <v-card 
-                class="info-card" 
-                v-for="(card, index) in dummyInfo" 
+            <v-card
+                class="info-card"
+                v-for="(card, index) in dummyInfo"
                 :key="index"
-                @mouseover="hoverIndex = index" 
+                @mouseover="hoverIndex = index"
                 @mouseleave="hoverIndex = null"
             >
-                <!-- Card Title -->
                 <v-card-title class="card-title">
                     {{ card.title }}
                 </v-card-title>
@@ -54,7 +26,6 @@ const hoverIndex = ref(null);
                     </div>
                 </v-card-text>
 
-                <!-- Actions appear with transition -->
                 <transition name="fade">
                     <div v-if="hoverIndex === index" class="educational-card-actions">
                         <v-icon class="edit-icon" size="30" @click="editInfo(index)">mdi-pencil-circle</v-icon>
@@ -62,18 +33,53 @@ const hoverIndex = ref(null);
                     </div>
                 </transition>
 
-                <!-- Show UpdateInfo when editing -->
-               <UpdatingInfo
-                v-if="editingIndex === index" 
-                :info="card"
-                @close="editingIndex = null"
-               />
+                <UpdatingInfo
+                    v-if="editingIndex === index"
+                    :info="card"
+                    @close="editingIndex = null"
+                />
             </v-card>
         </div>
 
         <add-other-info></add-other-info>
     </v-card>
 </template>
+
+<script>
+import AddOtherInfo from './InputForms/adding/AddOtherInfo.vue';
+import UpdatingInfo from './InputForms/updating/UpdatingInfo.vue';
+
+export default {
+    components: {
+        AddOtherInfo,
+        UpdatingInfo
+    },
+    data() {
+        return {
+            dummyInfo: [
+                {
+                    title: "My Favorite Book",
+                    icon: "mdi-book-open-variant",
+                    details: ["Atomic Habits by James Clear", "Deep Work by Cal Newport", "Atomic Habits by James Clear", "Deep Work by Cal Newport", "Atomic Habits by James Clear", "Deep Work by Cal Newport", "Atomic Habits by James Clear", "Deep Work by Cal Newport"]
+                },
+                {
+                    title: "Hobbies",
+                    icon: "mdi-run",
+                    details: ["Running", "Cycling", "Playing Piano"]
+                }
+            ],
+            editingIndex: null,
+            hoverIndex: null
+        };
+    },
+    methods: {
+        editInfo(index) {
+            this.editingIndex = index;
+        }
+    }
+};
+</script>
+
 
 <style scoped>
 .other-information-section {
@@ -95,17 +101,6 @@ const hoverIndex = ref(null);
     flex-wrap: wrap;
 }
 
-.add-oi-button {
-    border-radius: .5rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 2rem 1.5rem;
-    margin: auto;
-    font-size: .7rem;
-}
-
-/* Base Card Styling */
 .info-card {
     background-color: var(--v-theme-surface);
     border-radius: 0.5rem;
@@ -115,7 +110,6 @@ const hoverIndex = ref(null);
     position: relative;
 }
 
-/* Title Styles */
 .card-title {
     display: flex;
     justify-content: center;
@@ -127,7 +121,6 @@ const hoverIndex = ref(null);
     background-color: rgba(55, 114, 255, 0.7);
 }
 
-/* Card Body */
 .card-body {
     display: flex;
     justify-content: center;
@@ -138,20 +131,6 @@ const hoverIndex = ref(null);
     padding: 3rem;
 }
 
-/* Text Styling */
-h4 {
-    font-size: 1.2rem;
-    font-weight: 700;
-    margin-bottom: 0.5rem;
-}
-
-p {
-    font-size: 1rem;
-    font-weight: 500;
-}
-
-/* Actions Positioned to Bottom Right */
-/* Actions */
 .educational-card-actions {
     position: absolute;
     bottom: 10px;
@@ -160,18 +139,17 @@ p {
     gap: 10px;
 }
 
-/* Edit and Delete Icons */
 .edit-icon, .delete-icon {
-  cursor: pointer;
+    cursor: pointer;
 }
 
 .edit-icon:hover {
-  transform: scale(1.1);
-  color: #4caf4fa1; /* Green for edit */
+    transform: scale(1.1);
+    color: #4caf4fa1;
 }
 
 .delete-icon:hover {
-  transform: scale(1.1);
-  color: #f443369c; /* Red for delete */
+    transform: scale(1.1);
+    color: #f443369c;
 }
 </style>
