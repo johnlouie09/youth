@@ -14,10 +14,10 @@
             <v-card-text>
                 <v-form ref="form">
                     <v-text-field v-model="newInfo.title" label="Title" required></v-text-field>
-                    
+
                     <!-- File Upload for Icon -->
-                    <v-file-input 
-                        label="Upload Icon" 
+                    <v-file-input
+                        label="Upload Icon"
                         accept="image/*"
                         @change="handleFileUpload"
                         show-size
@@ -46,31 +46,32 @@
     </v-dialog>
 </template>
 
-<script setup>
-import { ref } from 'vue';
-
-const dialog = ref(false);
-const newInfo = ref({
-    title: '',
-    icon: '', // Store image URL here
-    details: []
-});
-
-const emit = defineEmits(["add-info"]);
-
-// Handle file upload and convert to URL
-const handleFileUpload = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-        newInfo.value.icon = URL.createObjectURL(file);
-    }
-};
-
-const submitForm = () => {
-    if (newInfo.value.title && newInfo.value.details.length && newInfo.value.icon) {
-        emit("add-info", { ...newInfo.value });
-        newInfo.value = { title: '', icon: '', details: [] };
-        dialog.value = false;
+<script>
+export default {
+    data() {
+        return {
+            dialog: false,
+            newInfo: {
+                title: '',
+                icon: '', // Store image URL here
+                details: []
+            }
+        };
+    },
+    methods: {
+        handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                this.newInfo.icon = URL.createObjectURL(file);
+            }
+        },
+        submitForm() {
+            if (this.newInfo.title && this.newInfo.details.length && this.newInfo.icon) {
+                this.$emit("add-info", { ...this.newInfo });
+                this.newInfo = { title: '', icon: '', details: [] };
+                this.dialog = false;
+            }
+        }
     }
 };
 </script>

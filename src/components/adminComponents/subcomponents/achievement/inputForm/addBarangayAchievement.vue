@@ -1,64 +1,3 @@
-<script setup>
-import { ref } from 'vue';
-import axios from 'axios';
-
-const props = defineProps({
-  year: String,
-  month: String,
-  barangayId: Number
-});
-
-const dialog = ref(false);
-const barangayAchievement = ref({
-    barangay_id: props.barangayId,
-    img: 'ex.jpg',
-    title: '',
-    subtitle: '',
-    info: '',
-    date: new Date(props.year, props.month, 0)
-});
-
-const submitAchievement = async (newAchievement) => {
-  try {
-        const response = await axios.post(
-        'http://localhost/youth/app/api/BarangayAchievement.php',{
-            barangay_id: newAchievement.barangay_id,
-            title: newAchievement.title,
-            subtitle: newAchievement.subtitle,
-            info: newAchievement.info,
-            img: newAchievement.img,  // Ensure this is a valid image URL or Base64 string
-            date: newAchievement.date
-        }
-        );
-        if (response.data.success) {
-            console.log('Achievement updated successfully:', response.data.message);
-            emit('achievementAdded');
-        } else {
-            console.error('Update failed:', response.data.error);
-        }
-    } catch (error) {
-        console.error('Error updating achievement:', error);
-    }
-
-    console.log("Submitted Data:", newAchievement.value);
-    dialog.value = false; // Close dialog after submission
-};
-
-const handleImageUpload = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = () => {
-            imageUrl.value = reader.result;
-        };
-        reader.readAsDataURL(file);
-        // barangayAchievement.value.img = file;
-    }
-};
-
-const emit = defineEmits(['achievementAdded']);
-</script>
-
 <template>
     <v-container>
         <v-btn class="add-ebg-button" @click="dialog = true">
@@ -80,30 +19,86 @@ const emit = defineEmits(['achievementAdded']);
                             </label>
 
                             <article>
-                                <v-text-field 
-                                    v-model="barangayAchievement.title" 
-                                    label="Barangay Achievement Title" 
-                                    required>
-                                </v-text-field>
-                                <v-text-field 
-                                    v-model="barangayAchievement.subtitle" 
-                                    label="Barangay Achievement Subtitle" 
-                                    required>
-                                </v-text-field>
-                                <v-textarea v-model="barangayAchievement.info" label="Info">
-                                </v-textarea>
+                                <v-text-field v-model="barangayAchievement.title" label="Barangay Achievement Title" required></v-text-field>
+                                <v-text-field v-model="barangayAchievement.subtitle" label="Barangay Achievement Subtitle" required></v-text-field>
+                                <v-textarea v-model="barangayAchievement.info" label="Info"></v-textarea>
                             </article>
                         </v-card>
                     </v-form>
                 </v-card-text>
                 <v-card-actions>
                     <v-btn color="grey" @click="dialog = false">Cancel</v-btn>
-                    <v-btn color="primary" @click="submitAchievement(barangayAchievement)">Submit</v-btn>
+                    <v-btn color="primary" @click="submitAchievement">Submit</v-btn>
                 </v-card-actions>
             </v-card>
         </v-dialog>
     </v-container>
 </template>
+
+<script>
+import axios from 'axios';
+
+export default {
+    props: {
+        year: String,
+        month: String,
+        barangayId: Number
+    },
+    data() {
+        return {
+            dialog: false,
+            barangayAchievement: {
+                barangay_id: this.barangayId,
+                img: 'ex.jpg',
+                title: '',
+                subtitle: '',
+                info: '',
+                date: new Date(this.year, this.month, 0)
+            }
+        };
+    },
+    methods: {
+        async submitAchievement() {
+            try {
+                const response = await axios.post(
+                    'http://localhost/youth/app/api/BarangayAchievement.php',
+                    {
+                        barangay_id: this.barangayAchievement.barangay_id,
+                        title: this.barangayAchievement.title,
+                        subtitle: this.barangayAchievement.subtitle,
+                        info: this.barangayAchievement.info,
+                        img: this.barangayAchievement.img,
+                        date: this.barangayAchievement.date
+                    }
+                );
+
+                if (response.data.success) {
+                    console.log('Achievement updated successfully:', response.data.message);
+                    this.$emit('achievementAdded');
+                } else {
+                    console.error('Update failed:', response.data.error);
+                }
+            } catch (error) {
+                console.error('Error updating achievement:', error);
+            }
+
+            console.log('Submitted Data:', this.barangayAchievement);
+            this.dialog = false;
+        },
+        handleImageUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = () => {
+                    this.barangayAchievement.img = reader.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+    }
+};
+</script>
+
 
 <style scoped>
 .v-dialog {

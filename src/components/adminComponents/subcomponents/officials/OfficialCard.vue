@@ -1,9 +1,3 @@
-<script setup>
-defineProps({
-    official: Object
-});
-</script>
-
 <template>
     <v-card class="official-card" elevation="4">
         <v-card-title class="text-center text-h5 pb-4 border-bottom">
@@ -25,6 +19,14 @@ defineProps({
         </v-card-text>
     </v-card>
 </template>
+
+<script>
+export default {
+    props: {
+        official: Object
+    }
+};
+</script>
 
 <style scoped>
 .official-card {

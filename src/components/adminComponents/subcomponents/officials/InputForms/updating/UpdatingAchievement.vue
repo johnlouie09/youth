@@ -1,59 +1,10 @@
-<script setup>
-import { ref, computed, watch} from 'vue';
-import { VDateInput } from 'vuetify/lib/labs/components.mjs';
-
-const props = defineProps({
-    achievement: Object
-})
-
-const dialog = ref(true);
-
-// Initial Education Data
-const initialAchievementInfo = {
-    title: props.achievement.title,
-    date: props.achievement.date,
-};
-
-// Reactive state for form
-const achievementInfo = ref({ ...initialAchievementInfo });
-const hasChanges = ref(false);
-
-// Watch for changes to enable the Save/Discard buttons
-watch(achievementInfo, (newVal) => {
-    hasChanges.value = JSON.stringify(newVal) !== JSON.stringify(initialAchievementInfo);
-}, { deep: true });
-
-// Save changes and update initial values
-const saveChanges = () => {
-    Object.assign(initialAchievementInfo, { ...achievementInfo.value });
-    hasChanges.value = false;
-    emit('close');
-};
-
-// Discard changes and reset form
-const discardChanges = () => {
-    achievementInfo.value = { ...initialAchievementInfo };
-    hasChanges.value = false;
-};
-
-const updateDate = (newDate) => {
-    achievementInfo.value.date = newDate;
-};
-
-
-const emit = defineEmits(['close']); // Define an event for closing
-const closeForm = () => {
-    emit('close'); // Emit event when closing
-};
-</script>
-
 <template>
     <v-dialog max-width="900px" class="dialog-padding" v-model="dialog" persistent>
         <v-card class="card">
             <v-form ref="form">
-                <v-text-field 
-                    v-model="achievementInfo.title" 
-                    label="Achievement Title" 
+                <v-text-field
+                    v-model="achievementInfo.title"
+                    label="Achievement Title"
                     required>
                 </v-text-field>
 
@@ -80,8 +31,59 @@ const closeForm = () => {
 </template>
 
 
-<style scoped>
+<script>
+import { VDateInput } from 'vuetify/lib/labs/components.mjs';
 
+export default {
+    props: {
+        achievement: Object
+    },
+    data() {
+        return {
+            dialog: true,
+            initialAchievementInfo: {
+                title: this.achievement.title,
+                date: this.achievement.date,
+            },
+            achievementInfo: {
+                title: this.achievement.title,
+                date: this.achievement.date,
+            },
+            hasChanges: false
+        };
+    },
+    watch: {
+        achievementInfo: {
+            handler(newVal) {
+                this.hasChanges = JSON.stringify(newVal) !== JSON.stringify(this.initialAchievementInfo);
+            },
+            deep: true
+        }
+    },
+    methods: {
+        saveChanges() {
+            Object.assign(this.initialAchievementInfo, { ...this.achievementInfo });
+            this.hasChanges = false;
+            this.$emit('close');
+        },
+        discardChanges() {
+            this.achievementInfo = { ...this.initialAchievementInfo };
+            this.hasChanges = false;
+        },
+        updateDate(newDate) {
+            this.achievementInfo.date = newDate;
+        },
+        closeForm() {
+            this.$emit('close');
+        }
+    },
+    components: {
+        VDateInput
+    }
+};
+</script>
+
+<style scoped>
 .add-ebg-button {
     border-radius: .5rem;
     display: flex;
@@ -105,5 +107,4 @@ const closeForm = () => {
 .card .v-form {
     width: 100%;
 }
-
 </style>

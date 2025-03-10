@@ -1,78 +1,3 @@
-<script setup>
-import { ref, watch } from 'vue';
-
-import axios from 'axios';
-
-const props = defineProps({
-  barangayAchievement: Object
-});
-
-const dialog = ref(true);
-const initialBarangayAchievement = ref({
-    id: props.barangayAchievement.id,  // Ensure id is included
-    img: props.barangayAchievement.img,
-    title: props.barangayAchievement.title,
-    subtitle: props.barangayAchievement.subtitle,
-    info: props.barangayAchievement.info,
-    date: props.barangayAchievement.date
-});
-
-// Reactive state for form
-const barangayAchievementUpdate = ref(JSON.parse(JSON.stringify(initialBarangayAchievement.value)));
-const hasChanges = ref(false);
-
-// Save changes and update initial values
-const updateAchievement = async (achievement) => {
-    try {
-        const response = await axios.put('http://localhost/youth/app/api/BarangayAchievement.php', {
-            id: achievement.id,
-            title: achievement.title,
-            subtitle: achievement.subtitle,
-            info: achievement.info,
-            img: achievement.img,  // 
-            date: achievement.date
-        });
-
-        if (response.data.success) {
-            console.log('Achievement updated successfully:', response.data.message);
-            emit('achievementUpdated');
-            emit('close')
-        } else {
-            console.error('Update failed:', response.data.error);
-        }
-    } catch (error) {
-        console.error('Error updating achievement:', error);
-    }
-};
-
-
-// Watch for changes to enable the Save/Discard buttons
-watch(barangayAchievementUpdate, (newVal) => {
-    hasChanges.value = JSON.stringify(newVal) !== JSON.stringify(initialBarangayAchievement);
-}, { deep: true });
-
-// Discard changes and reset form
-const discardChanges = () => {
-    barangayAchievementUpdate.value = JSON.parse(JSON.stringify(initialBarangayAchievement.value));
-    hasChanges.value = false;
-};
-
-const handleImageUpload = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-        barangayAchievementUpdate.value.img = URL.createObjectURL(file);
-    }
-};;
-
-const emit = defineEmits(['close', 'achievementUpdated']);
-
-
-const closeForm = () => {
-    emit('close'); // Emit event when closing
-};
-
-</script>
-
 <template>
     <v-container>
         <v-btn class="add-ebg-button" @click="dialog = true">
@@ -123,6 +48,82 @@ const closeForm = () => {
         </v-dialog>
     </v-container>
 </template>
+<script>
+import axios from 'axios';
+
+export default {
+    props: {
+        barangayAchievement: Object
+    },
+    data() {
+        return {
+            dialog: true,
+            initialBarangayAchievement: {
+                id: this.barangayAchievement.id,
+                img: this.barangayAchievement.img,
+                title: this.barangayAchievement.title,
+                subtitle: this.barangayAchievement.subtitle,
+                info: this.barangayAchievement.info,
+                date: this.barangayAchievement.date
+            },
+            barangayAchievementUpdate: {},
+            hasChanges: false
+        };
+    },
+    watch: {
+        barangayAchievementUpdate: {
+            deep: true,
+            handler(newVal) {
+                this.hasChanges = JSON.stringify(newVal) !== JSON.stringify(this.initialBarangayAchievement);
+            }
+        }
+    },
+    created() {
+        this.resetForm();
+    },
+    methods: {
+        async updateAchievement() {
+            try {
+                const response = await axios.put('http://localhost/youth/app/api/BarangayAchievement.php', {
+                    id: this.barangayAchievementUpdate.id,
+                    title: this.barangayAchievementUpdate.title,
+                    subtitle: this.barangayAchievementUpdate.subtitle,
+                    info: this.barangayAchievementUpdate.info,
+                    img: this.barangayAchievementUpdate.img,
+                    date: this.barangayAchievementUpdate.date
+                });
+
+                if (response.data.success) {
+                    console.log('Achievement updated successfully:', response.data.message);
+                    this.$emit('achievementUpdated');
+                    this.$emit('close');
+                } else {
+                    console.error('Update failed:', response.data.error);
+                }
+            } catch (error) {
+                console.error('Error updating achievement:', error);
+            }
+        },
+        discardChanges() {
+            this.resetForm();
+            this.hasChanges = false;
+        },
+        handleImageUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                this.barangayAchievementUpdate.img = URL.createObjectURL(file);
+            }
+        },
+        closeForm() {
+            this.$emit('close');
+        },
+        resetForm() {
+            this.barangayAchievementUpdate = JSON.parse(JSON.stringify(this.initialBarangayAchievement));
+        }
+    }
+};
+</script>
+
 
 <style scoped>
 .v-dialog {

@@ -1,67 +1,13 @@
-<script setup>
-import { onMounted, ref } from "vue";
-import Swiper from "swiper";
-import "swiper/css";
-import "swiper/css/effect-coverflow";
-import "swiper/css/autoplay";
-import { EffectCoverflow, Autoplay } from "swiper/modules";
 
-// Reference to the Swiper container
-const swiperContainer = ref(null);
-const newImage = ref(null);
-const movies = ref([
-    ...Array.from({ length: 7 }, (_, i) => ({ id: i + 1, src: `/${i + 1}.jpg`, title: `Movie ${i + 1}` }))
-]);
-
-// Control visibility of the form
-const showForm = ref(false); // Initially set to false to hide the form
-
-const addAnnouncement = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            movies.value.push({
-                id: movies.value.length + 1,
-                src: e.target.result,
-                title: `Movie ${movies.value.length + 1}`,
-            });
-        };
-        reader.readAsDataURL(file);
-    }
-};
-
-onMounted(() => {
-    new Swiper(swiperContainer.value, {
-        modules: [EffectCoverflow, Autoplay],
-        effect: "coverflow",
-        grabCursor: true,
-        centeredSlides: true,
-        slidesPerView: "auto",
-        coverflowEffect: {
-            rotate: 15,
-            stretch: 0,
-            depth: 300,
-            modifier: 1,
-            slideShadows: false,
-        },
-        loop: true,
-        autoplay: {
-            delay: 5000,
-        },
-    });
-});
-</script>
 
 <template>
     <v-container class="announcement-main">
         <h1>ANNOUNCEMENTS</h1>
-    
-        <!-- Add v-if here to control form visibility -->
+
         <form class="announcement-form" v-if="showForm">
             <input type="file" accept="image/*" @change="addAnnouncement" required />
         </form>
-    
+
         <div class="carousel-container">
             <div ref="swiperContainer" class="swiper mySwiper">
                 <div class="swiper-wrapper">
@@ -81,6 +27,62 @@ onMounted(() => {
         </div>
     </v-container>
 </template>
+
+<script>
+import { Swiper } from "swiper";
+import "swiper/css";
+import "swiper/css/effect-coverflow";
+import "swiper/css/autoplay";
+import { EffectCoverflow, Autoplay } from "swiper/modules";
+
+export default {
+    data() {
+        return {
+            swiperContainer: null,
+            newImage: null,
+            movies: Array.from({ length: 7 }, (_, i) => ({ id: i + 1, src: `/${i + 1}.jpg`, title: `Movie ${i + 1}` })),
+            showForm: false,
+        };
+    },
+    methods: {
+        addAnnouncement(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    this.movies.push({
+                        id: this.movies.length + 1,
+                        src: e.target.result,
+                        title: `Movie ${this.movies.length + 1}`,
+                    });
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+    },
+    mounted() {
+        this.swiperContainer = this.$refs.swiperContainer;
+        new Swiper(this.swiperContainer, {
+            modules: [EffectCoverflow, Autoplay],
+            effect: "coverflow",
+            grabCursor: true,
+            centeredSlides: true,
+            slidesPerView: "auto",
+            coverflowEffect: {
+                rotate: 15,
+                stretch: 0,
+                depth: 300,
+                modifier: 1,
+                slideShadows: false,
+            },
+            loop: true,
+            autoplay: {
+                delay: 5000,
+            },
+        });
+    }
+};
+</script>
 
 <style scoped>
 .announcement-main {

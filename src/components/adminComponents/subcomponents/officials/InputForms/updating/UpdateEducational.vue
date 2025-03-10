@@ -1,95 +1,20 @@
-<script setup>
-import { ref, watch, computed } from 'vue';
-
-const dialog = ref(true);
-const props = defineProps({
-    education: Object
-});
-
-// Initial Education Data
-const initialEducationInfo = {
-    school: props.education.school,
-    detail: props.education.detail,
-    startYear: props.education.years.start,
-    endYear: props.education.years.end,
-    icon: props.education.icon
-};
-
-// Reactive state for form
-const educationInfo = ref({ ...initialEducationInfo });
-const hasChanges = ref(false);
-
-const fileInput = ref(null); // Reference for the hidden file input
-
-// Handle file upload and preview
-const handleFileUpload = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-        educationInfo.value.icon = URL.createObjectURL(file);
-    }
-};
-
-// Trigger file input when clicking the icon
-const triggerFileInput = () => {
-    fileInput.value.click();
-};
-
-// Watch for changes to enable the Save/Discard buttons
-watch(educationInfo, (newVal) => {
-    hasChanges.value = JSON.stringify(newVal) !== JSON.stringify(initialEducationInfo);
-}, { deep: true });
-
-// Save changes and update initial values
-const saveChanges = () => {
-    Object.assign(initialEducationInfo, { ...educationInfo.value });
-    hasChanges.value = false;
-    emit('close');
-};
-
-// Discard changes and reset form
-const discardChanges = () => {
-    educationInfo.value = { ...initialEducationInfo };
-    hasChanges.value = false;
-};
-
-const currentYear = new Date().getFullYear();
-const years = Array.from({ length: 50 }, (_, i) => (currentYear - i).toString());
-
-// Dynamically filter end years so they are not higher than start year
-const filteredEndYears = computed(() => {
-    return years.filter(year => parseInt(year) <= parseInt(educationInfo.value.startYear));
-});
-
-// Watch startYear to reset endYear if it becomes invalid
-watch(() => educationInfo.value.startYear, (newStartYear) => {
-    if (parseInt(educationInfo.value.endYear) > parseInt(newStartYear)) {
-        educationInfo.value.endYear = newStartYear;
-    }
-});
-
-const emit = defineEmits(['close']); // Define an event for closing
-const closeForm = () => {
-    emit('close'); // Emit event when closing
-};
-</script>
-
 <template>
     <v-dialog v-model="dialog" max-width="900px" persistent>
         <v-card class="card" elevation="10">
             <!-- Image Upload Preview -->
             <div class="image-container">
                 <img :src="educationInfo.icon" alt="University Logo" class="profile-image">
-                
+
                 <!-- Floating Upload Icon -->
                 <v-btn class="upload-icon" icon @click="triggerFileInput">
                     <v-icon>mdi-camera</v-icon>
                 </v-btn>
 
                 <!-- Hidden File Input -->
-                <input 
-                    ref="fileInput" 
-                    type="file" 
-                    accept="image/*" 
+                <input
+                    ref="fileInput"
+                    type="file"
+                    accept="image/*"
                     class="hidden-file-input"
                     @change="handleFileUpload"
                 >
@@ -99,17 +24,17 @@ const closeForm = () => {
             <v-form class="form-content">
                 <v-text-field v-model="educationInfo.school" label="School Name" variant="outlined"></v-text-field>
                 <v-text-field v-model="educationInfo.detail" label="Detail" variant="outlined"></v-text-field>
-                
-                <v-select 
-                    v-model="educationInfo.startYear" 
-                    :items="years" 
+
+                <v-select
+                    v-model="educationInfo.startYear"
+                    :items="years"
                     label="Start Year"
                     required
                 ></v-select>
 
-                <v-select 
-                    v-model="educationInfo.endYear" 
-                    :items="filteredEndYears" 
+                <v-select
+                    v-model="educationInfo.endYear"
+                    :items="filteredEndYears"
                     label="End Year"
                     required
                 ></v-select>
@@ -125,6 +50,79 @@ const closeForm = () => {
         </v-card>
     </v-dialog>
 </template>
+
+<script>
+export default {
+    props: {
+        education: Object
+    },
+    data() {
+        const currentYear = new Date().getFullYear();
+        return {
+            dialog: true,
+            fileInput: null,
+            initialEducationInfo: {
+                school: this.education.school,
+                detail: this.education.detail,
+                startYear: this.education.years.start,
+                endYear: this.education.years.end,
+                icon: this.education.icon
+            },
+            educationInfo: {
+                school: this.education.school,
+                detail: this.education.detail,
+                startYear: this.education.years.start,
+                endYear: this.education.years.end,
+                icon: this.education.icon
+            },
+            hasChanges: false,
+            years: Array.from({ length: 50 }, (_, i) => (currentYear - i).toString())
+        };
+    },
+    computed: {
+        filteredEndYears() {
+            return this.years.filter(year => parseInt(year) <= parseInt(this.educationInfo.startYear));
+        }
+    },
+    watch: {
+        educationInfo: {
+            handler(newVal) {
+                this.hasChanges = JSON.stringify(newVal) !== JSON.stringify(this.initialEducationInfo);
+            },
+            deep: true
+        },
+        'educationInfo.startYear'(newStartYear) {
+            if (parseInt(this.educationInfo.endYear) > parseInt(newStartYear)) {
+                this.educationInfo.endYear = newStartYear;
+            }
+        }
+    },
+    methods: {
+        handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (file) {
+                this.educationInfo.icon = URL.createObjectURL(file);
+            }
+        },
+        triggerFileInput() {
+            this.$refs.fileInput.click();
+        },
+        saveChanges() {
+            Object.assign(this.initialEducationInfo, { ...this.educationInfo });
+            this.hasChanges = false;
+            this.$emit('close');
+        },
+        discardChanges() {
+            this.educationInfo = { ...this.initialEducationInfo };
+            this.hasChanges = false;
+        },
+        closeForm() {
+            this.$emit('close');
+        }
+    }
+};
+</script>
+
 
 <style scoped>
 .card {

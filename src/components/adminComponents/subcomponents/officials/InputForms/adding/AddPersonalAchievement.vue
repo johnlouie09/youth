@@ -1,20 +1,3 @@
-<script setup>
-import { ref, computed } from 'vue';
-import { VDateInput } from 'vuetify/lib/labs/components.mjs';
-
-const dialog = ref(false);
-const achievement = ref({
-    title: '',
-    date: null // Stores YYYY-MM
-});
-
-
-const submitForm = () => {
-    console.log("Submitted Data:", achievement.value);
-    dialog.value = false; // Close dialog after submission
-};
-</script>
-
 <template>
     <v-container>
         <v-btn class="add-ebg-button" @click="dialog = true">
@@ -29,9 +12,9 @@ const submitForm = () => {
                 </v-card-title>
                 <v-card-text>
                     <v-form>
-                        <v-text-field 
-                            v-model="achievement.title" 
-                            label="Achievement Title" 
+                        <v-text-field
+                            v-model="achievement.title"
+                            label="Achievement Title"
                             required>
                         </v-text-field>
 
@@ -54,6 +37,30 @@ const submitForm = () => {
     </v-container>
 </template>
 
+<script>
+import { VDateInput } from 'vuetify/lib/labs/components.mjs';
+
+export default {
+    components: {
+        VDateInput
+    },
+    data() {
+        return {
+            dialog: false,
+            achievement: {
+                title: '',
+                date: null // Stores YYYY-MM
+            }
+        };
+    },
+    methods: {
+        submitForm() {
+            console.log("Submitted Data:", this.achievement);
+            this.dialog = false; // Close dialog after submission
+        }
+    }
+};
+</script>
 
 <style scoped>
 .v-dialog {

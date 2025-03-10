@@ -1,20 +1,3 @@
-<script setup>
-import { ref } from 'vue';
-
-// Props
-defineProps({
-    card: Object, // Receiving `card` prop dynamically
-});
-
-// Selected Date (Fixed Display)
-const selectedDate = ref(new Date());
-
-// Function to format date
-const formatDate = (date) => {
-    return date.toLocaleString('en-US', { month: 'short' }).toUpperCase() + ' - ' + date.getFullYear();
-};
-</script>
-
 <template>
     <v-container>
         <v-card class="dashboard-card" elevation="10">
@@ -36,32 +19,49 @@ const formatDate = (date) => {
                     <v-row v-if="card.type === 'officials'" justify="center" align="center">
                         <v-col cols="12" class="d-flex justify-start align-start flex-column">
                             <p v-for="detail in card.details" :key="detail.position">
-                                <span class="number me-2">{{ detail.number }}</span> <!-- Adds right margin -->
+                                <span class="number me-2">{{ detail.number }}</span>
                                 {{ detail.position }}
                             </p>
                         </v-col>
                     </v-row>
 
                     <!-- Achievements & Announcements Section -->
-                    <v-row 
-                        v-else-if="card.type === 'achievements' || card.type === 'announcements'" 
+                    <v-row
+                        v-else-if="card.type === 'achievements' || card.type === 'announcements'"
                         justify="center" align="center"
                     >
                         <v-col cols="12" class="d-flex flex-column align-center text-center">
                             <!-- Date Display Only (No Arrow, No Clickable Action) -->
-                            <h4>{{ formatDate(selectedDate) }}</h4>
+                            <h4>{{ formattedDate }}</h4>
 
                             <!-- Quantity -->
                             <h2>{{ card.details.quantity }}</h2>
                             <h5>TOTAL</h5>
                         </v-col>
                     </v-row>
-
                 </v-container>
             </v-card-text>
         </v-card>
     </v-container>
 </template>
+
+<script>
+export default {
+    props: {
+        card: Object, // Receiving `card` prop dynamically
+    },
+    data() {
+        return {
+            selectedDate: new Date()
+        };
+    },
+    computed: {
+        formattedDate() {
+            return this.selectedDate.toLocaleString('en-US', { month: 'short' }).toUpperCase() + ' - ' + this.selectedDate.getFullYear();
+        }
+    }
+};
+</script>
 
 <style scoped>
 /* Base Card Styling */

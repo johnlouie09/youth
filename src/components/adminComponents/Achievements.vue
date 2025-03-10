@@ -1,72 +1,3 @@
-<script setup>
-import { ref, watchEffect } from 'vue';
-import axios from 'axios';
-import addBarangayAchievement from './subcomponents/achievement/inputForm/addBarangayAchievement.vue';
-import updateBarangayAchievement from './subcomponents/achievement/inputForm/updateBarangayAchievement.vue';
-import DialogConfirm from '../dialogs/DialogConfirm.vue';
-
-const hoverIndex = ref(null);
-const editingAchievement = ref(null); // Track the selected achievement for editing
-const barangayId = 1;
-
-
-const achievements = ref({});
-const loading = ref(false);
-const error = ref(null);
-
-const fetchBarangayAchievements = async () => {
-    try {
-        loading.value = true;
-        error.value = null;
-        const response = await axios.get(`/api/BarangayAchievement.php?barangay_id=${barangayId}`);
-
-        if (response.data.success) {
-            achievements.value = response.data.data;
-        } else {
-            error.value = 'Failed to fetch barangays';
-        }
-    } catch (err) {
-        error.value = 'Error connecting to the server';
-        console.error('Error:', err);
-    } finally {
-        loading.value = false;
-    }
-};
-fetchBarangayAchievements();
-
-const deleteBarangayAchievement = async (achievementId) => {
-  try {
-    const response = await axios.delete(
-      'http://localhost/youth/app/api/BarangayAchievement.php',
-      {
-        data: { id: achievementId }
-      }
-    );
-    if (response.data.success) {
-      console.log('Achievement deleted successfully:', response.data.message);
-      // Refresh the achievements list
-      await fetchBarangayAchievements();
-    } else {
-      console.error('Deletion failed:', response.data.error);
-    }
-  } catch (error) {
-    console.error('Error deleting achievement:', error);
-  }
-};
-
-
-
-// Function to handle edit button click
-const startEditing = (year, month, achievement) => {
-  editingAchievement.value = { year, month, ...achievement }; // Store achievement data
-};
-
-// Function to close editing component
-const closeEditing = () => {
-  editingAchievement.value = null;
-};
-</script>
-
 <template>
   <v-container class="achievement-main">
     <h1>ACHIEVEMENTS</h1>
@@ -120,6 +51,75 @@ const closeEditing = () => {
 
 
 </template>
+
+<script>
+import axios from 'axios';
+import addBarangayAchievement from './subcomponents/achievement/inputForm/addBarangayAchievement.vue';
+import updateBarangayAchievement from './subcomponents/achievement/inputForm/updateBarangayAchievement.vue';
+import DialogConfirm from '../dialogs/DialogConfirm.vue';
+
+export default {
+    components: {
+        addBarangayAchievement,
+        updateBarangayAchievement,
+        DialogConfirm,
+    },
+    data() {
+        return {
+            hoverIndex: null,
+            editingAchievement: null,
+            barangayId: 1,
+            achievements: {},
+            loading: false,
+            error: null,
+        };
+    },
+    methods: {
+        async fetchBarangayAchievements() {
+            try {
+                this.loading = true;
+                this.error = null;
+                const response = await axios.get(`/api/BarangayAchievement.php?barangay_id=${this.barangayId}`);
+
+                if (response.data.success) {
+                    this.achievements = response.data.data;
+                } else {
+                    this.error = 'Failed to fetch barangays';
+                }
+            } catch (err) {
+                this.error = 'Error connecting to the server';
+                console.error('Error:', err);
+            } finally {
+                this.loading = false;
+            }
+        },
+        async deleteBarangayAchievement(achievementId) {
+            try {
+                const response = await axios.delete('http://localhost/youth/app/api/BarangayAchievement.php', {
+                    data: { id: achievementId }
+                });
+                if (response.data.success) {
+                    console.log('Achievement deleted successfully:', response.data.message);
+                    await this.fetchBarangayAchievements();
+                } else {
+                    console.error('Deletion failed:', response.data.error);
+                }
+            } catch (error) {
+                console.error('Error deleting achievement:', error);
+            }
+        },
+        startEditing(year, month, achievement) {
+            this.editingAchievement = { year, month, ...achievement };
+        },
+        closeEditing() {
+            this.editingAchievement = null;
+        },
+    },
+    mounted() {
+        this.fetchBarangayAchievements();
+    }
+};
+</script>
 
 
 <style scoped>
