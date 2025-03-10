@@ -31,7 +31,7 @@ if ($action === 'login')
         ]);
     }
     catch (Exception $e) {
-        returnError('Invalid credentials', 401);
+        returnError($e->getMessage(), 401);
     }
 }
 

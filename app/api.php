@@ -59,7 +59,7 @@ if ($endpoint == 'sk-official')
     require_once __DIR__ . '/api--sk-official.php';
 }
 
-/* if ($endpoint == 'barangay')
+/* else if ($endpoint == 'barangay')
 {
     require_once __DIR__ . '/api--barangay.php';
 }*/
