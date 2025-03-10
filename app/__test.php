@@ -2,8 +2,22 @@
 echo "<pre>";
 
 
-
+require_once __DIR__ . '/models/Barangay.php';
 require_once __DIR__ . '/models/SkOfficial.php';
+
+/** Find By Unique Column */
+$barangay = Barangay::findBy('name', 'San Francisco');
+if ($barangay !== null) {
+    print_r($barangay->getAssoc(true));
+}
+echo "<hr>";
+
+
+/** Get all records as object */
+$barangays = Barangay::all();
+echo "<h1>All Barangay (Objects):</h1>";
+print_r($barangays);
+echo "<hr>";
 
 
 /** Find By Unique Column */
