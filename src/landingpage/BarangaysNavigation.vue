@@ -47,7 +47,7 @@ export default {
 </script>
 
 <template>
-    <div class="main-navigation">
+    <div class="main-navigation elevation-15">
         <v-navigation class="barangay-navigation">
             <template v-if="loading">
                 <v-progress-circular indeterminate color="primary"></v-progress-circular>
@@ -70,9 +70,8 @@ export default {
             </template>
         </v-navigation>
     
-
         <div class="barangays">
-            <transition name="slide" mode="out-in">
+            <transition name="smooth" mode="out-in">
                 <Barangays
                     v-if="selectedCluster"
                     :cluster-id="selectedCluster.id"
@@ -84,68 +83,74 @@ export default {
 </template>
 
 <style scoped>
-    .main-navigation {
-        position: relative;
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        gap: 3rem;
-        padding: 5rem 15rem;
-        /* Remove any box-shadow from here */
-    }
+.main-navigation {
+    position: relative;
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 4rem;
+    padding: 4rem 5rem;
+    border-radius: 2.5rem;
+}
+    
 
-    /* Left glow */
-    /* .main-navigation::before {
-        content: "";
-        position: absolute;
-        top: 0;     
-        bottom: 0;   
-        left: -100px;     
-        width: 200px;     
-        height: 100%;
-        border-radius: 50%;
-        background: linear-gradient(to right, #FDCA40, transparent);
-        filter: blur(75px); 
-        pointer-events: none;
-    } */
 
-    /* Right glow */
-    /* .main-navigation::after {
-        content: "";
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        right: -100px;
-        width: 200px;
-        height: 100%;
-        border-radius: 50%;
-        background: linear-gradient(to left,#DF2935, transparent);
-        filter: blur(75px);
-        pointer-events: none;
-    } */
 
-    /* Hide glow when in light mode */
-    :global(.theme--light) .main-navigation::before,
-    :global(.theme--light) .main-navigation::after {
-        display: none;
-    }
-    .barangay-navigation {
-        width: 80%;
-        display: flex;
-        justify-content: space-around;
-    }
+/* Left glow */
+/* .main-navigation::before {
+    content: "";
+    position: absolute;
+    top: 0;     
+    bottom: 0;   
+    left: -100px;     
+    width: 200px;     
+    height: 100%;
+    border-radius: 50%;
+    pointer-events: none;
+} */
 
-    .barangay-navigation .cluster-btn {
-        font-size: 1rem;
-        padding: 1rem 1.5rem;
-        height: auto;
-    }
+/* Right glow */
+/* .main-navigation::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: -100px;
+    width: 200px;
+    height: 100%;
+    border-radius: 50%;
+    background: linear-gradient(to left, #DF2935, transparent);
+    filter: blur(75px);
+    pointer-events: none;
+    z-index: 1090;
+} */
 
-    .barangays {
-        width: 100%;
-        display: flex;
-    }
+
+.barangay-navigation {
+    width: 80%;
+    display: flex;
+    justify-content: space-around;
+}
+
+.barangay-navigation .cluster-btn {
+    font-size: 1rem;
+    padding: 1rem 1.5rem;
+    height: auto;
+}
+
+/* Smooth transition for Barangays component */
+.smooth-enter-active,
+.smooth-leave-active {
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.smooth-enter {
+    opacity: 0;
+    transform: scale(0.95);
+}
+.smooth-leave-to {
+    opacity: 0;
+    transform: scale(1.05);
+}
 </style>
-

@@ -1,26 +1,29 @@
-<template>
-    <v-app>
-        <Menu /> <!-- Place it directly inside v-app -->
-        <Preloader />
-        <RouterView />
-        <Footer />
-    </v-app>
-</template>
-
 <script>
 import Preloader from "./components/Preloader.vue";
-import Menu from "./components/Menu.vue";
-import Footer from "./components/Footer.vue";
-
+import Footer from "./components/landingPage/Footer.vue";
+import NavigationBar from "./components/landingPage/NavigationBar.vue";
 export default {
-    components: {
-        Menu,
-        Preloader,
-        Menu,
-        Footer
-    }
+  components: {
+    NavigationBar,
+    Preloader,
+    Footer
+  }
 };
 </script>
 
+<template>
+  <v-app>
+    <NavigationBar></NavigationBar>
+    <v-main>
+      <v-container class="pa-0" fluid >
+        <Preloader />
+        <RouterView />
+      </v-container>
+    </v-main>
+    <Footer/>
+  </v-app>
+</template>
+
 <style scoped>
 </style>
+  

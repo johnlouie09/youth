@@ -12,33 +12,23 @@ const router = createRouter({
       alias: ['/home']
     },
     {
-
-
       path: '/contact',
       component: () => import('../views/Contact.vue'),
     },
-    // {
-    //   path: '/SanFrancisco',
-    //   name: 'SanFrancisco',
-    //   component: SanFrancisco,
-    // },
     {
       path: '/:catchAll(.*)',
       name: 'NotFound',
       component: () => import('../components/404.vue'),
     },
-
-
     {
       path: '/san-francisco',
       name: 'San Francisco',
       component: () => import('../views/poblacion/SanFrancisco.vue'),
     },
     {
-      path: '/mountain-unit/perpetual',
+      path: '/barangay',
       name: 'perpetual',
-
-      component: () => import('../views/mountain/PerpetualHelp.vue'),
+      component: () => import('../views/Barangay.vue'),
     },
   ],
 })

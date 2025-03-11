@@ -66,22 +66,14 @@ export default {
 
 
 <style scoped>
-.barangay {
-    width: 100%;
-    height: auto;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
-
 .barangays-cluster {
     width: 100%;
+    min-height: 40vh;
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-around;
+    justify-content: space-evenly;
     align-items: center;
-    gap: 2rem;
+    gap: 4rem;
 }
 
 .custom-card {
