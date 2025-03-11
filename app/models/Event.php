@@ -4,7 +4,7 @@ require_once __DIR__ . '/Model.php';
 
 class Event extends Model
 {
-    /** static data  */
+    /** static data */
     public    static $table         = 'events';
     public    static $table_columns = [];
     protected static $basic_columns = ['id', 'event_name', 'event_date', 'location', 'description'];

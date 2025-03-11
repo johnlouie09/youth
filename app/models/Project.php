@@ -4,18 +4,18 @@ require_once __DIR__ . '/Model.php';
 
 class Project extends Model
 {
-    /** static data  */
+    /** static data */
     public    static $table         = 'projects';
     public    static $table_columns = [];
     protected static $basic_columns = ['id', 'barangay_id', 'project_name', 'status'];
 
     /** properties */
-    protected $barangay_id   = 0;
-    protected $project_name  = '';
-    protected $budget        = '';
-    protected $status        = '';
-    protected $start_date    = '';
-    protected $end_date      = '';
+    protected $barangay_id  = 0;
+    protected $project_name = '';
+    protected $budget       = '';
+    protected $status       = '';
+    protected $start_date   = '';
+    protected $end_date     = '';
 
 
     /**
