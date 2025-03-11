@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 10, 2025 at 12:19 PM
+-- Generation Time: Mar 11, 2025 at 08:44 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -110,6 +110,31 @@ INSERT INTO `clusters` (`id`, `slug`, `name`, `created_at`, `updated_at`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `education_levels`
+--
+
+CREATE TABLE `education_levels` (
+  `id` int(11) NOT NULL,
+  `name` varchar(50) NOT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `sort_order` int(11) DEFAULT 0,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `education_levels`
+--
+
+INSERT INTO `education_levels` (`id`, `name`, `description`, `sort_order`, `created_at`, `updated_at`) VALUES
+(1, 'Elementary', 'Elementary Education', 1, '2025-03-11 11:30:12', '2025-03-11 11:30:12'),
+(2, 'Junior High School', 'Junior High Education', 2, '2025-03-11 11:30:12', '2025-03-11 11:30:12'),
+(3, 'Senior High School', 'Senior High Education', 3, '2025-03-11 11:30:12', '2025-03-11 11:30:12'),
+(4, 'College', 'College or University Education', 4, '2025-03-11 11:30:12', '2025-03-11 11:30:12');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `events`
 --
 
@@ -151,12 +176,24 @@ CREATE TABLE `projects` (
 CREATE TABLE `sk_educations` (
   `id` int(11) NOT NULL,
   `sk_official_id` int(11) NOT NULL,
+  `education_level_id` int(11) NOT NULL,
   `school_name` varchar(100) NOT NULL,
-  `detail` varchar(100) NOT NULL,
-  `start_year` int(10) NOT NULL,
-  `end_year` int(11) NOT NULL,
-  `school_id` varchar(50) NOT NULL
+  `course` varchar(100) DEFAULT NULL,
+  `start_year` int(4) DEFAULT NULL,
+  `end_year` int(4) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `sk_educations`
+--
+
+INSERT INTO `sk_educations` (`id`, `sk_official_id`, `education_level_id`, `school_name`, `course`, `start_year`, `end_year`, `created_at`, `updated_at`) VALUES
+(1, 1, 1, 'Sample Elementary School', NULL, 2006, 2012, '2025-03-11 11:43:03', '2025-03-11 11:43:03'),
+(2, 1, 2, 'Sample High School', NULL, 2012, 2016, '2025-03-11 11:43:03', '2025-03-11 11:43:03'),
+(3, 1, 3, 'Sample High School', NULL, 2016, 2018, '2025-03-11 11:43:03', '2025-03-11 11:43:03'),
+(4, 1, 4, 'Camarines Sur Polytechnic College', 'Bachelor of Science in Tourism Management', 2018, 2022, '2025-03-11 11:43:03', '2025-03-11 11:43:03');
 
 -- --------------------------------------------------------
 
@@ -236,6 +273,12 @@ ALTER TABLE `clusters`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `education_levels`
+--
+ALTER TABLE `education_levels`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `events`
 --
 ALTER TABLE `events`
@@ -254,6 +297,7 @@ ALTER TABLE `projects`
 --
 ALTER TABLE `sk_educations`
   ADD PRIMARY KEY (`id`),
+  ADD KEY `education_level_id` (`education_level_id`),
   ADD KEY `sk_official_id` (`sk_official_id`);
 
 --
@@ -286,6 +330,12 @@ ALTER TABLE `clusters`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
+-- AUTO_INCREMENT for table `education_levels`
+--
+ALTER TABLE `education_levels`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
 -- AUTO_INCREMENT for table `events`
 --
 ALTER TABLE `events`
@@ -301,7 +351,7 @@ ALTER TABLE `projects`
 -- AUTO_INCREMENT for table `sk_educations`
 --
 ALTER TABLE `sk_educations`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `sk_officials`
@@ -341,6 +391,7 @@ ALTER TABLE `projects`
 -- Constraints for table `sk_educations`
 --
 ALTER TABLE `sk_educations`
+  ADD CONSTRAINT `fk_education_levels` FOREIGN KEY (`education_level_id`) REFERENCES `education_levels` (`id`) ON UPDATE CASCADE,
   ADD CONSTRAINT `sk_educations_ibfk_1` FOREIGN KEY (`sk_official_id`) REFERENCES `sk_officials` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
