@@ -1,39 +1,34 @@
 <template>
-    <v-container class="container">
-        <v-row>
-            <v-col v-for="(achievement, index) in achievements" :key="index" cols="12" md="4">
-                <v-card class="custom-card mx-auto" max-width="435" elevation="10">
-                    <v-img
-                        height="200"
-                        style="scale: 35%"
-                        src="/Sangguniang_Kabataan_logo.svg"
-                    ></v-img>
+    <v-container fluid class="achievement-main pa-0 ma-0">
+        <h1 class="gradient-text mb-9">Achievements</h1>
+        <div class="achievements" >
+            <v-card elevation="15" 
+                v-for="(achievement, index) in achievements" :key="index"
+                class="card"
+        >
+                <img :src="`achievements/${achievement.img}`" alt="" class="elevation-10">
+                
+                <article>
+                    <h3>{{ achievement.title }}</h3>
+                    <h5>{{ achievement.subtitle }}</h5>
+                </article>
 
-                    <v-card-title class="overlay-titleee">
-                        {{ achievement.title }}
-                    </v-card-title>
+                <v-expand-transition>
+                    <div v-show="showStates[index]">
+                        <v-divider></v-divider>
+                        <v-card-text>
+                            {{ achievement.info }}
+                        </v-card-text>
+                    </div>
+                </v-expand-transition>
+                
+                <v-btn @click="toggleShow(index)" color="green-darken-3">
+                    {{ showStates[index] ? 'Show Less' : 'Show More' }}
+                </v-btn>
 
-                    <v-card-subtitle>
-                        {{ achievement.subtitle }}
-                    </v-card-subtitle>
 
-                    <v-card-actions>
-                        <v-btn color="orange-lighten-2" @click="toggleShow(index)">
-                            {{ showStates[index] ? 'Show Less' : 'Show More' }}
-                        </v-btn>
-                    </v-card-actions>
-
-                    <v-expand-transition>
-                        <div v-show="showStates[index]">
-                            <v-divider></v-divider>
-                            <v-card-text>
-                                {{ achievement.info }}
-                            </v-card-text>
-                        </div>
-                    </v-expand-transition>
-                </v-card>
-            </v-col>
-        </v-row>
+            </v-card>
+        </div>
     </v-container>
 </template>
 <script>
@@ -69,7 +64,63 @@ export default {
 };
 </script>
 
-<style>
+<style scopped>
 @import "../../assets/Achievements.css";
 @import "../../assets/fontEffects.css";
+
+
+.achievements {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    align-items: flex-start;
+    gap: 3rem;
+    padding: 0rem 9rem;
+}
+
+.card {
+  width: 400px;
+  border-radius: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  position: relative;
+  transition: transform 0.3s ease-in-out, border 0.3s ease-in-out;
+  padding-bottom: 1.5rem;
+  /* Optionally, add a default border style */
+  border: 2px solid transparent;
+}
+
+.card:hover {
+  transform: scale(1.05);
+  border: 2px solid #5c5c5c; /* Change border color as needed */
+}
+
+.card img{
+    width: 100%;
+}
+
+article h3 {
+    text-transform: uppercase;
+    font-size: 1.25rem;
+    font-weight: 900;
+}
+
+article {
+  width: 90%;
+}
+
+article h4 {
+  font-size: .75rem;
+}
+
+article p {
+    max-height: 90px;
+    font-size: .75rem;
+    overflow: hidden;
+}
+
+
 </style>
