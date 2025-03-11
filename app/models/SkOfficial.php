@@ -468,4 +468,92 @@ class SkOfficial extends Model
         self::$logged_in  = null;
         self::$logged_out = true;
     }
+
+
+    /**
+     * Insert sk_education
+     *
+     * @return bool
+     * @throws Exception
+     */
+    public function insert(): bool
+    {
+        $stmt = $this->getConnection()->prepare("INSERT INTO `" . self::$table . "` (`sk_official_id`, `education_level_id`, `school_name`, `course`, `start_year`, `end_year`) VALUES (?, ?, ?, ?, ?, ?)");
+        $stmt->bind_param("iissii", $this->sk_official_id, $this->education_level_id, $this->school_name, $this->course, $this->start_year, $this->end_year);
+        $stmt->execute();
+        if ($stmt->affected_rows > 0) {
+            $this->setId($stmt->insert_id);
+            return true;
+        }
+        return false;
+    }
+
+
+    /**
+     * Update sk_education
+     *
+     * @return bool
+     * @throws Exception
+     */
+    public function update(): bool
+    {
+        $stmt = $this->getConnection()->prepare("UPDATE `" . self::$table . "` SET `sk_official_id` = ?, `education_level_id` = ?, `school_name` = ?, `course` = ?, `start_year` = ?, `end_year` = ? WHERE `id` = ?");
+        $stmt->bind_param("iissiii", $this->sk_official_id, $this->education_level_id, $this->school_name, $this->course, $this->start_year, $this->end_year, $this->id);
+        $stmt->execute();
+        if ($stmt->affected_rows > 0) {
+            return true;
+        }
+        return false;
+    }
+
+
+    /**
+     * Delete sk_education
+     *
+     * @return bool
+     * @throws Exception
+     */
+    public function delete(): bool
+    {
+        $stmt = $this->getConnection()->prepare("DELETE FROM `" . self::$table . "` WHERE `id` = ?");
+        $stmt->bind_param("i", $this->id);
+        $stmt->execute();
+        if ($stmt->affected_rows > 0) {
+            return true;
+        }
+        return false;
+    }
+
+
+    /**
+     * Retrieves the education background for this SK Official.
+     * @return array
+     */
+    public function getEducationBackground(): array
+    {
+        $conn = $this->getConnection();
+        $sql = "SELECT 
+                    so.full_name,
+                    el.name AS education_level,
+                    se.school_name,
+                    se.course,
+                    se.start_year,
+                    se.end_year
+                FROM `" . self::$table . "` so
+                JOIN sk_educations se ON so.id = se.sk_official_id
+                JOIN education_levels el ON se.education_level_id = el.id
+                WHERE so.id = ?
+                ORDER BY el.sort_order";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("i", $this->id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        $educationBackground = [];
+        while ($row = $result->fetch_assoc()) {
+            $educationBackground[] = $row;
+        }
+
+        return $educationBackground;
+    }
 }
