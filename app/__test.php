@@ -4,6 +4,7 @@ echo "<pre>";
 
 require_once __DIR__ . '/models/Barangay.php';
 require_once __DIR__ . '/models/SkOfficial.php';
+require_once __DIR__ . '/models/EducationLevel.php';
 
 /** Find By Unique Column */
 $barangay = Barangay::findBy('name', 'San Francisco');
@@ -77,7 +78,13 @@ if ($sk_official !== null) {
 }
 echo "<hr>";
 
-
+/** Display the Education Background for an SK Official using join query method */
+$sk_official = SkOfficial::findBy('slug', 'dessa-mare');
+if ($sk_official !== null) {
+    echo "<h1>Education Background for SK Official: " . $sk_official->getAssoc()['full_name'] . "</h1>";
+    print_r($sk_official->getEducationBackground());
+}
+echo "<hr>";
 
 
 
