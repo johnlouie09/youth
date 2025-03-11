@@ -91,7 +91,7 @@ export default {
     justify-content: center;
     align-items: center;
     gap: 4rem;
-    padding: 5rem 5rem;
+    padding: 4rem 5rem;
     border-radius: 2.5rem;
 }
     

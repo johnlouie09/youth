@@ -31,9 +31,9 @@
 
 <script>
 import barangayHall from '/San_Francisco_Barangay_Hall.JPG?url';
-import Carousel from "../../components/Carousel.vue";
-import Cards from "../../components/Cards.vue";
-import Achievements from "../../components/Achievements.vue";
+import Carousel from '@/components/barangayPage/Announcements.vue';
+import Cards from '@/components/barangayPage/Cards.vue';
+import Achievements from '@/components/barangayPage/Achievements.vue';
 
 export default {
     components: {

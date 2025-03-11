@@ -68,12 +68,12 @@ export default {
 <style scoped>
 .barangays-cluster {
     width: 100%;
+    min-height: 40vh;
     display: flex;
     flex-wrap: wrap;
     justify-content: space-evenly;
     align-items: center;
     gap: 4rem;
-    z-index: 1001;
 }
 
 .custom-card {
