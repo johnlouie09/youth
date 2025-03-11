@@ -1,47 +1,54 @@
 <template>
-    <v-sheet elevation="10" class="nav-main">
-        <div class="logo">
-            <img class="barangay-logo" src="../../../public/group.svg" alt="Barangay Logo">
-            <img class="logo-name" src="../../../public/youth-name.svg">
-        </div>
-
-        <ul>
-            <RouterLink
-                v-for="view in views"
-                :to="view.to"
-                :class="[view.class, {'active': isActive(view.to)}]"
-                :key="view.to"
-            >
-                {{ view.name.toUpperCase() }}
-            </RouterLink>
-
-            <ThemeSwitcher></ThemeSwitcher>
-        </ul>
+    <v-sheet class="nav-main">
+      <div class="logo">
+        <img class="barangay-logo" src="../../../public/group.svg" alt="Barangay Logo">
+        <img class="logo-name" src="../../../public/youth-name.svg">
+      </div>
+  
+      <ul>
+        <RouterLink
+          v-for="view in views"
+          :to="view.to"
+          :class="[view.class, { active: isActive(view.to) }]"
+          :key="view.to"
+        >
+          {{ view.name.toUpperCase() }}
+        </RouterLink>
+        
+        <!-- New "Send a Message" item, shown only if current route is "/barangay" -->
+        <RouterLink
+          v-if="route.path === '/barangay'"
+          to="/barangay/send-message"
+          class="view message"
+        >
+          <v-icon>mdi-message</v-icon>
+        </RouterLink>
+        
+        <ThemeSwitcher></ThemeSwitcher>
+      </ul>
     </v-sheet>
-</template>
-
-<script setup>
-import { computed } from 'vue';
-import { useRoute } from 'vue-router';
-import { reactive } from 'vue';
-import ThemeSwitcher from '../ThemeSwitcher.vue';
-
-const route = useRoute();
-
-const views = reactive([
+  </template>
+  
+  <script setup>
+  import { computed, reactive } from 'vue';
+  import { useRoute } from 'vue-router';
+  import ThemeSwitcher from '../ThemeSwitcher.vue';
+  
+  const route = useRoute();
+  
+  const views = reactive([
     { name: "Home", to: "/home", class: "view home" },
     { name: "About", to: "/about", class: "view about" },
     { name: "Contact", to: "/contact", class: "view contact" }
-]);
-
-const isActive = (to) => {
-  // You can use a computed based on the current route
-  return route.path === to;
-};
-</script>
-
-<style scoped>
-.nav-main {
+  ]);
+  
+  const isActive = (to) => {
+    return route.path === to;
+  };
+  </script>
+  
+  <style scoped>
+  .nav-main {
     position: fixed;
     top: 30px;
     left: 50%;
@@ -53,49 +60,56 @@ const isActive = (to) => {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-radius: 1rem;
+    border-radius: 0.5rem;
     padding: 0px 2rem;
-}
-
-.logo {
+  }
+  
+  .logo {
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 1rem;
     height: 10%;
-}
-.barangay-logo {
+  }
+  
+  .barangay-logo {
     height: 3vh;
-}
-
-.logo-name {
+  }
+  
+  .logo-name {
     height: 1.5vh;
-}
-
-ul {
+  }
+  
+  ul {
     width: 60%;
     display: flex;
-    justify-content: space-evenly;
+    justify-content: space-around;
     align-items: center;
     font-weight: bold;
-}
-
-.view {
+  }
+  
+  .view {
     font-size: 1rem;
-    padding: .5rem 1rem;
-    border-radius: .5rem;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
     transition: color 0.3s ease, border-bottom 0.3s ease;
-}
-
-/* Hover state for links */
-.view:hover {
+  }
+  
+  .view:hover {
     color: #3772FF;
-}
-
- /* Alternatively, if you want to use the default Vue Router active class: */
-.router-link-active {
+  }
+  
+  /* Active state */
+  .active {
     border: 1px solid #3772FF;
     color: #3772FF;
-}
-
-</style>
+  }
+  
+  /* Style for the new send-message item */
+  .message {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  </style>
+  
