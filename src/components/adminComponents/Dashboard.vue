@@ -1,127 +1,3 @@
-<script setup>
-import DashboardCards from './subcomponents/dashboard/DashboardCards.vue';
-import Analytics from './subcomponents/dashboard/Analytics.vue';
-import Suggestions from './subcomponents/dashboard/Suggestions.vue';
-import { reactive } from 'vue';
-import $ from 'jquery';
-
-const data = reactive({
-    cardsData: [
-        {
-            type: 'officials',
-            title: 'OFFICIALS',
-            icon: 'mdi-account-group',  // Changed to MDI icon
-            details: [
-                { position: 'CHAIRPERSON', number: 1 },
-                { position: 'TREASURER', number: 1 },
-                { position: 'SECRETARY', number: 1 },
-                { position: 'KAGAWADS', number: 1 },
-            ]
-        },
-        {
-            type: 'achievements',
-            title: 'ACHIEVEMENTS',
-            icon: 'mdi-trophy', // Changed to MDI icon
-            details: {
-                date: new Date(2025, 1),
-                quantity: 64
-            }
-        },
-        {
-            type: 'announcements',
-            title: 'ANNOUNCEMENTS',
-            icon: 'mdi-bullhorn', // Changed to MDI icon
-            details: {
-                date: new Date(2025, 7),
-                quantity: 98
-            }
-        }
-    ]
-});
-
-/// TEST /// DELETE THIS LATER
-// api base url
-const api_base = (import.meta.env.DEV ? 'http://localhost/youth' : '/youth') + '/app/api.php';
-
-// test data state
-const testData = reactive({
-    skOfficial: null,
-});
-
-// test login method
-const testLogin = () => {
-    $.ajax({
-        type: 'POST', xhrFields: { withCredentials: true },
-        url : `${api_base}?e=sk-official&a=login`,
-        data: {
-            identifier: 'dessa',
-            password  : '123456',
-            remember  : false
-        },
-        success: (response) => {
-            const skOfficial = response?.data?.sk_official;
-            if (skOfficial) {
-                testData.skOfficial = skOfficial;
-            }
-        },
-        error: (error) => {
-            console.error("Login error: ", error);
-        },
-        complete: (xhr) => {
-            // do additional processing here after success or error
-        }
-    });
-};
-
-// test get session
-const testGetSession = () => {
-    $.ajax({
-        type: 'GET', xhrFields: { withCredentials: true },
-        url : `${api_base}?e=sk-official&a=session`,
-        data: {
-
-        },
-        success: (response) => {
-            const skOfficial = response?.data?.sk_official;
-            if (skOfficial) {
-                testData.skOfficial = skOfficial;
-            }
-        },
-        error: (error) => {
-            console.error("Get session error: ", error);
-        },
-        complete: (xhr) => {
-            // do additional processing here after success or error
-        }
-    });
-}
-
-// test logout method
-const testLogout = () => {
-    if (testData.skOfficial) {
-        $.ajax({
-            type: 'POST', xhrFields: { withCredentials: true },
-            url : `${api_base}?e=sk-official&a=logout`,
-            data: {
-                username: testData.skOfficial.username,
-            },
-            success: (response) => {
-                testData.skOfficial = null;
-            },
-            error: (error) => {
-                console.error("Logout error: ", error);
-            },
-            complete: (xhr) => {
-                // do additional processing here after success or error
-            }
-        });
-    }
-}
-
-testGetSession();
-/// TEST /// DELETE THIS LATER
-</script>
-
 <template>
     <v-container class="dashboard-main" fluid>
         <!-- // TEST // DELETE LATER -->
@@ -175,6 +51,122 @@ testGetSession();
         </v-btn>
     </v-container>
 </template>
+
+<script>
+import DashboardCards from './subcomponents/dashboard/DashboardCards.vue';
+import Analytics from './subcomponents/dashboard/Analytics.vue';
+import Suggestions from './subcomponents/dashboard/Suggestions.vue';
+import $ from 'jquery';
+
+export default {
+    components: {
+        DashboardCards,
+        Analytics,
+        Suggestions
+    },
+    data() {
+        return {
+            data: {
+                cardsData: [
+                    {
+                        type: 'officials',
+                        title: 'OFFICIALS',
+                        icon: 'mdi-account-group',
+                        details: [
+                            { position: 'CHAIRPERSON', number: 1 },
+                            { position: 'TREASURER', number: 1 },
+                            { position: 'SECRETARY', number: 1 },
+                            { position: 'KAGAWADS', number: 1 },
+                        ]
+                    },
+                    {
+                        type: 'achievements',
+                        title: 'ACHIEVEMENTS',
+                        icon: 'mdi-trophy',
+                        details: {
+                            date: new Date(2025, 1),
+                            quantity: 64
+                        }
+                    },
+                    {
+                        type: 'announcements',
+                        title: 'ANNOUNCEMENTS',
+                        icon: 'mdi-bullhorn',
+                        details: {
+                            date: new Date(2025, 7),
+                            quantity: 98
+                        }
+                    }
+                ]
+            },
+            api_base: (import.meta.env.DEV ? 'http://localhost/youth' : '/youth') + '/app/api.php',
+            testData: {
+                skOfficial: null
+            }
+        };
+    },
+    methods: {
+        testLogin() {
+            $.ajax({
+                type: 'POST', xhrFields: { withCredentials: true },
+                url : `${this.api_base}?e=sk-official&a=login`,
+                data: {
+                    identifier: 'dessa',
+                    password  : '123456',
+                    remember  : false
+                },
+                success: (response) => {
+                    const skOfficial = response?.data?.sk_official;
+                    if (skOfficial) {
+                        this.testData.skOfficial = skOfficial;
+                    }
+                },
+                error: (error) => {
+                    console.error("Login error: ", error);
+                }
+            });
+        },
+        testGetSession() {
+            $.ajax({
+                type: 'GET', xhrFields: { withCredentials: true },
+                url : `${this.api_base}?e=sk-official&a=session`,
+                success: (response) => {
+                    const skOfficial = response?.data?.sk_official;
+                    if (skOfficial) {
+                        this.testData.skOfficial = skOfficial;
+                    }
+                },
+                error: (error) => {
+                    console.error("Get session error: ", error);
+                }
+            });
+        },
+        testLogout() {
+            if (this.testData.skOfficial) {
+                $.ajax({
+                    type: 'POST', xhrFields: { withCredentials: true },
+                    url : `${this.api_base}?e=sk-official&a=logout`,
+                    data: {
+                        username: this.testData.skOfficial.username,
+                    },
+                    success: () => {
+                        this.testData.skOfficial = null;
+                    },
+                    error: (error) => {
+                        console.error("Logout error: ", error);
+                    }
+                });
+            }
+        }
+    },
+    created() {
+        this.testGetSession();
+    }
+};
+</script>
+
+
+
 
 <style scoped>
 .dashboard-main {
