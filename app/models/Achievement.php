@@ -7,7 +7,7 @@ class Achievement extends Model
     /** static data */
     public    static $table         = 'achievements';
     public    static $table_columns = [];
-    protected static $basic_columns = ['id', 'sk_official_id', 'title', 'info', 'date'];
+    protected static $basic_columns = ['id', 'title', 'info', 'date'];
 
     /** properties */
     protected $sk_official_id = 0;

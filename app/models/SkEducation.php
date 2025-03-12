@@ -6,7 +6,7 @@ class SkEducation extends Model
 {
     protected static $table = 'sk_educations';
     public    static $table_columns = [];
-    protected static $basic_columns = ['id', 'education_level_id', 'school_name', 'course', 'start_year', 'end_year'];
+    protected static $basic_columns = ['id', 'school_name', 'course', 'start_year', 'end_year'];
 
     /** properties */
     protected $sk_official_id     = 0;

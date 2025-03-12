@@ -7,7 +7,7 @@ class Barangay extends Model
     /** static data */
     public    static $table         = 'barangays';
     public    static $table_columns = [];
-    protected static $basic_columns = ['id', 'cluster_id', 'slug', 'name'];
+    protected static $basic_columns = ['id', 'slug', 'name'];
 
     /** properties */
     protected $cluster_id   = 0;

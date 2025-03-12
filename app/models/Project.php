@@ -7,7 +7,7 @@ class Project extends Model
     /** static data */
     public    static $table         = 'projects';
     public    static $table_columns = [];
-    protected static $basic_columns = ['id', 'barangay_id', 'project_name', 'status'];
+    protected static $basic_columns = ['id', 'project_name', 'status'];
 
     /** properties */
     protected $barangay_id  = 0;
