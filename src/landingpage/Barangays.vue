@@ -1,46 +1,5 @@
-<script setup>
-import { ref, watchEffect } from 'vue';
-import axios from 'axios';
-
-const props = defineProps({
-    clusterId: {
-        type: Number,
-        required: true
-    }
-});
-
-const barangays = ref([]);
-const loading = ref(false);
-const error = ref(null);
-
-const fetchBarangays = async () => {
-    try {
-        loading.value = true;
-        error.value = null;
-        const response = await axios.get(`/api/getBarangaysByCluster.php?cluster_id=${props.clusterId}`);
-
-        if (response.data.success) {
-            barangays.value = response.data.data;
-        } else {
-            error.value = 'Failed to fetch barangays';
-        }
-    } catch (err) {
-        error.value = 'Error connecting to the server';
-        console.error('Error:', err);
-    } finally {
-        loading.value = false;
-    }
-};
-
-watchEffect(() => {
-    if (props.clusterId) {
-        fetchBarangays();
-    }
-});
-</script>
-
 <template>
-    <v-row>
+    <div class="barangays-cluster">
         <v-col v-if="loading" cols="12" class="text-center">
             <v-progress-circular indeterminate color="primary"></v-progress-circular>
         </v-col>
@@ -49,22 +8,74 @@ watchEffect(() => {
             <v-alert type="error">{{ error }}</v-alert>
         </v-col>
 
-        <template v-else>
-            <v-col v-for="barangay in barangays" :key="barangay.id" cols="12" md="4">
-                <router-link
-                        :to="barangay.name.toLowerCase().replace(/\s+/g, '-')"
-                        class="d-block"
-                >
-                    <v-card elevation="10" class="custom-card ma-2 hoverable" :max-width="350" height="200px">
-                        <v-card-title class="overlay-titles-barrangays">{{ barangay.name }}</v-card-title>
-                    </v-card>
-                </router-link>
-            </v-col>
-        </template>
-    </v-row>
+        <v-card v-else v-for="barangay in barangays" :key="barangay.id" elevation="10" class="barangay custom-card hoverable" width="350px" height="262px" :to="barangay.name.toLowerCase().replace(/\s+/g, '-')">
+            <v-card-title class="overlay-titles-barrangays">{{ barangay.name }}</v-card-title>
+        </v-card>
+    </div>
 </template>
 
+<script>
+import axios from 'axios';
+
+export default {
+    props: {
+        clusterId: {
+            type: Number,
+            required: true
+        }
+    },
+    data() {
+        return {
+            barangays: [],
+            loading: false,
+            error: null
+        };
+    },
+    watch: {
+        clusterId: {
+            immediate: true,
+            handler(newVal) {
+                if (newVal) {
+                    this.fetchBarangays();
+                }
+            }
+        }
+    },
+    methods: {
+        async fetchBarangays() {
+            try {
+                this.loading = true;
+                this.error = null;
+                const response = await axios.get(`/api/getBarangaysByCluster.php?cluster_id=${this.clusterId}`);
+
+                if (response.data.success) {
+                    this.barangays = response.data.data;
+                } else {
+                    this.error = 'Failed to fetch barangays';
+                }
+            } catch (err) {
+                this.error = 'Error connecting to the server';
+                console.error('Error:', err);
+            } finally {
+                this.loading = false;
+            }
+        }
+    }
+};
+</script>
+
+
 <style scoped>
+.barangays-cluster {
+    width: 100%;
+    min-height: 40vh;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    align-items: center;
+    gap: 4rem;
+}
+
 .custom-card {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
