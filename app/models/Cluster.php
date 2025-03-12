@@ -104,6 +104,19 @@ class Cluster extends Model
 
 
     /**
+     * Gets all Barangays that belong to this Cluster.
+     *
+     * @param bool $assoc
+     * @param bool $assoc_basic
+     * @return array
+     */
+    public function getBarangays(bool $assoc = false, bool $assoc_basic = false): array
+    {
+        return Barangay::all($assoc, $assoc_basic, $this);
+    }
+
+
+    /**
      * Insert cluster
      *
      * @return bool

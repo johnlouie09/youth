@@ -165,28 +165,50 @@ class SkEducation extends Model
 
 
     /**
-     * Get all SkOfficial.
-     * @param $assoc
-     * @param $assoc_basic
+     * Retrieves all SK Education records, optionally filtering by SK Official.
+     *
+     * @param bool $assoc
+     * @param bool $assoc_basic
+     * @param SkOfficial|null $skOfficial
      * @return array
      */
-    public static function all($assoc = false, $assoc_basic = false)
+    public static function all(bool $assoc = false, bool $assoc_basic = false, ?SkOfficial $skOfficial = null): array
     {
-        $sk_educations = [];
+        $query = "SELECT * FROM `" . self::$table . "`";
+        $params = [];
+        $types = '';
 
-        $stmt = self::getConnectionStatic()->prepare("SELECT * FROM `" . self::$table . "`");
-        $stmt->execute();
-        $result = $stmt->get_result();
-        if ($result->num_rows > 0) {
-            while ($row = $result->fetch_assoc()) {
-                $sk_education = new SkEducation();
-                $sk_education->hydrate($row);
-
-                $sk_educations[] = $assoc ? $sk_education->getAssoc($assoc_basic) : $sk_education;
-            }
+        if ($skOfficial !== null) {
+            $query .= " WHERE `sk_official_id` = ?";
+            $params[] = $skOfficial->getId();
+            $types .= "i";
         }
 
-        return $sk_educations;
+        $stmt = self::getConnectionStatic()->prepare($query);
+        if (!empty($params)) {
+            $stmt->bind_param($types, ...$params);
+        }
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $educations = [];
+        while ($row = $result->fetch_assoc()) {
+            $education = new SkEducation();
+            $education->hydrate($row);
+            $educations[] = $assoc ? $education->getAssoc($assoc_basic) : $education;
+        }
+        return $educations;
+    }
+
+
+    /**
+     * Gets the SK Official associated with this education record.
+     *
+     * @return SkOfficial|null
+     * @throws Exception
+     */
+    public function getSkOfficial(): ?SkOfficial
+    {
+        return SkOfficial::find($this->sk_official_id);
     }
 
 

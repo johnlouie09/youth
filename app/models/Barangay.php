@@ -100,28 +100,118 @@ class Barangay extends Model
 
 
     /**
-     * Get all Barangay.
-     * @param $assoc
-     * @param $assoc_basic
+     * Retrieves all Barangay records, optionally filtering by Cluster.
+     *
+     * @param bool $assoc
+     * @param bool $assoc_basic
+     * @param Cluster|null $cluster
      * @return array
      */
-    public static function all($assoc = false, $assoc_basic = false)
+    public static function all(bool $assoc = false, bool $assoc_basic = false, ?Cluster $cluster = null): array
     {
-        $barangays = [];
+        $query = "SELECT * FROM `" . self::$table . "`";
+        $params = [];
+        $types = '';
 
-        $stmt = self::getConnectionStatic()->prepare("SELECT * FROM `" . self::$table . "`");
+        if ($cluster !== null) {
+            $query .= " WHERE `cluster_id` = ?";
+            $params[] = $cluster->getId();
+            $types .= "i";
+        }
+
+        $stmt = self::getConnectionStatic()->prepare($query);
+
+        if (!empty($params)) {
+            $stmt->bind_param($types, ...$params);
+        }
+
         $stmt->execute();
         $result = $stmt->get_result();
-        if ($result->num_rows > 0) {
-            while ($row = $result->fetch_assoc()) {
-                $barangay = new Barangay();
-                $barangay->hydrate($row);
+        $barangays = [];
 
-                $barangays[] = $assoc ? $barangay->getAssoc($assoc_basic) : $barangay;
-            }
+        while ($row = $result->fetch_assoc()) {
+            $barangay = new Barangay();
+            $barangay->hydrate($row);
+            $barangays[] = $assoc ? $barangay->getAssoc($assoc_basic) : $barangay;
         }
 
         return $barangays;
+    }
+
+
+    /**
+     * Gets the Cluster that this Barangay belongs to.
+     *
+     * @return Cluster|null
+     * @throws Exception
+     */
+    public function getCluster(): ?Cluster
+    {
+        return Cluster::find($this->cluster_id);
+    }
+
+
+    /**
+     * Gets all SK Officials that belong to this Barangay.
+     *
+     * @param bool $assoc
+     * @param bool $assoc_basic
+     * @return array
+     */
+    public function getSkOfficials(bool $assoc = false, bool $assoc_basic = false): array
+    {
+        return SkOfficial::all($assoc, $assoc_basic, $this);
+    }
+
+
+    /**
+     * Gets all Events that belong to this Barangay.
+     *
+     * @param bool $assoc
+     * @param bool $assoc_basic
+     * @return array
+     */
+    public function getEvents(bool $assoc = false, bool $assoc_basic = false): array {
+        return Event::all($assoc, $assoc_basic, $this);
+    }
+
+
+    /**
+     * Gets all Projects that belong to this Barangay.
+     *
+     * @param bool $assoc
+     * @param bool $assoc_basic
+     * @return array
+     */
+    public function getProjects(bool $assoc = false, bool $assoc_basic = false): array {
+        return Project::all($assoc, $assoc_basic, $this);
+    }
+
+
+    /**
+     * Gets all achievements for this Barangay across all its SK Officials.
+     *
+     * This method retrieves every SK Official in this Barangay and then merges all of their achievements.
+     *
+     * @param bool $assoc
+     * @param bool $assoc_basic
+     * @return array
+     */
+    public function getAllAchievements(bool $assoc = false, bool $assoc_basic = false): array {
+        $allAchievements = [];
+        // Retrieve all SK Officials for this Barangay
+        $skOfficials = $this->getSkOfficials();
+        foreach ($skOfficials as $official) {
+            // Ensure we have an object instance
+            if (!is_object($official)) {
+                $official = new SkOfficial($official['id']);
+            }
+            // Retrieve the achievements for this SK Official
+            $achievements = $official->getAchievements($assoc, $assoc_basic);
+            // Merge them into one array
+            $allAchievements = array_merge($allAchievements, $achievements);
+        }
+        return $allAchievements;
     }
 
 

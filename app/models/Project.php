@@ -155,28 +155,50 @@ class Project extends Model
 
 
     /**
-     * Get all Project.
-     * @param $assoc
-     * @param $assoc_basic
+     * Retrieves all Project records, optionally filtering by Barangay.
+     *
+     * @param bool $assoc
+     * @param bool $assoc_basic
+     * @param Barangay|null $barangay
      * @return array
      */
-    public static function all($assoc = false, $assoc_basic = false)
+    public static function all(bool $assoc = false, bool $assoc_basic = false, ?Barangay $barangay = null): array
     {
-        $projects = [];
+        $query = "SELECT * FROM `" . self::$table . "`";
+        $params = [];
+        $types = '';
 
-        $stmt = self::getConnectionStatic()->prepare("SELECT * FROM `" . self::$table . "`");
-        $stmt->execute();
-        $result = $stmt->get_result();
-        if ($result->num_rows > 0) {
-            while ($row = $result->fetch_assoc()) {
-                $project = new Project();
-                $project->hydrate($row);
-
-                $projects[] = $assoc ? $project->getAssoc($assoc_basic) : $project;
-            }
+        if ($barangay !== null) {
+            $query .= " WHERE `barangay_id` = ?";
+            $params[] = $barangay->getId();
+            $types .= "i";
         }
 
+        $stmt = self::getConnectionStatic()->prepare($query);
+        if (!empty($params)) {
+            $stmt->bind_param($types, ...$params);
+        }
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $projects = [];
+        while ($row = $result->fetch_assoc()) {
+            $project = new Project();
+            $project->hydrate($row);
+            $projects[] = $assoc ? $project->getAssoc($assoc_basic) : $project;
+        }
         return $projects;
+    }
+
+
+    /**
+     * Gets the Barangay that this Project belongs to.
+     *
+     * @return Barangay|null
+     * @throws Exception
+     */
+    public function getBarangay(): ?Barangay
+    {
+        return Barangay::find($this->barangay_id);
     }
 
 

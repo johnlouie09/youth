@@ -144,28 +144,50 @@ class Event extends Model
 
 
     /**
-     * Get all Event.
-     * @param $assoc
-     * @param $assoc_basic
+     * Retrieves all Event records, optionally filtering by Barangay.
+     *
+     * @param bool $assoc
+     * @param bool $assoc_basic
+     * @param Barangay|null $barangay
      * @return array
      */
-    public static function all($assoc = false, $assoc_basic = false)
+    public static function all(bool $assoc = false, bool $assoc_basic = false, ?Barangay $barangay = null): array
     {
-        $events = [];
+        $query = "SELECT * FROM `" . self::$table . "`";
+        $params = [];
+        $types = '';
 
-        $stmt = self::getConnectionStatic()->prepare("SELECT * FROM `" . self::$table . "`");
-        $stmt->execute();
-        $result = $stmt->get_result();
-        if ($result->num_rows > 0) {
-            while ($row = $result->fetch_assoc()) {
-                $event = new Event();
-                $event->hydrate($row);
-
-                $events[] = $assoc ? $event->getAssoc($assoc_basic) : $event;
-            }
+        if ($barangay !== null) {
+            $query .= " WHERE `barangay_id` = ?";
+            $params[] = $barangay->getId();
+            $types .= "i";
         }
 
+        $stmt = self::getConnectionStatic()->prepare($query);
+        if (!empty($params)) {
+            $stmt->bind_param($types, ...$params);
+        }
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $events = [];
+        while ($row = $result->fetch_assoc()) {
+            $event = new Event();
+            $event->hydrate($row);
+            $events[] = $assoc ? $event->getAssoc($assoc_basic) : $event;
+        }
         return $events;
+    }
+
+
+    /**
+     * Gets the Barangay that this Event belongs to.
+     *
+     * @return Barangay|null
+     * @throws Exception
+     */
+    public function getBarangay(): ?Barangay
+    {
+        return Barangay::find($this->barangay_id);
     }
 
 

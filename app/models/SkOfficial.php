@@ -321,28 +321,79 @@ class SkOfficial extends Model
 
 
     /**
-     * Get all SkOfficial.
-     * @param $assoc
-     * @param $assoc_basic
+     * Retrieves all SK Official records, optionally filtering by Barangay.
+     *
+     * @param bool $assoc.
+     * @param bool $assoc_basic
+     * @param Barangay|null $barangay
      * @return array
      */
-    public static function all($assoc = false, $assoc_basic = false)
+    public static function all(bool $assoc = false, bool $assoc_basic = false, ?Barangay $barangay = null): array
     {
-        $sk_officials = [];
+        $query = "SELECT * FROM `" . self::$table . "`";
+        $params = [];
+        $types = '';
 
-        $stmt = self::getConnectionStatic()->prepare("SELECT * FROM `" . self::$table . "`");
+        if ($barangay !== null) {
+            $query .= " WHERE `barangay_id` = ?";
+            $params[] = $barangay->getId();
+            $types .= "i";
+        }
+
+        $stmt = self::getConnectionStatic()->prepare($query);
+
+        if (!empty($params)) {
+            $stmt->bind_param($types, ...$params);
+        }
+
         $stmt->execute();
         $result = $stmt->get_result();
-        if ($result->num_rows > 0) {
-            while ($row = $result->fetch_assoc()) {
-                $sk_official = new SkOfficial();
-                $sk_official->hydrate($row);
+        $sk_officials = [];
 
-                $sk_officials[] = $assoc ? $sk_official->getAssoc($assoc_basic) : $sk_official;
-            }
+        while ($row = $result->fetch_assoc()) {
+            $sk_official = new SkOfficial();
+            $sk_official->hydrate($row);
+            $sk_officials[] = $assoc ? $sk_official->getAssoc($assoc_basic) : $sk_official;
         }
 
         return $sk_officials;
+    }
+
+
+    /**
+     * Gets the Barangay that this SK Official belongs to.
+     *
+     * @return Barangay|null
+     * @throws Exception
+     */
+    public function getBarangay(): ?Barangay
+    {
+        return Barangay::find($this->barangay_id);
+    }
+
+
+    /**
+     * Gets all Achievements for this SK Official.
+     *
+     * @param bool $assoc
+     * @param bool $assoc_basic
+     * @return array
+     */
+    public function getAchievements(bool $assoc = false, bool $assoc_basic = false): array
+    {
+        return Achievement::all($assoc, $assoc_basic, $this);
+    }
+
+
+    /**
+     * Gets all SK Education records for this SK Official.
+     *
+     * @param bool $assoc
+     * @param bool $assoc_basic
+     * @return array
+     */
+    public function getEducations(bool $assoc = false, bool $assoc_basic = false): array {
+        return SkEducation::all($assoc, $assoc_basic, $this);
     }
 
 
@@ -471,7 +522,7 @@ class SkOfficial extends Model
 
 
     /**
-     * Insert sk_education
+     * Insert sk_official
      *
      * @return bool
      * @throws Exception
@@ -490,7 +541,7 @@ class SkOfficial extends Model
 
 
     /**
-     * Update sk_education
+     * Update sk_official
      *
      * @return bool
      * @throws Exception
@@ -508,7 +559,7 @@ class SkOfficial extends Model
 
 
     /**
-     * Delete sk_education
+     * Delete sk_official
      *
      * @return bool
      * @throws Exception
