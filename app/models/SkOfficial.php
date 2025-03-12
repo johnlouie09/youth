@@ -361,15 +361,18 @@ class SkOfficial extends Model
 
 
     /**
-     * Gets the parent Barangay for this SK Official.
+     * Gets the Barangay that this SK Official belongs to.
      *
-     * @return Barangay|null
+     * @param bool $assoc
+     * @param bool $assoc_basic
+     * @return Barangay|array|null
      * @throws Exception
      */
-    public function getBarangay(): ?Barangay
+    public function getBarangay(bool $assoc = false, bool $assoc_basic = false): Barangay|array|null
     {
         require_once __DIR__ . '/Barangay.php';
-        return Barangay::find($this->barangay_id);
+        $barangay = Barangay::find($this->barangay_id);
+        return ($assoc && $barangay) ? $barangay->getAssoc($assoc_basic) : $barangay;
     }
 
 

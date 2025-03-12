@@ -204,13 +204,16 @@ class Achievement extends Model
     /**
      * Gets the SK Official that this Achievement belongs to.
      *
-     * @return SkOfficial|null
+     * @param bool $assoc
+     * @param bool $assoc_basic
+     * @return SkOfficial|array|null
      * @throws Exception
      */
-    public function getSkOfficial(): ?SkOfficial
+    public function getSkOfficial(bool $assoc = false, bool $assoc_basic = false): array|SkOfficial|null
     {
         require_once __DIR__ . '/SkOfficial.php';
-        return SkOfficial::find($this->sk_official_id);
+        $skOfficial = SkOfficial::find($this->sk_official_id);
+        return ($assoc && $skOfficial) ? $skOfficial->getAssoc($assoc_basic) : $skOfficial;
     }
 
 

@@ -142,13 +142,16 @@ class Barangay extends Model
     /**
      * Gets the Cluster that this Barangay belongs to.
      *
-     * @return Cluster|null
+     * @param bool $assoc
+     * @param bool $assoc_basic
+     * @return Cluster|array|null
      * @throws Exception
      */
-    public function getCluster(): ?Cluster
+    public function getCluster(bool $assoc = false, bool $assoc_basic = false): Cluster|array|null
     {
         require_once __DIR__ . '/Cluster.php';
-        return Cluster::find($this->cluster_id);
+        $cluster = Cluster::find($this->cluster_id);
+        return ($assoc && $cluster) ? $cluster->getAssoc($assoc_basic) : $cluster;
     }
 
 
