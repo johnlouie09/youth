@@ -1,44 +1,3 @@
-<script setup>
-import { ref, onMounted } from "vue";
-import gsap from "gsap";
-
-const isLoading = ref(true);
-
-onMounted(() => {
-    const tl = gsap.timeline({
-        delay: 0.3,
-        onComplete: () => {
-            isLoading.value = false;
-        },
-    });
-
-    tl.fromTo(
-            ".preloader-svg",
-            { opacity: 0, x: 50 },
-            { opacity: 1, x: 0, duration: 1.5, ease: "power3.out" }
-    );
-
-    tl.to({}, { duration: 0 });
-
-    tl.to(".preloader-svg", {
-        opacity: 0,
-        y: -50,
-        duration: 1,
-        ease: "power3.in",
-    });
-
-    tl.to(
-            ".mil-preloader",
-            {
-                opacity: 0,
-                duration: 1,
-                ease: "power3.out",
-            },
-            "-=0.3"
-    );
-});
-</script>
-
 <template>
     <div v-if="isLoading" class="mil-preloader">
         <div class="mil-preloader-animation">
@@ -50,6 +9,53 @@ onMounted(() => {
         </div>
     </div>
 </template>
+
+<script>
+import gsap from "gsap";
+
+export default {
+    data() {
+        return {
+            isLoading: true,
+        };
+    },
+    mounted() {
+        const tl = gsap.timeline({
+            delay: 0.3,
+            onComplete: () => {
+                this.isLoading = false;
+            },
+        });
+
+        tl.fromTo(
+            ".preloader-svg",
+            { opacity: 0, x: 50 },
+            { opacity: 1, x: 0, duration: 1.5, ease: "power3.out" }
+        );
+
+        tl.to({}, { duration: 0 });
+
+        tl.to(".preloader-svg", {
+            opacity: 0,
+            y: -50,
+            duration: 1,
+            ease: "power3.in",
+        });
+
+        tl.to(
+            ".mil-preloader",
+            {
+                opacity: 0,
+                duration: 1,
+                ease: "power3.out",
+            },
+            "-=0.3"
+        );
+    },
+};
+</script>
+
+
 
 <style lang="scss" scoped>
 $dark: #111;
