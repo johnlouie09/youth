@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 05, 2025 at 10:38 PM
+-- Generation Time: Mar 11, 2025 at 08:44 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -38,6 +38,14 @@ CREATE TABLE `achievements` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `achievements`
+--
+
+INSERT INTO `achievements` (`id`, `sk_official_id`, `title`, `subtitle`, `info`, `img`, `date`, `created_at`, `updated_at`) VALUES
+(1, 1, 'Sample Achievement', 'Subtitle Achievement', 'Information of Achievement', NULL, '2025-03-03', '2025-03-12 10:49:25', '2025-03-12 10:49:25'),
+(2, 23, 'Another Sample', 'Again Another Sample', 'This is the information for another sample', NULL, '2025-03-14', '2025-03-12 10:59:39', '2025-03-12 10:59:39');
 
 -- --------------------------------------------------------
 
@@ -81,47 +89,6 @@ INSERT INTO `barangays` (`id`, `cluster_id`, `slug`, `name`, `created_at`, `upda
 (20, 5, 'sto-niño', 'Sto. Niño', '2025-02-17 08:07:33', '2025-03-10 08:42:59'),
 (21, 5, 'san-vicente-sur', 'San Vicente Sur', '2025-02-17 08:07:33', '2025-03-10 08:42:59'),
 (22, 5, 'salvacion', 'Salvacion', '2025-02-17 08:07:33', '2025-03-10 08:42:59');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `barangay_achievement`
---
-
-CREATE TABLE `barangay_achievement` (
-  `id` int(11) NOT NULL,
-  `barangay_id` int(11) NOT NULL,
-  `title` varchar(50) NOT NULL,
-  `subtitle` varchar(100) NOT NULL,
-  `info` text NOT NULL,
-  `img` varchar(100) NOT NULL,
-  `date` date NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `barangay_achievement`
---
-
-INSERT INTO `barangay_achievement` (`id`, `barangay_id`, `title`, `subtitle`, `info`, `img`, `date`) VALUES
-(1, 1, 'Hello', 'Community unites for cleaner streets', 'The barangay successfully conducted a clean-up drive, removing over 500kg of waste.', '/public/ex.jpg', '2024-04-22'),
-(2, 1, 'Medical Mission', 'Free healthcare services for residents', 'Over 300 residents received free medical checkups and medicines.', 'medical.jpg', '2024-02-10'),
-(3, 1, 'Youth Leadership Seminar', 'Empowering the next leaders', 'The barangay hosted a leadership seminar for young individuals.', 'youth_seminar.jpg', '2024-03-05'),
-(4, 1, 'Barangay Basketball League', 'Sports event for the youth', 'The annual basketball tournament engaged over 10 teams.', 'basketball.jpg', '2024-04-20'),
-(5, 1, 'Scholarship Granting', 'Helping students achieve their dreams', 'Ten students received full scholarships.', '/public/ex.jpg', '2024-05-15'),
-(6, 1, 'Tree Planting Initiative', 'Environmental awareness program', 'Residents planted over 1,000 trees.', 'tree_planting.jpg', '2024-06-18'),
-(7, 1, 'Livelihood Training', 'Supporting small businesses', 'Residents received training in baking and soap making.', 'livelihood.jpg', '2024-07-25'),
-(8, 1, 'Disaster Preparedness Drill', 'Ensuring community safety', 'A drill was conducted with over 500 participants.', 'drill.jpg', '2024-08-10'),
-(9, 1, 'Feeding Program', 'Nutrition for children', '300 children received free nutritious meals.', 'feeding.jpg', '2024-09-05'),
-(10, 1, 'Elderly Support Program', 'Caring for our seniors', 'Seniors were given free medical checkups and wellness programs.', 'elderly.jpg', '2024-10-12'),
-(11, 1, 'Barangay Fiesta', 'Celebrating unity', 'The barangay held a grand fiesta with cultural performances.', 'fiesta.jpg', '2024-11-20'),
-(12, 1, 'Year-End Recognition', 'Honoring outstanding citizens', 'Outstanding youth and barangay officials were awarded.', 'recognition.jpg', '2024-12-15'),
-(13, 1, 'Job Fair 2025', 'Providing employment opportunities', 'Over 100 people found job opportunities.', 'job_fair.jpg', '2025-01-10'),
-(14, 1, 'Anti-Drug Campaign', 'Spreading awareness on drug prevention', 'An awareness seminar on the dangers of drugs was held.', 'anti_drug.jpg', '2025-01-25'),
-(15, 1, 'Sports Clinic', 'Training young athletes', 'A sports training program was conducted for young athletes.', 'sports_clinic.jpg', '2025-02-05'),
-(16, 1, 'IT Skills Training', 'Equipping youth with digital skills', 'Students were trained in basic coding and graphic design.', 'it_training.jpg', '2025-02-12'),
-(17, 1, 'Fire Safety Seminar', 'Educating residents on fire prevention', 'Residents were taught fire prevention techniques.', 'fire_safety.jpg', '2025-02-18'),
-(18, 1, 'Community Garden Project', 'Promoting urban gardening', 'A community garden was established in the barangay.', '/public/ex.jpg', '2025-02-22'),
-(19, 1, 'Ginawsssa q naman lahat huhuhuHU', 'Celebrating women in leadership', 'A forum was conducted to discuss women’s rights and empowerment.', '/public/ex.jpg', '2025-02-28');
 
 -- --------------------------------------------------------
 
@@ -190,6 +157,13 @@ CREATE TABLE `events` (
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `events`
+--
+
+INSERT INTO `events` (`id`, `barangay_id`, `event_name`, `event_date`, `location`, `description`, `created_at`, `updated_at`) VALUES
+(1, 1, 'Sample Event', '2025-03-12', 'Sample Location', 'Sample Description', '2025-03-12 10:47:05', '2025-03-12 10:47:05');
+
 -- --------------------------------------------------------
 
 --
@@ -207,6 +181,13 @@ CREATE TABLE `projects` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `projects`
+--
+
+INSERT INTO `projects` (`id`, `barangay_id`, `project_name`, `budget`, `status`, `start_date`, `end_date`, `created_at`, `updated_at`) VALUES
+(1, 1, 'Sample Project', NULL, 'Proposed', '2025-02-01', '2025-04-26', '2025-03-12 10:47:53', '2025-03-12 10:47:53');
 
 -- --------------------------------------------------------
 
@@ -287,7 +268,8 @@ INSERT INTO `sk_officials` (`id`, `barangay_id`, `slug`, `username`, `password`,
 (19, 19, 'james', '', '', 'James S. Tasarra', 'SK Chairperson', '9630466338', '', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-03-06 20:40:52'),
 (20, 20, 'aliza-mae', '', '', 'Aliza Mae P. Viñas', 'SK Chairperson', '9383706542', '', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-03-06 20:41:02'),
 (21, 21, 'erika-mae', '', '', 'Erika Mae V. Molina', 'SK Chairperson', '9389182048', '', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-03-06 20:41:13'),
-(22, 22, 'jessa-mae', '', '', 'Jessa Mae C. Matubis', 'SK Chairperson', '9486804219', '', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-03-06 20:41:22');
+(22, 22, 'jessa-mae', '', '', 'Jessa Mae C. Matubis', 'SK Chairperson', '9486804219', '', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-03-06 20:41:22'),
+(23, 1, 'sample', 'sample', '', 'Sample for San Francisco', 'SK Secretary', '', 'sample_official@example.com', NULL, 'I\'m created just for a test', '', NULL, NULL, '2025-03-12 10:58:56', '2025-03-12 10:58:56');
 
 --
 -- Indexes for dumped tables
@@ -306,12 +288,6 @@ ALTER TABLE `achievements`
 ALTER TABLE `barangays`
   ADD PRIMARY KEY (`id`),
   ADD KEY `cluster_id` (`cluster_id`);
-
---
--- Indexes for table `barangay_achievement`
---
-ALTER TABLE `barangay_achievement`
-  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `clusters`
@@ -362,19 +338,13 @@ ALTER TABLE `sk_officials`
 -- AUTO_INCREMENT for table `achievements`
 --
 ALTER TABLE `achievements`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `barangays`
 --
 ALTER TABLE `barangays`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
-
---
--- AUTO_INCREMENT for table `barangay_achievement`
---
-ALTER TABLE `barangay_achievement`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT for table `clusters`
@@ -392,13 +362,13 @@ ALTER TABLE `education_levels`
 -- AUTO_INCREMENT for table `events`
 --
 ALTER TABLE `events`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `projects`
 --
 ALTER TABLE `projects`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `sk_educations`
@@ -410,7 +380,7 @@ ALTER TABLE `sk_educations`
 -- AUTO_INCREMENT for table `sk_officials`
 --
 ALTER TABLE `sk_officials`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 
 --
 -- Constraints for dumped tables
