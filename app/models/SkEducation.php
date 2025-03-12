@@ -208,6 +208,7 @@ class SkEducation extends Model
      */
     public function getSkOfficial(): ?SkOfficial
     {
+        require_once __DIR__ . '/SkOfficial.php';
         return SkOfficial::find($this->sk_official_id);
     }
 
@@ -242,10 +243,7 @@ class SkEducation extends Model
         $stmt = $this->getConnection()->prepare("UPDATE `" . self::$table . "` SET `sk_official_id` = ?, `education_level_id` = ?, `school_name` = ?, `course` = ?, `start_year` = ?, `end_year` = ? WHERE `id` = ?");
         $stmt->bind_param("iissiii", $this->sk_official_id, $this->education_level_id, $this->school_name, $this->course, $this->start_year, $this->end_year, $this->id);
         $stmt->execute();
-        if ($stmt->affected_rows > 0) {
-            return true;
-        }
-        return false;
+        return $stmt->affected_rows > 0;
     }
 
 
@@ -260,9 +258,6 @@ class SkEducation extends Model
         $stmt = $this->getConnection()->prepare("DELETE FROM `" . self::$table . "` WHERE `id` = ?");
         $stmt->bind_param("i", $this->id);
         $stmt->execute();
-        if ($stmt->affected_rows > 0) {
-            return true;
-        }
-        return false;
+        return $stmt->affected_rows > 0;
     }
 }

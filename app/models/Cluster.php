@@ -112,6 +112,7 @@ class Cluster extends Model
      */
     public function getBarangays(bool $assoc = false, bool $assoc_basic = false): array
     {
+        require_once __DIR__ . '/Barangay.php';
         return Barangay::all($assoc, $assoc_basic, $this);
     }
 
@@ -146,10 +147,7 @@ class Cluster extends Model
         $stmt = $this->getConnection()->prepare("UPDATE `" . self::$table . "` SET `slug` = ?, `name` = ? WHERE `id` = ?");
         $stmt->bind_param("ssi", $this->slug, $this->name, $this->id);
         $stmt->execute();
-        if ($stmt->affected_rows > 0) {
-            return true;
-        }
-        return false;
+        return $stmt->affected_rows > 0;
     }
 
 
@@ -164,9 +162,6 @@ class Cluster extends Model
         $stmt = $this->getConnection()->prepare("DELETE FROM `" . self::$table . "` WHERE `id` = ?");
         $stmt->bind_param("i", $this->id);
         $stmt->execute();
-        if ($stmt->affected_rows > 0) {
-            return true;
-        }
-        return false;
+        return $stmt->affected_rows > 0;
     }
 }

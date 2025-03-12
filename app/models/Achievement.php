@@ -209,6 +209,7 @@ class Achievement extends Model
      */
     public function getSkOfficial(): ?SkOfficial
     {
+        require_once __DIR__ . '/SkOfficial.php';
         return SkOfficial::find($this->sk_official_id);
     }
 
@@ -243,10 +244,7 @@ class Achievement extends Model
         $stmt = $this->getConnection()->prepare("UPDATE `" . self::$table . "` SET `sk_official_id` = ?, `title` = ?, `subtitle` = ?, `info` = ?, `img` = ?, `date` = ? WHERE `id` = ?");
         $stmt->bind_param("isssssi", $this->sk_official_id, $this->title, $this->subtitle, $this->info, $this->img, $this->date, $this->id);
         $stmt->execute();
-        if ($stmt->affected_rows > 0) {
-            return true;
-        }
-        return false;
+        return $stmt->affected_rows > 0;
     }
 
 
@@ -261,9 +259,6 @@ class Achievement extends Model
         $stmt = $this->getConnection()->prepare("DELETE FROM `" . self::$table . "` WHERE `id` = ?");
         $stmt->bind_param("i", $this->id);
         $stmt->execute();
-        if ($stmt->affected_rows > 0) {
-            return true;
-        }
-        return false;
+        return $stmt->affected_rows > 0;
     }
 }

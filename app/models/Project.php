@@ -191,13 +191,14 @@ class Project extends Model
 
 
     /**
-     * Gets the Barangay that this Project belongs to.
+     * Gets the parent Barangay for this Project.
      *
      * @return Barangay|null
      * @throws Exception
      */
     public function getBarangay(): ?Barangay
     {
+        require_once __DIR__ . '/Barangay.php';
         return Barangay::find($this->barangay_id);
     }
 
@@ -232,10 +233,7 @@ class Project extends Model
         $stmt = $this->getConnection()->prepare("UPDATE `" . self::$table . "` SET `barangay_id` = ?, `project_name` = ?, `budget` = ?, `status` = ?, `start_date` = ?, `end_date` = ? WHERE `id` = ?");
         $stmt->bind_param("isssssi", $this->barangay_id, $this->project_name, $this->budget, $this->status, $this->start_date, $this->end_date, $this->id);
         $stmt->execute();
-        if ($stmt->affected_rows > 0) {
-            return true;
-        }
-        return false;
+        return $stmt->affected_rows > 0;
     }
 
 
@@ -250,9 +248,6 @@ class Project extends Model
         $stmt = $this->getConnection()->prepare("DELETE FROM `" . self::$table . "` WHERE `id` = ?");
         $stmt->bind_param("i", $this->id);
         $stmt->execute();
-        if ($stmt->affected_rows > 0) {
-            return true;
-        }
-        return false;
+        return $stmt->affected_rows > 0;
     }
 }

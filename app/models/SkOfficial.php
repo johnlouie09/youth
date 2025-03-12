@@ -361,19 +361,20 @@ class SkOfficial extends Model
 
 
     /**
-     * Gets the Barangay that this SK Official belongs to.
+     * Gets the parent Barangay for this SK Official.
      *
      * @return Barangay|null
      * @throws Exception
      */
     public function getBarangay(): ?Barangay
     {
+        require_once __DIR__ . '/Barangay.php';
         return Barangay::find($this->barangay_id);
     }
 
 
     /**
-     * Gets all Achievements for this SK Official.
+     * Retrieves achievements for this SK Official.
      *
      * @param bool $assoc
      * @param bool $assoc_basic
@@ -381,18 +382,21 @@ class SkOfficial extends Model
      */
     public function getAchievements(bool $assoc = false, bool $assoc_basic = false): array
     {
+        require_once __DIR__ . '/Achievement.php';
         return Achievement::all($assoc, $assoc_basic, $this);
     }
 
 
     /**
-     * Gets all SK Education records for this SK Official.
+     * Retrieves educations for this SK Official.
      *
      * @param bool $assoc
      * @param bool $assoc_basic
      * @return array
      */
-    public function getEducations(bool $assoc = false, bool $assoc_basic = false): array {
+    public function getEducations(bool $assoc = false, bool $assoc_basic = false): array
+    {
+        require_once __DIR__ . '/SkEducation.php';
         return SkEducation::all($assoc, $assoc_basic, $this);
     }
 
@@ -551,10 +555,7 @@ class SkOfficial extends Model
         $stmt = $this->getConnection()->prepare("UPDATE `" . self::$table . "` SET `barangay_id` = ?, `slug` = ?, `username` = ?, `password` = ?, `full_name` = ?, `position` = ?, `contact_number` = ?, `email` = ?, `birthday` = ?, `motto` = ?, `img` = ?, `term_start` = ?, `term_end` = ? WHERE `id` = ?");
         $stmt->bind_param("issssssssssssi", $this->barangay_id, $this->slug, $this->username, $this->password, $this->full_name, $this->position, $this->contact_number, $this->email, $this->birthday, $this->motto, $this->img, $this->term_start, $this->term_end, $this->id);
         $stmt->execute();
-        if ($stmt->affected_rows > 0) {
-            return true;
-        }
-        return false;
+        return $stmt->affected_rows > 0;
     }
 
 
@@ -569,10 +570,7 @@ class SkOfficial extends Model
         $stmt = $this->getConnection()->prepare("DELETE FROM `" . self::$table . "` WHERE `id` = ?");
         $stmt->bind_param("i", $this->id);
         $stmt->execute();
-        if ($stmt->affected_rows > 0) {
-            return true;
-        }
-        return false;
+        return $stmt->affected_rows > 0;
     }
 
 

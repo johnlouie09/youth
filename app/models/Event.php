@@ -180,13 +180,14 @@ class Event extends Model
 
 
     /**
-     * Gets the Barangay that this Event belongs to.
+     * Gets the parent Barangay for this Event.
      *
      * @return Barangay|null
      * @throws Exception
      */
     public function getBarangay(): ?Barangay
     {
+        require_once __DIR__ . '/Barangay.php';
         return Barangay::find($this->barangay_id);
     }
 
@@ -221,10 +222,7 @@ class Event extends Model
         $stmt = $this->getConnection()->prepare("UPDATE `" . self::$table . "` SET `barangay_id` = ?, `event_name` = ?, `event_date` = ?, `location` = ?, `description` = ? WHERE `id` = ?");
         $stmt->bind_param("issssi", $this->barangay_id, $this->event_name, $this->event_date, $this->location, $this->description, $this->id);
         $stmt->execute();
-        if ($stmt->affected_rows > 0) {
-            return true;
-        }
-        return false;
+        return $stmt->affected_rows > 0;
     }
 
 
@@ -239,9 +237,6 @@ class Event extends Model
         $stmt = $this->getConnection()->prepare("DELETE FROM `" . self::$table . "` WHERE `id` = ?");
         $stmt->bind_param("i", $this->id);
         $stmt->execute();
-        if ($stmt->affected_rows > 0) {
-            return true;
-        }
-        return false;
+        return $stmt->affected_rows > 0;
     }
 }

@@ -147,6 +147,7 @@ class Barangay extends Model
      */
     public function getCluster(): ?Cluster
     {
+        require_once __DIR__ . '/Cluster.php';
         return Cluster::find($this->cluster_id);
     }
 
@@ -160,6 +161,7 @@ class Barangay extends Model
      */
     public function getSkOfficials(bool $assoc = false, bool $assoc_basic = false): array
     {
+        require_once __DIR__ . '/SkOfficial.php';
         return SkOfficial::all($assoc, $assoc_basic, $this);
     }
 
@@ -171,7 +173,9 @@ class Barangay extends Model
      * @param bool $assoc_basic
      * @return array
      */
-    public function getEvents(bool $assoc = false, bool $assoc_basic = false): array {
+    public function getEvents(bool $assoc = false, bool $assoc_basic = false): array
+    {
+        require_once __DIR__ . '/Event.php';
         return Event::all($assoc, $assoc_basic, $this);
     }
 
@@ -183,7 +187,9 @@ class Barangay extends Model
      * @param bool $assoc_basic
      * @return array
      */
-    public function getProjects(bool $assoc = false, bool $assoc_basic = false): array {
+    public function getProjects(bool $assoc = false, bool $assoc_basic = false): array
+    {
+        require_once __DIR__ . '/Project.php';
         return Project::all($assoc, $assoc_basic, $this);
     }
 
@@ -199,11 +205,13 @@ class Barangay extends Model
      */
     public function getAllAchievements(bool $assoc = false, bool $assoc_basic = false): array {
         $allAchievements = [];
-        // Retrieve all SK Officials for this Barangay
+        // retrieve all SK Officials for this Barangay
         $skOfficials = $this->getSkOfficials();
+        require_once __DIR__ . '/Achievement.php';
         foreach ($skOfficials as $official) {
             // Ensure we have an object instance
             if (!is_object($official)) {
+                require_once __DIR__ . '/SkOfficial.php';
                 $official = new SkOfficial($official['id']);
             }
             // Retrieve the achievements for this SK Official
@@ -245,10 +253,7 @@ class Barangay extends Model
         $stmt = $this->getConnection()->prepare("UPDATE `" . self::$table . "` SET `cluster_id` = ?, `slug` = ?, `name` = ? WHERE `id` = ?");
         $stmt->bind_param("issi", $this->cluster_id, $this->slug, $this->name, $this->id);
         $stmt->execute();
-        if ($stmt->affected_rows > 0) {
-            return true;
-        }
-        return false;
+        return $stmt->affected_rows > 0;
     }
 
 
@@ -263,9 +268,6 @@ class Barangay extends Model
         $stmt = $this->getConnection()->prepare("DELETE FROM `" . self::$table . "` WHERE `id` = ?");
         $stmt->bind_param("i", $this->id);
         $stmt->execute();
-        if ($stmt->affected_rows > 0) {
-            return true;
-        }
-        return false;
+        return $stmt->affected_rows > 0;
     }
 }

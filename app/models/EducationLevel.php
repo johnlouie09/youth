@@ -150,10 +150,7 @@ class EducationLevel extends Model
         $stmt = $this->getConnection()->prepare("UPDATE `" . self::$table . "` SET `name` = ?, `description` = ?, `sort_order` = ? WHERE `id` = ?");
         $stmt->bind_param("ssii", $this->name, $this->description, $this->sort_order, $this->id);
         $stmt->execute();
-        if ($stmt->affected_rows > 0) {
-            return true;
-        }
-        return false;
+        return $stmt->affected_rows > 0;
     }
 
     /**
@@ -167,9 +164,6 @@ class EducationLevel extends Model
         $stmt = $this->getConnection()->prepare("DELETE FROM `" . self::$table . "` WHERE `id` = ?");
         $stmt->bind_param("i", $this->id);
         $stmt->execute();
-        if ($stmt->affected_rows > 0) {
-            return true;
-        }
-        return false;
+        return $stmt->affected_rows > 0;
     }
 }
