@@ -87,8 +87,24 @@ if ($sk_official !== null) {
 echo "<hr>";
 
 
+$official = SkOfficial::findBy('slug', 'dessa-mare');
 
+if ($official) {
+    // official data
+    echo "<h1>{$official->getFullName()}</h1>";
+    echo "<p>Position: {$official->getPosition()}</p>";
 
+    // education background
+    $educationRecords = $official->getEducationBackground();
+    foreach ($educationRecords as $record) {
+        echo "<h3>{$record['education_level']} ({$record['start_year']}-{$record['end_year']})</h3>";
+        echo "<p>School: {$record['school_name']}</p>";
+        if (!empty($record['course'])) {
+            echo "<p>Course: {$record['course']}</p>";
+        }
+    }
+}
+echo "<hr>";
 
 
 

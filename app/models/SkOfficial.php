@@ -478,8 +478,8 @@ class SkOfficial extends Model
      */
     public function insert(): bool
     {
-        $stmt = $this->getConnection()->prepare("INSERT INTO `" . self::$table . "` (`sk_official_id`, `education_level_id`, `school_name`, `course`, `start_year`, `end_year`) VALUES (?, ?, ?, ?, ?, ?)");
-        $stmt->bind_param("iissii", $this->sk_official_id, $this->education_level_id, $this->school_name, $this->course, $this->start_year, $this->end_year);
+        $stmt = $this->getConnection()->prepare("INSERT INTO `" . self::$table . "` (`barangay_id`, `slug`, `username`, `password`, `full_name`, `position`, `contact_number`, `email`, `birthday`, `motto`, `img`, `term_start`, `term_end`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        $stmt->bind_param("issssssssssss", $this->barangay_id, $this->slug, $this->username, $this->password, $this->full_name, $this->position, $this->contact_number, $this->email, $this->birthday, $this->motto, $this->img, $this->term_start, $this->term_end);
         $stmt->execute();
         if ($stmt->affected_rows > 0) {
             $this->setId($stmt->insert_id);
@@ -497,8 +497,8 @@ class SkOfficial extends Model
      */
     public function update(): bool
     {
-        $stmt = $this->getConnection()->prepare("UPDATE `" . self::$table . "` SET `sk_official_id` = ?, `education_level_id` = ?, `school_name` = ?, `course` = ?, `start_year` = ?, `end_year` = ? WHERE `id` = ?");
-        $stmt->bind_param("iissiii", $this->sk_official_id, $this->education_level_id, $this->school_name, $this->course, $this->start_year, $this->end_year, $this->id);
+        $stmt = $this->getConnection()->prepare("UPDATE `" . self::$table . "` SET `barangay_id` = ?, `slug` = ?, `username` = ?, `password` = ?, `full_name` = ?, `position` = ?, `contact_number` = ?, `email` = ?, `birthday` = ?, `motto` = ?, `img` = ?, `term_start` = ?, `term_end` = ? WHERE `id` = ?");
+        $stmt->bind_param("issssssssssssi", $this->barangay_id, $this->slug, $this->username, $this->password, $this->full_name, $this->position, $this->contact_number, $this->email, $this->birthday, $this->motto, $this->img, $this->term_start, $this->term_end, $this->id);
         $stmt->execute();
         if ($stmt->affected_rows > 0) {
             return true;
@@ -533,7 +533,6 @@ class SkOfficial extends Model
     {
         $conn = $this->getConnection();
         $sql = "SELECT 
-                    so.full_name,
                     el.name AS education_level,
                     se.school_name,
                     se.course,
