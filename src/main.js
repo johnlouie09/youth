@@ -11,20 +11,28 @@ import { createPinia } from 'pinia'
 
 import App from './App.vue'
 import router from './router'
+import store from './stores/vuex/store';
 
 const app = createApp(App)
 
 const vuetify = createVuetify({
     components,
+    theme: {
+        dark: true,
+    },
     directives,
     icons: {
         defaultSet: 'mdi', // This is already the default value - only for display purposes
     },
 })
 
-axios.defaults.baseURL = 'http://localhost/youth/app';
+axios.defaults.baseURL = import.meta.env.PROD
+    ? `${import.meta.env.BASE_URL}/app`
+    : 'http://localhost/youth/app';
+
 app.use(createPinia())
 app.use(router)
+app.use(store)
 app.use(vuetify)
 
 app.mount('#app')

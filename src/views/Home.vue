@@ -9,7 +9,7 @@
       <Faqs />
     </v-container>
   </template>
-  
+
   <script setup>
   import Carousel from "../landingpage/Hero.vue";
   import Faqs from "@/landingpage/Faqs.vue";
@@ -18,7 +18,7 @@
   
   const theme = useTheme();
   </script>
-  
+
   <style scoped>
   .home-main {
     width: 100%;
@@ -42,4 +42,3 @@
     background-image: linear-gradient(45deg, #0e0e0e, #363636);
   }
   </style>
-  

@@ -16,8 +16,10 @@
     "bespoke-scale": "^1.0.1",
     "bespoke-theme-cube": "^2.0.1",
     "bespoke-touch": "^1.0.0",
+    "chart.js": "^4.4.8",
     "flickity": "^3.0.0",
     "gsap": "^3.12.7",
+    "jquery": "^3.7.1",
     "pinia": "^2.3.1",
     "swiper": "^11.2.3",
     "tailwindcss": "^4.0.0",
@@ -25,7 +27,8 @@
     "vue-coverflow": "^2.2.0",
     "vue-material-design-icons": "^5.3.1",
     "vue-router": "^4.5.0",
-    "vuetify": "^3.7.11"
+    "vuetify": "^3.7.11",
+    "vuex": "^4.1.0"
   },
   "devDependencies": {
     "@mdi/font": "^7.4.47",

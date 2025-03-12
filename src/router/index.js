@@ -1,6 +1,4 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import SanFrancisco from "../views/poblacion/SanFrancisco.vue"; // Path to the new page
-
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 05, 2025 at 10:38 PM
+-- Generation Time: Mar 10, 2025 at 12:19 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -85,47 +85,6 @@ INSERT INTO `barangays` (`id`, `cluster_id`, `slug`, `name`, `created_at`, `upda
 -- --------------------------------------------------------
 
 --
--- Table structure for table `barangay_achievement`
---
-
-CREATE TABLE `barangay_achievement` (
-  `id` int(11) NOT NULL,
-  `barangay_id` int(11) NOT NULL,
-  `title` varchar(50) NOT NULL,
-  `subtitle` varchar(100) NOT NULL,
-  `info` text NOT NULL,
-  `img` varchar(100) NOT NULL,
-  `date` date NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `barangay_achievement`
---
-
-INSERT INTO `barangay_achievement` (`id`, `barangay_id`, `title`, `subtitle`, `info`, `img`, `date`) VALUES
-(1, 1, 'Hello', 'Community unites for cleaner streets', 'The barangay successfully conducted a clean-up drive, removing over 500kg of waste.', '/public/ex.jpg', '2024-04-22'),
-(2, 1, 'Medical Mission', 'Free healthcare services for residents', 'Over 300 residents received free medical checkups and medicines.', 'medical.jpg', '2024-02-10'),
-(3, 1, 'Youth Leadership Seminar', 'Empowering the next leaders', 'The barangay hosted a leadership seminar for young individuals.', 'youth_seminar.jpg', '2024-03-05'),
-(4, 1, 'Barangay Basketball League', 'Sports event for the youth', 'The annual basketball tournament engaged over 10 teams.', 'basketball.jpg', '2024-04-20'),
-(5, 1, 'Scholarship Granting', 'Helping students achieve their dreams', 'Ten students received full scholarships.', '/public/ex.jpg', '2024-05-15'),
-(6, 1, 'Tree Planting Initiative', 'Environmental awareness program', 'Residents planted over 1,000 trees.', 'tree_planting.jpg', '2024-06-18'),
-(7, 1, 'Livelihood Training', 'Supporting small businesses', 'Residents received training in baking and soap making.', 'livelihood.jpg', '2024-07-25'),
-(8, 1, 'Disaster Preparedness Drill', 'Ensuring community safety', 'A drill was conducted with over 500 participants.', 'drill.jpg', '2024-08-10'),
-(9, 1, 'Feeding Program', 'Nutrition for children', '300 children received free nutritious meals.', 'feeding.jpg', '2024-09-05'),
-(10, 1, 'Elderly Support Program', 'Caring for our seniors', 'Seniors were given free medical checkups and wellness programs.', 'elderly.jpg', '2024-10-12'),
-(11, 1, 'Barangay Fiesta', 'Celebrating unity', 'The barangay held a grand fiesta with cultural performances.', 'fiesta.jpg', '2024-11-20'),
-(12, 1, 'Year-End Recognition', 'Honoring outstanding citizens', 'Outstanding youth and barangay officials were awarded.', 'recognition.jpg', '2024-12-15'),
-(13, 1, 'Job Fair 2025', 'Providing employment opportunities', 'Over 100 people found job opportunities.', 'job_fair.jpg', '2025-01-10'),
-(14, 1, 'Anti-Drug Campaign', 'Spreading awareness on drug prevention', 'An awareness seminar on the dangers of drugs was held.', 'anti_drug.jpg', '2025-01-25'),
-(15, 1, 'Sports Clinic', 'Training young athletes', 'A sports training program was conducted for young athletes.', 'sports_clinic.jpg', '2025-02-05'),
-(16, 1, 'IT Skills Training', 'Equipping youth with digital skills', 'Students were trained in basic coding and graphic design.', 'it_training.jpg', '2025-02-12'),
-(17, 1, 'Fire Safety Seminar', 'Educating residents on fire prevention', 'Residents were taught fire prevention techniques.', 'fire_safety.jpg', '2025-02-18'),
-(18, 1, 'Community Garden Project', 'Promoting urban gardening', 'A community garden was established in the barangay.', '/public/ex.jpg', '2025-02-22'),
-(19, 1, 'Ginawsssa q naman lahat huhuhuHU', 'Celebrating women in leadership', 'A forum was conducted to discuss women’s rights and empowerment.', '/public/ex.jpg', '2025-02-28');
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `clusters`
 --
 
@@ -147,31 +106,6 @@ INSERT INTO `clusters` (`id`, `slug`, `name`, `created_at`, `updated_at`) VALUES
 (3, 'east-road-unit', 'East Road Unit', '2025-02-17 07:56:30', '2025-03-10 08:39:44'),
 (4, 'mountain-unit', 'Mountain Unit', '2025-02-17 07:56:30', '2025-03-10 08:39:44'),
 (5, 'river-unit', 'River Unit', '2025-02-17 07:56:30', '2025-03-10 08:39:44');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `education_levels`
---
-
-CREATE TABLE `education_levels` (
-  `id` int(11) NOT NULL,
-  `name` varchar(50) NOT NULL,
-  `description` varchar(255) DEFAULT NULL,
-  `sort_order` int(11) DEFAULT 0,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `education_levels`
---
-
-INSERT INTO `education_levels` (`id`, `name`, `description`, `sort_order`, `created_at`, `updated_at`) VALUES
-(1, 'Elementary', 'Elementary Education', 1, '2025-03-11 11:30:12', '2025-03-11 11:30:12'),
-(2, 'Junior High School', 'Junior High Education', 2, '2025-03-11 11:30:12', '2025-03-11 11:30:12'),
-(3, 'Senior High School', 'Senior High Education', 3, '2025-03-11 11:30:12', '2025-03-11 11:30:12'),
-(4, 'College', 'College or University Education', 4, '2025-03-11 11:30:12', '2025-03-11 11:30:12');
 
 -- --------------------------------------------------------
 
@@ -217,24 +151,12 @@ CREATE TABLE `projects` (
 CREATE TABLE `sk_educations` (
   `id` int(11) NOT NULL,
   `sk_official_id` int(11) NOT NULL,
-  `education_level_id` int(11) NOT NULL,
   `school_name` varchar(100) NOT NULL,
-  `course` varchar(100) DEFAULT NULL,
-  `start_year` int(4) DEFAULT NULL,
-  `end_year` int(4) DEFAULT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+  `detail` varchar(100) NOT NULL,
+  `start_year` int(10) NOT NULL,
+  `end_year` int(11) NOT NULL,
+  `school_id` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `sk_educations`
---
-
-INSERT INTO `sk_educations` (`id`, `sk_official_id`, `education_level_id`, `school_name`, `course`, `start_year`, `end_year`, `created_at`, `updated_at`) VALUES
-(1, 1, 1, 'Sample Elementary School', NULL, 2006, 2012, '2025-03-11 11:43:03', '2025-03-11 11:43:03'),
-(2, 1, 2, 'Sample High School', NULL, 2012, 2016, '2025-03-11 11:43:03', '2025-03-11 11:43:03'),
-(3, 1, 3, 'Sample High School', NULL, 2016, 2018, '2025-03-11 11:43:03', '2025-03-11 11:43:03'),
-(4, 1, 4, 'Camarines Sur Polytechnic College', 'Bachelor of Science in Tourism Management', 2018, 2022, '2025-03-11 11:43:03', '2025-03-11 11:43:03');
 
 -- --------------------------------------------------------
 
@@ -308,21 +230,9 @@ ALTER TABLE `barangays`
   ADD KEY `cluster_id` (`cluster_id`);
 
 --
--- Indexes for table `barangay_achievement`
---
-ALTER TABLE `barangay_achievement`
-  ADD PRIMARY KEY (`id`);
-
---
 -- Indexes for table `clusters`
 --
 ALTER TABLE `clusters`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `education_levels`
---
-ALTER TABLE `education_levels`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -344,7 +254,6 @@ ALTER TABLE `projects`
 --
 ALTER TABLE `sk_educations`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `education_level_id` (`education_level_id`),
   ADD KEY `sk_official_id` (`sk_official_id`);
 
 --
@@ -371,22 +280,10 @@ ALTER TABLE `barangays`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
--- AUTO_INCREMENT for table `barangay_achievement`
---
-ALTER TABLE `barangay_achievement`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
-
---
 -- AUTO_INCREMENT for table `clusters`
 --
 ALTER TABLE `clusters`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
-
---
--- AUTO_INCREMENT for table `education_levels`
---
-ALTER TABLE `education_levels`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `events`
@@ -404,7 +301,7 @@ ALTER TABLE `projects`
 -- AUTO_INCREMENT for table `sk_educations`
 --
 ALTER TABLE `sk_educations`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `sk_officials`
@@ -444,7 +341,6 @@ ALTER TABLE `projects`
 -- Constraints for table `sk_educations`
 --
 ALTER TABLE `sk_educations`
-  ADD CONSTRAINT `fk_education_levels` FOREIGN KEY (`education_level_id`) REFERENCES `education_levels` (`id`) ON UPDATE CASCADE,
   ADD CONSTRAINT `sk_educations_ibfk_1` FOREIGN KEY (`sk_official_id`) REFERENCES `sk_officials` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
