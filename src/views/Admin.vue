@@ -7,7 +7,6 @@ import Sidebar from '../components/adminComponents/Sidebar.vue';
     <v-app class="mainApp">
         <div class="adminContainer">
             <Sidebar class="sidebar" />
-
             <v-main class="adminMain">
                 <RouterView />
             </v-main>

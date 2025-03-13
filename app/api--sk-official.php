@@ -25,9 +25,12 @@ if ($action === 'login')
     // try to login
     try {
         $sk_official = SkOfficial::login($identifier, $password, $remember);
-
+        require_once __DIR__ . '/models/Barangay.php';
+        
+        $barangay = new Barangay( $sk_official->getBarangayId());
         returnSuccess([
-            'sk_official' => $sk_official->getAssoc(true)
+            'sk_official' => $sk_official->getAssoc(true),
+            'barangay' => $barangay->getAssoc(true)
         ]);
     }
     catch (Exception $e) {
