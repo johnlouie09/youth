@@ -40,7 +40,36 @@ echo "<hr>";
 /** Find By Unique Column */
 $sk_official = SkOfficial::findBy('slug', 'dessa-mare');
 if ($sk_official !== null) {
+    echo "<h1>SK Official: dessa-mare (Assoc)</h1>";
     print_r($sk_official->getAssoc(true));
+}
+echo "<hr>";
+
+
+// test for optional parameters on many-to-one relationship: SK Official -> Barangay
+if ($sk_official) {
+    echo "<h1>Testing SK Official->getBarangay()</h1>";
+
+    // call getBarangay without optional parameters; expect an object.
+    $barangayObj = $sk_official->getBarangay();
+    echo "getBarangay() without options:\n";
+    print_r($barangayObj);
+    echo "<br><br>";
+
+    // call getBarangay with assoc = true; expect an associative array.
+    $barangayAssoc = $sk_official->getBarangay(true);
+    echo "getBarangay(true):\n";
+    print_r($barangayAssoc);
+    echo "<br><br>";
+
+    // call getBarangay with assoc = true and assoc_basic = true; expect a basic associative array.
+    $barangayAssocBasic = $sk_official->getBarangay(true, true);
+    echo "getBarangay(true, true):\n";
+    print_r($barangayAssocBasic);
+    echo "<br><br>";
+
+} else {
+    echo "SK Official 'dessa-mare' not found.";
 }
 echo "<hr>";
 
