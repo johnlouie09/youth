@@ -14,7 +14,6 @@
       >
         {{ view.name.toUpperCase() }}
       </RouterLink>
-      <!-- New "Send a Message" item, shown only if current route is "/barangay" -->
       <RouterLink
         v-if="route.path === '/barangay'"
         to="/barangay/send-message"
@@ -96,6 +95,7 @@ const isActive = (to) => {
 
 .barangay-logo {
   height: 3vh;
+  animation: infiniteRotate 2s linear infinite;
 }
 
 .logo-name {
