@@ -47,7 +47,7 @@ export default {
 </script>
 
 <template>
-    <div class="main-navigation elevation-15">
+    <v-container class="main-navigation elevation-15">
         <v-navigation class="barangay-navigation">
             <template v-if="loading">
                 <v-progress-circular indeterminate color="primary"></v-progress-circular>
@@ -79,12 +79,11 @@ export default {
                 />
             </transition>
         </div>
-    </div>
+    </v-container>
 </template>
 
 <style scoped>
 .main-navigation {
-    position: relative;
     width: 90%;
     display: flex;
     flex-direction: column;
@@ -151,6 +150,6 @@ export default {
 }
 .smooth-leave-to {
     opacity: 0;
-    transform: scale(1.05);
+    transform: scale(1.2);
 }
 </style>

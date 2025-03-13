@@ -8,7 +8,21 @@
             <v-alert type="error">{{ error }}</v-alert>
         </v-col>
 
-        <v-card v-else v-for="barangay in barangays" :key="barangay.id" elevation="10" class="barangay custom-card hoverable" width="350px" height="262px" :to="barangay.name.toLowerCase().replace(/\s+/g, '-')">
+        <v-card
+            v-else
+            v-for="barangay in barangays"
+            :key="barangay.id"
+            elevation="10"
+            class="barangay hoverable"
+            width="350px"
+            height="250px"
+            :to="barangay.name.toLowerCase().replace(/\s+/g, '-')"
+            :style="{
+                'background-image': `url(/public/barangayHall/${barangay.img})`,
+                'background-size': 'cover',
+                'background-position': 'center'
+            }"
+        >
             <v-card-title class="overlay-titles-barrangays">{{ barangay.name }}</v-card-title>
         </v-card>
     </div>
@@ -64,7 +78,6 @@ export default {
 };
 </script>
 
-
 <style scoped>
 .barangays-cluster {
     width: 100%;
@@ -74,15 +87,21 @@ export default {
     justify-content: space-evenly;
     align-items: center;
     gap: 4rem;
+
 }
 
-.custom-card {
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+/* Add transition for smooth scaling */
+.barangay {
+    border-radius: 1rem;
+    transition: transform 0.3s ease-in-out;
+    opacity: .8;
+    color: white;
 }
 
-.custom-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+/* Corrected hover effect using transform */
+.barangay:hover {
+    transform: scale(1.1);
+    opacity: 1;
 }
 
 .hoverable {

@@ -64,7 +64,7 @@ $light: #fff;
 
 .mil-preloader {
     position: fixed;
-    z-index: 9;
+    z-index: 10;
     top: 0;
     left: 0;
     width: 100%;

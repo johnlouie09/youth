@@ -104,17 +104,17 @@ export default {
 h1, h2 {
     will-change: transform, opacity;
     font-weight: bold;
-    background: linear-gradient(to left, #3772FF 20%, #DF2935 50%, #FDCA40, #3772FF);
+    background: linear-gradient(to left, #3772FF 20%, #DF2935 50%, #FFFFFF, #FDCA40, #3772FF);
     background-size: 200% 100%;
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    animation: animate-gradient 2.5s linear infinite;
+    animation: animate-gradient 3.5s linear infinite;
 }
 
 h1 {
     font-size: 3rem;
-    font-weight: 700;
+    font-weight: 800;
     display: inline-block;
     white-space: nowrap;
 }
@@ -126,6 +126,15 @@ h2 {
 }
 
 @keyframes animate-gradient {
+    from {
+        background-position: 200% 50%;
+    }
+    to {
+        background-position: 0% 50%;
+    }
+}
+
+@keyframes slider-animation {
     from {
         background-position: 200% 50%;
     }
@@ -159,7 +168,6 @@ h2 {
     display: block;
     width: 100%;
     border-radius: 2rem;
-    opacity: 0.8;
 }
 
 /* Optional: Style pagination bullets */

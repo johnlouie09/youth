@@ -111,6 +111,6 @@
 
 .gradient-text h1 {
     font-size: 2rem;
-    font-weight: bolder;
+    font-weight: 900;
 }
 </style>

@@ -14,7 +14,6 @@
       >
         {{ view.name.toUpperCase() }}
       </RouterLink>
-
       <!-- New "Send a Message" item, shown only if current route is "/barangay" -->
       <RouterLink
         v-if="route.path === '/barangay'"
@@ -23,7 +22,6 @@
       >
         <v-icon>mdi-message</v-icon>
       </RouterLink>
-
       <ThemeSwitcher></ThemeSwitcher>
     </ul>
   </v-sheet>
@@ -63,13 +61,34 @@ const isActive = (to) => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-radius: 0.5rem;
+  border-radius: 1rem;
   padding: 0px 2rem;
+  overflow: hidden;
+  /* Animation: from 0 width to 60% over 1 second */
+  animation: expandWidth 2s ease-out forwards;
+}
+
+@keyframes expandWidth {
+  0% {
+    width: 0%;
+  }
+  100% {
+    width: 60%;
+  }
+}
+
+@keyframes infiniteRotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .logo {
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   gap: 1rem;
   height: 10%;

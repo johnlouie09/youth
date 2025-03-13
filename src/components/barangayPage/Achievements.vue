@@ -75,27 +75,24 @@ export default {
     flex-wrap: wrap;
     justify-content: space-evenly;
     align-items: flex-start;
-    gap: 3rem;
+    gap: 5rem;
     padding: 0rem 9rem;
 }
 
 .card {
   width: 400px;
-  border-radius: 0.5rem;
+  border-radius: 1rem;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 1.5rem;
   position: relative;
   transition: transform 0.3s ease-in-out, border 0.3s ease-in-out;
-  padding-bottom: 1.5rem;
-  /* Optionally, add a default border style */
-  border: 2px solid transparent;
+  padding-bottom: 2rem;
 }
 
 .card:hover {
-  transform: scale(1.05);
-  border: 2px solid #5c5c5c; /* Change border color as needed */
+  transform: scale(1.1);
 }
 
 .card img{

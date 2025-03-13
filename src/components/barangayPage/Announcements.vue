@@ -86,13 +86,13 @@ export default {
 .swiper-slide {
     background-position: center;
     background-size: cover;
-    width: 550px;
+    width: 500px;
     position: relative;
 }
 
 .swiper-slide img {
     width: 100%;
-    height: 650px;
+    height: 600px;
     border-radius: 1rem;
 }
 

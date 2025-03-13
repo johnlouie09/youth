@@ -102,11 +102,12 @@ export default {
 
 .main-barangay-officials {
     width: 100%;
-    padding: 6rem 9rem;
+    padding: 9rem 9rem;
     display: flex;
     flex-direction: column;
     justify-content: center;
     gap: 2rem;
+    border-radius: 1rem;
 }
 
 .officials {
