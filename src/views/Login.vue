@@ -50,6 +50,7 @@
 
 <script>
 import $ from 'jquery';
+import { event } from 'jquery';
 
 export default {
   name: "Login",
@@ -106,13 +107,14 @@ export default {
           remember: true
         },
         success: (data) => {
-          console.log("Success:", data);
+          console.log(data);
+					this.$store.commit('auth/setUser', data.data);
+          this.$router.replace({ name: 'admin', params: { barangaySlug: data.data.barangay.slug } });
         },
         error: (jqXHR, textStatus, errorThrown) => {
           console.error("Error:", textStatus, errorThrown);
         },
         complete: () => {
-          // Set loading to false once the request is done (either success or error)
           this.loading = false;
         }
       });

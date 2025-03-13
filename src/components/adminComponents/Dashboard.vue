@@ -106,26 +106,6 @@ export default {
         };
     },
     methods: {
-        testLogin() {
-            $.ajax({
-                type: 'POST', xhrFields: { withCredentials: true },
-                url : `${this.api_base}?e=sk-official&a=login`,
-                data: {
-                    identifier: 'dessa',
-                    password  : '123456',
-                    remember  : false
-                },
-                success: (response) => {
-                    const skOfficial = response?.data?.sk_official;
-                    if (skOfficial) {
-                        this.testData.skOfficial = skOfficial;
-                    }
-                },
-                error: (error) => {
-                    console.error("Login error: ", error);
-                }
-            });
-        },
         testGetSession() {
             $.ajax({
                 type: 'GET', xhrFields: { withCredentials: true },
