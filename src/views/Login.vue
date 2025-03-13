@@ -34,8 +34,12 @@
           :error-messages="passwordError"
           :disabled="loading"
         />
+
+        <div class="reqErr" v-if="requestError">
+          {{ requestError.toUpperCase() }}
+        </div>
         <!-- Forgot Password Link -->
-        <div class="text-right mb-4">
+        <div class="text-right ma-4">
           <a href="#" class="forgot-link">Forgot your password?</a>
         </div>
   
@@ -61,6 +65,7 @@ export default {
       loading: false, // start with false
       usernameError: '',
       passwordError: '',
+      requestError: ''
     };
   },
   methods: {
@@ -89,14 +94,14 @@ export default {
       if (!this.validateForm()) {
         return; // Stop submission if validation fails
       }
-      
+  
       // Set loading to true before sending the request
       this.loading = true;
 
       const api_base = 'http://localhost/youth/app/api.php';
-      
+  
       await $.ajax({
-        url: `${api_base}?e=sk-official&a=login`, // appending the query parameter
+        url: `${api_base}?e=sk-official&a=login`,
         type: 'POST',
         xhrFields: {
           withCredentials: true
@@ -108,17 +113,28 @@ export default {
         },
         success: (data) => {
           console.log(data);
-					this.$store.commit('auth/setUser', data.data);
-          this.$router.replace({ name: 'admin', params: { barangaySlug: data.data.barangay.slug } });
+          this.$store.commit('auth/setUser', data.data);
+          this.$router.replace({ name: 'admin-dashboard', params: { barangaySlug: data.data.barangay.slug } });
         },
         error: (jqXHR, textStatus, errorThrown) => {
           console.error("Error:", textStatus, errorThrown);
+          let errorMsg = "An error occurred while processing your request.";
+          if (jqXHR.responseJSON && jqXHR.responseJSON.error) {
+            // If the server returns a JSON object with an error property
+            errorMsg = jqXHR.responseJSON.message;
+          } else if (jqXHR.responseText) {
+            // If the server returns plain text or HTML error message
+            errorMsg = jqXHR.responseText;
+          }
+          // Optionally, you can update a local error message variable or show a toast notification.
+          this.requestError = errorMsg;
         },
         complete: () => {
           this.loading = false;
         }
       });
-    }
+}
+
   }
 };
 </script>
@@ -129,6 +145,9 @@ export default {
   justify-content: center;
   align-items: center;
   height: 100vh;
+  background-image: linear-gradient(45deg, #363636, #0e0e0e, #363636, #0e0e0e);
+  background-position: center;
+  background-attachment: fixed;
 }
 
 .login-card {
@@ -145,5 +164,13 @@ export default {
 
 .forgot-link:hover {
   text-decoration: underline;
+}
+
+.reqErr {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  color: rgb(245, 49, 49);
+  
 }
 </style>
