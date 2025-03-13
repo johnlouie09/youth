@@ -18,10 +18,11 @@
         <v-list-item
           v-for="menuObj in menuObjs"
           :key="menuObj.menuName"
-          @click="navigate(menuObj.to)"
-          active-class="active"
+          :to="menuObj.to"
+          :class="{ active: isActive(menuObj.to) }"
           density="compact"
           class="mb-6"
+          @click="navigate(menuObj.to)"
         >
           <template v-slot:prepend>
             <v-icon>{{ menuObj.icon }}</v-icon>
@@ -77,26 +78,27 @@
       }
     },
     methods: {
-      // Use router.push so that you can manipulate the URL dynamically
       navigate(path) {
         this.$router.push(path);
       },
       logout() {
         $.ajax({
-            type: 'POST', xhrFields: { withCredentials: true },
-            url : `${this.api_base}?e=sk-official&a=logout`,
-            data: {
-              username: this.$store.getters['auth/getUser'].sk_official.username
-
-            },
-            success: () => {
-              this.$store.commit('auth/setUser', null);
-              this.$router.replace({ name: 'login'});
-            },
-            error: (error) => {
-                console.error("Logout error: ", error);
-            }
+          type: 'POST', xhrFields: { withCredentials: true },
+          url: `${this.api_base}?e=sk-official&a=logout`,
+          data: {
+            username: this.$store.getters['auth/getUser'].sk_official.username
+          },
+          success: () => {
+            this.$store.commit('auth/setUser', null);
+            this.$router.replace({ name: 'login'});
+          },
+          error: (error) => {
+            console.error("Logout error: ", error);
+          }
         });
+      },
+      isActive(menuRoute) {
+        return this.$route.path.startsWith(menuRoute);
       }
     }
   };
