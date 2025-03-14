@@ -98,6 +98,9 @@ export default {
       // Set loading to true before sending the request
       this.loading = true;
 
+      // Get the CSRF token from the meta tag
+      const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+
       const api_base = 'http://localhost/youth/app/api.php';
   
       await $.ajax({
@@ -110,6 +113,10 @@ export default {
           identifier: this.username,
           password: this.password,
           remember: true
+        },
+        // Include the CSRF token in the headers
+        headers: {
+          'X-CSRF-Token': csrfToken
         },
         success: (data) => {
           console.log(data);

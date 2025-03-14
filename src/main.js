@@ -14,6 +14,7 @@ import App from './App.vue'
 import router from './router'
 import store from './stores';
 
+
 const app = createApp(App)
 
 const vuetify = createVuetify({
@@ -34,6 +35,21 @@ axios.defaults.baseURL = import.meta.env.PROD
 const api_base = import.meta.env.PROD
                 ? `${import.meta.env.BASE_URL}/app/api.php`
                 : 'http://localhost/youth/app/api.php';
+
+
+$.ajax({
+    url: `${api_base}?e=csrf`,
+    type: 'GET',
+    dataType: 'json',
+    xhrFields: { withCredentials: true },
+    success: function(data) {
+        $('meta[name="csrf-token"]').attr('content', data.csrf_token);
+    },
+    error: function(jqXHR, textStatus, errorThrown) {
+        console.error('Error fetching CSRF token:', textStatus, errorThrown);
+    }
+});
+                
                 
 $.ajax({
     type: 'GET', xhrFields: {withCredentials: true},

@@ -30,6 +30,7 @@
 <script>
 import $ from 'jquery'
 
+
 export default {
     props: {
         clusterId: {
@@ -57,12 +58,16 @@ export default {
     methods: {
         async fetchBarangays() {
             this.loading = true;
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
             const api_base = 'http://localhost/youth/app/api.php';
             await $.ajax({
                 url: `${api_base}?e=cluster&a=fetchBarangays`,
                 type: 'POST',
                 xhrFields: {
                     withCredentials: true
+                },
+                headers: {
+                    'X-CSRF-Token': csrfToken
                 },
                 data: {
                     barangayId: this.clusterId
