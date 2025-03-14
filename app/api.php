@@ -59,10 +59,10 @@ if ($endpoint == 'sk-official')
     require_once __DIR__ . '/api--sk-official.php';
 }
 
-/* else if ($endpoint == 'barangay')
+ else if ($endpoint == 'cluster')
 {
-    require_once __DIR__ . '/api--barangay.php';
-}*/
+    require_once __DIR__ . '/api--cluster.php';
+}
 
 else
 {

@@ -13,23 +13,22 @@
             v-for="barangay in barangays"
             :key="barangay.id"
             elevation="10"
-            class="barangay hoverable"
+            class="barangay custom-card hoverable"
             width="350px"
             height="250px"
-            :to="barangay.name.toLowerCase().replace(/\s+/g, '-')"
             :style="{
                 'background-image': `url(/public/barangayHall/${barangay.img})`,
                 'background-size': 'cover',
                 'background-position': 'center'
             }"
         >
-            <v-card-title class="overlay-titles-barrangays">{{ barangay.name }}</v-card-title>
+        <v-card-title class="overlay-titles-barangays" style="font-weight: 900; font-size: 1rem;">{{ barangay.name.toUpperCase() }}</v-card-title>
         </v-card>
     </div>
 </template>
 
 <script>
-import axios from 'axios';
+import $ from 'jquery'
 
 export default {
     props: {
@@ -57,22 +56,27 @@ export default {
     },
     methods: {
         async fetchBarangays() {
-            try {
-                this.loading = true;
-                this.error = null;
-                const response = await axios.get(`/api/getBarangaysByCluster.php?cluster_id=${this.clusterId}`);
-
-                if (response.data.success) {
-                    this.barangays = response.data.data;
-                } else {
-                    this.error = 'Failed to fetch barangays';
+            this.loading = true;
+            const api_base = 'http://localhost/youth/app/api.php';
+            await $.ajax({
+                url: `${api_base}?e=cluster&a=fetchBarangays`,
+                type: 'POST',
+                xhrFields: {
+                    withCredentials: true
+                },
+                data: {
+                    barangayId: this.clusterId
+                },
+                success: (data) => {
+                    this.barangays = data.data.barangays;
+                },
+                error: (jqXHR, textStatus, errorThrown) => {
+                    console.error("Error:", textStatus, errorThrown);
+                },
+                complete: () => {
+                    this.loading = false;
                 }
-            } catch (err) {
-                this.error = 'Error connecting to the server';
-                console.error('Error:', err);
-            } finally {
-                this.loading = false;
-            }
+            });
         }
     }
 };
@@ -96,6 +100,10 @@ export default {
     transition: transform 0.3s ease-in-out;
     opacity: .8;
     color: white;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    padding-bottom: .5rem;
 }
 
 /* Corrected hover effect using transform */

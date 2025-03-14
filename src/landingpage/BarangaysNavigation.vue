@@ -1,6 +1,7 @@
 <script>
-import axios from 'axios';
+import $ from 'jquery'
 import Barangays from './Barangays.vue';
+import '../assets/Achievements.css'
 
 export default {
     components: {
@@ -16,25 +17,28 @@ export default {
     },
     methods: {
         async fetchClusters() {
-            try {
-                this.loading = true;
-                this.error = null;
-                const response = await axios.get('/api/getClusters.php');
-
-                if (response.data.success) {
-                    this.clusters = response.data.data;
-                    if (this.clusters.length > 0 && !this.selectedCluster) {
-                        this.selectedCluster = this.clusters[0];
+            this.loading = true;
+            const api_base = 'http://localhost/youth/app/api.php';
+            await $.ajax({
+                url: `${api_base}?e=cluster&a=fetchClusters`,
+                type: 'GET',
+                xhrFields: {
+                    withCredentials: true
+                },
+                success: (data) => {
+                    this.clusters = data.data.clusters;
+                },
+                error: (jqXHR, textStatus, errorThrown) => {
+                    console.error("Error:", textStatus, errorThrown);
+                },
+                complete: () => {
+                    this.loading = false;
+                    // Set the first cluster as default if available
+                    if (this.clusters) {
+                    this.selectedCluster = this.clusters[0];
                     }
-                } else {
-                    this.error = 'Failed to fetch clusters';
                 }
-            } catch (err) {
-                this.error = 'Error connecting to the server';
-                console.error('Error:', err);
-            } finally {
-                this.loading = false;
-            }
+        });
         },
         changeCluster(cluster) {
             this.selectedCluster = cluster;
@@ -63,7 +67,8 @@ export default {
                     :key="cluster.id"
                     @click="changeCluster(cluster)"
                     :class="{ 'active-btn': selectedCluster?.id === cluster.id, 'custom-btn': true }"
-                    class="cluster-btn"
+                    class="cluster-btn custom-btn"
+                    :loading="loading"
                 >
                     <span class="overlay-titles">{{ cluster.name }}</span>
                 </v-btn>
