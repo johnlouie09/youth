@@ -82,9 +82,14 @@
         this.$router.push(path);
       },
       logout() {
+        const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
         $.ajax({
           type: 'POST', xhrFields: { withCredentials: true },
+
           url: `${this.api_base}?e=sk-official&a=logout`,
+          headers: {
+            'X-CSRF-Token': csrfToken
+          },
           data: {
             username: this.$store.getters['auth/getUser'].sk_official.username
           },
