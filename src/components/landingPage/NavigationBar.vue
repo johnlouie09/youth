@@ -1,5 +1,5 @@
 <template>
-  <v-sheet class="nav-main" v-if="!shouldHideNav">
+  <v-sheet class="nav-main" v-if="!shouldHideNav" elevation="10">
     <div class="logo">
       <img class="barangay-logo" src="../../../public/group.svg" alt="Barangay Logo">
       <img class="logo-name" src="../../../public/youth-name.svg">
@@ -76,26 +76,17 @@ const isActive = (to) => {
   }
 }
 
-@keyframes infiniteRotate {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
 
 .logo {
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  gap: 1rem;
+  gap: .5rem;
   height: 10%;
 }
 
 .barangay-logo {
-  height: 3vh;
-  animation: infiniteRotate 2s linear infinite;
+  height: 3.5vh;
 }
 
 .logo-name {

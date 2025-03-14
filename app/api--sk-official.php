@@ -27,7 +27,7 @@ if ($action === 'login')
         $sk_official = SkOfficial::login($identifier, $password, $remember);
         require_once __DIR__ . '/models/Barangay.php';
         
-        $barangay = new Barangay( $sk_official->getBarangayId());
+        $barangay = $sk_official->getBarangay();
         returnSuccess([
             'sk_official' => $sk_official->getAssoc(true),
             'barangay' => $barangay->getAssoc(true)
@@ -43,13 +43,17 @@ if ($action === 'login')
 else if ($action === 'session')
 {
     $sk_official = SkOfficial::getLoggedIn();
+    require_once __DIR__ . '/models/Barangay.php';
+    $barangay = $sk_official->getBarangay();
+
 
     if ($sk_official === null) {
         returnError('No logged-in SkOfficial.', 401);
     }
     else {
         returnSuccess([
-            'sk_official' => $sk_official->getAssoc(true)
+            'sk_official' => $sk_official->getAssoc(true),
+            'barangay' => $barangay->getAssoc(true)
         ]);
     }
 }

@@ -28,11 +28,11 @@ const router = createRouter({
       path: '/contact',
       component: () => import('../views/Contact.vue'),
     },
-    {
-      path: '/:catchAll(.*)',
-      name: 'NotFound',
-      component: () => import('../components/404.vue'),
-    },
+    // {
+    //   path: '/:catchAll(.*)',
+    //   name: 'NotFound',
+    //   component: () => import('../components/404.vue'),
+    // },
     {
       path: '/san-francisco',
       name: 'San Francisco',
@@ -53,7 +53,7 @@ const router = createRouter({
         if (user) {
           // Only redirect if the current route's barangaySlug doesn't match the user's barangay slug.
           if (to.params.barangaySlug !== user.barangay.slug) {
-            next({ name: 'admin', params: { barangaySlug: user.barangay.slug } });
+            next({ name: 'admin-dashboard', params: { barangaySlug: user.barangay.slug } });
           } else {
             next(); // Already correct, continue navigation.
           }

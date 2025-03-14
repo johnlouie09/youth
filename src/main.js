@@ -5,6 +5,7 @@ import { createVuetify } from 'vuetify'
 import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
 import axios from 'axios';
+import $ from 'jquery';
 
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
@@ -30,9 +31,25 @@ axios.defaults.baseURL = import.meta.env.PROD
     ? `${import.meta.env.BASE_URL}/app`
     : 'http://localhost/youth/app';
 
-app.use(createPinia())
-app.use(router)
-app.use(store)
-app.use(vuetify)
+const api_base = import.meta.env.PROD
+                ? `${import.meta.env.BASE_URL}/app/api.php`
+                : 'http://localhost/youth/app/api.php';
+                
+$.ajax({
+    type: 'GET', xhrFields: {withCredentials: true},
+    url: `${api_base}?e=sk-official&a=session`,
+    success: (data) => {
+        store.commit('auth/setUser', data?.data);
+    },
+    error: () => {
 
-app.mount('#app')
+    },
+    complete:(xhr) => {
+        app.use(createPinia())
+        app.use(router)
+        app.use(store)
+        app.use(vuetify)
+        app.mount('#app')
+    }
+})
+
