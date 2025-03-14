@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 11, 2025 at 08:44 PM
+-- Generation Time: Mar 14, 2025 at 11:36 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -58,6 +58,7 @@ CREATE TABLE `barangays` (
   `cluster_id` int(11) NOT NULL,
   `slug` varchar(32) NOT NULL,
   `name` varchar(100) NOT NULL,
+  `img` varchar(255) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -66,29 +67,29 @@ CREATE TABLE `barangays` (
 -- Dumping data for table `barangays`
 --
 
-INSERT INTO `barangays` (`id`, `cluster_id`, `slug`, `name`, `created_at`, `updated_at`) VALUES
-(1, 1, 'san-francisco', 'San Francisco', '2025-02-17 08:00:20', '2025-03-10 08:42:59'),
-(2, 1, 'francia', 'Francia', '2025-02-17 08:00:20', '2025-03-10 08:42:59'),
-(3, 1, 'la-purisima', 'La Purisima', '2025-02-17 08:00:20', '2025-03-10 08:42:59'),
-(4, 1, 'san-juan', 'San Juan', '2025-02-17 08:00:20', '2025-03-10 08:42:59'),
-(5, 1, 'san-jose', 'San Jose', '2025-02-17 08:00:20', '2025-03-10 08:42:59'),
-(6, 1, 'san-miguel', 'San Miguel', '2025-02-17 08:00:20', '2025-03-10 08:42:59'),
-(7, 2, 'san-nicolas', 'San Nicolas', '2025-02-17 08:00:20', '2025-03-10 08:42:59'),
-(8, 3, 'del-rosario', 'Del Rosario', '2025-02-17 08:00:20', '2025-03-10 08:42:59'),
-(9, 3, 'santiago', 'Santiago', '2025-02-17 08:00:20', '2025-03-10 08:42:59'),
-(10, 3, 'sto-domingo', 'Sto. Domingo', '2025-02-17 08:00:20', '2025-03-10 08:42:59'),
-(11, 3, 'la-anunciacion', 'La Anunciacion', '2025-02-17 08:00:20', '2025-03-10 08:42:59'),
-(12, 4, 'sta-cruz-norte', 'Sta. Cruz Norte', '2025-02-17 08:07:33', '2025-03-10 08:42:59'),
-(13, 4, 'cristo-rey', 'Cristo Rey', '2025-02-17 08:07:33', '2025-03-10 08:42:59'),
-(14, 4, 'san-vicente-norte', 'San Vicente Norte', '2025-02-17 08:07:33', '2025-03-10 08:42:59'),
-(15, 4, 'antipolo', 'Antipolo', '2025-02-17 08:07:33', '2025-03-10 08:42:59'),
-(16, 4, 'sta-maria', 'Sta. Maria', '2025-02-17 08:07:33', '2025-03-10 08:42:59'),
-(17, 4, 'san-pedro', 'San Pedro', '2025-02-17 08:07:33', '2025-03-10 08:42:59'),
-(18, 4, 'san-rafael', 'San Rafael', '2025-02-17 08:07:33', '2025-03-10 08:42:59'),
-(19, 5, 'sta-cruz-sur', 'Sta. Cruz Sur', '2025-02-17 08:07:33', '2025-03-10 08:42:59'),
-(20, 5, 'sto-niño', 'Sto. Niño', '2025-02-17 08:07:33', '2025-03-10 08:42:59'),
-(21, 5, 'san-vicente-sur', 'San Vicente Sur', '2025-02-17 08:07:33', '2025-03-10 08:42:59'),
-(22, 5, 'salvacion', 'Salvacion', '2025-02-17 08:07:33', '2025-03-10 08:42:59');
+INSERT INTO `barangays` (`id`, `cluster_id`, `slug`, `name`, `img`, `created_at`, `updated_at`) VALUES
+(1, 1, 'san-francisco', 'San Francisco', 'san_francisco_bh.jpg', '2025-02-17 08:00:20', '2025-03-13 13:32:13'),
+(2, 1, 'francia', 'Francia', 'francia_bh.png', '2025-02-17 08:00:20', '2025-03-13 13:32:13'),
+(3, 1, 'la-purisima', 'La Purisima', 'lapurisima_bh.png', '2025-02-17 08:00:20', '2025-03-13 13:32:13'),
+(4, 1, 'san-juan', 'San Juan', 'san_juan_bh.jpg', '2025-02-17 08:00:20', '2025-03-13 13:32:13'),
+(5, 1, 'san-jose', 'San Jose', 'san_jose_bh.jpg', '2025-02-17 08:00:20', '2025-03-13 13:32:13'),
+(6, 1, 'san-miguel', 'San Miguel', 'san_miguel_bh.png', '2025-02-17 08:00:20', '2025-03-13 13:32:13'),
+(7, 2, 'san-nicolas', 'San Nicolas', 'san_nicolas_bh.png', '2025-02-17 08:00:20', '2025-03-13 13:32:13'),
+(8, 3, 'del-rosario', 'Del Rosario', '', '2025-02-17 08:00:20', '2025-03-10 08:42:59'),
+(9, 3, 'santiago', 'Santiago', 'santiago_bh.jpeg', '2025-02-17 08:00:20', '2025-03-13 13:32:13'),
+(10, 3, 'sto-domingo', 'Sto. Domingo', 'sto_domingo_bh.png', '2025-02-17 08:00:20', '2025-03-13 13:32:13'),
+(11, 3, 'la-anunciacion', 'La Anunciacion', '', '2025-02-17 08:00:20', '2025-03-10 08:42:59'),
+(12, 4, 'sta-cruz-norte', 'Sta. Cruz Norte', '', '2025-02-17 08:07:33', '2025-03-10 08:42:59'),
+(13, 4, 'cristo-rey', 'Cristo Rey', '', '2025-02-17 08:07:33', '2025-03-10 08:42:59'),
+(14, 4, 'san-vicente-norte', 'San Vicente Norte', '', '2025-02-17 08:07:33', '2025-03-10 08:42:59'),
+(15, 4, 'antipolo', 'Antipolo', '', '2025-02-17 08:07:33', '2025-03-10 08:42:59'),
+(16, 4, 'sta-maria', 'Sta. Maria', 'sta_maria_bh.png', '2025-02-17 08:07:33', '2025-03-13 13:32:13'),
+(17, 4, 'san-pedro', 'San Pedro', '', '2025-02-17 08:07:33', '2025-03-10 08:42:59'),
+(18, 4, 'san-rafael', 'San Rafael', '', '2025-02-17 08:07:33', '2025-03-10 08:42:59'),
+(19, 5, 'sta-cruz-sur', 'Sta. Cruz Sur', '', '2025-02-17 08:07:33', '2025-03-10 08:42:59'),
+(20, 5, 'sto-niño', 'Sto. Niño', '', '2025-02-17 08:07:33', '2025-03-10 08:42:59'),
+(21, 5, 'san-vicente-sur', 'San Vicente Sur', '', '2025-02-17 08:07:33', '2025-03-10 08:42:59'),
+(22, 5, 'salvacion', 'Salvacion', '', '2025-02-17 08:07:33', '2025-03-10 08:42:59');
 
 -- --------------------------------------------------------
 
@@ -248,7 +249,7 @@ CREATE TABLE `sk_officials` (
 
 INSERT INTO `sk_officials` (`id`, `barangay_id`, `slug`, `username`, `password`, `full_name`, `position`, `contact_number`, `email`, `birthday`, `motto`, `img`, `term_start`, `term_end`, `created_at`, `updated_at`) VALUES
 (1, 1, 'dessa-mare', 'dessa', '123456', 'Dessa Mare P. Lontayao', 'SK Chairperson', '09274668490', 'dessa@example.com', NULL, '', '', NULL, NULL, '2025-02-21 06:16:33', '2025-03-08 12:56:14'),
-(2, 2, 'irish', '', '', 'Irish N. Zaragoza', 'SK Chairperson', '9082565497', '', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-03-06 20:05:24'),
+(2, 2, 'irish', 'irish', 'qwerty', 'Irish N. Zaragoza', 'SK Chairperson', '9082565497', '', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-03-14 09:56:29'),
 (3, 3, 'anthony', '', '', 'Anthony T. Balbuena', 'SK Chairperson', '9915612246', '', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-03-06 20:08:14'),
 (4, 4, 'aiden-osward', '', '', 'Aiden Osward M. Basagre', 'SK Chairperson', '9617360226', '', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-03-06 20:10:42'),
 (5, 5, 'neil-christian', '', '', 'Neil Christian D. Vargas', 'SK Chairperson', '9773292890', '', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-03-06 20:12:19'),
