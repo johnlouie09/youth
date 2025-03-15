@@ -7,12 +7,13 @@ class Barangay extends Model
     /** static data */
     public    static $table         = 'barangays';
     public    static $table_columns = [];
-    protected static $basic_columns = ['id', 'slug', 'name'];
+    protected static $basic_columns = ['id', 'slug', 'name', 'img'];
 
     /** properties */
-    protected $cluster_id   = 0;
-    protected $slug         = '';
-    protected $name         = '';
+    protected $cluster_id = 0;
+    protected $slug       = '';
+    protected $name       = '';
+    protected $img        = '';
 
 
     /**
@@ -67,6 +68,16 @@ class Barangay extends Model
 
 
     /**
+     * Gets Barangay img.
+     * @return string
+     */
+    public function getImg()
+    {
+        return $this->img;
+    }
+
+
+    /**
      * Sets Barangay cluster_id.
      * @param $cluster_id
      * @return void
@@ -96,6 +107,17 @@ class Barangay extends Model
     public function setName($name)
     {
         $this->name = $name;
+    }
+
+
+    /**
+     * Sets Barangay img.
+     * @param $img
+     * @return void
+     */
+    public function setImg($img)
+    {
+        $this->img = $img;
     }
 
 
@@ -212,14 +234,14 @@ class Barangay extends Model
         $skOfficials = $this->getSkOfficials();
         require_once __DIR__ . '/Achievement.php';
         foreach ($skOfficials as $official) {
-            // Ensure we have an object instance
+            // ensure we have an object instance
             if (!is_object($official)) {
                 require_once __DIR__ . '/SkOfficial.php';
                 $official = new SkOfficial($official['id']);
             }
-            // Retrieve the achievements for this SK Official
+            // retrieve the achievements for this SK Official
             $achievements = $official->getAchievements($assoc, $assoc_basic);
-            // Merge them into one array
+            // merge them into one array
             $allAchievements = array_merge($allAchievements, $achievements);
         }
         return $allAchievements;
@@ -234,8 +256,8 @@ class Barangay extends Model
      */
     public function insert(): bool
     {
-        $stmt = $this->getConnection()->prepare("INSERT INTO `" . self::$table . "` (`cluster_id`, `slug`, `name`) VALUES (?, ?, ?)");
-        $stmt->bind_param("iss", $this->cluster_id, $this->slug, $this->name);
+        $stmt = $this->getConnection()->prepare("INSERT INTO `" . self::$table . "` (`cluster_id`, `slug`, `name`, `img`) VALUES (?, ?, ?, ?)");
+        $stmt->bind_param("isss", $this->cluster_id, $this->slug, $this->name, $this->img);
         $stmt->execute();
         if ($stmt->affected_rows > 0) {
             $this->setId($stmt->insert_id);
@@ -253,8 +275,8 @@ class Barangay extends Model
      */
     public function update(): bool
     {
-        $stmt = $this->getConnection()->prepare("UPDATE `" . self::$table . "` SET `cluster_id` = ?, `slug` = ?, `name` = ? WHERE `id` = ?");
-        $stmt->bind_param("issi", $this->cluster_id, $this->slug, $this->name, $this->id);
+        $stmt = $this->getConnection()->prepare("UPDATE `" . self::$table . "` SET `cluster_id` = ?, `slug` = ?, `name` = ?, `img` = ? WHERE `id` = ?");
+        $stmt->bind_param("isssi", $this->cluster_id, $this->slug, $this->name, $this->img, $this->id);
         $stmt->execute();
         return $stmt->affected_rows > 0;
     }
