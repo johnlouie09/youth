@@ -8,10 +8,10 @@ export default createStore({
     modules: {
         auth
     },
-    plugins: [createPersistedState()],
     state: {
         app: {
         },
+        activeBarangay: null,
     },
 
     getters: {
@@ -21,6 +21,11 @@ export default createStore({
     },
 
     mutations: {
+        setActiveBarangay(state, payload) {
+            state.activeBarangay = payload;
+        }
     },
 
 })
+
+
