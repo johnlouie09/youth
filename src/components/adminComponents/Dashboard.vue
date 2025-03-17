@@ -1,21 +1,5 @@
 <template>
     <v-container class="dashboard-main" fluid>
-        <!-- // TEST // DELETE LATER -->
-        <h1>Test Area</h1>
-        <div class="d-flex flex-column align-center ga-3">
-            <div v-if="testData.skOfficial">
-                <p>Logged In SKOfficial:</p>
-                <pre>{{ testData.skOfficial }}</pre>
-            </div>
-            <div class="d-flex align-center ga-3">
-                <v-btn @click="testLogin" color="success">Test Login</v-btn>
-                <!--<v-btn @click="testGetSession" color="primary">Test Get Session</v-btn>-->
-                <v-btn @click="testLogout" v-if="testData.skOfficial" color="error">Test Logout</v-btn>
-            </div>
-        </div>
-        <!-- // TEST // DELETE LATER -->
-
-
         <!-- Cards Section -->
         <v-row class="cards" justify="center">
             <v-col
@@ -106,41 +90,8 @@ export default {
         };
     },
     methods: {
-        testGetSession() {
-            $.ajax({
-                type: 'GET', xhrFields: { withCredentials: true },
-                url : `${this.api_base}?e=sk-official&a=session`,
-                success: (response) => {
-                    const skOfficial = response?.data?.sk_official;
-                    if (skOfficial) {
-                        this.testData.skOfficial = skOfficial;
-                    }
-                },
-                error: (error) => {
-                    console.error("Get session error: ", error);
-                }
-            });
-        },
-        testLogout() {
-            if (this.testData.skOfficial) {
-                $.ajax({
-                    type: 'POST', xhrFields: { withCredentials: true },
-                    url : `${this.api_base}?e=sk-official&a=logout`,
-                    data: {
-                        username: this.testData.skOfficial.username,
-                    },
-                    success: () => {
-                        this.testData.skOfficial = null;
-                    },
-                    error: (error) => {
-                        console.error("Logout error: ", error);
-                    }
-                });
-            }
-        }
     },
     created() {
-        this.testGetSession();
     }
 };
 </script>
