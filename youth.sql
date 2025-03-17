@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 14, 2025 at 11:36 AM
+-- Generation Time: Mar 17, 2025 at 10:57 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -248,29 +248,29 @@ CREATE TABLE `sk_officials` (
 --
 
 INSERT INTO `sk_officials` (`id`, `barangay_id`, `slug`, `username`, `password`, `full_name`, `position`, `contact_number`, `email`, `birthday`, `motto`, `img`, `term_start`, `term_end`, `created_at`, `updated_at`) VALUES
-(1, 1, 'dessa-mare', 'dessa', '123456', 'Dessa Mare P. Lontayao', 'SK Chairperson', '09274668490', 'dessa@example.com', NULL, '', '', NULL, NULL, '2025-02-21 06:16:33', '2025-03-08 12:56:14'),
-(2, 2, 'irish', 'irish', 'qwerty', 'Irish N. Zaragoza', 'SK Chairperson', '9082565497', '', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-03-14 09:56:29'),
-(3, 3, 'anthony', '', '', 'Anthony T. Balbuena', 'SK Chairperson', '9915612246', '', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-03-06 20:08:14'),
-(4, 4, 'aiden-osward', '', '', 'Aiden Osward M. Basagre', 'SK Chairperson', '9617360226', '', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-03-06 20:10:42'),
-(5, 5, 'neil-christian', '', '', 'Neil Christian D. Vargas', 'SK Chairperson', '9773292890', '', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-03-06 20:12:19'),
-(6, 6, 'jade-dustin', '', '', 'Jade Dustin F. Villareal', 'SK Chairperson', '9291118624', '', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-03-06 20:13:07'),
-(7, 7, 'kim-roland', '', '', 'Kim Roland P. Vargas', 'SK Chairperson', '9618808019', '', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-03-06 20:15:33'),
-(8, 8, 'leiriz', '', '', 'Leiriz C. Ibarreta', 'SK Chairperson', '9508374203', '', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-03-06 20:16:15'),
-(9, 9, 'bea-franchezka', '', '', 'Bea Franchezka Naldo', 'SK Chairperson', '9484018819', '', NULL, 'Unified Youth for One Santiago', '', NULL, NULL, '2025-02-21 06:41:36', '2025-03-06 20:56:24'),
-(10, 10, 'rex', '', '', 'Rex A. Embestro', 'SK Chairperson', '9915618021', '', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-03-06 20:17:45'),
-(11, 11, 'rico', '', '', 'Rico Maniscan', 'SK Chairperson', '0', '', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-03-06 19:52:30'),
-(12, 12, 'jhustine', '', '', 'Jhustine A. Robles', 'SK Chairperson', '9674164962', '', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-03-06 20:19:55'),
-(13, 13, 'james-lorren', '', '', 'James Lorren J. Brondial', 'SK Chairperson', '9092168955', '', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-03-06 20:20:40'),
-(14, 14, 'eddel-mae', '', '', 'Eddel Mae D. Brago', 'SK Chairperson', '9203025407', '', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-03-06 20:23:03'),
-(15, 15, 'prince-leonard', '', '', 'Prince Leonard W. Llagas', 'SK Chairperson', '9518971664', '', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-03-06 20:28:48'),
-(16, 16, 'diana-rose', '', '', 'Diana Rose A. Canlas', 'SK Chairperson', '9950653343', '', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-03-06 20:40:15'),
-(17, 17, 'mary-grace', '', '', 'Mary Grace A. Biag', 'SK Chairperson', '9916828638', '', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-03-06 20:40:29'),
-(18, 18, 'jean-lyka', '', '', 'Jean-Lyka C. Villanueva', 'SK Chairperson', '9919459266', '', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-03-06 20:40:41'),
-(19, 19, 'james', '', '', 'James S. Tasarra', 'SK Chairperson', '9630466338', '', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-03-06 20:40:52'),
-(20, 20, 'aliza-mae', '', '', 'Aliza Mae P. Viñas', 'SK Chairperson', '9383706542', '', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-03-06 20:41:02'),
-(21, 21, 'erika-mae', '', '', 'Erika Mae V. Molina', 'SK Chairperson', '9389182048', '', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-03-06 20:41:13'),
-(22, 22, 'jessa-mae', '', '', 'Jessa Mae C. Matubis', 'SK Chairperson', '9486804219', '', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-03-06 20:41:22'),
-(23, 1, 'sample', 'sample', '', 'Sample for San Francisco', 'SK Secretary', '', 'sample_official@example.com', NULL, 'I\'m created just for a test', '', NULL, NULL, '2025-03-12 10:58:56', '2025-03-12 10:58:56');
+(1, 1, 'dessa-mare', 'dessa', '123456', 'Dessa Mare P. Lontayao', 'SK Chairperson', '09274668490', 'dessa@localhost.net', NULL, '', '', NULL, NULL, '2025-02-21 06:16:33', '2025-03-17 02:17:24'),
+(2, 2, 'irish', 'irish', 'qwerty', 'Irish N. Zaragoza', 'SK Chairperson', '09082565497', 'irish@localhost.net', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-03-17 05:33:27'),
+(3, 3, 'anthony', '', '', 'Anthony T. Balbuena', 'SK Chairperson', '09915612246', 'anthony@localhost.net', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-03-17 05:50:47'),
+(4, 4, 'aiden-osward', '', '', 'Aiden Osward M. Basagre', 'SK Chairperson', '09617360226', 'aiden@localhost.net', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-03-17 05:50:47'),
+(5, 5, 'neil-christian', '', '', 'Neil Christian D. Vargas', 'SK Chairperson', '09773292890', 'neil@localhost.net', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-03-17 05:50:47'),
+(6, 6, 'jade-dustin', '', '', 'Jade Dustin F. Villareal', 'SK Chairperson', '09291118624', 'jade@localhost.net', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-03-17 05:50:47'),
+(7, 7, 'kim-roland', '', '', 'Kim Roland P. Vargas', 'SK Chairperson', '09618808019', 'kim@localhost.net', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-03-17 05:50:47'),
+(8, 8, 'leiriz', '', '', 'Leiriz C. Ibarreta', 'SK Chairperson', '09508374203', 'leiriz@localhost.net', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-03-17 05:50:47'),
+(9, 9, 'bea-franchezka', '', '', 'Bea Franchezka Naldo', 'SK Chairperson', '09484018819', 'bea@localhost.net', NULL, 'Unified Youth for One Santiago', '', NULL, NULL, '2025-02-21 06:41:36', '2025-03-17 05:50:47'),
+(10, 10, 'rex', '', '', 'Rex A. Embestro', 'SK Chairperson', '09915618021', 'rex@localhost.net', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-03-17 05:50:47'),
+(11, 11, 'rico', '', '', 'Rico Maniscan', 'SK Chairperson', '0', 'rico@localhost.net', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-03-17 05:50:47'),
+(12, 12, 'jhustine', '', '', 'Jhustine A. Robles', 'SK Chairperson', '09674164962', 'jhustine@localhost.net', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-03-17 05:50:47'),
+(13, 13, 'james-lorren', '', '', 'James Lorren J. Brondial', 'SK Chairperson', '09092168955', 'james@localhost.net', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-03-17 05:50:47'),
+(14, 14, 'eddel-mae', '', '', 'Eddel Mae D. Brago', 'SK Chairperson', '09203025407', 'eddel@localhost.net', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-03-17 05:58:47'),
+(15, 15, 'prince-leonard', '', '', 'Prince Leonard W. Llagas', 'SK Chairperson', '09518971664', 'prince@localhost.net', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-03-17 05:58:47'),
+(16, 16, 'diana-rose', '', '', 'Diana Rose A. Canlas', 'SK Chairperson', '09950653343', 'diana@localhost.net', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-03-17 05:58:47'),
+(17, 17, 'mary-grace', '', '', 'Mary Grace A. Biag', 'SK Chairperson', '09916828638', 'mary@localhost.net', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-03-17 05:58:47'),
+(18, 18, 'jean-lyka', '', '', 'Jean-Lyka C. Villanueva', 'SK Chairperson', '09919459266', 'jean@localhost.net', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-03-17 05:58:47'),
+(19, 19, 'james', '', '', 'James S. Tasarra', 'SK Chairperson', '09630466338', 'james@localhost.net', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-03-17 05:58:47'),
+(20, 20, 'aliza-mae', '', '', 'Aliza Mae P. Viñas', 'SK Chairperson', '09383706542', 'aliza@localhost.net', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-03-17 05:58:47'),
+(21, 21, 'erika-mae', '', '', 'Erika Mae V. Molina', 'SK Chairperson', '09389182048', 'erika@localhost.net', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-03-17 05:58:47'),
+(22, 22, 'jessa-mae', '', '', 'Jessa Mae C. Matubis', 'SK Chairperson', '09486804219', 'jessa@localhost.net', NULL, '', '', NULL, NULL, '2025-02-21 06:41:36', '2025-03-17 05:58:47'),
+(23, 1, 'sample', 'sample', '', 'Sample for San Francisco', 'SK Secretary', '', 'sample_official@localhost.net', NULL, 'I\'m created just for a test.', '', NULL, NULL, '2025-03-12 10:58:56', '2025-03-17 05:58:47');
 
 --
 -- Indexes for dumped tables
