@@ -5,13 +5,17 @@ require_once __DIR__ . '/Model.php';
 class SkOfficial extends Model
 {
     /** static data */
-    public    static $table                = 'sk_officials';
-    public    static $table_columns        = [];
-    protected static $basic_columns        = ['id', 'full_name', 'username', 'email'];
-    private   static $session_username_key = 'kh0vlaf86ytb7hg9';
-    private   static $session_password_key = 'f06vtd9gx1r41tsg';
-    private   static $logged_in            = null;
-    private   static $logged_out           = false;
+    public    static $table                  = 'sk_officials';
+    public    static $table_columns          = [];
+    protected static $basic_columns          = ['id', 'full_name', 'username', 'email'];
+    public    const  POSITION_SK_CHAIRPERSON = "SK Chairperson";
+    public    const  POSITION_SK_SECRETARY   = "SK Secretary";
+    public    const  POSITION_SK_TREASURER   = "SK Treasurer";
+    public    const  POSITION_SK_KAGAWAD     = "SK Kagawad";
+    private   static $session_username_key   = 'kh0vlaf86ytb7hg9';
+    private   static $session_password_key   = 'f06vtd9gx1r41tsg';
+    private   static $logged_in              = null;
+    private   static $logged_out             = false;
 
     /** properties */
     protected $barangay_id    = 0;
