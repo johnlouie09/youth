@@ -607,4 +607,26 @@ class SkOfficial extends Model
 
         return $educationBackground;
     }
+
+
+    /// TEST
+    /**
+     * Test email sending
+     * @throws Exception
+     */
+    public function sendHelloEmail(): bool
+    {
+        require_once __DIR__ . '/../helpers/Mailer.php';
+
+        $mailer = new Mailer();
+        $mailer->setSubject('Hello World!');
+        $mailer->setBody("
+            <h1>Hello " . $this->getFullName() . "!</h1>
+            <p>This is a test email.</p>
+        ");
+        $mailer->addRecipient($this->getEmail());
+
+        return $mailer->send();
+    }
+    /// TEST
 }
