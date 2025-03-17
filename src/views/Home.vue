@@ -1,7 +1,7 @@
 <template>
     <v-container
       fluid
-      class="home-main"
+      class="home-main bg-gradient-to-r from-slate-50 to-slate-200"
       :class="{ 'dark-gradient': theme.global.name.value === 'dark' }"
     >
       <Hero />
@@ -12,7 +12,7 @@
 
   <script setup>
   import Hero from "../landingpage/Hero.vue";
-  import Faqs from "@/landingpage/Faqs.vue";
+  import Faqs from "@/landingpage/faqs.vue";
   import BarangaysNavigation from "../landingpage/BarangaysNavigation.vue";
   import { useTheme } from 'vuetify';
   
@@ -33,7 +33,7 @@
     margin: 0;
     background-position: center;
     background-attachment: fixed;
-    background-image: linear-gradient(45deg, rgb(255, 255, 255), #fdcb4081, rgb(255, 255, 255), #3773ff7e, rgb(255, 255, 255), #df293598);
+    /* background-image: linear-gradient(45deg, rgb(255, 255, 255), #fdcb4081, rgb(255, 255, 255), #3773ff7e, rgb(255, 255, 255), #df293598); */
   }
   
   /* Only add the gradient if dark mode is active */

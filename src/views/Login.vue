@@ -1,10 +1,14 @@
 <template>
-  <v-container fluid class="login-container theme--dark">
+  <v-container
+    fluid
+    class="login-container"
+    :style="{ backgroundImage: backgroundImage }"
+  >
     <v-card class="login-card" elevation="20" dark>
       <!-- Logo centered above the form -->
       <div>
         <v-img
-          src="/public//Flogo.svg"
+          src="/public/Flogo.svg"
           max-width="300"
           class="mx-auto mb-5"
         />
@@ -53,8 +57,9 @@
 </template>
 
 <script>
-import $ from 'jquery';
-import { event } from 'jquery';
+import { computed } from 'vue'
+import { useTheme } from 'vuetify'
+import $ from 'jquery'
 
 export default {
   name: "Login",
@@ -68,8 +73,19 @@ export default {
       requestError: ''
     };
   },
+  setup() {
+    // Use Vuetify's composable to access theme info
+    const theme = useTheme()
+    // Create a computed property that returns the proper background gradient
+    const backgroundImage = computed(() => {
+      return theme.global.current.value.dark
+        ? 'linear-gradient(45deg, #363636, #0e0e0e, #363636, #0e0e0e)'
+        : 'linear-gradient(45deg, #f0f0f0, #ffffff)';
+    });
+    
+    return { backgroundImage }
+  },
   methods: {
-    // Validates if the required fields are populated.
     validateForm() {
       let valid = true;
       this.usernameError = '';
@@ -88,7 +104,7 @@ export default {
         console.log("Validation failed: Required fields are missing.");
       }
       
-      return valid;
+      return valid; 
     },
     async handleSubmit() {
       if (!this.validateForm()) {
@@ -100,7 +116,6 @@ export default {
 
       // Get the CSRF token from the meta tag
       const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
-
       const api_base = 'http://localhost/youth/app/api.php';
   
       await $.ajax({
@@ -127,21 +142,17 @@ export default {
           console.error("Error:", textStatus, errorThrown);
           let errorMsg = "An error occurred while processing your request.";
           if (jqXHR.responseJSON && jqXHR.responseJSON.error) {
-            // If the server returns a JSON object with an error property
             errorMsg = jqXHR.responseJSON.message;
           } else if (jqXHR.responseText) {
-            // If the server returns plain text or HTML error message
             errorMsg = jqXHR.responseText;
           }
-          // Optionally, you can update a local error message variable or show a toast notification.
           this.requestError = errorMsg;
         },
         complete: () => {
           this.loading = false;
         }
       });
-}
-
+    }
   }
 };
 </script>
@@ -152,7 +163,7 @@ export default {
   justify-content: center;
   align-items: center;
   height: 100vh;
-  background-image: linear-gradient(45deg, #363636, #0e0e0e, #363636, #0e0e0e);
+  /* The background image is dynamically set via the computed property */
   background-position: center;
   background-attachment: fixed;
 }
@@ -178,6 +189,5 @@ export default {
   display: flex;
   justify-content: center;
   color: rgb(245, 49, 49);
-  
 }
 </style>

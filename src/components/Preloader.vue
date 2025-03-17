@@ -71,6 +71,9 @@ $light: #fff;
     height: 100vh;
     background-color: $dark;
     overflow: hidden;
+    background-image: linear-gradient(45deg, #363636, #0e0e0e, #363636, #0e0e0e);
+    background-position: center;
+    background-attachment: fixed;
 
     &-animation {
         opacity: 1;
