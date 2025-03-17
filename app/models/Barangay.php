@@ -162,6 +162,71 @@ class Barangay extends Model
 
 
     /**
+     * Gets the SK Chairperson for this Barangay.
+     *
+     * @param bool $assoc
+     * @param bool $assoc_basic
+     * @return SkOfficial|array|null
+     */
+    public function getSkChairman(bool $assoc = false, bool $assoc_basic = false): SkOfficial|array|null
+    {
+        require_once __DIR__ . '/SkOfficial.php';
+        $skOfficials = $this->getSkOfficials();
+        foreach ($skOfficials as $official) {
+            if (is_array($official)) {
+                if ($official['position'] === SkOfficial::POSITION_SK_CHAIRPERSON) {
+                    return $official;
+                }
+            } else {
+                if ($official->getPosition() === SkOfficial::POSITION_SK_CHAIRPERSON) {
+                    return $assoc ? $official->getAssoc($assoc_basic) : $official;
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Gets the SK Members for this Barangay.
+     *
+     * Returns SK Officials with positions "SK Secretary", "SK Treasurer", and "SK Kagawad".
+     * Optionally, if $excludeChairman is false, it will also include the SK Chairperson.
+     *
+     * @param bool $excludeChairman
+     * @param bool $assoc
+     * @param bool $assoc_basic
+     * @return array
+     */
+    public function getSkMembers(bool $excludeChairman = true, bool $assoc = false, bool $assoc_basic = false): array
+    {
+        require_once __DIR__ . '/SkOfficial.php';
+        $skOfficials = $this->getSkOfficials($assoc, $assoc_basic);
+        $members = [];
+        $memberPositions = [
+            SkOfficial::POSITION_SK_SECRETARY,
+            SkOfficial::POSITION_SK_TREASURER,
+            SkOfficial::POSITION_SK_KAGAWAD,
+        ];
+        if (!$excludeChairman) {
+            $memberPositions[] = SkOfficial::POSITION_SK_CHAIRPERSON;
+        }
+        foreach ($skOfficials as $official) {
+            if (is_array($official)) {
+                if (in_array($official['position'], $memberPositions)) {
+                    $members[] = $official;
+                }
+            } else {
+                if (in_array($official->getPosition(), $memberPositions)) {
+                    $members[] = $assoc ? $official->getAssoc($assoc_basic) : $official;
+                }
+            }
+        }
+        return $members;
+    }
+
+
+
+    /**
      * Gets the Cluster that this Barangay belongs to.
      *
      * @param bool $assoc
