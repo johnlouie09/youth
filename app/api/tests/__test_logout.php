@@ -8,7 +8,7 @@ echo "<p>Manually Logout an SkOfficial</p>";
 echo "<hr>";
 echo "<pre>";
 // ======================================================
-require_once __DIR__ . '/models/SkOfficial.php';
+require_once __DIR__ . '/../../models/SkOfficial.php';
 
 SkOfficial::logout();
 

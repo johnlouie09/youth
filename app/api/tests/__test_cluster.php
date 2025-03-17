@@ -1,6 +1,6 @@
 <?php
 /** imports */
-require_once __DIR__ . '/models/Cluster.php';
+require_once __DIR__ . '/../../models/Cluster.php';
 $cluster = new Cluster(1);
 
 if ($cluster === null) {

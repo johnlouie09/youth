@@ -1,7 +1,7 @@
 <?php
 echo "<pre>";
 
-require_once __DIR__ . '/models/SkOfficial.php';
+require_once __DIR__ . '/../../models/SkOfficial.php';
 
 // query dessa-mare
 $sk_official = SkOfficial::findBy('slug', 'dessa-mare');

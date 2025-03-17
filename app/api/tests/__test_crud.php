@@ -1,7 +1,7 @@
 <?php
 echo "<pre>";
 
-require_once __DIR__ . '/models/Barangay.php';
+require_once __DIR__ . '/../../models/Barangay.php';
 
 // --- Insert ---
 echo "=== Insert Operation ===\n";

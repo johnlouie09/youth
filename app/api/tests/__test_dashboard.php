@@ -8,7 +8,7 @@ echo "<p>Displays the currently logged-in SkOfficial</p>";
 echo "<hr>";
 echo "<pre>";
 // ======================================================
-require_once __DIR__ . '/models/SkOfficial.php';
+require_once __DIR__ . '/../../models/SkOfficial.php';
 
 
 $sk_official = SkOfficial::getLoggedIn();

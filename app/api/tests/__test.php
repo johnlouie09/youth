@@ -13,14 +13,14 @@ echo "<pre>";
  */
 
 
-require_once __DIR__ . '/models/Barangay.php';
-require_once __DIR__ . '/models/Cluster.php';
-require_once __DIR__ . '/models/SkOfficial.php';
-require_once __DIR__ . '/models/Event.php';
-require_once __DIR__ . '/models/Project.php';
-require_once __DIR__ . '/models/Achievement.php';
-require_once __DIR__ . '/models/SkEducation.php';
-require_once __DIR__ . '/models/EducationLevel.php';
+require_once __DIR__ . '/../../models/Barangay.php';
+require_once __DIR__ . '/../../models/Cluster.php';
+require_once __DIR__ . '/../../models/SkOfficial.php';
+require_once __DIR__ . '/../../models/Event.php';
+require_once __DIR__ . '/../../models/Project.php';
+require_once __DIR__ . '/../../models/Achievement.php';
+require_once __DIR__ . '/../../models/SkEducation.php';
+require_once __DIR__ . '/../../models/EducationLevel.php';
 
 /** Find By Unique Column */
 $barangay = Barangay::findBy('name', 'San Francisco');
