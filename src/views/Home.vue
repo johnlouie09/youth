@@ -1,4 +1,5 @@
 <template>
+    <Preloader />
     <v-container
       fluid
       class="home-main bg-gradient-to-r from-slate-50 to-slate-200"
@@ -11,6 +12,7 @@
   </template>
 
   <script setup>
+  import Preloader from "@/components/Preloader.vue";
   import Hero from "../landingpage/Hero.vue";
   import Faqs from "@/landingpage/faqs.vue";
   import BarangaysNavigation from "../landingpage/BarangaysNavigation.vue";

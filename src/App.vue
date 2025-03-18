@@ -1,11 +1,9 @@
 <script>
-import Preloader from "./components/Preloader.vue";
 import Footer from "./components/landingPage/Footer.vue";
 import NavigationBar from "./components/landingPage/NavigationBar.vue";
 export default {
   components: {
     NavigationBar,
-    Preloader,
     Footer
   }
 };
@@ -16,7 +14,6 @@ export default {
     <NavigationBar></NavigationBar>
     <v-main>
       <v-container class="pa-0" fluid >
-        <Preloader />
         <RouterView />
       </v-container>
     </v-main>
