@@ -2,21 +2,38 @@
     <v-card class="official-card" elevation="4">
         <div class="img">
             <img 
-                :src="official.img"
+                :src="official.img || '../public/OfficialImages/no-avatar.jpg'"
                 alt="SK Logo" 
+                class="rounded-circle"
             ></img>
-            <h3 class="text-h6 font-weight-medium">{{ official.role.toUpperCase() }}</h3>
+            <h3 class="text-h6 font-weight-medium">{{ official.position }}</h3>
         </div>
         <p>{{ official.motto }}</p>
     </v-card>
 </template>
 
 <script>
-export default {
-    props: {
-        official: Object
-    }
-};
+    export default {
+        name: "OfficialCard",
+        props: {
+            officialProps: {
+                type: Object,
+                required: true
+            }
+        },
+        data() {
+            return {
+                // Create a local copy so you can modify if necessary.
+                official: { ...this.officialProps }
+            };
+        },
+        watch: {
+            // Update the local copy if the parent prop changes.
+            officialProps(newVal) {
+                this.official = { ...newVal };
+            }
+        }
+    };
 </script>
 
 <style scoped>
@@ -32,6 +49,7 @@ export default {
     gap: 1rem;
     padding: 3rem 1rem;
     background: linear-gradient(to bottom, #5B6A99 0%, #5B6A99 30%, transparent 30%, transparent 100%);
+    min-width: 300px;
 }
 
 .official-card .img {

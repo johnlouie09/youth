@@ -1,5 +1,5 @@
 <template>
-    <v-sheet class="main-barangay-officials" elevation="15">
+    <v-container class="main-barangay-officials elevation-20" >
         <v-card-title class="font-bold" font-bold="font-bold">
             SANGGUNIANG KABATAAN OFFICIALS
         </v-card-title>
@@ -7,7 +7,7 @@
         <div class="officials">
             <!-- SK Chairperson -->
             <OfficialCard 
-                :official="skChairperson" 
+                :officialProps="skChairperson" 
                 class="custom-card"
                 @click="openDialog(skChairperson)"
             ></OfficialCard>
@@ -21,13 +21,13 @@
                     class="pa-4"
                 >
                     <v-slide-group-item
-                        v-for="(official, index) in officials"
+                        v-for="(skMember, index) in skMembers"
                         :key="index"
                         v-slot="{ isSelected, toggle, selectedClass }"
                     >
                         <OfficialCard 
                             :class="['ml-5', 'mr-5', selectedClass, 'members-card', 'custom-card']" 
-                            :official="official"
+                            :officialProps="skMember"
                             @click="openDialog(official)"
                         ></OfficialCard>
                     </v-slide-group-item>
@@ -36,12 +36,13 @@
         </div>
         <!-- Dialog component should expose a method openDialog that accepts an official -->
         <DialogComponent ref="dialogComponent" />
-    </v-sheet>
+    </v-container>
 </template>
 
 <script>
 import DialogComponent from './DialogComponent.vue';
 import OfficialCard from '../OfficialCard.vue';
+import $ from 'jquery';
 
 export default {
     components: {
@@ -50,35 +51,9 @@ export default {
     },
     data() {
         return {
-            skChairperson: {
-                id: 1,
-                role: 'sk chairperson',
-                img: '/public/Sangguniang_Kabataan_logo.svg',
-                name: 'Cal Newport',
-                motto: '"Lorem ipsum dolor sit amet consectetur adipisicing elit. Quod, quos fuga tenetur totam"'
-            },
-            officials: [
-                { id: 2, role: "Secretary", name: "Maria Santos", img: "/public/Sangguniang_Kabataan_logo.svg", motto: "Organizing for success." },
-                { id: 3, role: "Treasurer", name: "Carlos Mendoza", img: "/public/Sangguniang_Kabataan_logo.svg", motto: "Ensuring financial integrity." },
-                { id: 4, role: "Kagawad", name: "Ana Reyes", img: "/public/Sangguniang_Kabataan_logo.svg", motto: "Empowering youth voices." },
-                { id: 5, role: "Kagawad", name: "Jose Lopez", img: "/public/Sangguniang_Kabataan_logo.svg", motto: "Striving for community progress." },
-                { id: 6, role: "Kagawad", name: "Elena Garcia", img: "/public/Sangguniang_Kabataan_logo.svg", motto: "Championing transparency and justice." },
-                { id: 7, role: "Kagawad", name: "Miguel Torres", img: "/public/Sangguniang_Kabataan_logo.svg", motto: "Building a better tomorrow." },
-                { id: 8, role: "Kagawad", name: "Rosa Fernandez", img: "/public/Sangguniang_Kabataan_logo.svg", motto: "Uniting for community empowerment." }
-            ],
+            skChairperson: '',
+            skMembers: '',
             model: null,
-            skPositions: [
-                "SK Secretary",
-                "SK Treasurer",
-                "SK Kagawad 1",
-                "SK Kagawad 2",
-                "SK Kagawad 3",
-                "SK Kagawad 4",
-                "SK Kagawad 5",
-                "SK Kagawad 6",
-                "SK Kagawad 7",
-                "SK Kagawad 8"
-            ],
             dialogComponent: null
         };
     },
@@ -87,11 +62,47 @@ export default {
             // Pass the official data to the dialog component if needed
             // For example, the dialog component can have an openDialog method
             this.dialogComponent.openDialog(official);
+        },
+        async fetchSkOfficials(){
+            const api_base = 'http://localhost/youth/app/api.php';
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+            await $.ajax({
+                url: `${api_base}?e=barangay&a=sk-officials`,
+                type: 'POST',
+                xhrFields: {
+                    withCredentials: true
+                },
+                headers: {
+                    'X-CSRF-Token': csrfToken
+                },
+                data: {
+                    barangayId: this.$store.getters.getActiveBarangayId,
+                },
+                success: (data) => {
+                console.log(data);
+                    this.skChairperson = data.data.skChairman;
+                    this.skMembers = data.data.skMembers;
+                },
+                error: (jqXHR, textStatus, errorThrown) => {
+                console.error("Error:", textStatus, errorThrown);
+                let errorMsg = "An error occurred while processing your request.";
+                if (jqXHR.responseJSON && jqXHR.responseJSON.error) {
+                    errorMsg = jqXHR.responseJSON.message;
+                } else if (jqXHR.responseText) {
+                    errorMsg = jqXHR.responseText;
+                }
+                this.requestError = errorMsg;
+                },
+                complete: () => {
+                this.loading = false;
+                }
+            });
         }
     },
-    mounted() {
+    created() {
         // Assign the ref to a variable for easier access
         this.dialogComponent = this.$refs.dialogComponent;
+        this.fetchSkOfficials();
     }
 };
 </script>
