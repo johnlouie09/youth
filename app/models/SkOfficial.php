@@ -32,6 +32,10 @@ class SkOfficial extends Model
     protected $term_start     = '';
     protected $term_end       = '';
 
+    /** properties for password reset */
+    protected $reset_token    = '';
+    protected $token_expires  = '';
+
 
     /**
      * Constructor
@@ -182,6 +186,26 @@ class SkOfficial extends Model
 
 
     /**
+     * Gets the reset token.
+     * @return string
+     */
+    public function getResetToken()
+    {
+        return $this->reset_token;
+    }
+
+
+    /**
+     * Gets the token expiration.
+     * @return string
+     */
+    public function getTokenExpires()
+    {
+        return $this->token_expires;
+    }
+
+
+    /**
      * Sets SkOfficial barangay_id.
      * @param $barangay_id
      * @return void
@@ -321,6 +345,29 @@ class SkOfficial extends Model
     public function setTermEnd($term_end)
     {
         $this->term_end = $term_end;
+    }
+
+
+    /**
+     * Sets the reset token.
+     *
+     * @param string|null $token
+     * @return void
+     */
+    public function setResetToken(?string $token)
+    {
+        $this->reset_token = $token;
+    }
+
+
+    /**
+     * Sets the token expiration.
+     * @param string|null $expires
+     * @return void
+     */
+    public function setTokenExpires(?string $expires)
+    {
+        $this->token_expires = $expires;
     }
 
 
@@ -559,8 +606,8 @@ class SkOfficial extends Model
      */
     public function update(): bool
     {
-        $stmt = $this->getConnection()->prepare("UPDATE `" . self::$table . "` SET `barangay_id` = ?, `slug` = ?, `username` = ?, `password` = ?, `full_name` = ?, `position` = ?, `contact_number` = ?, `email` = ?, `birthday` = ?, `motto` = ?, `img` = ?, `term_start` = ?, `term_end` = ? WHERE `id` = ?");
-        $stmt->bind_param("issssssssssssi", $this->barangay_id, $this->slug, $this->username, $this->password, $this->full_name, $this->position, $this->contact_number, $this->email, $this->birthday, $this->motto, $this->img, $this->term_start, $this->term_end, $this->id);
+        $stmt = $this->getConnection()->prepare("UPDATE `" . self::$table . "` SET `barangay_id` = ?, `slug` = ?, `username` = ?, `password` = ?, `full_name` = ?, `position` = ?, `contact_number` = ?, `email` = ?, `birthday` = ?, `motto` = ?, `img` = ?, `term_start` = ?, `term_end` = ?, `reset_token` = ?, `token_expires` = ? WHERE `id` = ?");
+        $stmt->bind_param("issssssssssssssi", $this->barangay_id, $this->slug, $this->username, $this->password, $this->full_name, $this->position, $this->contact_number, $this->email, $this->birthday, $this->motto, $this->img, $this->term_start, $this->term_end, $this->reset_token, $this->token_expires, $this->id);
         $stmt->execute();
         return $stmt->affected_rows > 0;
     }
@@ -613,7 +660,6 @@ class SkOfficial extends Model
     }
 
 
-    /// TEST
     /**
      * Test email sending
      * @throws Exception
@@ -632,5 +678,48 @@ class SkOfficial extends Model
 
         return $mailer->send();
     }
-    /// TEST
+
+
+    /**
+     * Sends a password reset email to the SK Official.
+     *
+     * @return bool
+     * @throws Exception
+     */
+    public function sendPasswordResetEmail(): bool
+    {
+        // load the application configuration
+        require_once __DIR__ . '/../config/app.php';
+
+        // generate a random reset token and token expiration time (1 hour)
+        $token = bin2hex(random_bytes(16));
+        $expires = date("Y-m-d H:i:s", time() + 3600);
+
+        // set the token and its expiration on the object
+        $this->setResetToken($token);
+        $this->setTokenExpires($expires);
+
+        if (!$this->update()) {
+            throw new Exception("Failed to update the password reset token in the database.");
+        }
+
+        // from app config, get the base URL
+        $base_url = $app_config['base_url'] ?? 'http://localhost';
+        $reset_url = $base_url . '/reset_password.php?token=' . urlencode($token);
+
+        // prepare the email content
+        require_once __DIR__ . '/../helpers/Mailer.php';
+        $mailer = new Mailer();
+        $mailer->setSubject('Password Reset Request');
+        $mailer->setBody("
+            <h1>Password Reset</h1>
+            <p>Hello " . htmlspecialchars($this->getFullName()) . ",</p>
+            <p>You recently requested to reset your password. Please click the link below to set a new password:</p>
+            <p><a href='" . $reset_url . "'>Reset Your Password</a></p>
+            <p>If you did not request this change, please ignore this email.</p>
+        ");
+        $mailer->addRecipient($this->getEmail());
+
+        return $mailer->send();
+    }
 }
