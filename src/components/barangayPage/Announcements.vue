@@ -3,11 +3,12 @@
         <h1 class="title">Announcements</h1>
         <div ref="swiperContainer" class="swiper mySwiper">
             <div class="swiper-wrapper">
-                <!-- Loop 25 times and use the modulus operator to select one of the 5 images -->
-                <div class="swiper-slide" v-for="n in 25" :key="n">
-                    <img :src="movies[(n - 1) % movies.length].src" :alt="movies[(n - 1) % movies.length].title" />
+                <div class="swiper-slide" v-for="announcement in announcements" :key="announcement.id">
+                    <img :src="`/public/announcements/${announcement.img}`" :alt="announcement.title"/>
                 </div>
             </div>
+            <!-- Pagination container -->
+            <div class="swiper-pagination"></div>
         </div>
     </div>
 </template>
@@ -24,12 +25,12 @@ export default {
     name: "Announcements",
     data() {
         return {
-            movies: [
-                { id: 1, src: `/1.jpg`, title: `Announcement 1` },
-                { id: 2, src: `/2.jpg`, title: `Announcement 2` },
-                { id: 3, src: `/3.jpg`, title: `Announcement 3` },
-                { id: 4, src: `/4.jpg`, title: `Announcement 4` },
-                { id: 5, src: `/5.jpg`, title: `Announcement 5` }
+            announcements: [
+                { id: 1, img: "bb_tryout.jpg", title: "Announcement 1" },
+                { id: 2, img: "interzone_bb.jpg", title: "Announcement 2" },
+                { id: 3, img: "kk_ass.jpg", title: "Announcement 3" },
+                { id: 4, img: "teentrail.jpg", title: "Announcement 4" },
+                { id: 5, img: "youthnight.jpg", title: "Announcement 5" }
             ]
         };
     },
@@ -41,6 +42,7 @@ export default {
     methods: {
         initSwiper() {
             new Swiper(this.$refs.swiperContainer, {
+                initialSlide: 12,  // Start from the middle (index 12 for 25 slides)
                 modules: [EffectCoverflow, Autoplay, Pagination],
                 effect: "coverflow",
                 grabCursor: true,
@@ -63,7 +65,7 @@ export default {
                     clickable: true,
                 },
             });
-        },
+        }
     },
 };
 </script>

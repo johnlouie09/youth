@@ -9,13 +9,11 @@
             <OfficialCard 
                 :officialProps="skChairperson" 
                 class="custom-card"
-                @click="openDialog(skChairperson)"
             ></OfficialCard>
 
             <!-- SK Members Slider -->
             <div class="members">
                 <v-slide-group
-                    v-model="model"
                     selected-class="bg-success"
                     show-arrows
                     class="pa-4"
@@ -28,41 +26,29 @@
                         <OfficialCard 
                             :class="['ml-5', 'mr-5', selectedClass, 'members-card', 'custom-card']" 
                             :officialProps="skMember"
-                            @click="openDialog(official)"
                         ></OfficialCard>
                     </v-slide-group-item>
                 </v-slide-group>
             </div>
         </div>
-        <!-- Dialog component should expose a method openDialog that accepts an official -->
-        <DialogComponent ref="dialogComponent" />
     </v-container>
 </template>
 
 <script>
-import DialogComponent from './DialogComponent.vue';
 import OfficialCard from '../OfficialCard.vue';
 import $ from 'jquery';
 
 export default {
     components: {
-        DialogComponent,
         OfficialCard
     },
     data() {
         return {
             skChairperson: '',
             skMembers: '',
-            model: null,
-            dialogComponent: null
         };
     },
     methods: {
-        openDialog(official) {
-            // Pass the official data to the dialog component if needed
-            // For example, the dialog component can have an openDialog method
-            this.dialogComponent.openDialog(official);
-        },
         async fetchSkOfficials(){
             const api_base = 'http://localhost/youth/app/api.php';
             const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
@@ -76,32 +62,29 @@ export default {
                     'X-CSRF-Token': csrfToken
                 },
                 data: {
-                    barangayId: this.$store.getters.getActiveBarangayId,
+                    barangayId: this.$route.params.barangayId,
                 },
                 success: (data) => {
-                console.log(data);
                     this.skChairperson = data.data.skChairman;
                     this.skMembers = data.data.skMembers;
+                    
                 },
                 error: (jqXHR, textStatus, errorThrown) => {
-                console.error("Error:", textStatus, errorThrown);
-                let errorMsg = "An error occurred while processing your request.";
-                if (jqXHR.responseJSON && jqXHR.responseJSON.error) {
-                    errorMsg = jqXHR.responseJSON.message;
-                } else if (jqXHR.responseText) {
-                    errorMsg = jqXHR.responseText;
-                }
-                this.requestError = errorMsg;
+                    console.error("Error:", textStatus, errorThrown);
+                    let errorMsg = "An error occurred while processing your request.";
+                    if (jqXHR.responseJSON && jqXHR.responseJSON.error) {
+                        errorMsg = jqXHR.responseJSON.message;
+                    } else if (jqXHR.responseText) {
+                        errorMsg = jqXHR.responseText;
+                    }
                 },
                 complete: () => {
-                this.loading = false;
+                    this.loading = false;
                 }
             });
         }
     },
     created() {
-        // Assign the ref to a variable for easier access
-        this.dialogComponent = this.$refs.dialogComponent;
         this.fetchSkOfficials();
     }
 };

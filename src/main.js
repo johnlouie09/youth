@@ -14,9 +14,6 @@ import App from './App.vue'
 import router from './router'
 import store from './stores';
 
-
-const app = createApp(App)
-
 const vuetify = createVuetify({
     components,
     theme: {
@@ -28,6 +25,11 @@ const vuetify = createVuetify({
     },
 })
 
+const app = createApp(App)
+
+
+
+
 axios.defaults.baseURL = import.meta.env.PROD
     ? `${import.meta.env.BASE_URL}/app`
     : 'http://localhost/youth/app';
@@ -35,6 +37,8 @@ axios.defaults.baseURL = import.meta.env.PROD
 const api_base = import.meta.env.PROD
                 ? `${import.meta.env.BASE_URL}/app/api.php`
                 : 'http://localhost/youth/app/api.php';
+app.config.globalProperties.$api_base = api_base;
+
 
 
 $.ajax({
@@ -49,7 +53,9 @@ $.ajax({
         console.error('Error fetching CSRF token:', textStatus, errorThrown);
     }
 });
-                
+
+
+
                 
 $.ajax({
     type: 'GET', xhrFields: {withCredentials: true},
@@ -61,9 +67,9 @@ $.ajax({
 
     },
     complete:(xhr) => {
-        app.use(createPinia())
         app.use(router)
         app.use(store)
+        app.use(createPinia())
         app.use(vuetify)
         app.mount('#app')
     }

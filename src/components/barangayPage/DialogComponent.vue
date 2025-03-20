@@ -6,10 +6,10 @@
                     <img src="/Sangguniang_Kabataan_logo.svg" alt="Profile Picture">
                 </v-avatar>
                 <div class="ml-3 text-wrap">
-                    <span class="headline font-weight-bold">SK.CHAIRPERSON</span>
+                    <span class="headline font-weight-bold">{{officialInfos.personalInfo.position }}</span>
                     <br>
                     <v-card-title class="d-block text-grey motto-text">
-                        "Dawa turog gisngon"
+                        {{officialInfos.personalInfo.motto }}
                     </v-card-title>
                 </div>
             </v-card-title>
@@ -25,12 +25,12 @@
                         <v-container>
                             <v-row justify="center" align="center">
                                 <v-col cols="6" class="text-left">
-                                    <p><strong>Name:</strong> Juan Dela Cruz</p>
-                                    <p><strong>Email:</strong> juandelacruz@example.com</p>
+                                    <p><strong>Name:</strong> {{officialInfos.personalInfo.full_name }}</p>
+                                    <p><strong>Email:</strong> {{officialInfos.personalInfo.email }}</p>
                                 </v-col>
                                 <v-col cols="4" class="text-left">
-                                    <p><strong>SK Position:</strong> Chairperson</p>
-                                    <p><strong>Birthday:</strong> January 1, 2000</p>
+                                    <p><strong>SK Position:</strong> {{officialInfos.personalInfo.position }}</p>
+                                    <p><strong>Birthday:</strong> {{officialInfos.personalInfo.birthday }}</p>
                                 </v-col>
                             </v-row>
                         </v-container>
@@ -45,30 +45,11 @@
                         <v-divider class="border-opacity-25" color="info"></v-divider>
                         <v-card-text class="bg-surface">
                             <v-timeline side="end">
-                                <v-timeline-item color="primary" small>
+                                <v-timeline-item v-for="educationalBackground in officialInfos.educationalBackgrounds" color="primary" small>
                                     <v-card>
-                                        <v-card-title>2020-2024</v-card-title>
-                                        <v-card-subtitle>Ateneo de Naga University</v-card-subtitle>
-                                        <v-card-text>Bachelor of Public Administration (BPA)</v-card-text>
-                                    </v-card>
-                                </v-timeline-item>
-                                <v-timeline-item color="primary" small>
-                                    <v-card>
-                                        <v-card-title>2018-2020</v-card-title>
-                                        <v-card-subtitle>Ateneo de Naga University Senior High School</v-card-subtitle>
-                                        <v-card-text>Strand: STEM (Science, Technology, Engineering, and Mathematics)</v-card-text>
-                                    </v-card>
-                                </v-timeline-item>
-                                <v-timeline-item color="primary" small>
-                                    <v-card>
-                                        <v-card-title>2014-2018</v-card-title>
-                                        <v-card-subtitle>Naga City Science High School</v-card-subtitle>
-                                    </v-card>
-                                </v-timeline-item>
-                                <v-timeline-item color="primary" small>
-                                    <v-card>
-                                        <v-card-title>2008-2014</v-card-title>
-                                        <v-card-subtitle>Ateneo de Naga University Grade School</v-card-subtitle>
+                                        <v-card-title>{{ educationalBackground.start_year }} - {{ educationalBackground.end_year }}</v-card-title>
+                                        <v-card-subtitle>{{ educationalBackground.school_name }}</v-card-subtitle>
+                                        <v-card-text>{{ educationalBackground.course }}</v-card-text>
                                     </v-card>
                                 </v-timeline-item>
                             </v-timeline>
@@ -105,26 +86,91 @@
 </template>
 
 <script>
+import $ from 'jquery';
 export default {
-    data() {
-        return {
-            isDialogOpen: false,
-            profileData: [
-                { title: 'Hobbies', items: ['Playing Basketball', 'Writing Poem'] },
-                { title: 'Favorite Show', items: ['The Crown'] },
-                { title: 'Favorite Book', items: ['No Longer Human'] },
-                { title: 'Inspirational Figure', items: ['iShowSpeed'] }
-            ]
-        };
+  name: "DialogComponent",
+  computed: {
+    isDialogOpen: {
+      get() {
+        // Access the getter from the viewOfficial module
+        return this.$store.getters['viewOfficial/getViewOfficialOpenDialog'];
+      },
+      set(value) {
+        this.$store.commit('viewOfficial/setViewOfficialOpenDialog', value);
+      }
     },
-    methods: {
-        openDialog() {
-            this.isDialogOpen = true;
-        },
-        closeDialog() {
-            this.isDialogOpen = false;
-        }
+  },
+  data() {
+    return {
+      officialInfos: {}
+    };
+  },
+  methods: {
+    closeDialog() {
+      this.isDialogOpen = false;
+      this.$store.commit('viewOfficial/setViewOfficialOpenDialog', false);
+    },
+    openDialog(official) {
+      // Optionally, handle the official data
+      console.log("Opening dialog for:", official);
+    },
+    async fetchEducationalBackgrounds(id) {
+        const api_base = 'http://localhost/youth/app/api.php';
+        const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+        await $.ajax({
+            url: `${api_base}?e=sk-official&a=sk-educations`,
+            type: 'POST',
+            xhrFields: {
+            withCredentials: true
+            },
+            headers: {
+                'X-CSRF-Token': csrfToken
+            },
+            data: {
+                skOfficialId: id,
+            },
+            success: (data) => {
+                console.log(data);
+                this.officialInfos.educationalBackgrounds = data.data.educations;
+            },
+            error: (jqXHR, textStatus, errorThrown) => {
+                console.error("Error:", textStatus, errorThrown);
+                let errorMsg = "An error occurred while processing your request.";
+                if (jqXHR.responseJSON && jqXHR.responseJSON.error) {
+                    errorMsg = jqXHR.responseJSON.message;
+                } else if (jqXHR.responseText) {
+                    errorMsg = jqXHR.responseText;
+                }
+                this.requestError = errorMsg;
+                },
+            complete: () => {
+                this.loading = false;
+            }
+        });
     }
+  },
+  created() {
+  // Initialize the local copy from the store
+  this.officialInfos = this.$store.getters['viewOfficial/getViewOfficial'];
+  // Check if the personalInfo object exists and has an id
+  if (
+    this.officialInfos &&
+    this.officialInfos.personalInfo &&
+    this.officialInfos.personalInfo.id
+  ) {
+    this.fetchEducationalBackgrounds(this.officialInfos.personalInfo.id);
+  }
+},
+watch: {
+  'officialInfos.personalInfo.id'(newId) {
+    if (newId) {
+      this.fetchEducationalBackgrounds(newId);
+    }
+  }
+}
+
+
+
 };
 </script>
 

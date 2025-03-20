@@ -10,7 +10,7 @@
             <div ref="swiperContainer" class="swiper mySwiper">
                 <div class="swiper-wrapper">
                     <div class="swiper-slide" v-for="n in 10" :key="n">
-                        <img :src="`/ex.jpg`" :alt="`Movie ${n}`" />
+                        <img :src="`/exx.jpg`" :alt="`Movie ${n}`" />
                     </div>
                 </div>
                 <!-- Pagination element -->
@@ -101,10 +101,30 @@ export default {
     width: 250px; /* Adjust size as needed */
 }
 
+.content img:hover {
+    animation: infiniteRotate 2s linear infinite;
+}
+
+@keyframes infiniteRotate {
+    0% {
+        transform: rotate(0deg) scale(1);
+    }
+    25% {
+        transform: rotate(360deg) scale(1.5);
+    }
+    50% {
+        transform: rotate(720deg) scale(2);
+    }
+    100% {
+        transform: rotate(1020deg) scale(2.3);
+    }
+}
+
+
 h1, h2 {
     will-change: transform, opacity;
     font-weight: bold;
-    background: linear-gradient(to left, #3772FF 20%, #DF2935 50%, #FFFFFF, #FDCA40, #3772FF);
+    background: linear-gradient(to left, #3772FF, #FFFFFF, #DF2935, #FFFFFF, #FDCA40, #3772FF);
     background-size: 200% 100%;
     background-clip: text;
     -webkit-background-clip: text;
@@ -113,14 +133,14 @@ h1, h2 {
 }
 
 h1 {
-    font-size: 3rem;
+    font-size: 2.5rem;
     font-weight: 800;
     display: inline-block;
     white-space: nowrap;
 }
 
 h2 {
-    font-size: 4rem;
+    font-size: 3.5rem;
     font-weight: 900;
     margin-top: 5px;
 }
@@ -134,12 +154,15 @@ h2 {
     }
 }
 
-@keyframes slider-animation {
+/* New animation for the carousel container */
+@keyframes slide-up {
     from {
-        background-position: 200% 50%;
+        transform: translateY(100%);
+        opacity: 0;
     }
     to {
-        background-position: 0% 50%;
+        transform: translateY(0);
+        opacity: 1;
     }
 }
 
@@ -149,6 +172,8 @@ h2 {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    /* Apply the slide-up animation */
+    animation: slide-up 3.5s ease-out;
 }
 
 .swiper {
@@ -167,6 +192,7 @@ h2 {
 .swiper-slide img {
     display: block;
     width: 100%;
+    height: 80vh;
     border-radius: 2rem;
 }
 

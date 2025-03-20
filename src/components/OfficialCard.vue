@@ -1,39 +1,45 @@
 <template>
-    <v-card class="official-card" elevation="4">
+    <v-card class="official-card" elevation="4" @click="fillDialog(official)">
         <div class="img">
             <img 
-                :src="official.img || '../public/OfficialImages/no-avatar.jpg'"
+                :src="official.img || '/public/OfficialImages/no-avatar.jpg'"
                 alt="SK Logo" 
                 class="rounded-circle"
-            ></img>
+            >
             <h3 class="text-h6 font-weight-medium">{{ official.position }}</h3>
         </div>
-        <p>{{ official.motto }}</p>
+        <p>{{ official.motto }}</p>    
     </v-card>
 </template>
 
 <script>
-    export default {
-        name: "OfficialCard",
-        props: {
-            officialProps: {
-                type: Object,
-                required: true
-            }
-        },
-        data() {
-            return {
-                // Create a local copy so you can modify if necessary.
-                official: { ...this.officialProps }
-            };
-        },
-        watch: {
-            // Update the local copy if the parent prop changes.
-            officialProps(newVal) {
-                this.official = { ...newVal };
-            }
+export default {
+    name: "OfficialCard",
+    props: {
+        officialProps: {
+            type: Object,
+            required: true
         }
-    };
+    },
+    data() {
+        return {
+            // Create a local copy so you can modify it if necessary.
+            official: { ...this.officialProps },
+        };
+    },
+    watch: {
+        // Update the local copy if the parent prop changes.
+        officialProps(newVal) {
+            this.official = { ...newVal };
+        }
+    },
+    methods: {
+        async fillDialog(official) {
+            this.$store.commit('viewOfficial/setViewOfficialOpenDialog', true);
+            this.$store.commit('viewOfficial/setViewOfficialPersonalInfo', official);
+        }
+    }
+};
 </script>
 
 <style scoped>
@@ -43,6 +49,7 @@
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
+    max-width: 450px;
     width: 100%;
     height: 90%;
     border-radius: 1rem;

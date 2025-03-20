@@ -8,8 +8,7 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: () => import('../views/Home.vue'),
-      alias: ['/home'],
+      component: () => import('../views/Home.vue')
     },
     {
       path: '/login',
@@ -19,30 +18,29 @@ const router = createRouter({
       beforeEnter: (to, from, next) => {
         const user = store.getters['auth/getUser'];
         if (user)
-            next({ name: 'admin', params: { barangaySlug: user.barangay.slug } });
+            next({ name: 'admin-dashboard', params: { barangaySlug: user.barangay.slug } });
         else
             next();
       }
     },
     {
       path: '/contact',
+      name: 'contact',
       component: () => import('../views/Contact.vue'),
     },
-    // {
-    //   path: '/:catchAll(.*)',
-    //   name: 'NotFound',
-    //   component: () => import('../components/404.vue'),
-    // },
     {
-      path: '/san-francisco',
-      name: 'San Francisco',
-      component: () => import('../views/poblacion/SanFrancisco.vue'),
+      path: '/:catchAll(.*)',
+      name: 'NotFound',
+      component: () => import('../components/404.vue'),
     },
+    
     {
-      path: '/barangay',
-      name: 'perpetual',
-      component: () => import('../views/Barangay.vue'),
+      path: '/youth/:barangaySlug/:barangayId',
+      name: 'barangay-landingpage',
+      component: () => import('../views/Barangay.vue')
     },
+    
+
     // ADMINS ROUTER
     {
       path: '/admin/:barangaySlug',
@@ -93,7 +91,7 @@ const router = createRouter({
           component: () => import('../components/adminComponents/Notices.vue'),
         },
         {
-          path: 'officials/johndoe',
+          path: 'officials/:officialSlug',
           name: 'admin-edit-official',
           component: () => import('../components/adminComponents/subcomponents/officials/editingOfficial.vue'),
         },

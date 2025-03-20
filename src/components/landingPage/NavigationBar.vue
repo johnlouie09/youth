@@ -2,48 +2,67 @@
   <v-sheet class="nav-main" v-if="!shouldHideNav" elevation="10">
     <div class="logo">
       <img class="barangay-logo" src="../../../public/group.svg" alt="Barangay Logo">
-      <img class="logo-name" src="../../../public/youth-name.svg">
+      <img class="logo-name" src="../../../public/youth-name.svg" alt="Youth Name">
     </div>
 
     <ul>
-      <RouterLink
-        v-for="view in views"
-        :to="view.to"
+      <li 
+        v-for="view in views" 
+        :key="view.to" 
+        @click="navigate(view.to)" 
         :class="[view.class, { active: isActive(view.to) }]"
-        :key="view.to"
       >
         {{ view.name.toUpperCase() }}
-      </RouterLink>
+      </li>
       <RouterLink
-        v-if="route.path === '/barangay'"
+        v-if="$route.path === '/barangay'"
         to="/barangay/send-message"
         class="view message"
       >
         <v-icon>mdi-message</v-icon>
       </RouterLink>
-      <ThemeSwitcher></ThemeSwitcher>
+      <ThemeSwitcher />
     </ul>
   </v-sheet>
 </template>
 
-<script setup>
-import { computed, reactive } from 'vue';
-import { useRoute } from 'vue-router';
+<script>
 import ThemeSwitcher from '../ThemeSwitcher.vue';
 
-const route = useRoute();
-
-// Compute whether to hide the navbar if the route is an admin route or the login route.
-const shouldHideNav = computed(() => route.path.startsWith('/admin') || route.path === '/login');
-
-const views = reactive([
-  { name: "Home", to: "/home", class: "view home" },
-  { name: "About", to: "/about", class: "view about" },
-  { name: "Contact", to: "/contact", class: "view contact" }
-]);
-
-const isActive = (to) => {
-  return route.path === to;
+export default {
+  name: 'NavMain',
+  components: { ThemeSwitcher },
+  data() {
+    return {
+      views: [
+        { name: "Home", to: "home", class: "view home" },
+        { name: "About", to: "about", class: "view about" },
+        { name: "Contact", to: "contact", class: "view contact" }
+      ]
+    };
+  },
+  computed: {
+    shouldHideNav() {
+      return this.$route.path.startsWith('/admin') || this.$route.path === '/login';
+    }
+  },
+  methods: {
+    isActive(routeName) {
+      return this.$route.name === routeName;
+    },
+    navigate(routeName) {
+      this.$router.push({ name: routeName })
+        .then(() => {
+          window.location.reload();
+        })
+        .catch((err) => {
+          // Optionally catch NavigationDuplicated errors.
+          if (err.name !== 'NavigationDuplicated') {
+            console.error(err);
+          }
+        });
+    }
+  }
 };
 </script>
 
@@ -53,7 +72,7 @@ const isActive = (to) => {
   top: 30px;
   left: 50%;
   transform: translateX(-50%);
-  z-index: 1000; /* Ensure it stays on top */
+  z-index: 1000;
   width: 60%;
   height: 7vh;
   color: #848484;
@@ -63,7 +82,6 @@ const isActive = (to) => {
   border-radius: 1rem;
   padding: 0px 2rem;
   overflow: hidden;
-  /* Animation: from 0 width to 60% over 1 second */
   animation: expandWidth 2s ease-out forwards;
 }
 
@@ -76,13 +94,11 @@ const isActive = (to) => {
   }
 }
 
-
 .logo {
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  gap: .5rem;
-  height: 10%;
+  gap: 0.5rem;
 }
 
 .barangay-logo {
@@ -106,19 +122,18 @@ ul {
   padding: 0.5rem 1rem;
   border-radius: 0.5rem;
   transition: color 0.3s ease, border-bottom 0.3s ease;
+  cursor: pointer;
 }
 
 .view:hover {
   color: #3772FF;
 }
 
-/* Active state */
 .active {
   border: 1px solid #3772FF;
   color: #3772FF;
 }
 
-/* Style for the new send-message item */
 .message {
   display: flex;
   align-items: center;

@@ -91,7 +91,9 @@ else if ($endpoint == 'cluster')
 {
     require_once __DIR__ . '/api--cluster.php';
 }
-
+else if($endpoint == 'barangay') {
+    require_once __DIR__ . '/api--barangay.php';
+}
 else if($endpoint == 'csrf') {
     require_once __DIR__ . '/csrf.php';
 }

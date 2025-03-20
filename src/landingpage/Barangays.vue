@@ -21,8 +21,9 @@
                 'background-size': 'cover',
                 'background-position': 'center'
             }"
+            @click = "toBarangay(barangay)"
         >
-        <v-card-title class="overlay-titles-barangays" style="font-weight: 900; font-size: 1rem;">{{ barangay.name.toUpperCase() }}</v-card-title>
+            <v-card-title class="overlay-titles-barangays" style="font-weight: 900; font-size: 1rem;">{{ barangay.name.toUpperCase() }}</v-card-title>
         </v-card>
     </div>
 </template>
@@ -42,7 +43,8 @@ export default {
         return {
             barangays: [],
             loading: false,
-            error: null
+            error: null,
+            activeBarangay: ''
         };
     },
     watch: {
@@ -80,6 +82,15 @@ export default {
                 },
                 complete: () => {
                     this.loading = false;
+                }
+            });
+        },
+        toBarangay(barangay) {
+            this.$router.replace({
+                name: 'barangay-landingpage',
+                params: { 
+                barangaySlug: barangay.slug,
+                barangayId: barangay.id   
                 }
             });
         }

@@ -82,6 +82,26 @@ else if ($action === 'logout')
     ]);
 }
 
+else if($action === 'sk-educations'){
+    $id = $_POST['skOfficialId'] ?? '';
+    // validate inputs
+    if ($id < 0) {
+        returnError('Username is invalid.');
+    }
+    
+    $skOfficial = new SkOfficial($id);
+
+    if ($skOfficial === null) {
+        returnError('No SkOfficial.', 401);
+    }
+    else {
+        returnSuccess([
+            'educations' => $skOfficial->getEducations(true),
+        ]);
+    }
+
+}
+
 /** Invalid Request *******************************************/
 else
 {
