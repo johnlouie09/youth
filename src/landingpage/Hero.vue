@@ -154,26 +154,12 @@ h2 {
     }
 }
 
-/* New animation for the carousel container */
-@keyframes slide-up {
-    from {
-        transform: translateY(100%);
-        opacity: 0;
-    }
-    to {
-        transform: translateY(0);
-        opacity: 1;
-    }
-}
-
 .carousel-container {
     width: 100%;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    /* Apply the slide-up animation */
-    animation: slide-up 3.5s ease-out;
 }
 
 .swiper {

@@ -6,14 +6,15 @@
     </div>
 
     <ul>
-      <li 
+      <v-btn 
         v-for="view in views" 
         :key="view.to" 
+        :to="view.to"
         @click="navigate(view.to)" 
         :class="[view.class, { active: isActive(view.to) }]"
       >
         {{ view.name.toUpperCase() }}
-      </li>
+    </v-btn>
       <RouterLink
         v-if="$route.path === '/barangay'"
         to="/barangay/send-message"
@@ -35,9 +36,9 @@ export default {
   data() {
     return {
       views: [
-        { name: "Home", to: "home", class: "view home" },
-        { name: "About", to: "about", class: "view about" },
-        { name: "Contact", to: "contact", class: "view contact" }
+        { name: "Home", to: "/", class: "view home" },
+        { name: "About", to: "/about", class: "view about" },
+        { name: "Contact", to: "/contact", class: "view contact" }
       ]
     };
   },
@@ -47,20 +48,16 @@ export default {
     }
   },
   methods: {
-    isActive(routeName) {
-      return this.$route.name === routeName;
-    },
-    navigate(routeName) {
-      this.$router.push({ name: routeName })
-        .then(() => {
-          window.location.reload();
-        })
-        .catch((err) => {
-          // Optionally catch NavigationDuplicated errors.
-          if (err.name !== 'NavigationDuplicated') {
-            console.error(err);
-          }
-        });
+  isActive(path) {
+    return this.$route.path === path;
+  },
+  navigate(routePath) {
+    this.$router.push({ path: routePath })
+      .catch((err) => {
+        if (err.name !== 'NavigationDuplicated') {
+          console.error(err);
+        }
+      });
     }
   }
 };
@@ -82,16 +79,6 @@ export default {
   border-radius: 1rem;
   padding: 0px 2rem;
   overflow: hidden;
-  animation: expandWidth 2s ease-out forwards;
-}
-
-@keyframes expandWidth {
-  0% {
-    width: 0%;
-  }
-  100% {
-    width: 60%;
-  }
 }
 
 .logo {
