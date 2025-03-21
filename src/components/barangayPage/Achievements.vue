@@ -34,8 +34,15 @@
   import $ from 'jquery';
   
   export default {
+    props: {
+      barangayId: {
+        type: Number,
+        required: true
+      }
+    },
     data() {
       return {
+        myBarangayId: this.barangayId,
         showStates: [],
         achievements: []  // Initialize as an array, not a string.
       };
@@ -58,7 +65,7 @@
             'X-CSRF-Token': csrfToken
           },
           data: {
-            barangayId: this.$route.params.barangayId,
+            barangayId: this.myBarangayId,
           },
           success: (data) => {
             this.achievements = data.data.achievements;

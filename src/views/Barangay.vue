@@ -4,7 +4,6 @@ import Announcements from '@/components/barangayPage/Announcements.vue';
 import Cards from '@/components/barangayPage/Cards.vue';
 import Achievements from '@/components/barangayPage/Achievements.vue';
 import DialogComponent from '@/components/barangayPage/DialogComponent.vue';
-
 import $ from 'jquery';
 
 export default {
@@ -17,12 +16,8 @@ export default {
   },
   data() {
     return {
-      barangaySlug: this.$route.params.barangaySlug,
-      barangayId: this.$route.params.barangayId,
-      barangayInfo: "",
-      barangay: {
-        announcements: [{}],
-      }
+      barangaySlug: this.$route.params.barangaySlug,  // Extracted from URL
+      barangayInfo: {}  // Local data to store fetched data
     };
   },
   methods: {
@@ -30,25 +25,19 @@ export default {
       const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
       const api_base = 'http://localhost/youth/app/api.php';
       await $.ajax({
-          url: `${api_base}?e=barangay&a=barangayInfo`,
-          type: 'POST',
-          xhrFields: {
-              withCredentials: true
-          },
-          headers: {
-              'X-CSRF-Token': csrfToken
-          },
-          data: {
-              barangayId: this.barangayId
-          },
-          success: (data) => {
-              this.barangayInfo = data.data.barangayInfo;
-          },
-          error: (jqXHR, textStatus, errorThrown) => {
-              console.error("Error:", textStatus, errorThrown);
-          },
-          complete: () => {
-          }
+        url: `${api_base}?e=barangay&a=barangayInfo`,
+        type: 'POST',
+        xhrFields: { withCredentials: true },
+        headers: { 'X-CSRF-Token': csrfToken },
+        data: {
+          barangaySlug: this.barangaySlug
+        },
+        success: (data) => {
+          this.barangayInfo = data.data.barangayInfo;
+        },
+        error: (jqXHR, textStatus, errorThrown) => {
+          console.error("Error:", textStatus, errorThrown);
+        }
       });
     }
   },
@@ -71,7 +60,7 @@ export default {
     '$route.params': {
       handler(newParams) {
         this.barangaySlug = newParams.barangaySlug;
-        this.barangayId = newParams.barangayId;
+        this.fetchBarangayInfo();
       },
       deep: true
     }
@@ -86,20 +75,17 @@ export default {
     :class="['barangay-main', { 'dark-gradient': isDark }]"
   >
     <div class="dp-barangay elevation-15" 
-    :style="{
-      'background-image': `url(/public/barangayHall/${barangayInfo.img})`
-      
-      }">
+         :style="{ 'background-image': `url(/public/barangayHall/${barangayInfo.img})` }">
       <img class="logo w-80 h-auto" src="/Logoseal.svg" alt="logo" />
       <h1>
-        BARANGAY {{ barangayInfo.name.toUpperCase() }}
+        BARANGAY {{ barangayInfo.name ? barangayInfo.name.toUpperCase() : '' }}
       </h1>
       <img class="logo w-80 h-auto" src="/Logoseal.svg" alt="logo" />
     </div>
     <Announcements/>
-    <Cards/>
-    <Achievements></Achievements>
-    <DialogComponent></DialogComponent>
+    <Cards v-if="barangayInfo.id" :barangayId="barangayInfo.id" />
+    <Achievements v-if="barangayInfo.id" :barangayId="barangayInfo.id"/>
+    <DialogComponent/>
   </v-container>
 </template>
 

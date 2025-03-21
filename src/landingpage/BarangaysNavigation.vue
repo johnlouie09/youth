@@ -52,7 +52,7 @@ export default {
 
 <template>
     <v-container class="main-navigation elevation-15">
-        <v-navigation class="barangay-navigation">
+        <v-sheet class="barangay-navigation d-flex ga-12 bg-transparent flex-wrap justify-center">
             <template v-if="loading">
                 <v-progress-circular indeterminate color="primary"></v-progress-circular>
             </template>
@@ -73,7 +73,7 @@ export default {
                     <span class="overlay-titles">{{ cluster.name }}</span>
                 </v-btn>
             </template>
-        </v-navigation>
+        </v-sheet>
     
         <div class="barangays">
             <transition name="smooth" mode="out-in">

@@ -12,6 +12,7 @@ export default createStore({
   state: {
     app: {},
     editOfficial: null,
+    activeBarangay: null
   },
   getters: {
     base(state) {

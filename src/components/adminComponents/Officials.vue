@@ -19,7 +19,7 @@ export default {
     },
     data() {
         return {
-            officials: []
+            officials: null
         };
     },
     methods: {
@@ -39,8 +39,10 @@ export default {
                     barangayId: this.$store.getters['auth/getBarangayId'],
                 },
                 success: (data) => {
-                    this.officials = data.data.skOfficials;
+                    console.log(data);
+                    this.officials = [data.data.skChairman, ...data.data.skMembers];
                 },
+
                 error: (jqXHR, textStatus, errorThrown) => {
                     console.error("Error:", textStatus, errorThrown);
                     let errorMsg = "An error occurred while processing your request.";

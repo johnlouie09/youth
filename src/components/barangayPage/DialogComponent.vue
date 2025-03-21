@@ -6,10 +6,10 @@
                     <img src="/Sangguniang_Kabataan_logo.svg" alt="Profile Picture">
                 </v-avatar>
                 <div class="ml-3 text-wrap">
-                    <span class="headline font-weight-bold">{{officialInfos.personalInfo.position }}</span>
+                    <span class="headline font-weight-bold">{{ officialInfos.personalInfo.position }}</span>
                     <br>
                     <v-card-title class="d-block text-grey motto-text">
-                        {{officialInfos.personalInfo.motto }}
+                        {{ officialInfos.personalInfo.motto }}
                     </v-card-title>
                 </div>
             </v-card-title>
@@ -25,12 +25,12 @@
                         <v-container>
                             <v-row justify="center" align="center">
                                 <v-col cols="6" class="text-left">
-                                    <p><strong>Name:</strong> {{officialInfos.personalInfo.full_name }}</p>
-                                    <p><strong>Email:</strong> {{officialInfos.personalInfo.email }}</p>
+                                    <p><strong>Name:</strong> {{ officialInfos.personalInfo.full_name }}</p>
+                                    <p><strong>Email:</strong> {{ officialInfos.personalInfo.email }}</p>
                                 </v-col>
                                 <v-col cols="4" class="text-left">
-                                    <p><strong>SK Position:</strong> {{officialInfos.personalInfo.position }}</p>
-                                    <p><strong>Birthday:</strong> {{officialInfos.personalInfo.birthday }}</p>
+                                    <p><strong>SK Position:</strong> {{ officialInfos.personalInfo.position }}</p>
+                                    <p><strong>Birthday:</strong> {{ officialInfos.personalInfo.birthday }}</p>
                                 </v-col>
                             </v-row>
                         </v-container>
@@ -92,17 +92,17 @@ export default {
   computed: {
     isDialogOpen: {
       get() {
-        // Access the getter from the viewOfficial module
         return this.$store.getters['viewOfficial/getViewOfficialOpenDialog'];
       },
       set(value) {
         this.$store.commit('viewOfficial/setViewOfficialOpenDialog', value);
       }
-    },
+    }
   },
   data() {
     return {
-      officialInfos: {}
+      officialInfos: {},
+      profileData: [] // Define the profileData property to fix the warning.
     };
   },
   methods: {
@@ -111,68 +111,57 @@ export default {
       this.$store.commit('viewOfficial/setViewOfficialOpenDialog', false);
     },
     openDialog(official) {
-      // Optionally, handle the official data
       console.log("Opening dialog for:", official);
     },
     async fetchEducationalBackgrounds(id) {
-        const api_base = 'http://localhost/youth/app/api.php';
-        const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
-        await $.ajax({
-            url: `${api_base}?e=sk-official&a=sk-educations`,
-            type: 'POST',
-            xhrFields: {
-            withCredentials: true
-            },
-            headers: {
-                'X-CSRF-Token': csrfToken
-            },
-            data: {
-                skOfficialId: id,
-            },
-            success: (data) => {
-                console.log(data);
-                this.officialInfos.educationalBackgrounds = data.data.educations;
-            },
-            error: (jqXHR, textStatus, errorThrown) => {
-                console.error("Error:", textStatus, errorThrown);
-                let errorMsg = "An error occurred while processing your request.";
-                if (jqXHR.responseJSON && jqXHR.responseJSON.error) {
-                    errorMsg = jqXHR.responseJSON.message;
-                } else if (jqXHR.responseText) {
-                    errorMsg = jqXHR.responseText;
-                }
-                this.requestError = errorMsg;
-                },
-            complete: () => {
-                this.loading = false;
-            }
-        });
+      const api_base = 'http://localhost/youth/app/api.php';
+      const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+      await $.ajax({
+        url: `${api_base}?e=sk-official&a=sk-educations`,
+        type: 'POST',
+        xhrFields: { withCredentials: true },
+        headers: { 'X-CSRF-Token': csrfToken },
+        data: { skOfficialId: id },
+        success: (data) => {
+          console.log(data);
+          this.officialInfos.educationalBackgrounds = data.data.educations;
+        },
+        error: (jqXHR, textStatus, errorThrown) => {
+          console.error("Error:", textStatus, errorThrown);
+          let errorMsg = "An error occurred while processing your request.";
+          if (jqXHR.responseJSON && jqXHR.responseJSON.error) {
+            errorMsg = jqXHR.responseJSON.message;
+          } else if (jqXHR.responseText) {
+            errorMsg = jqXHR.responseText;
+          }
+          this.requestError = errorMsg;
+        },
+        complete: () => {
+          this.loading = false;
+        }
+      });
     }
   },
   created() {
-  // Initialize the local copy from the store
-  this.officialInfos = this.$store.getters['viewOfficial/getViewOfficial'];
-  // Check if the personalInfo object exists and has an id
-  if (
-    this.officialInfos &&
-    this.officialInfos.personalInfo &&
-    this.officialInfos.personalInfo.id
-  ) {
-    this.fetchEducationalBackgrounds(this.officialInfos.personalInfo.id);
-  }
-},
-watch: {
-  'officialInfos.personalInfo.id'(newId) {
-    if (newId) {
-      this.fetchEducationalBackgrounds(newId);
+    this.officialInfos = this.$store.getters['viewOfficial/getViewOfficial'];
+    if (
+      this.officialInfos &&
+      this.officialInfos.personalInfo &&
+      this.officialInfos.personalInfo.id
+    ) {
+      this.fetchEducationalBackgrounds(this.officialInfos.personalInfo.id);
+    }
+  },
+  watch: {
+    'officialInfos.personalInfo.id'(newId) {
+      if (newId) {
+        this.fetchEducationalBackgrounds(newId);
+      }
     }
   }
-}
-
-
-
 };
 </script>
 
 <style scoped>
+/* Your styles here */
 </style>

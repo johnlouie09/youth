@@ -1,16 +1,17 @@
 <?php
 /** imports */
-require_once __DIR__ . '/../../models/Cluster.php';
-$cluster = new Cluster(1);
 
-if ($cluster === null) {
+require_once __DIR__ . '/../../models/Barangay.php';
+
+
+
+$sanf = Barangay::findBy('san-francisco');
+
+if ($sanf === null) {
     echo "<p style='color: red;'>No one is logged in.</p>";
-}
-else {
+} else {
     echo "<p>Logged in:</p>";
-    print_r($cluster->getBarangays(true));
+    echo "<pre>";
+    print_r($sanf->getAssoc(true));
+    echo "</pre>";
 }
-
-
-// ======================================================
-echo "</pre>";

@@ -1,11 +1,10 @@
 <template>
-
+    <Preloader />
     <v-container
       fluid
       class="home-main bg-gradient-to-r from-slate-50 to-slate-200"
       :class="{ 'dark-gradient': theme.global.name.value === 'dark' }"
     >
-      <Preloader />
       <Hero/>
       <BarangaysNavigation />
       <Faqs />
