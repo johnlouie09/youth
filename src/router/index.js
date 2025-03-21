@@ -35,7 +35,7 @@ const router = createRouter({
     },
     
     {
-      path: '/youth/:barangaySlug/:barangayId',
+      path: '/youth/:barangaySlug',
       name: 'barangay-landingpage',
       component: () => import('../views/Barangay.vue')
     },

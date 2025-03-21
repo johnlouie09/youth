@@ -89,8 +89,7 @@ export default {
             this.$router.replace({
                 name: 'barangay-landingpage',
                 params: { 
-                barangaySlug: barangay.slug,
-                barangayId: barangay.id   
+                barangaySlug: barangay.slug
                 }
             });
         }

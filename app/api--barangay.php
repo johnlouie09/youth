@@ -17,8 +17,8 @@ if($action === 'fetchBarangays')
     ]);
 }
 else if($action === 'barangayInfo') {
-    $barangay_id = $_POST['barangayId'];
-    $barangay = new Barangay($barangay_id);
+    $barangaySlug = $_POST['barangaySlug'];
+    $barangay = Barangay::findBy('slug',$barangaySlug);
     returnSuccess([
         'barangayInfo' => $barangay->getAssoc(true),
     ]);
