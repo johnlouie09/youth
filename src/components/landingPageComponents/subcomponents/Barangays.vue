@@ -1,5 +1,5 @@
 <template>
-    <div class="barangays-cluster">
+    <v-container class="barangays-cluster">
         <v-col v-if="loading" cols="12" class="text-center">
             <v-progress-circular indeterminate color="primary"></v-progress-circular>
         </v-col>
@@ -25,7 +25,7 @@
         >
             <v-card-title class="overlay-titles-barangays" style="font-weight: 900; font-size: 1rem;">{{ barangay.name.toUpperCase() }}</v-card-title>
         </v-card>
-    </div>
+    </v-container>
 </template>
 
 <script>
@@ -60,16 +60,14 @@ export default {
     methods: {
         async fetchBarangays() {
             this.loading = true;
-            const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
-            const api_base = 'http://localhost/youth/app/api.php';
             await $.ajax({
-                url: `${api_base}?e=cluster&a=fetchBarangays`,
+                url: `${this.$store.getters['api_base']}?e=cluster&a=fetchBarangays`,
                 type: 'POST',
                 xhrFields: {
                     withCredentials: true
                 },
                 headers: {
-                    'X-CSRF-Token': csrfToken
+                    'X-CSRF-Token': this.$store.getters['getCsrfToken']
                 },
                 data: {
                     barangayId: this.clusterId
@@ -111,14 +109,15 @@ export default {
 
 /* Add transition for smooth scaling */
 .barangay {
-    border-radius: 1rem;
+    border-radius: 1.25rem;
     transition: transform 0.3s ease-in-out;
-    opacity: .8;
+    opacity: .6;
     color: white;
     display: flex;
     justify-content: center;
     align-items: flex-end;
     padding-bottom: .5rem;
+    overflow: hidden;
 }
 
 /* Corrected hover effect using transform */

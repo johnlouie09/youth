@@ -1,7 +1,7 @@
 <template>
     <div class="hero-container">
         <div class="content">
-            <div><img src="/Group.svg" alt="Group Logo" /></div>
+            <div><img  :src="`${$store.getters['base']}Group.svg`" alt="Group Logo" /></div>
             <h1>YOUTH ORIENTED UNIFIED TRANSPARENCY HUB</h1>
             <h2>IRIGA CITY</h2>
         </div>
