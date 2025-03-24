@@ -58,7 +58,6 @@ else if ($action === 'session')
     }
 }
 
-
 /** Logout Request ********************************************/
 else if ($action === 'logout')
 {
@@ -82,24 +81,27 @@ else if ($action === 'logout')
     ]);
 }
 
-else if($action === 'sk-educations'){
-    $id = $_POST['skOfficialId'] ?? '';
-    // validate inputs
-    if ($id < 0) {
-        returnError('Username is invalid.');
+else if ($action === 'personalInfo') {
+    // Use null coalescing to provide a default value
+    $slug = $_POST['officialSlug'] ?? '';
+    
+    // Validate that a slug was provided
+    if (empty(trim($slug))) {
+        returnError('Official slug is required.', 400);
     }
     
-    $skOfficial = new SkOfficial($id);
-
-    if ($skOfficial === null) {
-        returnError('No SkOfficial.', 401);
+    $official = SkOfficial::findBy('slug', $slug);
+    
+    // Validate that an official was found
+    if ($official === null) {
+        returnError("No official found with slug '$slug'.", 404);
     }
-    else {
-        returnSuccess([
-            'educations' => $skOfficial->getEducations(true),
-        ]);
-    }
-
+    
+    returnSuccess([
+        'personalInfo' => $official->getAssoc(),
+        'educationalBackgrounds' => $official->getEducationBackground(),
+        'achievements' => $official->getAchievements(true)
+    ]);
 }
 
 /** Invalid Request *******************************************/
