@@ -49,7 +49,7 @@ export default {
                 coverflowEffect: {
                     rotate: 30,
                     stretch: 0,
-                    depth: 300,
+                    depth: 400,
                     modifier: 1,
                     slideShadows: true,
                 },
@@ -99,25 +99,6 @@ export default {
 
 .content img {
     width: 250px; /* Adjust size as needed */
-}
-
-.content img:hover {
-    animation: infiniteRotate 2s linear infinite;
-}
-
-@keyframes infiniteRotate {
-    0% {
-        transform: rotate(0deg) scale(1);
-    }
-    25% {
-        transform: rotate(360deg) scale(1.5);
-    }
-    50% {
-        transform: rotate(720deg) scale(2);
-    }
-    100% {
-        transform: rotate(1020deg) scale(2.3);
-    }
 }
 
 

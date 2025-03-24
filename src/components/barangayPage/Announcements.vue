@@ -1,6 +1,6 @@
 <template>
     <div class="carousel-container">
-        <h1 class="title">Announcements</h1>
+        <h1 class="title">ANNOUNCEMENTS</h1>
         <div ref="swiperContainer" class="swiper mySwiper">
             <div class="swiper-wrapper">
                 <div class="swiper-slide" v-for="announcement in announcements" :key="announcement.id">
@@ -26,11 +26,16 @@ export default {
     data() {
         return {
             announcements: [
-                { id: 1, img: "bb_tryout.jpg", title: "Announcement 1" },
-                { id: 2, img: "interzone_bb.jpg", title: "Announcement 2" },
-                { id: 3, img: "kk_ass.jpg", title: "Announcement 3" },
-                { id: 4, img: "teentrail.jpg", title: "Announcement 4" },
-                { id: 5, img: "youthnight.jpg", title: "Announcement 5" }
+                { id: 1, barangayId: 1, img: "bb_tryout.jpg", title: "Announcement 1" },
+                { id: 2, barangayId: 1, img: "interzone_bb.jpg", title: "Announcement 2" },
+                { id: 3, barangayId: 1, img: "kk_ass.jpg", title: "Announcement 3" },
+                { id: 4, barangayId: 1, img: "teentrail.jpg", title: "Announcement 4" },
+                { id: 5, barangayId: 1, img: "youthnight.jpg", title: "Announcement 5" },
+                { id: 6, barangayId: 1, img: "kalinisan.jpg", title: "Announcement 6"},
+                { id: 3, barangayId: 1, img: "kk_ass.jpg", title: "Announcement 3" },
+                { id: 4, barangayId: 1, img: "teentrail.jpg", title: "Announcement 4" },
+                { id: 5, barangayId: 1, img: "youthnight.jpg", title: "Announcement 5" },
+                { id: 6, barangayId: 1, img: "kalinisan.jpg", title: "Announcement 6" }
             ]
         };
     },
@@ -42,7 +47,7 @@ export default {
     methods: {
         initSwiper() {
             new Swiper(this.$refs.swiperContainer, {
-                initialSlide: 12,  // Start from the middle (index 12 for 25 slides)
+                initialSlide: 3,
                 modules: [EffectCoverflow, Autoplay, Pagination],
                 effect: "coverflow",
                 grabCursor: true,
@@ -51,7 +56,7 @@ export default {
                 coverflowEffect: {
                     rotate: 15,
                     stretch: 0,
-                    depth: 350,
+                    depth: 300,
                     modifier: 1,
                     slideShadows: false,
                 },
@@ -82,7 +87,7 @@ export default {
 }
 
 .swiper {
-    width: 90%;
+    width: 80%;
 }
 
 .swiper-slide {

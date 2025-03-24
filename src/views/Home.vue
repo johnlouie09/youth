@@ -1,45 +1,81 @@
+<script>
+import { useTheme } from 'vuetify';
+import Preloader from "@/components/Preloader.vue";
+import Hero from "@/components/landingPageComponents/Hero.vue";
+import Faqs from "@/components/landingPageComponents/faqs.vue";
+import BarangaysNavigation from "@/components/landingPageComponents/BarangaysNavigation.vue";
+
+export default {
+  name: "Home",
+  components: {
+    Preloader,
+    Hero,
+    Faqs,
+    BarangaysNavigation
+  },
+  computed: {
+    // Call useTheme() directly so that it's available as a computed property.
+    theme() {
+      return useTheme();
+    },
+    themeName() {
+      return this.theme.global.name.value;
+    },
+    isDark() {
+      // Use a safe check to avoid errors if any level is undefined.
+      return this.theme && this.theme.current && this.theme.current.value
+        ? this.theme.current.value.dark
+        : false;
+    }
+  }
+};
+</script>
+
 <template>
-    <Preloader />
-    <v-container
-      fluid
-      class="home-main bg-gradient-to-r from-slate-50 to-slate-200"
-      :class="{ 'dark-gradient': theme.global.name.value === 'dark' }"
-    >
-      <Hero/>
-      <BarangaysNavigation />
-      <Faqs />
-    </v-container>
-  </template>
+  <Preloader />
+  <v-container
+    fluid
+    class="home-main bg-gradient-to-br from-gray-50 via-gray-100 to-gray-200"
+    :class="{ 'dark-gradient': isDark }"
+  >
+    <Hero />
+    <BarangaysNavigation />
+    <faqs />
+  </v-container>
+</template>
 
-  <script setup>
-  import Preloader from "@/components/Preloader.vue";
-  import Hero from "../landingpage/Hero.vue";
-  import Faqs from "@/landingpage/faqs.vue";
-  import BarangaysNavigation from "../landingpage/BarangaysNavigation.vue";
-  import { useTheme } from 'vuetify';
-  
-  const theme = useTheme();
-  </script>
+<style scoped>
+.home-main {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 7rem;
+  padding: 0;
+  padding-top: 2rem;
+  padding-bottom: 4rem;
+  margin: 0;
+  background-position: center;
+  background-attachment: fixed;
+  animation: moveGradient 10s linear infinite;
+}
 
-  <style scoped>
-  .home-main {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 7rem;
-    padding: 0;
-    padding-top: 2rem;
-    padding-bottom: 4rem;
-    margin: 0;
-    background-position: center;
-    background-attachment: fixed;
-    /* background-image: linear-gradient(45deg, rgb(255, 255, 255), #fdcb4081, rgb(255, 255, 255), #3773ff7e, rgb(255, 255, 255), #df293598); */
+.dark-gradient {
+  background-image: linear-gradient(45deg, #363636, #0e0e0e, #363636, #0e0e0e);
+  background-size: 200% 200%;
+  animation: moveGradient 15s linear infinite;
+}
+
+@keyframes moveGradient {
+  0% {
+    background-position: 0% 50%;
   }
-  
-  /* Only add the gradient if dark mode is active */
-  .dark-gradient {
-    background-image: linear-gradient(45deg, #363636, #0e0e0e, #363636, #0e0e0e);
+  50% {
+    background-position: 100% 50%;
   }
-  </style>
+  100% {
+    background-position: 0% 50%;
+  }
+}
+</style>

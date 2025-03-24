@@ -8,7 +8,7 @@
             <!-- SK Chairperson -->
             <OfficialCard 
                 :officialProps="skChairperson || {}" 
-                class="custom-card"
+                class="custom-card chairperson-card "
             ></OfficialCard>
 
             <!-- SK Members Slider -->
@@ -32,7 +32,7 @@
   
   
   <script>
-  import OfficialCard from '../OfficialCard.vue';
+import OfficialCard from './OfficialCard.vue';
   import $ from 'jquery';
   
   export default {
@@ -103,7 +103,7 @@
   
   .main-barangay-officials {
     width: 100%;
-    padding: 9rem 9rem;
+    padding: 5rem 5rem;
     display: flex;
     flex-direction: column;
     justify-content: center;

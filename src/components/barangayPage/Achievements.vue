@@ -1,6 +1,6 @@
 <template>
-    <v-container fluid class="achievement-main pa-0 ma-0">
-      <h1 class="gradient-text mb-9">Achievements</h1>
+    <v-container fluid class="achievement-main pa-0 ma-0 mb-15">
+      <h1 class="gradient-text font-black uppercase py-10">Achievements</h1>
       <div class="achievements">
         <v-card elevation="15" 
             v-for="(achievement, index) in achievements" :key="index"
@@ -8,9 +8,11 @@
         >
           <img :src="`/public/achievements/${achievement.img}`" alt="" class="elevation-10">
           
-          <article>
-            <h3>{{ achievement.title }}</h3>
-            <h5>{{ achievement.subtitle }}</h5>
+          <article class="relative pb-5">
+            <h3 class="text-lg uppercase font-extrabold">{{ achievement.title }}</h3>
+            <h5 class="text-base">{{ achievement.subtitle }}</h5>
+            <h5>{{ achievement.sk_official_id }}</h5>
+            <h5 class="text-xs font-italic absolute bottom-0 right-0 pa-1">{{ formatDate(achievement.date) }}</h5>
           </article>
   
           <v-expand-transition>
@@ -51,6 +53,15 @@
       toggleShow(index) {
         this.showStates[index] = !this.showStates[index];
         // No need for $forceUpdate(), Vue should handle reactivity.
+      },
+      formatDate(dateStr) {
+        if (!dateStr) return '';
+          const date = new Date(dateStr);
+          return date.toLocaleDateString('en-US', {
+            month: 'long',
+            day: 'numeric',
+            year: 'numeric'
+        });
       },
       async fetchBarangayAchievements() {
         const api_base = 'http://localhost/youth/app/api.php';
@@ -106,9 +117,6 @@
   </script>
   
   <style scoped>
-  @import "../../assets/Achievements.css";
-  @import "../../assets/fontEffects.css";
-  
   .achievements {
     width: 100%;
     display: flex;
@@ -118,10 +126,35 @@
     gap: 5rem;
     padding: 0rem 9rem;
   }
+
+  h1 {
+    font-size: 2.5rem;
+    background: linear-gradient(
+    45deg,
+    #0533a0,
+    #ffffff,
+    #DF2935,
+    #FDCA40,
+    );
+    background: linear-gradient(to left, #3772FF, #fffefe, #DF2935, #FDCA40, #3772FF);
+    background-size: 200% 100%;
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: animate-gradient 4s linear infinite;
+  }
   
+  @keyframes animate-gradient {
+  from {
+    background-position: 200% 50%;
+  }
+  to {
+    background-position: 0% 50%;
+  }
+}
   .card {
     width: 400px;
-    border-radius: 1rem;
+    border-radius: 1.5rem;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -139,24 +172,9 @@
     width: 100%;
   }
   
-  article h3 {
-    text-transform: uppercase;
-    font-size: 1.25rem;
-    font-weight: 900;
-  }
   
   article {
     width: 90%;
-  }
-  
-  article h4 {
-    font-size: 0.75rem;
-  }
-  
-  article p {
-    max-height: 90px;
-    font-size: 0.75rem;
-    overflow: hidden;
   }
   </style>
   

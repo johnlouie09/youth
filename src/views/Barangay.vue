@@ -16,19 +16,17 @@ export default {
   },
   data() {
     return {
-      barangaySlug: this.$route.params.barangaySlug,  // Extracted from URL
-      barangayInfo: {}  // Local data to store fetched data
+      barangaySlug: this.$route.params.barangaySlug,
+      barangayInfo: {}  
     };
   },
   methods: {
     async fetchBarangayInfo() {
-      const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
-      const api_base = 'http://localhost/youth/app/api.php';
       await $.ajax({
-        url: `${api_base}?e=barangay&a=barangayInfo`,
+        url: `${this.$store.getters['api_base']}?e=barangay&a=barangayInfo`,
         type: 'POST',
         xhrFields: { withCredentials: true },
-        headers: { 'X-CSRF-Token': csrfToken },
+        headers: { 'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]')?.content || ''},
         data: {
           barangaySlug: this.barangaySlug
         },
@@ -72,15 +70,16 @@ export default {
   <v-container
     :theme="themeName"
     fluid
+    class="d-flex flex-col justify-center items-center gap-[5rem] pa-0 ma-0 bg-gradient-to-br from-gray-50 via-gray-100 to-gray-200"
     :class="['barangay-main', { 'dark-gradient': isDark }]"
   >
     <div class="dp-barangay elevation-15" 
          :style="{ 'background-image': `url(/public/barangayHall/${barangayInfo.img})` }">
-      <img class="logo w-80 h-auto" src="/Logoseal.svg" alt="logo" />
+      <img class="logo w-80 h-auto" :src="`${this.$store.getters['base']}Logoseal.svg`" alt="logo"/>
       <h1>
         BARANGAY {{ barangayInfo.name ? barangayInfo.name.toUpperCase() : '' }}
       </h1>
-      <img class="logo w-80 h-auto" src="/Logoseal.svg" alt="logo" />
+      <img class="logo w-80 h-auto" :src="`${this.$store.getters['base']}Logoseal.svg`" alt="logo"/>
     </div>
     <Announcements/>
     <Cards v-if="barangayInfo.id" :barangayId="barangayInfo.id" />
@@ -90,27 +89,6 @@ export default {
 </template>
 
 <style scoped>
-.barangay-main {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 10rem;
-  margin: 0;
-  padding: 0;
-  padding-bottom: 5rem;
-  background-position: center;
-  background-attachment: fixed;
-  background-image: linear-gradient(
-    45deg,
-    rgb(245, 238, 92),
-    rgb(255, 255, 255),
-    rgba(130, 169, 252, 0.986),
-    rgb(255, 255, 255),
-    rgb(252, 84, 95)
-  );
-}
-
 .dark-gradient {
   background-image: linear-gradient(
     45deg,
@@ -127,7 +105,7 @@ export default {
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  height: 45vh;
+  height: 40vh;
   border-radius: 0 0 2rem 2rem;
   background-position: center;
   background-repeat: repeat;
@@ -159,7 +137,7 @@ export default {
     #FDCA40,
     #d4d4d4
   );
-  background: linear-gradient(to left, #3772FF, #DF2935, #fffefe, #FDCA40, #3772FF);
+  background: linear-gradient(to left, #3772FF, #fffefe, #DF2935, #FDCA40, #3772FF);
   background-size: 200% 100%;
   background-clip: text;
   -webkit-background-clip: text;

@@ -170,7 +170,7 @@ export default {
 
 .login-card {
   width: 30%;
-  border-radius: 1.5rem;
+  border-radius: 1rem;
   padding: 3rem 2rem;
 }
 

@@ -1,17 +1,16 @@
 <template>
     <v-card class="official-card" elevation="4" @click="fillDialog(official)">
-        <div class="img">
-            <img 
-                :src="official.img || '/public/OfficialImages/no-avatar.jpg'"
-                alt="SK Logo" 
-                class="rounded-circle"
-            >
-            <h3 class="text-h6 font-weight-medium">{{ official.position }}</h3>
-        </div>
-        <p>{{ official.motto }}</p>    
+        <v-avatar
+        :image="official.img ? ($store.getters.base + 'public/OfficialImages/' + official.img) : '/public/OfficialImages/no-avatar.jpg'"
+        cover
+        alt="SK Logo"
+        class="official-pic rounded-circle"
+        ></v-avatar>
+        <h3 class="text-lg uppercase font-extrabold ">{{ official.position }}</h3>
+      <p class="font-italic text-sm">"{{ official.motto }}"</p>
     </v-card>
-</template>
-
+  </template>
+  
 <script>
 export default {
     name: "OfficialCard",
@@ -47,36 +46,26 @@ export default {
     position: relative;
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;
+    justify-content: center;
     align-items: center;
     max-width: 450px;
+    gap: .5rem;
     width: 100%;
     height: 90%;
-    border-radius: 1rem;
-    gap: 1rem;
-    padding: 3rem 1rem;
+    border-radius: 20px;
+    padding: 3rem 2rem;
     background: linear-gradient(to bottom, #5B6A99 0%, #5B6A99 30%, transparent 30%, transparent 100%);
     min-width: 300px;
 }
 
-.official-card .img {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 1rem;
-}
-
-.members-card {
-    padding: 1.5rem .5rem;
-}
-
-.members-card .img img {
-    width: 100px;
-}
-
-.img img {
+.chairperson-card .official-pic{
     width: 150px;
+    height: 150px;
+}
+
+.members-card .official-pic{
+    width: 100px;
+    height: 100px;
 }
 
 p {
@@ -86,7 +75,7 @@ p {
 
 /* When official-card width is below 380px, set image width to 100px */
 @media (max-width: 380px) {
-    .official-card .img img {
+    .official-card .img .official-pic {
         width: 100px;
     }
 }
