@@ -99,9 +99,72 @@ else if ($action === 'personalInfo') {
     
     returnSuccess([
         'personalInfo' => $official->getAssoc(),
-        'educationalBackgrounds' => $official->getEducationBackground(),
+        'educationalBackgrounds' => $official->getEducations(true),
         'achievements' => $official->getAchievements(true)
     ]);
+}
+
+// Handle updatePersonalInfo action
+else if ($action === 'updatePersonalInfo') {
+    // Ensure data exists
+    if (!isset($_POST['personalInfo'])) {
+        returnError('Invalid personal information received.', 400);
+    }
+
+    // Decode JSON if needed (only necessary if it arrives as a JSON string)
+    $personalInfo = is_array($_POST['personalInfo']) ? $_POST['personalInfo'] : json_decode($_POST['personalInfo'], true);
+
+    if (!$personalInfo) {
+        returnError('Invalid personal information format.', 400);
+    }
+
+    // Ensure ID exists
+    if (!isset($personalInfo['id'])) {
+        returnError('Official ID is required.', 400);
+    }
+
+    // Fetch official from database
+    $official = SkOfficial::findBy('id', $personalInfo['id']);
+
+    if (!$official) {
+        returnError("No official found with ID " . $personalInfo['id'], 404);
+    }
+
+    // Update fields if provided
+    if (isset($personalInfo['full_name'])) {
+        $official->setFullName($personalInfo['full_name']);
+    }
+    if (isset($personalInfo['email'])) {
+        $official->setEmail($personalInfo['email']);
+    }
+    if (isset($personalInfo['contact_number'])) {
+        $official->setContactNumber($personalInfo['contact_number']);
+    }
+    if (isset($personalInfo['birthday'])) {
+        $official->setBirthday($personalInfo['birthday']); // Ensure correct format
+    }
+    if (isset($personalInfo['term_start'])) {
+        $official->setTermStart($personalInfo['term_start']); // Ensure correct format
+    }
+    if (isset($personalInfo['term_end'])) {
+        $official->setTermEnd($personalInfo['term_end']); // Ensure correct format
+    }
+    if (isset($personalInfo['motto'])) {
+        $official->setMotto($personalInfo['motto']);
+    }
+    if (isset($personalInfo['img'])) {
+        $official->setImg($personalInfo['img']);
+    }
+
+    // Execute update
+    if ($official->update()) {
+        returnSuccess([
+            'message' => 'Personal information updated successfully.',
+            'personalInfo' => $official->getAssoc()
+        ]);
+    } else {
+        returnError("Update failed. No changes detected or an error occurred.", 500);
+    }
 }
 
 /** Invalid Request *******************************************/

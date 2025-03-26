@@ -48,26 +48,28 @@
         <!-- Profile Information Section -->
         <v-sheet 
           v-if="activeTab === 'profile'" class="w-full rounded-lg overflow-auto dark-gradient">
-          <v-card-title class="text-center sticky top-0 pa-0 pt-5 bg-inherit">
+          <v-card-title class="text-center sticky z-10 top-0 pa-0 pt-5 bg-inherit">
             <v-icon class="mr-2">mdi-account</v-icon>PROFILE INFORMATION
             <v-divider class="mt-5"></v-divider>
           </v-card-title>
           
-          <v-container class="d-flex flex-col justify-center items-center py-5 px-10">
-            <v-card class="d-flex flex-row justify-start items-center w-full px-5 py-1">
-              <v-icon>mdi-email</v-icon>
-              <v-card-item> 
-                <p>{{ officialInfos.personalInfo?.email || '' }}</p>
-                <h5 class="text-xs font-bold">Email</h5>
-              </v-card-item>
-            </v-card>
-            <v-card class="d-flex flex-row justify-start items-center w-full px-5 py-1">
-              <v-icon>mdi-phone</v-icon>
-              <v-card-item> 
-                <p>{{ officialInfos.personalInfo?.contact_number || '' }}</p>
-                <h5 class="text-xs font-bold">Mobile</h5>
-              </v-card-item>
-            </v-card>
+          <v-container class="d-flex flex-col justify-start items-center py-5 px-10 h-full">
+            <v-sheet class="d-flex w-full ">
+              <v-card class="d-flex flex-row justify-start items-center w-full px-5 py-1">
+                <v-icon>mdi-email</v-icon>
+                <v-card-item> 
+                  <p>{{ officialInfos.personalInfo?.email || '' }}</p>
+                  <h5 class="text-xs font-bold">Email</h5>
+                </v-card-item>
+              </v-card>
+              <v-card class="d-flex flex-row justify-start items-center w-full px-5 py-1">
+                <v-icon>mdi-phone</v-icon>
+                <v-card-item> 
+                  <p>{{ officialInfos.personalInfo?.contact_number || '' }}</p>
+                  <h5 class="text-xs font-bold">Mobile</h5>
+                </v-card-item>
+              </v-card>
+            </v-sheet>
             <v-card class="d-flex flex-row justify-start items-center w-full px-5 py-1">
               <v-icon>mdi-cake-variant</v-icon>
               <v-card-item> 
@@ -87,8 +89,7 @@
               </div>
             </div>
 
-            <v-divider class="mt-5"></v-divider>
-            <p class="d-block w-[70%] text-center text-xl text-grey font-italic motto-text relative bottom-0">"{{ officialInfos.personalInfo?.motto }}"</p>
+            <p class="d-block w-[70%] text-center text-xl text-grey font-italic motto-text relative bottom-0 right-0">"{{ officialInfos.personalInfo?.motto }}"</p>
           </v-container>
 
         </v-sheet>
@@ -136,7 +137,6 @@
                 <h5 class="text-[.75rem] font-medium">{{ achievement.subtitle }}</h5>
                 <h5 class="text-xs font-italic absolute bottom-0 right-0 pa-5">{{ formatDate(achievement.date) }}</h5>
               </article>
-      
             </v-card>
           </v-container>
 
@@ -178,7 +178,6 @@ export default {
         educationalBackgrounds: [],
         achievements: []
       },
-      profileData: [], // Initialize profileData to avoid errors.
       activeTab: 'profile' // Default active tab.
     };
   },
@@ -240,6 +239,7 @@ export default {
     ) {
       this.fetchOfficialData(this.officialInfos.personalInfo.slug);
     }
+
   },
   watch: {
     officialStore: {

@@ -67,7 +67,7 @@ export default {
                     withCredentials: true
                 },
                 headers: {
-                    'X-CSRF-Token': this.$store.getters['getCsrfToken']
+                    'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
                 },
                 data: {
                     barangayId: this.clusterId

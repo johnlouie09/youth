@@ -84,8 +84,8 @@ export default {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: 4rem;
-    padding: 4rem 5rem;
+    gap: 2rem;
+    padding: 3rem 5rem;
     border-radius: 2.5rem;
 }
 

@@ -2,7 +2,7 @@ import { createStore } from 'vuex';
 
 // MODULES
 import auth from './store-auth.js';
-import viewOfficial from './store-viewOfficial.js'
+import viewOfficial from './store-viewOfficial.js';
 
 export default createStore({
   modules: {
@@ -11,20 +11,23 @@ export default createStore({
   },
   state: {
     app: {},
-    editOfficial: null,
-    activeBarangay: null
+    csrfToken: null,
+    api_base: 'http://localhost/youth/app/api.php'
   },
   getters: {
     base(state) {
       return import.meta.env.BASE_URL;
     },
-    getEditOfficial(state) {
-      return state.editOfficial;
+    api_base(state) {
+      return state.api_base;
     },
-   },
+    getCsrfToken(state) {
+      return state.csrfToken;
+    }
+  },
   mutations: {
-    setEditOfficial(state, payload) {
-      state.editOfficial = payload;
+    setCsrfToken(state, token) {
+      state.csrfToken = token;
     }
   }
 });

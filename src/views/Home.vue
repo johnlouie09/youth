@@ -39,7 +39,7 @@ export default {
     :class="{ 'dark-gradient': isDark }"
   >
     <Hero />
-    <BarangaysNavigation />
+    <BarangaysNavigation/>
     <faqs />
   </v-container>
 </template>

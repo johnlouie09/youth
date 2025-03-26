@@ -1,6 +1,6 @@
 <script>
-import Footer from "./components/landingPage/Footer.vue";
-import NavigationBar from "./components/landingPage/NavigationBar.vue";
+import Footer from "./components/landingPageComponents/Footer.vue";
+import NavigationBar from "./components/landingPageComponents/NavigationBar.vue";
 export default {
   components: {
     NavigationBar,
