@@ -7,10 +7,10 @@
             <v-img :src="`${$store.getters['base']}Group.svg`" alt="Barangay Logo"></v-img>
           </v-avatar>
         </template>
-        <v-list-item-content>
+        <v-list-item>
           <v-list-item-title>BARANGAY</v-list-item-title>
           <v-list-item-subtitle>{{ barangaySlug.toUpperCase() }}</v-list-item-subtitle>
-        </v-list-item-content>
+        </v-list-item>
       </v-list-item>
   
       <!-- Navigation Menu -->

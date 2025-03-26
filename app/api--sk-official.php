@@ -104,32 +104,31 @@ else if ($action === 'personalInfo') {
     ]);
 }
 
-// Handle updatePersonalInfo action
 else if ($action === 'updatePersonalInfo') {
     // Ensure data exists
     if (!isset($_POST['personalInfo'])) {
         returnError('Invalid personal information received.', 400);
     }
-
-    // Decode JSON if needed (only necessary if it arrives as a JSON string)
+    
+    // Decode JSON if needed (if sent via FormData, it may be a JSON string)
     $personalInfo = is_array($_POST['personalInfo']) ? $_POST['personalInfo'] : json_decode($_POST['personalInfo'], true);
-
+    
     if (!$personalInfo) {
         returnError('Invalid personal information format.', 400);
     }
-
+    
     // Ensure ID exists
     if (!isset($personalInfo['id'])) {
         returnError('Official ID is required.', 400);
     }
-
+    
     // Fetch official from database
     $official = SkOfficial::findBy('id', $personalInfo['id']);
-
+    
     if (!$official) {
         returnError("No official found with ID " . $personalInfo['id'], 404);
     }
-
+    
     // Update fields if provided
     if (isset($personalInfo['full_name'])) {
         $official->setFullName($personalInfo['full_name']);
@@ -141,7 +140,7 @@ else if ($action === 'updatePersonalInfo') {
         $official->setContactNumber($personalInfo['contact_number']);
     }
     if (isset($personalInfo['birthday'])) {
-        $official->setBirthday($personalInfo['birthday']); // Ensure correct format
+        $official->setBirthday($personalInfo['birthday']); // Ensure correct format (YYYY-MM-DD)
     }
     if (isset($personalInfo['term_start'])) {
         $official->setTermStart($personalInfo['term_start']); // Ensure correct format
@@ -152,10 +151,35 @@ else if ($action === 'updatePersonalInfo') {
     if (isset($personalInfo['motto'])) {
         $official->setMotto($personalInfo['motto']);
     }
-    if (isset($personalInfo['img'])) {
+    
+    // Process file upload if a file was provided
+    if (isset($_FILES['file']) && $_FILES['file']['error'] === UPLOAD_ERR_OK) {
+        // Define the upload directory (adjust the path as needed)
+        $uploadDir = __DIR__ . '/../public/OfficialImages/'; 
+        
+        // Create the directory if it doesn't exist
+        if (!is_dir($uploadDir)) {
+            mkdir($uploadDir, 0755, true);
+        }
+        
+        // Get a sanitized version of the filename
+        $filename = basename($_FILES['file']['name']);
+        
+        // Set the target file path
+        $targetFile = $uploadDir . $filename;
+        
+        // Move the uploaded file to the target directory
+        if (move_uploaded_file($_FILES['file']['tmp_name'], $targetFile)) {
+            // Update the official record with the new filename
+            $official->setImg($filename);
+        } else {
+            returnError("Failed to upload file.", 500);
+        }
+    } else if (isset($personalInfo['img'])) {
+        // If no new file is uploaded, update with the provided img value if any
         $official->setImg($personalInfo['img']);
     }
-
+    
     // Execute update
     if ($official->update()) {
         returnSuccess([
