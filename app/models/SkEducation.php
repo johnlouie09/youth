@@ -6,12 +6,13 @@ class SkEducation extends Model
 {
     protected static $table = 'sk_educations';
     public    static $table_columns = [];
-    protected static $basic_columns = ['id', 'school_name', 'course', 'start_year', 'end_year'];
+    protected static $basic_columns = ['id', 'school_name', 'school_logo', 'course', 'start_year', 'end_year'];
 
     /** properties */
     protected $sk_official_id     = 0;
     protected $education_level_id = 0;
     protected $school_name        = '';
+    protected $school_logo        = '';
     protected $course             = '';
     protected $start_year         = 0;
     protected $end_year           = 0;
@@ -65,6 +66,16 @@ class SkEducation extends Model
     public function getSchoolName()
     {
         return $this->school_name;
+    }
+
+
+    /**
+     * Gets SkEducation school_logo
+     * @return string
+     */
+    public function getSchoolLogo()
+    {
+        return $this->school_logo;
     }
 
 
@@ -130,6 +141,16 @@ class SkEducation extends Model
         $this->school_name = $school_name;
     }
 
+
+    /**
+     * Sets SkEducation school_logo
+     * @param $school_logo
+     * @return void
+     */
+    public function setSchoolLogo($school_logo)
+    {
+        $this->school_logo = $school_logo;
+    }
 
     /**
      * Sets SkEducation course.
@@ -224,8 +245,8 @@ class SkEducation extends Model
      */
     public function insert(): bool
     {
-        $stmt = $this->getConnection()->prepare("INSERT INTO `" . self::$table . "` (`sk_official_id`, `education_level_id`, `school_name`, `course`, `start_year`, `end_year`) VALUES (?, ?, ?, ?, ?, ?)");
-        $stmt->bind_param("iissii", $this->sk_official_id, $this->education_level_id, $this->school_name, $this->course, $this->start_year, $this->end_year);
+        $stmt = $this->getConnection()->prepare("INSERT INTO `" . self::$table . "` (`sk_official_id`, `education_level_id`, `school_name`, `school_logo`, `course`, `start_year`, `end_year`) VALUES (?, ?, ?, ?, ?, ?, ?)");
+        $stmt->bind_param("iisssii", $this->sk_official_id, $this->education_level_id, $this->school_name, $this->school_logo, $this->course, $this->start_year, $this->end_year);
         $stmt->execute();
         if ($stmt->affected_rows > 0) {
             $this->setId($stmt->insert_id);
@@ -243,8 +264,8 @@ class SkEducation extends Model
      */
     public function update(): bool
     {
-        $stmt = $this->getConnection()->prepare("UPDATE `" . self::$table . "` SET `sk_official_id` = ?, `education_level_id` = ?, `school_name` = ?, `course` = ?, `start_year` = ?, `end_year` = ? WHERE `id` = ?");
-        $stmt->bind_param("iissiii", $this->sk_official_id, $this->education_level_id, $this->school_name, $this->course, $this->start_year, $this->end_year, $this->id);
+        $stmt = $this->getConnection()->prepare("UPDATE `" . self::$table . "` SET `sk_official_id` = ?, `education_level_id` = ?, `school_name` = ?, `school_logo` = ?, `course` = ?, `start_year` = ?, `end_year` = ? WHERE `id` = ?");
+        $stmt->bind_param("iisssiii", $this->sk_official_id, $this->education_level_id, $this->school_name, $this->school_logo, $this->course, $this->start_year, $this->end_year, $this->id);
         $stmt->execute();
         return $stmt->affected_rows > 0;
     }
