@@ -285,6 +285,20 @@ class Barangay extends Model
 
 
     /**
+     * Gets all Announcements that belong to this Barangay.
+     *
+     * @param bool $assoc
+     * @param bool $assoc_basic
+     * @return array
+     */
+    public function getAnnouncements(bool $assoc = false, bool $assoc_basic = false): array
+    {
+        require_once __DIR__ . '/Announcement.php';
+        return Announcement::all($assoc, $assoc_basic, $this);
+    }
+
+
+    /**
      * Gets all achievements for this Barangay across all its SK Officials.
      *
      * This method retrieves every SK Official in this Barangay and then merges all of their achievements.
