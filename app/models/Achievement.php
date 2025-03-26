@@ -7,15 +7,16 @@ class Achievement extends Model
     /** static data */
     public    static $table         = 'achievements';
     public    static $table_columns = [];
-    protected static $basic_columns = ['id', 'title', 'info', 'date'];
+    protected static $basic_columns = ['id', 'title', 'subtitle','info', 'date'];
 
     /** properties */
-    protected $sk_official_id = 0;
-    protected $title          = '';
-    protected $subtitle       = '';
-    protected $info           = '';
-    protected $img            = '';
-    protected $date           = '';
+    protected $sk_official_id   = 0;
+    protected $sk_official_name = '';
+    protected $title            = '';
+    protected $subtitle         = '';
+    protected $info             = '';
+    protected $img              = '';
+    protected $date             = '';
 
 
     /**
@@ -46,6 +47,15 @@ class Achievement extends Model
     public function getSkOfficialId()
     {
         return $this->sk_official_id;
+    }
+
+
+    /** Gets Achievement sk_official_name
+     * @return string
+     */
+    public function getSkOfficialName()
+    {
+        return $this->sk_official_name;
     }
 
 
@@ -111,6 +121,17 @@ class Achievement extends Model
 
 
     /**
+     * Sets Achievement sk_official_name.
+     * @param $sk_official_name
+     * @return void
+     */
+    public function setSkOfficialName($sk_official_name)
+    {
+        $this->sk_official_name = $sk_official_name;
+    }
+
+
+    /**
      * Sets Achievement title.
      * @param $title
      * @return void
@@ -166,6 +187,24 @@ class Achievement extends Model
 
 
     /**
+     * Override getAssoc() to include sk_official_name.
+     *
+     * @param bool $basic
+     * @return array
+     */
+    public function getAssoc(bool $basic = false): array
+    {
+        // first, call the parent method to get the base associative array
+        $arr = parent::getAssoc($basic);
+
+        // then, add this field to include sk_official_name
+        $arr['sk_official_name'] = $this->getSkOfficialName();
+
+        return $arr;
+    }
+
+
+    /**
      * Retrieves all Achievement records, optionally filtering by SK Official.
      *
      * @param bool $assoc
@@ -175,14 +214,18 @@ class Achievement extends Model
      */
     public static function all(bool $assoc = false, bool $assoc_basic = false, ?SkOfficial $skOfficial = null): array
     {
-        $query = "SELECT * FROM `" . self::$table . "`";
+        // join achievements (a) with sk_officials (s) to get the official's full_name
+        $query = "SELECT a.*,
+                      s.full_name AS sk_official_name
+                  FROM achievements a
+                  JOIN sk_officials s ON a.sk_official_id = s.id";
         $params = [];
-        $types = '';
+        $types = "";
 
         if ($skOfficial !== null) {
-            $query .= " WHERE `sk_official_id` = ?";
+            $query .= " WHERE a.sk_official_id = ?";
             $params[] = $skOfficial->getId();
-            $types .= "i";
+            $types = "i";
         }
 
         $stmt = self::getConnectionStatic()->prepare($query);
@@ -194,7 +237,8 @@ class Achievement extends Model
         $achievements = [];
         while ($row = $result->fetch_assoc()) {
             $achievement = new Achievement();
-            $achievement->hydrate($row);
+            $row['sk_official_name'] = $row['sk_official_name'] ?? '';
+            $achievement->hydrate($row); // this calls setSkOfficialName internally
             $achievements[] = $assoc ? $achievement->getAssoc($assoc_basic) : $achievement;
         }
         return $achievements;
