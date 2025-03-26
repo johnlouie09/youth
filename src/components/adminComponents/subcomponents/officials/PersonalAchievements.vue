@@ -6,18 +6,20 @@
         </v-card-title>
 
         <div class="achievements-cards">
-            <v-card
+            <v-container class="d-flex flex-row flex-wrap justify-evenly pa-5 pt-0 ga-10">
+                <v-card elevation="5" 
                 v-for="(achievement, index) in achievements"
                 :key="index"
-                class="card"
+                class="w-[30%] min-w-[250px]  rounded-lg d-flex flex-col items-center overflow-hidden pb-10"
                 @mouseover="hoverIndex = index"
                 @mouseleave="hoverIndex = null"
-            >
-                <article>
-                    <h2>{{ achievement.title }}</h2>
-                    <p>{{ formattedDates[index] }}</p>
+                >
+                <img :src="`/public/achievements/${achievement.img}`" alt="" class="elevation-5 w-full rounded-t-lg"></img>
+                <article class="d-flex flex-col items-start w-[90%] ma-5">
+                    <h3 class="uppercase text-xs font-extrabold">{{ achievement.title }}</h3>
+                    <h5 class="text-[.75rem] font-medium">{{ achievement.subtitle }}</h5>
+                    <h5 class="text-xs font-italic absolute bottom-0 right-0 pa-5">{{ formatDate(achievement.date) }}</h5>
                 </article>
-
                 <transition name="fade">
                     <div v-if="hoverIndex === index" class="achievement-card-actions">
                         <v-icon class="edit-icon" size="30" @click="editAchievement(index)">mdi-pencil-circle</v-icon>
@@ -29,8 +31,10 @@
                     v-if="editingIndex === index"
                     :achievement="achievement"
                     @close="editingIndex = null"
+                    @fetchAchievement="handleChildEvent(true)"
                 />
-            </v-card>
+                </v-card>
+            </v-container>
         </div>
 
         <AddPersonalAchievement />
@@ -46,26 +50,47 @@ export default {
         AddPersonalAchievement,
         UpdatingAchievement,
     },
+    props: {
+        achievements: Object
+    },
     data() {
         return {
             hoverIndex: null,
             editingIndex: null,
-            achievements: [
-                { title: 'Certificate of Recognition: Successful Organization of the Barangay Youth Sports Festival', date: new Date(2004, 9, 8) },
-                { title: 'Best Youth Leader Award - Barangay Level', date: new Date() }
+            personalAchievements: [
             ]
         };
     },
     computed: {
-        formattedDates() {
-            return this.achievements.map(a => a.date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }));
-        }
     },
     methods: {
         editAchievement(index) {
             this.editingIndex = index;
+        },
+        formatDate(dateStr) {
+            if (!dateStr) return '';
+            const date = new Date(dateStr);
+            return date.toLocaleDateString('en-US', {
+                month: 'long',
+                day: 'numeric',
+                year: 'numeric'
+            });
+        },
+        handleChildEvent(payload) {
+            this.editingIndex = null;
+            this.$emit('fetchOfficialInfo', payload);
+        }
+    },
+    watch : {
+        achievements: {
+            immediate: true,
+            handler(newVal) {
+                this.personalAchievements = { ...newVal }
+            },
+            deep: true
         }
     }
+
 };
 </script>
 
@@ -76,7 +101,7 @@ export default {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    width: 75%;
+    width: 80%;
     border-radius: 1rem;
     padding: 2rem 0;
     gap: 3rem;
@@ -91,28 +116,15 @@ export default {
     flex-wrap: wrap;
 }
 
-.achievements-cards .card {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    padding: 2.5rem 2rem;
-    border-radius: 0.5rem;
-    gap: 1.75rem;
-    border: 1px solid rgb(43, 42, 42);
-    width: 450px;
-    position: relative;
-    box-shadow: 0px 15px 15px 0px rgba(0, 0, 0, 0.25);
-}
-
 .card article {
     width: 90%;
 }
 
 .achievement-card-actions {
     position: absolute;
-    bottom: 10px;
-    right: 10px;
+    bottom: 0;
+    left: 0;
+    padding: .5rem;
     display: flex;
     gap: 10px;
 }

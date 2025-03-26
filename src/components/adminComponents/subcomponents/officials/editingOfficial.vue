@@ -2,7 +2,7 @@
     <v-container class="editing-official-main">
         <PersonalInfoCard :info="officialInfos.personalInfo"></PersonalInfoCard>
         <EducationalOfficial :educations="officialInfos.educationalBackgrounds"></EducationalOfficial>
-        <PersonalAchievements :achievements="officialInfos.achievements"></PersonalAchievements>
+        <PersonalAchievements :achievements="officialInfos.achievements" @fetchOfficialInfo="fetchSkOfficialInfos"></PersonalAchievements>
         <!-- <OtherInformation></OtherInformation> -->
         <div class="back" @click="$router.replace({name: 'admin-officials', params:{barangaySlug : this.$store.getters[auth/getBarangayName]}})">
             <v-icon>mdi-arrow-left</v-icon>
@@ -41,10 +41,10 @@ export default {
         }
     },
     methods: {
-        async fetchSkOfficialInfos() {
+        fetchSkOfficialInfos() {
             const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
             const api_base = 'http://localhost/youth/app/api.php';
-            await $.ajax({
+            $.ajax({
                 url: `${api_base}?e=sk-official&a=personalInfo`,
                 type: 'POST',
                 xhrFields: { withCredentials: true },
