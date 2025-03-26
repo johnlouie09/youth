@@ -5,7 +5,6 @@ if (!defined('__BASE')) { exit(); }
 
 /** imports */
 require_once __DIR__ . '/models/Barangay.php';
-
 /** Extract Action */
 $action = $_GET['a'] ?? '';
 
@@ -36,5 +35,12 @@ else if($action === 'achievements') {
     $barangay = new Barangay($barangay_id);
     returnSuccess([
         'achievements' => $barangay->getAllAchievements(true, false),
+    ]);
+}
+else if($action === 'announcements') {
+    $barangay_id = $_POST['barangayId'] ?? '';
+    $barangay = new Barangay($barangay_id);
+    returnSuccess([
+        'announcements' => $barangay->getAnnouncements(true, false),
     ]);
 }

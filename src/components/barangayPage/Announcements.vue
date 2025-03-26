@@ -20,23 +20,16 @@ import "swiper/css/effect-coverflow";
 import "swiper/css/autoplay";
 import "swiper/css/pagination";
 import { EffectCoverflow, Autoplay, Pagination } from "swiper/modules";
+import $ from 'jquery';
 
 export default {
     name: "Announcements",
+    props: {
+        barangayId: Number
+    },
     data() {
         return {
-            announcements: [
-                { id: 1, barangayId: 1, img: "bb_tryout.jpg", title: "Announcement 1" },
-                { id: 2, barangayId: 1, img: "interzone_bb.jpg", title: "Announcement 2" },
-                { id: 3, barangayId: 1, img: "kk_ass.jpg", title: "Announcement 3" },
-                { id: 4, barangayId: 1, img: "teentrail.jpg", title: "Announcement 4" },
-                { id: 5, barangayId: 1, img: "youthnight.jpg", title: "Announcement 5" },
-                { id: 6, barangayId: 1, img: "kalinisan.jpg", title: "Announcement 6"},
-                { id: 3, barangayId: 1, img: "kk_ass.jpg", title: "Announcement 3" },
-                { id: 4, barangayId: 1, img: "teentrail.jpg", title: "Announcement 4" },
-                { id: 5, barangayId: 1, img: "youthnight.jpg", title: "Announcement 5" },
-                { id: 6, barangayId: 1, img: "kalinisan.jpg", title: "Announcement 6" }
-            ]
+            announcements: []
         };
     },
     mounted() {
@@ -70,8 +63,47 @@ export default {
                     clickable: true,
                 },
             });
+        },
+        async fetchBarangayAnnouncements() {
+        const api_base = 'http://localhost/youth/app/api.php';
+        await $.ajax({
+          url: `${api_base}?e=barangay&a=announcements`,
+          type: 'POST',
+          xhrFields: {
+            withCredentials: true
+          },
+          headers: {
+            'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
+          },
+          data: {
+            barangayId: this.barangayId,
+          },
+          success: (data) => {
+            this.announcements = data.data.announcements;
+            console.log(data);
+          },
+          error: (jqXHR, textStatus, errorThrown) => {
+            console.error("Error:", textStatus, errorThrown);
+            let errorMsg = "An error occurred while processing your request.";
+            if (jqXHR.responseJSON && jqXHR.responseJSON.error) {
+              errorMsg = jqXHR.responseJSON.message;
+            } else if (jqXHR.responseText) {
+              errorMsg = jqXHR.responseText;
+            }
+          },
+          complete: () => {
+            // Optional: any actions after completion.
+          }
+        });
         }
     },
+    created() {
+        this.achievements = [];
+        this.fetchBarangayAnnouncements();
+    },
+    watch: {
+
+    }
 };
 </script>
 

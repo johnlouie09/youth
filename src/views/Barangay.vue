@@ -81,8 +81,8 @@ export default {
       </h1>
       <img class="logo w-80 h-auto" :src="`${this.$store.getters['base']}Logoseal.svg`" alt="logo"/>
     </div>
-    <Announcements/>
-    <Cards v-if="barangayInfo.id" :barangayId="barangayInfo.id" />
+    <Announcements v-if="barangayInfo.id" :barangayId="barangayInfo.id"/>
+    <Cards v-if="barangayInfo.id" :barangayId="barangayInfo.id"/>
     <Achievements v-if="barangayInfo.id" :barangayId="barangayInfo.id"/>
     <DialogComponent/>
   </v-container>
