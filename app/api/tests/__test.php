@@ -205,6 +205,15 @@ if ($barangay !== null) {
 }
 
 
+/** One-to-Many: Get all Projects for a Barangay */
+if ($barangay !== null) {
+    echo "<h1>All Announcements in Barangay '{$barangay->getName()}':</h1>";
+    $announcements = $barangay->getAnnouncements();
+    print_r($announcements);
+    echo "<hr>";
+}
+
+
 /** One-to-Many: Get all Achievements for an SK Official */
 if ($sk_official !== null) {
     echo "<h1>All Achievements for SK Official '{$sk_official->getFullName()}':</h1>";
