@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 26, 2025 at 05:21 AM
+-- Generation Time: Mar 26, 2025 at 06:02 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -68,20 +68,21 @@ INSERT INTO `achievements` (`id`, `sk_official_id`, `title`, `subtitle`, `info`,
 CREATE TABLE `announcements` (
   `id` int(11) NOT NULL,
   `barangay_id` int(11) NOT NULL,
-  `announcement_img` varchar(255) NOT NULL,
-  `created_at` date NOT NULL DEFAULT current_timestamp()
+  `img` varchar(255) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `announcements`
 --
 
-INSERT INTO `announcements` (`id`, `barangay_id`, `announcement_img`, `created_at`) VALUES
-(1, 1, 'bb_tryout.jpg', '2025-03-16'),
-(2, 1, 'interzone_bb.jpg', '2025-03-16'),
-(3, 1, 'kk_ass.jpg', '2025-03-16'),
-(4, 1, 'teentrail.jpg', '2025-03-16'),
-(5, 1, 'youthnight.jpg', '2025-03-16');
+INSERT INTO `announcements` (`id`, `barangay_id`, `img`, `created_at`, `updated_at`) VALUES
+(1, 1, 'bb_tryout.jpg', '2025-03-26 04:57:46', '2025-03-26 04:57:46'),
+(2, 1, 'interzone_bb.jpg', '2025-03-26 04:57:46', '2025-03-26 04:57:46'),
+(3, 1, 'kk_ass.jpg', '2025-03-26 04:57:46', '2025-03-26 04:57:46'),
+(4, 1, 'teentrail.jpg', '2025-03-26 04:57:46', '2025-03-26 04:57:46'),
+(5, 1, 'youthnight.jpg', '2025-03-26 04:57:46', '2025-03-26 04:57:46');
 
 -- --------------------------------------------------------
 
@@ -274,15 +275,15 @@ CREATE TABLE `sk_educations` (
 -- Dumping data for table `sk_educations`
 --
 
-INSERT INTO `sk_educations` (`id`, `sk_official_id`, `education_level_id`, `school_name`, `course`, `start_year`, `end_year`, `created_at`, `updated_at`) VALUES
-(1, 1, 1, 'Sample Elementary Central School', NULL, 2006, 2012, '2025-03-11 11:43:03', '2025-03-23 09:31:33'),
-(2, 1, 2, 'Samplen National High School', NULL, 2012, 2016, '2025-03-11 11:43:03', '2025-03-23 09:31:41'),
-(3, 1, 3, 'Sample National High School', NULL, 2016, 2018, '2025-03-11 11:43:03', '2025-03-23 09:31:49'),
-(4, 1, 4, 'Camarines Sur Polytechnic College', 'Bachelor of Science in Tourism Management', 2018, 2022, '2025-03-11 11:43:03', '2025-03-11 11:43:03'),
-(9, 23, 1, 'Ateneo de Naga University', 'Bachelor of Public Administration (BPA)', 2020, 2024, '2025-03-24 06:50:25', '2025-03-24 06:50:25'),
-(10, 23, 2, 'Ateneo de Naga University Senior High School', 'STEM (Science, Technology, Engineering, and Mathematics)', 2018, 2020, '2025-03-24 06:50:25', '2025-03-24 14:19:59'),
-(11, 23, 3, 'Naga City Science High School', NULL, 2014, 2018, '2025-03-24 06:50:25', '2025-03-24 06:50:25'),
-(12, 23, 4, 'Ateneo de Naga University Grade School', NULL, 2008, 2014, '2025-03-24 06:50:25', '2025-03-24 06:50:25');
+INSERT INTO `sk_educations` (`id`, `sk_official_id`, `education_level_id`, `school_name`, `school_logo`, `course`, `start_year`, `end_year`, `created_at`, `updated_at`) VALUES
+(1, 1, 1, 'Sample Elementary Central School', '', NULL, 2006, 2012, '2025-03-11 11:43:03', '2025-03-23 09:31:33'),
+(2, 1, 2, 'Samplen National High School', '', NULL, 2012, 2016, '2025-03-11 11:43:03', '2025-03-23 09:31:41'),
+(3, 1, 3, 'Sample National High School', '', NULL, 2016, 2018, '2025-03-11 11:43:03', '2025-03-23 09:31:49'),
+(4, 1, 4, 'Camarines Sur Polytechnic College', '', 'Bachelor of Science in Tourism Management', 2018, 2022, '2025-03-11 11:43:03', '2025-03-11 11:43:03'),
+(9, 23, 1, 'Ateneo de Naga University', '', 'Bachelor of Public Administration (BPA)', 2020, 2024, '2025-03-24 06:50:25', '2025-03-24 06:50:25'),
+(10, 23, 2, 'Ateneo de Naga University Senior High School', '', 'STEM (Science, Technology, Engineering, and Mathematics)', 2018, 2020, '2025-03-24 06:50:25', '2025-03-24 14:19:59'),
+(11, 23, 3, 'Naga City Science High School', '', NULL, 2014, 2018, '2025-03-24 06:50:25', '2025-03-24 06:50:25'),
+(12, 23, 4, 'Ateneo de Naga University Grade School', '', NULL, 2008, 2014, '2025-03-24 06:50:25', '2025-03-24 06:50:25');
 
 -- --------------------------------------------------------
 
@@ -359,6 +360,13 @@ ALTER TABLE `achievements`
   ADD KEY `fk_achievements_sk_officials` (`sk_official_id`);
 
 --
+-- Indexes for table `announcements`
+--
+ALTER TABLE `announcements`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `barangay_id` (`barangay_id`);
+
+--
 -- Indexes for table `barangays`
 --
 ALTER TABLE `barangays`
@@ -420,7 +428,13 @@ ALTER TABLE `sk_officials`
 -- AUTO_INCREMENT for table `achievements`
 --
 ALTER TABLE `achievements`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+
+--
+-- AUTO_INCREMENT for table `announcements`
+--
+ALTER TABLE `announcements`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `barangays`
@@ -462,7 +476,7 @@ ALTER TABLE `projects`
 -- AUTO_INCREMENT for table `sk_educations`
 --
 ALTER TABLE `sk_educations`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `sk_officials`
@@ -484,7 +498,7 @@ ALTER TABLE `achievements`
 -- Constraints for table `announcements`
 --
 ALTER TABLE `announcements`
-  ADD CONSTRAINT `announcement_idfk_1` FOREIGN KEY (`barangay_id`) REFERENCES `barangays` (`id`) ON DELETE CASCADE;
+  ADD CONSTRAINT `announcements_ibfk_1` FOREIGN KEY (`barangay_id`) REFERENCES `barangays` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `barangays`
