@@ -110,19 +110,18 @@ export default {
     VDateInput
   }
 };
-
 </script>
 
 <template>
   <v-card justify="center" class="intro pa-4 info-card">
     <div class="image-container pa-5">
       <v-avatar 
-        :image="filePreview || (personalInfo.img ? ($store.getters.base + 'public/OfficialImages/' + personalInfo.img) : '/public/OfficialImages/no-avatar.jpg')"
-        alt="Profile Image" 
-        cover
-        size="200"
-        class="rounded-circle"
-      />
+      :image="filePreview || (personalInfo.img ? ($store.getters.base + 'public/OfficialImages/' + personalInfo.img) : '/public/OfficialImages/no-avatar.jpg')"
+      alt="Profile Image" 
+      cover
+      size="200"
+      class="rounded-circle"
+    />
 
 
       <!-- Floating Upload Icon -->
@@ -135,7 +134,7 @@ export default {
         ref="fileInput" 
         type="file" 
         accept="image/*" 
-        class="hidden-file-input"
+        class="hidden"
         @change="handleFileUpload"
       >
     </div>
@@ -163,8 +162,8 @@ export default {
           <v-date-input v-model="personalInfo.term_end" label="Term End" prepend-icon="" prepend-inner-icon="$calendar" variant="solo" />
         </div>
         <div v-if="hasChanges" class="button-container">
-          <v-btn color="primary" @click="saveChanges">Save Changes</v-btn>
-          <v-btn color="grey" @click="discardChanges">Discard Changes</v-btn>
+          <v-btn color="teal-lighten-1" @click="saveChanges">Save Changes</v-btn>
+          <v-btn color="red-lighten-1" @click="discardChanges">Discard Changes</v-btn>
         </div>
       </v-form>
     </v-card-text>
@@ -223,11 +222,6 @@ export default {
   display: flex;
   justify-content: space-around;
   margin-top: 1rem;
-}
-
-/* Hide the file input */
-.hidden-file-input {
-  display: none;
 }
 
 /* Image and Upload Styling */
