@@ -722,4 +722,45 @@ class SkOfficial extends Model
 
         return $mailer->send();
     }
+
+
+    /**
+     * Returns a list of positions along with the number of officials holding each position
+     * If a barangay slug is provided, only counts for that barangay are returned.
+     *
+     * @param string|null $barangaySlug
+     * @return array
+     * @throws Exception
+     */
+    public static function getPositionCount(?string $barangaySlug = null): array
+    {
+        $conn = self::getConnectionStatic();
+        if ($barangaySlug !== null) {
+            // join with the barangays table to filter by slug
+            $query = "SELECT so.position, COUNT(*) AS count
+                      FROM " . self::$table . " so
+                      JOIN barangays b ON so.barangay_id = b.id
+                      WHERE b.slug = ?
+                      GROUP BY so.position";
+
+            $stmt = $conn->prepare($query);
+            if (!$stmt) {
+                throw new Exception("Prepare failed: " . $conn->error);
+            }
+            $stmt->bind_param("s", $barangaySlug);
+        } else {
+            $query = "SELECT position, COUNT(*) AS count FROM `" . self::$table . "` GROUP BY position";
+            $stmt = $conn->prepare($query);
+            if (!$stmt) {
+                throw new Exception("Prepare failed: " . $conn->error);
+            }
+        }
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $counts = [];
+        while ($row = $result->fetch_assoc()) {
+            $counts[$row['position']] = $row['count'];
+        }
+        return $counts;
+    }
 }

@@ -246,6 +246,70 @@ class Achievement extends Model
 
 
     /**
+     * Returns a summary of achievements per month and total achievements per year.
+     * The monthly summary returns the month name (e.g., January, February) along with the year and count.
+     *
+     * @return array
+     * @throws Exception
+     */
+    public static function getMonthlySummary(): array
+    {
+        $conn = self::getConnectionStatic();
+
+        // Monthly summary: use MONTHNAME() to get the month name
+        $queryMonthly = "SELECT YEAR(date) AS year, MONTHNAME(date) AS month, COUNT(*) AS count
+                         FROM `" . self::$table . "`
+                         GROUP BY YEAR(date), MONTH(date)
+                         ORDER BY YEAR(date) ASC, MONTH(date) ASC";
+
+        $stmt = $conn->prepare($queryMonthly);
+        if (!$stmt) {
+            throw new Exception("Prepare failed: " . $conn->error);
+        }
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        $monthlyGrouped = [];
+        while ($row = $result->fetch_assoc()) {
+            $year = $row['year'];
+            $month = $row['month'];
+            $count = $row['count'];
+
+            if (!isset($monthlyGrouped[$year])) {
+                $monthlyGrouped[$year] = [];
+            }
+
+            $monthlyGrouped[$year][] = [
+                'month' => $month,
+                'count' => $count,
+            ];
+        }
+
+        // Annual summary: total achievements per year
+        $queryAnnual = "SELECT YEAR(date) AS year, COUNT(*) AS total
+                        FROM `" . self::$table . "`
+                        GROUP BY YEAR(date)
+                        ORDER BY year ASC";
+
+        $stmt = $conn->prepare($queryAnnual);
+        if (!$stmt) {
+            throw new Exception("Prepare failed: " . $conn->error);
+        }
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $annual = [];
+        while ($row = $result->fetch_assoc()) {
+            $annual[] = $row;
+        }
+
+        return [
+            'monthly' => $monthlyGrouped,  // grouped month by year
+            'annual'  => $annual
+        ];
+    }
+
+
+    /**
      * Gets the SK Official that this Achievement belongs to.
      *
      * @param bool $assoc
