@@ -39,7 +39,6 @@ export default {
                     barangayId: this.$store.getters['auth/getBarangayId'],
                 },
                 success: (data) => {
-                    console.log(data);
                     this.officials = [data.data.skChairman, ...data.data.skMembers];
                 },
 

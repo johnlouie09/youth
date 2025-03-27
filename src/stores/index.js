@@ -1,13 +1,16 @@
 import { createStore } from 'vuex';
 
 // MODULES
+
 import auth from './store-auth.js';
 import viewOfficial from './store-viewOfficial.js';
+import dialog from './vuex/modules/store-dialog.js'
 
 export default createStore({
   modules: {
     auth,
-    viewOfficial
+    viewOfficial,
+    dialog
   },
   state: {
     app: {},

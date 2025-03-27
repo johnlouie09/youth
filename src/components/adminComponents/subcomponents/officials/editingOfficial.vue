@@ -2,15 +2,11 @@
     <v-container class="editing-official-main">
         <PersonalInfoCard :info="officialInfos.personalInfo"></PersonalInfoCard>
         <EducationalOfficial :educations="officialInfos.educationalBackgrounds"></EducationalOfficial>
-        <PersonalAchievements :achievements="officialInfos.achievements" @fetchOfficialInfo="fetchSkOfficialInfos"></PersonalAchievements>
+        <PersonalAchievements :achievements="officialInfos.achievements" :id="officialInfos.personalInfo.id" @fetchOfficialInfo="fetchSkOfficialInfos"></PersonalAchievements>
         <!-- <OtherInformation></OtherInformation> -->
         <div class="back" @click="$router.replace({name: 'admin-officials', params:{barangaySlug : this.$store.getters[auth/getBarangayName]}})">
             <v-icon>mdi-arrow-left</v-icon>
         </div>
-
-
-
-
     </v-container>
 </template>
 

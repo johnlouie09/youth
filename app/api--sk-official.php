@@ -272,6 +272,111 @@ else if ($action === 'updateAchievement') {
     }
 }
 
+else if($action === 'addAchievement') {
+    // Ensure achievement data exists
+    if (!isset($_POST['achievementInfo'])) {
+        returnError('Invalid Achievement Information Received.', 400);
+    }
+    
+    // Decode JSON if needed (if sent via FormData, it may be a JSON string)
+    $achievementInfo = is_array($_POST['achievementInfo']) 
+        ? $_POST['achievementInfo'] 
+        : json_decode($_POST['achievementInfo'], true);
+    
+    if (!$achievementInfo) {
+        returnError('Invalid Achievement Information Format.', 400);
+    }
+    
+    // Ensure required field(s) exist - for example, SK Official ID is required
+    if (!isset($achievementInfo['sk_official_id'])) {
+        returnError('SK Official ID is required.', 400);
+    }
+    
+    // Create a new Achievement object
+    $achievement = new Achievement();
+    
+    // Set fields if provided
+    if (isset($achievementInfo['sk_official_id'])) {
+        $achievement->setSkOfficialId($achievementInfo['sk_official_id']);
+    }
+    if (isset($achievementInfo['title'])) {
+        $achievement->setTitle($achievementInfo['title']);
+    }
+    if (isset($achievementInfo['subtitle'])) {
+        $achievement->setSubtitle($achievementInfo['subtitle']);
+    }
+    if (isset($achievementInfo['info'])) {
+        $achievement->setInfo($achievementInfo['info']);
+    }
+    if (isset($achievementInfo['date'])) {
+        $achievement->setDate($achievementInfo['date']); // Expected format: YYYY-MM-DD
+    }
+    
+    // Process file upload if a file was provided
+    if (isset($_FILES['file']) && $_FILES['file']['error'] === UPLOAD_ERR_OK) {
+        // Define the upload directory (adjust the path as needed)
+        $uploadDir = __DIR__ . '/../public/achievements/';
+        
+        // Create the directory if it doesn't exist
+        if (!is_dir($uploadDir)) {
+            mkdir($uploadDir, 0755, true);
+        }
+        
+        // Get a sanitized version of the filename
+        $filename = basename($_FILES['file']['name']);
+        
+        // Set the target file path
+        $targetFile = $uploadDir . $filename;
+        
+        // Move the uploaded file to the target directory
+        if (move_uploaded_file($_FILES['file']['tmp_name'], $targetFile)) {
+            // Update the achievement record with the new filename
+            $achievement->setImg($filename);
+        } else {
+            returnError("Failed to upload file.", 500);
+        }
+    } else if (isset($achievementInfo['img'])) {
+        // If no new file is uploaded, update with the provided img value if any
+        $achievement->setImg($achievementInfo['img']);
+    }
+    
+    // Insert the new achievement record
+    if ($achievement->insert()) {
+        returnSuccess([
+            'message' => 'Achievement added successfully.',
+            'achievement' => $achievement->getAssoc()
+        ]);
+    } else {
+        returnError("Insert failed. An error occurred.", 500);
+    }
+}
+
+else if ($action === 'deleteAchievement') {
+    // Ensure an ID is provided
+    if (!isset($_POST['id']) || empty($_POST['id'])) {
+        returnError("Achievement ID is required.", 400);
+    }
+
+    // Instantiate the model with the given ID.
+    // This assumes your model's constructor will load the record if an ID is passed.
+    $achievement = new Achievement($_POST['id']);
+    
+    // Check if the achievement exists (this depends on your model logic)
+    if (!$achievement) {
+        returnError("No achievement found with ID " . $_POST['id'], 404);
+    }
+
+    // Call the delete() method on the model
+    if ($achievement->delete()) {
+        returnSuccess([
+            'message' => 'Achievement deleted successfully.'
+        ]);
+    } else {
+        returnError("Delete failed. No changes detected or an error occurred.", 500);
+    }
+}
+
+
 
 /** Invalid Request *******************************************/
 else

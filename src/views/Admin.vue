@@ -15,6 +15,7 @@ const isDark = computed(() => theme.current.value.dark);
     <div class="adminContainer">
       <Sidebar class="sidebar" />
       <v-main :class="['adminMain', { 'dark-gradient': isDark }]">
+        <Dialogs></Dialogs>
         <RouterView />
       </v-main>
     </div>

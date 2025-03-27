@@ -62,7 +62,8 @@
             <!-- Action Buttons -->
             <v-card-actions v-if="hasChanges" class="w-[70%] d-flex justify-center items-center ga-10">
                 <v-btn color="red-lighten-1" @click="discardChanges">Discard Changes</v-btn>
-                <v-btn color="teal-lighten-1" @click="saveChanges">Save Changes</v-btn>
+                <v-btn v-if="action === 'adding'" color="teal-lighten-1"  @click="saveChanges">Add Achievement</v-btn>
+                <v-btn v-if="action === 'updating'" color="teal-lighten-1" @click="saveChanges">Save Changes</v-btn>
             </v-card-actions>
         </v-card>
 
@@ -81,7 +82,8 @@ import $ from 'jquery';
 
 export default {
     props: {
-        achievement: Object
+        achievement: Object,
+        action: String
     },
     data() {
         return {
@@ -96,7 +98,12 @@ export default {
     methods: {
         saveChanges() {
             this.achievementInfo.date = this.formatDate(this.achievementInfo.date);
-            this.updateAchievement()
+            if(this.action === 'updating') {
+                this.updateAchievement();
+            } 
+            else if(this.action === 'adding') {
+                this.addAchievement();
+            }
             this.hasChanges = false;
             this.dialog = false;
         },
@@ -149,6 +156,37 @@ export default {
                 data: formData,
                 success: (data) => {
                 console.log("Data has been updated successfully", data);
+                // Convert date strings back to Date objects for the v-date-input
+                this.achievementInfo.date = new Date(this.achievementInfo.date);
+
+                // Update initial data so all references are in sync
+                this.initialAchievementInfo = { ...this.achievementInfo };
+                this.hasChanges = false;
+                // Optionally clear file preview if upload is complete
+                this.filePreview = null;
+                this.$emit("fetchAchievement", true);
+                },
+                error: (jqXHR, textStatus, errorThrown) => {
+                console.error("Error:", textStatus, errorThrown);
+                }
+            });
+        },
+        addAchievement() {
+            const formData = new FormData();
+            formData.append("achievementInfo", JSON.stringify(this.achievementInfo));
+            if (this.file) {
+                formData.append("file", this.file);
+            }
+            $.ajax({
+                url: `${this.$store.getters['api_base']}?e=sk-official&a=addAchievement`,
+                type: 'POST',
+                xhrFields: { withCredentials: true },
+                headers: { 'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content },
+                processData: false,
+                contentType: false,
+                data: formData,
+                success: (data) => {
+                console.log("Data has been Added successfully", data);
                 // Convert date strings back to Date objects for the v-date-input
                 this.achievementInfo.date = new Date(this.achievementInfo.date);
 
