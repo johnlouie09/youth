@@ -1,19 +1,17 @@
 <template>
     <v-card class="official-card" elevation="4">
         <v-card-title class="text-center text-h5 pb-4 border-bottom">
-            {{ official.role.toUpperCase() }}
+            {{ official.position.toUpperCase() }}
         </v-card-title>
         <v-card-text class="d-flex flex-column align-center mt-4">
-            <v-img 
-                :src="official.img"
-                alt="SK Logo" 
-                contain 
-                height="100" 
-                width="100"
-                class="mb-4"
-            ></v-img>
-            <h3 class="text-h6 font-weight-medium mt-2">{{ official.name }}</h3>
-            <v-btn color="primary" variant="outlined" class="mt-3" to="officials/johndoe">
+            <v-avatar
+                :image="official.img ? ($store.getters.base + 'public/OfficialImages/' + official.img) : '/public/OfficialImages/no-avatar.jpg'"
+                alt="Official Img" 
+                size="150"
+                cover
+            ></v-avatar>
+            <h3 class="text-h6 font-weight-medium mt-2">{{ official.full_name }}</h3>
+            <v-btn color="primary" variant="outlined" class="mt-3" @click="toEditingOfficial(official)">
                 EDIT
             </v-btn>
         </v-card-text>
@@ -24,6 +22,11 @@
 export default {
     props: {
         official: Object
+    },
+    methods: {
+        toEditingOfficial(official) {
+            this.$router.replace({ name: 'admin-edit-official', params: { officialSlug: official.slug }});
+        }
     }
 };
 </script>

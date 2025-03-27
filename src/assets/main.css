@@ -55,7 +55,6 @@ body {
     background-image: linear-gradient(to right, #3772FF 30%, #DF2935 50%, #FDCA40 70%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    font-size: 2rem;
     text-align: center;
 }
 

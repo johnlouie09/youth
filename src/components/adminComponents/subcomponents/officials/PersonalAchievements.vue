@@ -1,67 +1,8 @@
-<template>
-    <v-card class="achievements-section" elevation="5">
-      <v-card-title class="title d-flex align-center justify-center">
-        <v-icon class="me-2" size="30">mdi-trophy</v-icon>
-        <h2 class="mb-0">PERSONAL ACHIEVEMENTS</h2>
-      </v-card-title>
-  
-      <div class="achievements-cards">
-        <v-container class="d-flex flex-row flex-wrap justify-evenly pa-5 pt-0 ga-10">
-          <v-card elevation="5" 
-            v-for="(achievement, index) in achievements"
-            :key="index"
-            class="w-[30%] min-w-[250px] rounded-lg d-flex flex-col items-center overflow-hidden pb-10"
-            @mouseover="hoverIndex = index"
-            @mouseleave="hoverIndex = null"
-          >
-            <img :src="`/public/achievements/${achievement.img}`" alt="" class="elevation-5 w-full rounded-t-lg">
-            <article class="d-flex flex-col items-start w-[90%] ma-5">
-              <h3 class="uppercase text-xs font-extrabold">{{ achievement.title }}</h3>
-              <h5 class="text-[.75rem] font-medium">{{ achievement.subtitle }}</h5>
-              <h5 class="text-xs font-italic absolute bottom-0 right-0 pa-5">{{ formatDate(achievement.date) }}</h5>
-            </article>
-            <transition name="fade">
-              <div v-if="hoverIndex === index" class="achievement-card-actions">
-                <v-icon class="edit-icon" size="25" @click="editAchievement(index)">mdi-pencil-circle</v-icon>
-                <v-icon class="delete-icon" size="25" @click="confirmDelete(achievement.id)">mdi-delete-circle</v-icon>
-              </div>
-            </transition>
-  
-            <FormAchievement
-              v-if="editingIndex === index"
-              :action="'updating'"
-              :achievement="achievement"
-              @close="editingIndex = null"
-              @fetchAchievement="handleChildEvent(true)"
-            />
-          </v-card>
-        </v-container>
-
-
-        <v-btn class="d-flex items-center justify-center px-10 py-10 text-lg" elevation="10" @click="showNewAchievement = true">
-            <v-icon>mdi-plus-circle-outline</v-icon>
-            <span class="ml-4">ADD PERSONAL ACHIEVEMENT</span>
-        </v-btn>
-      </div>
-  
-      <!-- New Achievement Dialog -->
-      <FormAchievement
-        v-if="showNewAchievement"
-        :achievement="{ sk_official_id : this.id}"
-        :action="'adding'"
-        @close="showNewAchievement = false"
-        @fetchAchievement="handleChildEvent(true)"
-      />
-    </v-card>
-
-    <Dialogs></Dialogs>
-  </template>
-  
-  <script>
+<script>
   import FormAchievement from './InputForms/FormAchievement.vue';
   import Dialogs from '@/components/dialogs/Dialogs.vue';
   import $ from 'jquery';
-  
+
   export default {
     components: {
       FormAchievement,
@@ -77,13 +18,21 @@
         hoverIndex: null,
         editingIndex: null,
         personalAchievements: [],
-        showNewAchievement: false  // flag to show new achievement form
+        // Controls the visibility of the new achievement form
+        showNewAchievement: false
       };
     },
     methods: {
+      /**
+       * Set the editing index for a given achievement.
+       */
       editAchievement(index) {
         this.editingIndex = index;
       },
+
+      /**
+       * Format a date string to a localized string.
+       */
       formatDate(dateStr) {
         if (!dateStr) return '';
         const date = new Date(dateStr);
@@ -93,12 +42,20 @@
           year: 'numeric'
         });
       },
+
+      /**
+       * Handles child events by closing the new achievement form
+       * and emitting an event to refresh official information.
+       */
       handleChildEvent(payload) {
-        // Close new achievement form after update
         this.showNewAchievement = false;
-        // Emit event to refresh official info if needed
         this.$emit('fetchOfficialInfo', payload);
       },
+
+      /**
+       * Shows a confirmation dialog for deletion and, if confirmed,
+       * calls the deleteAchievement method.
+       */
       async confirmDelete(achievementId) {
         this.$store.commit('dialog/confirm/show', {
           title: 'Delete Achievement',
@@ -106,18 +63,19 @@
           color: 'red',
           yesText: 'Delete',
           noText: 'Cancel',
-            onConfirm: async () => {
-              // Call the deletion method if confirmed
-              await this.deleteAchievement(achievementId);
-            },
-            onCancel: () => {
-              // Optionally handle cancellation
-              console.log('Deletion cancelled');
-            }
+          onConfirm: async () => {
+            await this.deleteAchievement(achievementId);
+          },
+          onCancel: () => {
+            console.log('Deletion cancelled');
+          }
         });
       },
+
+      /**
+       * Deletes an achievement via an AJAX request.
+       */
       deleteAchievement(achievementId) {
-        // Send an AJAX request to delete the achievement
         $.ajax({
           url: `${this.$store.getters['api_base']}?e=sk-official&a=deleteAchievement`,
           type: 'POST',
@@ -128,28 +86,107 @@
           data: { id: achievementId },
           success: (data) => {
             console.log("Achievement deleted successfully", data);
-            // Optionally, refresh the achievements list:
+            // Emit event to refresh official information
             this.$emit('fetchOfficialInfo', true);
           },
           error: (jqXHR, textStatus, errorThrown) => {
             console.error("Error deleting achievement:", textStatus, errorThrown);
           }
         });
-      },
+      }
     },
     watch: {
       achievements: {
         immediate: true,
         handler(newVal) {
+          // Clone the achievements data if needed
           this.personalAchievements = { ...newVal };
         },
         deep: true
       }
     }
   };
-  </script>
-  
-  <style scoped>
+</script>
+
+<template>
+  <v-card class="achievements-section" elevation="5">
+
+    <!-- Title Section -->
+    <v-card-title class="title flex items-center justify-center">
+      <v-icon class="me-2" size="30">mdi-trophy</v-icon>
+      <h2 class="uppercase font-extrabold text-2xl">PERSONAL ACHIEVEMENTS</h2>
+    </v-card-title>
+
+    <!-- Achievements List -->
+    <div class="achievements-cards">
+      <v-container class="flex flex-row flex-wrap justify-evenly p-5 pt-0 gap-10">
+        <v-card
+          v-for="(achievement, index) in achievements"
+          :key="index"
+          class="w-[30%] min-w-[250px] rounded-lg flex flex-col items-center overflow-hidden pb-10"
+          elevation="5"
+          @mouseover="hoverIndex = index"
+          @mouseleave="hoverIndex = null"
+        >
+          <!-- Achievement Image -->
+          <img
+            :src="`/public/achievements/${achievement.img}`"
+            alt=""
+            class="elevation-5 w-full rounded-t-lg"
+          />
+
+          <!-- Achievement Details -->
+          <article class="flex flex-col items-start w-[90%] m-5">
+            <h3 class="uppercase text-xs font-extrabold">{{ achievement.title }}</h3>
+            <h5 class="text-[.75rem] font-medium">{{ achievement.subtitle }}</h5>
+            <h5 class="text-xs font-italic absolute bottom-0 right-0 p-5">{{ formatDate(achievement.date) }}</h5>
+          </article>
+
+          <!-- Action Buttons on Hover -->
+          <transition name="fade">
+            <div v-if="hoverIndex === index" class="achievement-card-actions">
+              <v-icon class="edit-icon" size="25" @click="editAchievement(index)">mdi-pencil-circle</v-icon>
+              <v-icon class="delete-icon" size="25" @click="confirmDelete(achievement.id)">mdi-delete-circle</v-icon>
+            </div>
+          </transition>
+
+          <!-- Edit Achievement Form (shown for updating an achievement) -->
+          <FormAchievement
+            v-if="editingIndex === index"
+            :action="'updating'"
+            :achievement="achievement"
+            @close="editingIndex = null"
+            @fetchAchievement="handleChildEvent(true)"
+          />
+        </v-card>
+      </v-container>
+
+      <!-- Add New Achievement Button -->
+      <v-btn
+        class="flex items-center justify-center px-10 py-10 text-lg"
+        elevation="10"
+        @click="showNewAchievement = true"
+      >
+        <v-icon>mdi-plus-circle-outline</v-icon>
+        <span class="ml-4">ADD PERSONAL ACHIEVEMENT</span>
+      </v-btn>
+    </div>
+
+    <!-- New Achievement Dialog -->
+    <FormAchievement
+      v-if="showNewAchievement"
+      :achievement="{ sk_official_id: id }"
+      :action="'adding'"
+      @close="showNewAchievement = false"
+      @fetchAchievement="handleChildEvent(true)"
+    />
+
+    <!-- Global Dialogs Component -->
+    <Dialogs />
+  </v-card>
+</template>
+
+<style scoped>
   .achievements-section {
     display: flex;
     flex-direction: column;
@@ -196,5 +233,5 @@
     transform: scale(1.1);
     color: #f443369c;
   }
-  </style>
+</style>
   

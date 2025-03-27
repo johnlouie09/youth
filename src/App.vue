@@ -17,7 +17,6 @@ export default {
         <RouterView />
       </v-container>
     </v-main>
-    <Footer/>
   </v-app>
 </template>
 

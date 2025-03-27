@@ -42,7 +42,7 @@
 <template>
     <v-container class="faqs-main" width="70%">
         <div class="gradient-text">
-            <h1>Frequently Asked Questions</h1>
+            <h1>FREQUENTLY ASKED QUESTIONS</h1>
         </div>
 
         
@@ -112,5 +112,6 @@
 .gradient-text h1 {
     font-size: 2rem;
     font-weight: 900;
+    text-transform: uppercase;
 }
 </style>
