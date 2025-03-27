@@ -1,7 +1,7 @@
 <template>
     <v-navigation-drawer v-model="drawer" app width="280" class="pa-3 pt-7 pb-7">
       <!-- Logo and Barangay Name -->
-      <v-list-item class="logo-container">
+      <v-list-item class="logo-container mb-5">
         <template v-slot:prepend>
           <v-avatar size="45">
             <v-img :src="`${$store.getters['base']}Group.svg`" alt="Barangay Logo"></v-img>
@@ -31,20 +31,15 @@
         </v-list-item>
       </v-list>
   
-      <v-spacer></v-spacer>
-  
-      <!-- Centered Theme Switcher -->
-      <div class="theme-container">
-        <ThemeSwitcher />
-      </div>
-  
       <!-- Logout Button at the Bottom Center -->
-      <v-list-item class="logout-container">
-        <v-btn block color="error" variant="outlined" @click="logout">
+      <v-card class="logout d-flex items-center justify-center w-[90%] pa-5 gap-5">
+        <ThemeSwitcher class="w-[10%]" />
+        <v-btn class="pa-3 w-[50%] d-flex justify-center items-center" color="error" variant="outlined" @click="logout">
           <v-icon left>mdi-logout</v-icon>
           <span>LOG OUT</span>
         </v-btn>
-      </v-list-item>
+      </v-card>
+
     </v-navigation-drawer>
   </template>
   
@@ -113,13 +108,7 @@
   .active {
     background-color: rgba(255, 255, 255, 0.1);
   }
-  
-  .logo-container {
-    display: flex;
-    align-items: center;
-    padding: 16px;
-    margin-bottom: 5%;
-  }
+
   
   .v-navigation-drawer {
     display: flex;
@@ -127,23 +116,13 @@
     transition: width 0.3s;
   }
   
-  /* Centering the Theme Switcher */
-  .theme-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 16px;
+  .logout {
+    position: absolute;
+    bottom: 0;
+    margin: auto;
+    
   }
   
-  /* Logout Button at the Bottom */
-  .logout-container {
-    position: absolute;
-    bottom: 3rem;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    padding: 0 16px;
-  }
   
   @media (max-width: 600px) {
     .v-navigation-drawer {
