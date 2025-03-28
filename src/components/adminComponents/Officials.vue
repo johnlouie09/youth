@@ -23,10 +23,10 @@ export default {
         };
     },
     methods: {
-        async getOfficials() {
+        getOfficials() {
             const api_base = 'http://localhost/youth/app/api.php';
             const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
-            await $.ajax({
+            $.ajax({
                 url: `${api_base}?e=barangay&a=sk-officials`,
                 type: 'POST',
                 xhrFields: {

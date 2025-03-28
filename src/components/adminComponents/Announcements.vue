@@ -1,85 +1,190 @@
-
-
 <template>
     <v-container class="announcement-main">
         <h1>ANNOUNCEMENTS</h1>
+        <div class="w-full d-flex flex-row flex-wrap justify-center ga-10 items-start">
+            <v-card 
+            v-for="announcement in announcements" 
+            :key="announcement.id"
+            class="announcement-card w-[30%] h-[500px] d-flex flex-col justify-start ga-5 pa-8 elevation-10 rounded-xl"
+            >
+            <v-img 
+                :src="announcement.img 
+                        ? ($store.getters.base + 'public/announcements/' + announcement.img) 
+                        : ($store.getters.base + 'public/announcements/exx.jpg')"
+                class="rounded h-[400px]"
+                contain
+            ></v-img>
 
-        <form class="announcement-form" v-if="showForm">
-            <input type="file" accept="image/*" @change="addAnnouncement" required />
-        </form>
-
-        <div class="carousel-container">
-            <div ref="swiperContainer" class="swiper mySwiper">
-                <div class="swiper-wrapper">
-                    <div class="swiper-slide" v-for="movie in movies" :key="movie.id">
-                        <img :src="movie.src" :alt="movie.title" />
-                        <v-btn color="red-lighten-1" class="delete">DELETE</v-btn>
-                    </div>
-                    <v-card class="swiper-slide add-announcement">
-                        <label for="file-upload" class="add-btn">
-                            <v-icon color="teal-lighten-1" size="75">mdi-plus-circle-outline</v-icon>
-                            <p>ADD ANNOUNCEMENT</p>
-                        </label>
-                        <input id="file-upload" type="file" accept="image/*" @change="addAnnouncement" hidden />
-                    </v-card>
-                </div>
+            <div class="w-full d-flex justify-center items-center">
+                <!-- The button is hidden by default; CSS will reveal it on hover -->
+                <v-btn class="delete-btn" color="red-lighten-1" @click="confirmDelete(announcement.id)">DELETE</v-btn>
             </div>
+            </v-card>
         </div>
+
+
+        <v-btn
+            class="w-[30%] d-flex items-center justify-center px-10 py-10 text-lg"
+            elevation="10"
+            >
+                <v-icon>mdi-plus-circle-outline</v-icon>
+                <span class="ml-4"  @click="triggerFileInput">ADD ACHIEVEMENT</span>
+        </v-btn>
     </v-container>
+
+    <input
+        ref="fileInput"
+        type="file"
+        accept="image/*"
+        class="hidden"
+        @change="handleFileUpload"
+    />
 </template>
-
+  
 <script>
-import { Swiper } from "swiper";
-import "swiper/css";
-import "swiper/css/effect-coverflow";
-import "swiper/css/autoplay";
-import { EffectCoverflow, Autoplay } from "swiper/modules";
-
+import $ from 'jquery';
 export default {
     data() {
         return {
-            swiperContainer: null,
-            newImage: null,
-            movies: Array.from({ length: 7 }, (_, i) => ({ id: i + 1, src: `/${i + 1}.jpg`, title: `Movie ${i + 1}` })),
-            showForm: false,
+            announcements: {},
+            file: null,
+            newAnnouncement: {}
         };
     },
     methods: {
-        addAnnouncement(event) {
+        // Trigger the hidden file input
+        triggerFileInput() {
+        this.$refs.fileInput.click();
+        },
+        // Handle file upload and create a preview
+        handleFileUpload(event) {
             const file = event.target.files[0];
             if (file) {
+                this.file = file;
                 const reader = new FileReader();
                 reader.onload = (e) => {
-                    this.movies.push({
-                        id: this.movies.length + 1,
-                        src: e.target.result,
-                        title: `Movie ${this.movies.length + 1}`,
-                    });
+                this.filePreview = e.target.result;
+                // Store the filename for later use
+                this.newAnnouncement.img = file.name;
                 };
                 reader.readAsDataURL(file);
             }
+            this.addAnnouncement();
+        },
+              /**
+       * Shows a confirmation dialog for deletion and, if confirmed,
+       * calls the deleteAchievement method.
+       */
+      async confirmDelete(announcementId) {
+        this.$store.commit('dialog/confirm/show', {
+          title: 'Delete Announcement',
+          prompt: 'Are you sure you want to delete this announcement?',
+          color: 'red',
+          yesText: 'Delete',
+          noText: 'Cancel',
+          onConfirm: async () => {
+            await this.deleteAnnouncement(announcementId);
+          },
+          onCancel: () => {
+            console.log('Deletion cancelled');
+          }
+        });
+      },
+
+      /**
+       * Deletes an announcement via an AJAX request.
+       */
+      deleteAnnouncement(announcementId) {
+        $.ajax({
+            url: `${this.$store.getters['api_base']}?e=barangay&a=delete-announcement`,
+            type: 'POST',
+            xhrFields: { withCredentials: true },
+            headers: {
+                'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
+            },
+            data: { id: announcementId },
+            success: (data) => {
+                this.fetchBarangayAnnouncements();
+                console.log("Announcement deleted successfully", data);
+            },
+            error: (jqXHR, textStatus, errorThrown) => {
+                console.error("Error deleting achievement:", textStatus, errorThrown);
+            }
+            });
+        },
+    
+
+        addAnnouncement() {
+            // Set the barangay ID for the new announcement using the store getter.
+            this.newAnnouncement.barangay_id = this.$store.getters['auth/getBarangayId'];
+            
+            // Create a FormData object and append announcement info as JSON.
+            const formData = new FormData();
+            formData.append("announcementInfo", JSON.stringify(this.newAnnouncement));
+            
+            // Append the file if one was selected.
+            if (this.file) {
+                formData.append("file", this.file);
+            }
+            
+            // Send AJAX request to the backend API.
+            $.ajax({
+                url: `${this.$store.getters['api_base']}?e=barangay&a=add-announcement`,
+                type: 'POST',
+                xhrFields: { withCredentials: true },
+                headers: { 'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content },
+                processData: false,
+                contentType: false,
+                data: formData,
+                success: (data) => {
+                    this.newAnnouncement = {};
+                    this.file = null;
+                    this.fetchBarangayAnnouncements();
+                    console.log("Announcement data has been added successfully", data);
+                
+                },
+                error: (jqXHR, textStatus, errorThrown) => {
+                console.error("Error adding announcement:", textStatus, errorThrown);
+                }
+            });
+        },
+
+
+
+        fetchBarangayAnnouncements() {
+            $.ajax({
+            url: `${this.$store.getters.api_base}?e=barangay&a=announcements`,
+            type: 'POST',
+            xhrFields: {
+                withCredentials: true
+            },
+            headers: {
+                'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
+            },
+            data: {
+                barangayId: this.$store.getters['auth/getBarangayId'],
+            },
+            success: (data) => {
+                this.announcements = data.data.announcements;
+                console.log(data);
+            },
+            error: (jqXHR, textStatus, errorThrown) => {
+                console.error("Error:", textStatus, errorThrown);
+                let errorMsg = "An error occurred while processing your request.";
+                if (jqXHR.responseJSON && jqXHR.responseJSON.error) {
+                errorMsg = jqXHR.responseJSON.message;
+                } else if (jqXHR.responseText) {
+                errorMsg = jqXHR.responseText;
+                }
+            },
+            complete: () => {
+                // Optional: any actions after completion.
+            }
+            });
         }
     },
-    mounted() {
-        this.swiperContainer = this.$refs.swiperContainer;
-        new Swiper(this.swiperContainer, {
-            modules: [EffectCoverflow, Autoplay],
-            effect: "coverflow",
-            grabCursor: true,
-            centeredSlides: true,
-            slidesPerView: "auto",
-            coverflowEffect: {
-                rotate: 15,
-                stretch: 0,
-                depth: 300,
-                modifier: 1,
-                slideShadows: false,
-            },
-            loop: true,
-            autoplay: {
-                delay: 5000,
-            },
-        });
+    created() {
+        this.fetchBarangayAnnouncements();
     }
 };
 </script>
@@ -89,6 +194,8 @@ export default {
     padding: 4rem 5rem;
     display: flex;
     flex-direction: column;
+    justify-content: start;
+    align-items: center;
     gap: 3rem;
 }
 
@@ -98,80 +205,16 @@ h1 {
     font-weight: bolder;
 }
 
-.announcement-form {
-    display: flex;
-    justify-content: center;
-    gap: 1rem;
+.announcement-img {
+    border-radius: .5rem;
 }
 
-.carousel-container {
-    height: auto;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    box-shadow: 0px 15px 15px 0px rgba(0, 0, 0, 0.25);
-    padding: 1rem 3rem;
-    border-radius: 1.5rem;
+.announcement-card .delete-btn {
+    display: none;
+    transition: opacity 300ms ease-in-out;
 }
 
-.swiper {
-    width: 100%;
-}
-
-.swiper-slide {
-    background-position: center;
-    background-size: cover;
-    width: 450px;
-    text-align: center;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 1.5rem;
-    transition: all 0.3s ease;
-}
-
-.swiper-slide .delete {
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-
-.swiper-slide:hover .delete {
-    opacity: 1;
-}
-
-.swiper-slide img {
+.announcement-card:hover .delete-btn {
     display: block;
-    width: 100%;
-    border-radius: 0.5rem;
-}
-
-.delete {
-    padding: 0.5rem 1rem;
-}
-
-.add-announcement {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 400px;
-    height: 85%;
-    border-radius: 10px;
-    cursor: pointer;
-}
-
-.add-btn {
-    font-size: 2rem;
-    border-radius: 50%;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-
-    font-size: 1rem;
 }
 </style>
