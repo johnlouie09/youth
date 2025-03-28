@@ -94,6 +94,9 @@ else if ($endpoint == 'cluster')
 else if($endpoint == 'barangay') {
     require_once __DIR__ . '/api--barangay.php';
 }
+else if($endpoint == 'education-level') {
+    require_once __DIR__ . '/api--educationLevel.php';
+}
 else if($endpoint == 'csrf') {
     require_once __DIR__ . '/csrf.php';
 }

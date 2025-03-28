@@ -5,6 +5,7 @@ if (!defined('__BASE')) { exit(); }
 
 /** imports */
 require_once __DIR__ . '/models/Barangay.php';
+require_once __DIR__ . '/models/SkOfficial.php';
 /** Extract Action */
 $action = $_GET['a'] ?? '';
 
@@ -20,6 +21,11 @@ else if($action === 'barangayInfo') {
     $barangay = Barangay::findBy('slug',$barangaySlug);
     returnSuccess([
         'barangayInfo' => $barangay->getAssoc(true),
+    ]);
+}
+else if($action === 'barangay-dashboard') {
+    returnSuccess([
+        'SkOfficialCount' => $SKOfficialsCount = SkOfficial::getPositionCount( $_POST['barangaySlug'])
     ]);
 }
 else if($action === 'sk-officials') {

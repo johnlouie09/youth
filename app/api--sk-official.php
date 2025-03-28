@@ -6,7 +6,7 @@ if (!defined('__BASE')) { exit(); }
 /** imports */
 require_once __DIR__ . '/models/SkOfficial.php';
 require_once __DIR__ .'/models/Achievement.php';
-
+require_once __DIR__ .'/models/SkEducation.php';
 /** Extract Action */
 $action = $_GET['a'] ?? '';
 
@@ -192,6 +192,8 @@ else if ($action === 'updatePersonalInfo') {
     }
 }
 
+
+// SK Official Achievement 
 else if ($action === 'updateAchievement') {
     // Ensure data exists
     if (!isset($_POST['achievementInfo'])) {
@@ -228,6 +230,9 @@ else if ($action === 'updateAchievement') {
     }
     if (isset($achievementInfo['info'])) {
         $achievement->setInfo($achievementInfo['info']);
+    }
+    if (isset($achievementInfo['sk_official_id'])) {
+        $achievement->setSkOfficialId($achievementInfo['sk_official_id']);
     }
     if (isset($achievementInfo['date'])) {
         $achievement->setDate($achievementInfo['date']); // Ensure correct format (e.g., YYYY-MM-DD)
@@ -375,6 +380,200 @@ else if ($action === 'deleteAchievement') {
         returnError("Delete failed. No changes detected or an error occurred.", 500);
     }
 }
+
+// SK Official Education
+else if ($action === 'updateEducation') {
+    // Ensure education data is provided
+    if (!isset($_POST['educationInfo'])) {
+        returnError('Invalid Education Information Received.', 400);
+    }
+
+    // Decode JSON if needed (if sent via FormData, it may be a JSON string)
+    $educationInfo = is_array($_POST['educationInfo'])
+        ? $_POST['educationInfo']
+        : json_decode($_POST['educationInfo'], true);
+
+    if (!$educationInfo) {
+        returnError('Invalid Education Information Format.', 400);
+    }
+
+    // Ensure ID exists
+    if (!isset($educationInfo['id'])) {
+        returnError('Education ID is required.', 400);
+    }
+
+    // Fetch education record from database using the provided ID
+    $education = SkEducation::findBy('id', $educationInfo['id']);
+    if (!$education) {
+        returnError("No education record found with ID " . $educationInfo['id'], 404);
+    }
+
+    // Update fields if provided
+    if (isset($educationInfo['school_name'])) {
+        $education->setSchoolName($educationInfo['school_name']);
+    }
+    if (isset($educationInfo['course'])) {
+        $education->setCourse($educationInfo['course']);
+    }
+    if (isset($educationInfo['start_year'])) {
+        $education->setStartYear($educationInfo['start_year']);
+    }
+    if (isset($educationInfo['end_year'])) {
+        $education->setEndYear($educationInfo['end_year']);
+    }
+    if (isset($educationInfo['education_level_id'])) {
+        $education->setEducationLevelId($educationInfo['education_level_id']);
+    }
+    if (isset($educationInfo['sk_official_id'])) {
+        $education->setSkOfficialId($educationInfo['sk_official_id']);
+    }
+
+    // Process file upload if a file was provided
+    if (isset($_FILES['file']) && $_FILES['file']['error'] === UPLOAD_ERR_OK) {
+        // Define the upload directory (adjust path as needed)
+        $uploadDir = __DIR__ . '/../public/schoolLogos/'; 
+
+        // Create the directory if it doesn't exist
+        if (!is_dir($uploadDir)) {
+            mkdir($uploadDir, 0755, true);
+        }
+
+        // Get a sanitized version of the filename
+        $filename = basename($_FILES['file']['name']);
+
+        // Set the target file path
+        $targetFile = $uploadDir . $filename;
+
+        // Move the uploaded file to the target directory
+        if (move_uploaded_file($_FILES['file']['tmp_name'], $targetFile)) {
+            // Update the education record with the new school logo filename
+            $education->setSchoolLogo($filename);
+        } else {
+            returnError("Failed to upload file.", 500);
+        }
+    } else if (isset($educationInfo['school_logo'])) {
+        // If no new file is uploaded, update with the provided school_logo value if any
+        $education->setSchoolLogo($educationInfo['school_logo']);
+    }
+
+    // Execute update
+    if ($education->update()) {
+        returnSuccess([
+            'message' => 'Education record updated successfully.',
+            'education' => $education->getAssoc()
+        ]);
+    } else {
+        returnError("Update failed. No changes detected or an error occurred.", 500);
+    }
+}
+
+else if ($action === 'deleteEducation') {
+    // Ensure an ID is provided
+    if (!isset($_POST['id']) || empty($_POST['id'])) {
+        returnError("Education ID is required.", 400);
+    }
+
+    // Fetch the education record from the database using the provided ID
+    $education = SkEducation::findBy('id', $_POST['id']);
+    if (!$education) {
+        returnError("No education record found with ID " . $_POST['id'], 404);
+    }
+
+    // Attempt to delete the education record
+    if ($education->delete()) {
+        returnSuccess([
+            'message' => 'Education deleted successfully.'
+        ]);
+    } else {
+        returnError("Delete failed. No changes detected or an error occurred.", 500);
+    }
+}
+
+else if ($action === 'addEducation') {
+    // Ensure education data is provided
+    if (!isset($_POST['educationInfo'])) {
+        returnError('Invalid education information received.', 400);
+    }
+    
+    // Decode JSON if needed (if sent via FormData, it may be a JSON string)
+    $educationInfo = is_array($_POST['educationInfo']) 
+        ? $_POST['educationInfo'] 
+        : json_decode($_POST['educationInfo'], true);
+    
+    if (!$educationInfo) {
+        returnError('Invalid education information format.', 400);
+    }
+    
+    // Ensure that required fields are provided; for adding, the primary key is auto-incremented.
+    if (!isset($educationInfo['sk_official_id'])) {
+        returnError('SK Official ID is required.', 400);
+    }
+    
+    // Create a new Education record
+    $education = new SkEducation();
+    
+    // Set fields if provided
+    if (isset($educationInfo['sk_official_id'])) {
+        $education->setSkOfficialId($educationInfo['sk_official_id']);
+    }
+    if (isset($educationInfo['education_level_id'])) {
+        $education->setEducationLevelId($educationInfo['education_level_id']);
+    }
+    if (isset($educationInfo['school_name'])) {
+        $education->setSchoolName($educationInfo['school_name']);
+    }
+    if (isset($educationInfo['course'])) {
+        $education->setCourse($educationInfo['course']);
+    }
+    if (isset($educationInfo['start_year'])) {
+        $education->setStartYear($educationInfo['start_year']);
+    }
+    if (isset($educationInfo['end_year'])) {
+        $education->setEndYear($educationInfo['end_year']);
+    }
+    
+    // Process file upload if a file was provided (for the school logo)
+    if (isset($_FILES['file']) && $_FILES['file']['error'] === UPLOAD_ERR_OK) {
+        // Define the upload directory (adjust the path as needed)
+        $uploadDir = __DIR__ . '/../public/OfficialImages/'; 
+        
+        // Create the directory if it doesn't exist
+        if (!is_dir($uploadDir)) {
+            mkdir($uploadDir, 0755, true);
+        }
+        
+        // Get a sanitized version of the filename
+        $filename = basename($_FILES['file']['name']);
+        
+        // Set the target file path
+        $targetFile = $uploadDir . $filename;
+        
+        // Move the uploaded file to the target directory
+        if (move_uploaded_file($_FILES['file']['tmp_name'], $targetFile)) {
+            // Update the education record with the new logo filename
+            $education->setSchoolLogo($filename);
+        } else {
+            returnError("Failed to upload file.", 500);
+        }
+    } else if (isset($educationInfo['school_logo'])) {
+        // If no new file is uploaded, update with the provided school_logo value if any
+        $education->setSchoolLogo($educationInfo['school_logo']);
+    }
+    
+    // Insert the new education record
+    if ($education->insert()) {
+        returnSuccess([
+            'message' => 'Education added successfully.',
+            'education' => $education->getAssoc()
+        ]);
+    } else {
+        returnError("Insert failed. No changes detected or an error occurred.", 500);
+    }
+}
+
+
+
+
 
 
 
