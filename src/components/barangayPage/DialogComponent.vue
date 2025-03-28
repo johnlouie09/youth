@@ -109,7 +109,7 @@
             class="d-flex flex-col justify-start items-center w-[40%] ga-5 rounded-md pa-10"
             elevation="4"
             >
-              <v-avatar :image="item.img || '/public/ADNU.png'" size="75"></v-avatar>
+              <v-avatar :image="filePreview || (item.school_logo ? ($store.getters.base + 'public/schoolLogos/' + item.school_logo) : ($store.getters.base + 'public/schoolLogos/favicon.ico'))" size="75"></v-avatar>
               <article class="d-flex flex-col ga-1" >
                   <h2 class="text-base uppercase font-bold text-center">{{ item.school_name }}</h2>
                   <p class="text-sm text-center">{{ item.course }}</p>

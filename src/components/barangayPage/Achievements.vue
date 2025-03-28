@@ -11,7 +11,7 @@
           <article class="relative pb-5">
             <h3 class="text-lg uppercase font-extrabold">{{ achievement.title }}</h3>
             <h5 class="text-base">{{ achievement.subtitle }}</h5>
-            <h5>{{ achievement.sk_official_id }}</h5>
+            <h5 class="text-sm">{{ achievement.sk_official_name }}</h5>
             <h5 class="text-xs font-italic absolute bottom-0 right-0 pa-1">{{ formatDate(achievement.date) }}</h5>
           </article>
   

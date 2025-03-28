@@ -2,6 +2,7 @@
     import PersonalInfoCard from "./PersonalInfoCard.vue";
     import EducationalOfficial from "./EducationalOfficial.vue";
     import PersonalAchievements from "./PersonalAchievements.vue";
+    import Dialogs from "@/components/dialogs/Dialogs.vue";
 
     import $ from 'jquery';
 
@@ -9,7 +10,8 @@
         components: {
             PersonalInfoCard,
             EducationalOfficial,
-            PersonalAchievements
+            PersonalAchievements,
+            Dialogs
         },
         data() {
             return {
@@ -31,6 +33,7 @@
                     data: { officialSlug: this.skOfficialSlug},
                     success: (data) => {
                         this.officialInfos = data.data;
+                        console.log(data.data.educationalBackgrounds);
                     },
                     error: (jqXHR, textStatus, errorThrown) => {
                         console.error("Error:", textStatus, errorThrown);
@@ -56,9 +59,9 @@
 <template>
     <v-container class="editing-official-main">
         <PersonalInfoCard :info="officialInfos.personalInfo"></PersonalInfoCard>
-        <EducationalOfficial :educations="officialInfos.educationalBackgrounds"></EducationalOfficial>
+        <EducationalOfficial :educations="officialInfos.educationalBackgrounds" :id="officialInfos.personalInfo.id" @fetchOfficialInfo="fetchSkOfficialInfos"></EducationalOfficial>
         <PersonalAchievements :achievements="officialInfos.achievements" :id="officialInfos.personalInfo.id" @fetchOfficialInfo="fetchSkOfficialInfos"></PersonalAchievements>
-
+        <Dialogs />
         <!-- Button to Official Page in Admin -->
         <div class="back" @click="$router.replace({name: 'admin-officials', params:{barangaySlug : this.$store.getters[auth/getBarangayName]}})">
             <v-icon>mdi-arrow-left</v-icon>

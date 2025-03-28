@@ -1,12 +1,10 @@
 <script>
   import FormAchievement from './InputForms/FormAchievement.vue';
-  import Dialogs from '@/components/dialogs/Dialogs.vue';
   import $ from 'jquery';
 
   export default {
     components: {
       FormAchievement,
-      Dialogs
     },
     props: {
       achievements: Object,
@@ -49,6 +47,7 @@
        */
       handleChildEvent(payload) {
         this.showNewAchievement = false;
+        this.editingIndex = null;
         this.$emit('fetchOfficialInfo', payload);
       },
 
@@ -112,34 +111,34 @@
   <v-card class="achievements-section" elevation="5">
 
     <!-- Title Section -->
-    <v-card-title class="title flex items-center justify-center">
+    <v-card-title class="title d-flex items-center justify-center">
       <v-icon class="me-2" size="30">mdi-trophy</v-icon>
       <h2 class="uppercase font-extrabold text-2xl">PERSONAL ACHIEVEMENTS</h2>
     </v-card-title>
 
     <!-- Achievements List -->
     <div class="achievements-cards">
-      <v-container class="flex flex-row flex-wrap justify-evenly p-5 pt-0 gap-10">
+      <v-container class="d-flex flex-row flex-wrap justify-evenly p-5 pt-0 gap-10">
         <v-card
           v-for="(achievement, index) in achievements"
           :key="index"
-          class="w-[30%] min-w-[250px] rounded-lg flex flex-col items-center overflow-hidden pb-10"
+          class="achievement-card w-[30%] min-w-[250px] rounded-lg d-flex flex-col justify-start items-center overflow-hidden pb-10"
           elevation="5"
           @mouseover="hoverIndex = index"
           @mouseleave="hoverIndex = null"
         >
           <!-- Achievement Image -->
-          <img
+          <v-img
             :src="`/public/achievements/${achievement.img}`"
             alt=""
             class="elevation-5 w-full rounded-t-lg"
           />
 
           <!-- Achievement Details -->
-          <article class="flex flex-col items-start w-[90%] m-5">
+          <article class="d-flex flex-col items-start w-[90%] my-5">
             <h3 class="uppercase text-xs font-extrabold">{{ achievement.title }}</h3>
             <h5 class="text-[.75rem] font-medium">{{ achievement.subtitle }}</h5>
-            <h5 class="text-xs font-italic absolute bottom-0 right-0 p-5">{{ formatDate(achievement.date) }}</h5>
+            <h5 class="text-xs font-italic absolute bottom-0 right-0 pa-5">{{ formatDate(achievement.date) }}</h5>
           </article>
 
           <!-- Action Buttons on Hover -->
@@ -156,14 +155,14 @@
             :action="'updating'"
             :achievement="achievement"
             @close="editingIndex = null"
-            @fetchAchievement="handleChildEvent(true)"
+            @fetchInfo="handleChildEvent(true)"
           />
         </v-card>
       </v-container>
 
       <!-- Add New Achievement Button -->
       <v-btn
-        class="flex items-center justify-center px-10 py-10 text-lg"
+        class="d-flex items-center justify-center px-10 py-10 text-lg"
         elevation="10"
         @click="showNewAchievement = true"
       >
@@ -178,60 +177,62 @@
       :achievement="{ sk_official_id: id }"
       :action="'adding'"
       @close="showNewAchievement = false"
-      @fetchAchievement="handleChildEvent(true)"
+      @fetchInfo="handleChildEvent(true)"
     />
-
-    <!-- Global Dialogs Component -->
-    <Dialogs />
   </v-card>
 </template>
 
 <style scoped>
-  .achievements-section {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    width: 80%;
-    border-radius: 1rem;
-    padding: 2rem 0;
-    gap: 3rem;
-  }
-  
-  .achievements-cards {
-    padding: 0 6rem;
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-evenly;
-    gap: 2rem;
-    flex-wrap: wrap;
-  }
-  
-  .card article {
-    width: 90%;
-  }
-  
-  .achievement-card-actions {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    padding: 1rem;
-    display: flex;
-    gap: 10px;
-  }
-  
-  .edit-icon, .delete-icon {
-    cursor: pointer;
-    transition: transform 0.2s ease-in-out;
-  }
-  
-  .edit-icon:hover {
-    transform: scale(1.1);
-    color: #4caf4fa1;
-  }
-  
-  .delete-icon:hover {
-    transform: scale(1.1);
-    color: #f443369c;
-  }
+.achievement-card {
+  transition: transform 0.3s ease;
+}
+
+.achievement-card:hover {
+  transform: scale(1.05);
+}
+
+/* Other existing styles */
+.achievements-section {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 80%;
+  border-radius: 1rem;
+  padding: 2rem 0;
+  gap: 3rem;
+}
+
+.achievements-cards {
+  padding: 0 5rem;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-evenly;
+  flex-wrap: wrap;
+}
+
+.achievement-card-actions {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  padding: 1rem;
+  display: flex;
+  gap: 10px;
+}
+
+.edit-icon, .delete-icon {
+  cursor: pointer;
+  transition: transform 0.2s ease-in-out;
+}
+
+.edit-icon:hover {
+  transform: scale(1.1);
+  color: #4caf4fa1;
+}
+
+.delete-icon:hover {
+  transform: scale(1.1);
+  color: #f443369c;
+}
 </style>
+
   

@@ -1,25 +1,26 @@
 <script>
 import { VDateInput } from 'vuetify/lib/labs/components.mjs';
 import $ from 'jquery';
-  
-export default {
-props: {
-    achievement: Object,
-    action: String
-},
-data() {
-    return {
-    initialAchievementInfo: {},
-    achievementInfo: {},
-    dialog: true,
 
-    // Flag to track if changes have been made
-    hasChanges: false,
-    // For file upload handling
-    file: null,
-    filePreview: null,
-    };
-},
+export default {
+    props: {
+        achievement: Object,
+        action: String
+    },
+    data() {
+        return {
+        initialAchievementInfo: {},
+        achievementInfo: {},
+        officialNames: [],
+        dialog: true,
+
+        // Flag to track if changes have been made
+        hasChanges: false,
+        // For file upload handling
+        file: null,
+        filePreview: null,
+        };
+    },
 methods: {
     // Methods for Button
     saveChanges() {
@@ -27,9 +28,9 @@ methods: {
         this.achievementInfo.date = this.formatDate(this.achievementInfo.date);
         
         // Depending on the action prop, either update or add an achievement.
-        if (this.action === 'updating') {
+        if (this.action === 'updating' || this.action === 'updating-main') {
             this.updateAchievement();
-        } else if (this.action === 'adding') {
+        } else if (this.action === 'adding' || this.action === 'adding-main') {
             this.addAchievement();
         }
         
@@ -39,6 +40,7 @@ methods: {
     },
     discardChanges() {
         this.achievementInfo = { ...this.initialAchievementInfo };
+        this.file = null;
         this.filePreview = null;
         this.hasChanges = false;
     },
@@ -67,36 +69,37 @@ methods: {
     }
     },
 
-    //   Ajax Methods for Updating and Adding Achievements
+    //AJAX Methods for Updating and Adding Achievements
     updateAchievement() {
-    const formData = new FormData();
-    formData.append("achievementInfo", JSON.stringify(this.achievementInfo));
-    if (this.file) {
-        formData.append("file", this.file);
-    }
-    $.ajax({
-        url: `${this.$store.getters['api_base']}?e=sk-official&a=updateAchievement`,
-        type: 'POST',
-        xhrFields: { withCredentials: true },
-        headers: { 'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content },
-        processData: false,
-        contentType: false,
-        data: formData,
-        success: (data) => {
-        console.log("Data has been updated successfully", data);
-        // Convert date string back to a Date object for v-date-input
-        this.achievementInfo.date = new Date(this.achievementInfo.date);
-        // Update the original info to match current info
-        this.initialAchievementInfo = { ...this.achievementInfo };
-        this.hasChanges = false;
-        this.filePreview = null;
-        // Emit an event to notify the parent that an update occurred
-        this.$emit("fetchAchievement", true);
-        },
-        error: (jqXHR, textStatus, errorThrown) => {
-        console.error("Error:", textStatus, errorThrown);
+        const formData = new FormData();
+        formData.append("achievementInfo", JSON.stringify(this.achievementInfo));
+        if (this.file) {
+            formData.append("file", this.file);
         }
-    });
+        $.ajax({
+            url: `${this.$store.getters['api_base']}?e=sk-official&a=updateAchievement`,
+            type: 'POST',
+            xhrFields: { withCredentials: true },
+            headers: { 'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content },
+            processData: false,
+            contentType: false,
+            data: formData,
+            success: (data) => {
+            console.log("Data has been updated successfully", data);
+            // Convert date string back to a Date object for v-date-input
+            this.achievementInfo.date = new Date(this.achievementInfo.date);
+            // Update the original info to match current info
+            this.initialAchievementInfo = { ...this.achievementInfo };
+            this.hasChanges = false;
+            this.file = null;
+            this.filePreview = null;
+            // Emit an event to notify the parent that an update occurred
+            this.$emit("fetchInfo", true);
+            },
+            error: (jqXHR, textStatus, errorThrown) => {
+            console.error("Error:", textStatus, errorThrown);
+            }
+        });
     },
     addAchievement() {
     const formData = new FormData();
@@ -121,7 +124,7 @@ methods: {
         this.hasChanges = false;
         this.filePreview = null;
         // Emit an event to notify the parent that a new achievement was added
-        this.$emit("fetchAchievement", true);
+        this.$emit("fetchInfo", true);
         },
         error: (jqXHR, textStatus, errorThrown) => {
         console.error("Error:", textStatus, errorThrown);
@@ -135,28 +138,98 @@ methods: {
         const d = new Date(date);
         return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
     },
+
+    getOfficials() {
+        const api_base = 'http://localhost/youth/app/api.php';
+        const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+        $.ajax({
+            url: `${api_base}?e=barangay&a=sk-officials`,
+            type: 'POST',
+            xhrFields: {
+            withCredentials: true
+            },
+            headers: {
+                'X-CSRF-Token': csrfToken
+            },
+            data: {
+                barangayId: this.$store.getters['auth/getBarangayId'],
+            },
+            success: (data) => {
+                this.officialNames = [data.data.skChairman, ...data.data.skMembers];
+            },
+
+            error: (jqXHR, textStatus, errorThrown) => {
+                console.error("Error:", textStatus, errorThrown);
+                let errorMsg = "An error occurred while processing your request.";
+                if (jqXHR.responseJSON && jqXHR.responseJSON.error) {
+                    errorMsg = jqXHR.responseJSON.message;
+                } else if (jqXHR.responseText) {
+                    errorMsg = jqXHR.responseText;
+                }
+                this.requestError = errorMsg;
+                },
+            complete: () => {
+                this.loading = false;
+            }
+        });
+    },
+
+    findOfficialIdByName(name) {
+        // Search the officialNames array for an official with the matching full_name.
+        const official = this.officialNames.find(item => item.full_name === name);
+        return official ? official.id : null;
+    }
 },
 
+computed: {
+  officialNamesList() {
+    return this.officialNames.map(official => official.full_name);
+  }
+},
 
-// Watch the achievement prop and update local data accordingly
 watch: {
-    achievement: {
-        immediate: true,
-        handler(newVal) {
-            // Create local copies from the provided achievement prop
-            this.achievementInfo = { ...newVal };
-            if (newVal.date) this.achievementInfo.date = new Date(newVal.date);
-            this.initialAchievementInfo = { ...this.achievementInfo };
-        },
-        deep: true
+  // Watch the entire "achievement" prop and update local copies accordingly.
+  achievement: {
+    immediate: true,
+    handler(newVal) {
+      // Create local copies from the provided achievement prop.
+      this.achievementInfo = { ...newVal };
+      if (newVal.date) {
+        this.achievementInfo.date = new Date(newVal.date);
+      }
+      // Keep an initial copy for change detection.
+      this.initialAchievementInfo = { ...this.achievementInfo };
+
+      // Fetch the list of officials to map names to IDs.
+      this.getOfficials();
     },
-    // Watch for changes in achievementInfo to update the hasChanges flag
-    achievementInfo: {
-        handler(newVal) {
-            this.hasChanges = JSON.stringify(newVal) !== JSON.stringify(this.initialAchievementInfo);
-        },
-        deep: true
-    }
+    deep: true
+  },
+  // Watch for any changes in achievementInfo to update the hasChanges flag.
+  achievementInfo: {
+    handler(newVal) {
+      this.hasChanges =
+        JSON.stringify(newVal) !== JSON.stringify(this.initialAchievementInfo);
+    },
+    deep: true
+  },
+  // Watch the nested property "achievement.sk_official_name" and update the ID.
+  'achievementInfo.sk_official_name': {
+    immediate: true,
+    handler(newVal) {
+      if (newVal && newVal.trim() !== '') {
+        // If there's a new official name, find and update the ID.
+        const newId = this.findOfficialIdByName(newVal);
+        if (newId !== null) {
+          this.achievementInfo.sk_official_id = newId;
+        }
+      } else {
+        // If no new value is provided, revert to the original ID.
+        this.achievementInfo.sk_official_id = this.initialAchievementInfo.sk_official_id;
+      }
+    },
+    deep: true
+  }
 },
 components: {
     VDateInput
@@ -170,10 +243,10 @@ components: {
         
         <!-- Title Section: Display different titles based on the action prop -->
         <div class="d-flex items-center justify-center gap-2">
-            <h3 v-if="action === 'updating'" class="gradient-text text-2xl font-extrabold">
+            <h3 v-if="action === 'updating' || action === 'updating-main'" class="gradient-text text-2xl font-extrabold">
             UPDATE ACHIEVEMENT
             </h3>
-            <h3 v-if="action === 'adding'" class="gradient-text text-2xl font-extrabold">
+            <h3 v-if="action === 'adding' || action === 'adding-main'" class="gradient-text text-2xl font-extrabold">
             ADD NEW ACHIEVEMENT
             </h3>
         </div>
@@ -185,10 +258,12 @@ components: {
             alt=""
             class="elevation-5 rounded-lg"
             ></v-img>
+
             <!-- Camera Icon Button to trigger file input -->
             <v-btn class="upload-icon ma-3" icon @click="triggerFileInput">
-            <v-icon>mdi-camera</v-icon>
+                <v-icon>mdi-camera</v-icon>
             </v-btn>
+            
             <!-- Hidden File Input -->
             <input 
             ref="fileInput" 
@@ -209,6 +284,7 @@ components: {
             variant="outlined"
             required
             ></v-text-field>
+            
             <!-- Achievement Subtitle -->
             <v-text-field
             class="w-full text-lg uppercase"
@@ -217,6 +293,7 @@ components: {
             variant="outlined"
             required
             ></v-text-field>
+
             <!-- Achievement Info -->
             <v-textarea
             class="w-full text-lg uppercase"
@@ -227,6 +304,16 @@ components: {
             auto-grow
             rows="1"
             ></v-textarea>
+
+            <v-select
+                v-if="action ==='adding-main' || action === 'updating-main'"
+                class="w-full"
+                v-model="achievementInfo.sk_official_name"
+                :items="officialNamesList"
+                label="Select Official Name"
+                outlined
+            />
+
             <!-- Achievement Date Picker -->
             <v-date-input
             v-model="achievementInfo.date"
@@ -241,8 +328,8 @@ components: {
         <!-- Action Buttons: Save/Discard -->
         <v-card-actions v-if="hasChanges" class="w-[70%] d-flex justify-center items-center gap-10">
             <v-btn color="red-lighten-1" @click="discardChanges">Discard Changes</v-btn>
-            <v-btn v-if="action === 'adding'" color="teal-lighten-1" @click="saveChanges">Add Achievement</v-btn>
-            <v-btn v-if="action === 'updating'" color="teal-lighten-1" @click="saveChanges">Save Changes</v-btn>
+            <v-btn v-if="action === 'adding' || action === 'adding-main'" color="teal-lighten-1" @click="saveChanges">Add Achievement</v-btn>
+            <v-btn v-if="action === 'updating' || action === 'updating-main'" color="teal-lighten-1" @click="saveChanges">Save Changes</v-btn>
         </v-card-actions>
         
         <!-- Close Dialog Button -->
