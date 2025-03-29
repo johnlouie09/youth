@@ -18,6 +18,9 @@ class Achievement extends Model
     protected $img              = '';
     protected $date             = '';
 
+    protected $sk_official_img       = '';
+    protected $sk_official_position  = '';
+
 
     /**
      * Constructor
@@ -110,6 +113,26 @@ class Achievement extends Model
 
 
     /**
+     * Gets SK Official's image.
+     * @return string
+     */
+    public function getSkOfficialImg()
+    {
+        return $this->sk_official_img;
+    }
+
+
+    /**
+     * Gets SK Official's position.
+     * @return string
+     */
+    public function getSkOfficialPosition()
+    {
+        return $this->sk_official_position;
+    }
+
+
+    /**
      * Sets Achievement sk_official_id.
      * @param $sk_official_id
      * @return void
@@ -187,6 +210,30 @@ class Achievement extends Model
 
 
     /**
+     * Sets SK Official's image.
+     *
+     * @param $img
+     * @return void
+     */
+    public function setSkOfficialImg($img)
+    {
+        $this->sk_official_img = $img;
+    }
+
+
+    /**
+     * Sets SK Official's position.
+     *
+     * @param $position
+     * @return void
+     */
+    public function setSkOfficialPosition($position)
+    {
+        $this->sk_official_position = $position;
+    }
+
+
+    /**
      * Override getAssoc() to include sk_official_name.
      *
      * @param bool $basic
@@ -199,7 +246,8 @@ class Achievement extends Model
 
         // then, add this field to include sk_official_name
         $arr['sk_official_name'] = $this->getSkOfficialName();
-
+        $arr['sk_official_img'] = $this->getSkOfficialImg();
+        $arr['sk_official_position'] = $this->getSkOfficialPosition();
         return $arr;
     }
 
@@ -216,8 +264,10 @@ class Achievement extends Model
     {
         // join achievements (a) with sk_officials (s) to get the official's full_name
         $query = "SELECT a.*,
-                      s.full_name AS sk_official_name
-                  FROM achievements a
+                      s.full_name AS sk_official_name,
+                      s.img AS sk_official_img,
+                      s.position AS sk_official_position
+                  FROM `" . self::$table . "` a
                   JOIN sk_officials s ON a.sk_official_id = s.id";
         $params = [];
         $types = "";
@@ -238,6 +288,8 @@ class Achievement extends Model
         while ($row = $result->fetch_assoc()) {
             $achievement = new Achievement();
             $row['sk_official_name'] = $row['sk_official_name'] ?? '';
+            $achievement->setSkOfficialImg($row['sk_official_img'] ?? '');
+            $achievement->setSkOfficialPosition($row['sk_official_position'] ?? '');
             $achievement->hydrate($row); // this calls setSkOfficialName internally
             $achievements[] = $assoc ? $achievement->getAssoc($assoc_basic) : $achievement;
         }
