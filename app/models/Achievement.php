@@ -247,53 +247,86 @@ class Achievement extends Model
 
     /**
      * Returns a summary of achievements per month and total achievements per year.
-     * The monthly summary returns the month name (e.g., January, February) along with the year and count.
+     * If a barangay slug is provided, the summary is generated only for that specific barangay.
      *
+     * @param string|null $barangaySlug
      * @return array
      * @throws Exception
      */
-    public static function getMonthlySummary(): array
+    public static function getMonthlySummary(?string $barangaySlug = null): array
     {
         $conn = self::getConnectionStatic();
 
-        // Monthly summary: use MONTHNAME() to get the month name
-        $queryMonthly = "SELECT YEAR(date) AS year, MONTHNAME(date) AS month, COUNT(*) AS count
-                         FROM `" . self::$table . "`
-                         GROUP BY YEAR(date), MONTH(date)
-                         ORDER BY YEAR(date) ASC, MONTH(date) ASC";
-
-        $stmt = $conn->prepare($queryMonthly);
-        if (!$stmt) {
-            throw new Exception("Prepare failed: " . $conn->error);
+        if ($barangaySlug !== null) {
+            // When filtering by barangay, join with the barangays table and filter by slug
+            $queryMonthly = "
+            SELECT YEAR(a.date) AS year, MONTHNAME(a.date) AS month, COUNT(*) AS count
+            FROM `" . self::$table . "` a
+            JOIN barangays b ON a.sk_official_id IN (
+                SELECT id FROM sk_officials WHERE barangay_id = b.id
+            )
+            WHERE b.slug = ?
+            GROUP BY YEAR(a.date), MONTH(a.date)
+            ORDER BY YEAR(a.date) ASC, MONTH(a.date) ASC
+        ";
+            $stmt = $conn->prepare($queryMonthly);
+            if (!$stmt) {
+                throw new Exception("Prepare failed: " . $conn->error);
+            }
+            $stmt->bind_param("s", $barangaySlug);
+        } else {
+            $queryMonthly = "
+            SELECT YEAR(date) AS year, MONTHNAME(date) AS month, COUNT(*) AS count
+            FROM `" . self::$table . "`
+            GROUP BY YEAR(date), MONTH(date)
+            ORDER BY YEAR(date) ASC, MONTH(date) ASC
+        ";
+            $stmt = $conn->prepare($queryMonthly);
+            if (!$stmt) {
+                throw new Exception("Prepare failed: " . $conn->error);
+            }
         }
         $stmt->execute();
         $result = $stmt->get_result();
-
         $monthlyGrouped = [];
         while ($row = $result->fetch_assoc()) {
             $year = $row['year'];
-            $month = $row['month'];
-            $count = $row['count'];
-
             if (!isset($monthlyGrouped[$year])) {
                 $monthlyGrouped[$year] = [];
             }
-
             $monthlyGrouped[$year][] = [
-                'month' => $month,
-                'count' => $count,
+                'month' => $row['month'],
+                'count' => $row['count'],
             ];
         }
 
-        // Annual summary: total achievements per year
-        $queryAnnual = "SELECT YEAR(date) AS year, COUNT(*) AS total
-                        FROM `" . self::$table . "`
-                        GROUP BY YEAR(date)
-                        ORDER BY year ASC";
-
-        $stmt = $conn->prepare($queryAnnual);
-        if (!$stmt) {
-            throw new Exception("Prepare failed: " . $conn->error);
+        // Annual summary
+        if ($barangaySlug !== null) {
+            $queryAnnual = "
+            SELECT YEAR(a.date) AS year, COUNT(*) AS total
+            FROM `" . self::$table . "` a
+            JOIN sk_officials s ON a.sk_official_id = s.id
+            JOIN barangays b ON s.barangay_id = b.id
+            WHERE b.slug = ?
+            GROUP BY YEAR(a.date)
+            ORDER BY year ASC
+        ";
+            $stmt = $conn->prepare($queryAnnual);
+            if (!$stmt) {
+                throw new Exception("Prepare failed: " . $conn->error);
+            }
+            $stmt->bind_param("s", $barangaySlug);
+        } else {
+            $queryAnnual = "
+            SELECT YEAR(date) AS year, COUNT(*) AS total
+            FROM `" . self::$table . "`
+            GROUP BY YEAR(date)
+            ORDER BY year ASC
+        ";
+            $stmt = $conn->prepare($queryAnnual);
+            if (!$stmt) {
+                throw new Exception("Prepare failed: " . $conn->error);
+            }
         }
         $stmt->execute();
         $result = $stmt->get_result();
@@ -303,7 +336,7 @@ class Achievement extends Model
         }
 
         return [
-            'monthly' => $monthlyGrouped,  // grouped month by year
+            'monthly' => $monthlyGrouped,
             'annual'  => $annual
         ];
     }
