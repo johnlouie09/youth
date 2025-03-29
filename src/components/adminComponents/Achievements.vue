@@ -154,7 +154,7 @@
             <v-avatar :image="(achievement.sk_official_img ? ($store.getters.base + 'public/OfficialImages/' + achievement.sk_official_img) : ($store.getters.base + 'public/OfficialImages/no-avatar.jpg'))" size="50"></v-avatar>
             <v-card-text class="d-flex flex-col">
               <span class="text-sm">{{ achievement.sk_official_name }}</span>
-              <span class="uppercase text-xs">SK Chairperson</span>
+              <span class="uppercase text-xs">{{ achievement.sk_official_position }}</span>
             </v-card-text>
           </v-card>
 

@@ -11,9 +11,16 @@
           <article class="relative pb-5">
             <h3 class="text-lg uppercase font-extrabold">{{ achievement.title }}</h3>
             <h5 class="text-base">{{ achievement.subtitle }}</h5>
-            <h5 class="text-sm">{{ achievement.sk_official_name }}</h5>
             <h5 class="text-xs font-italic absolute bottom-0 right-0 pa-1">{{ formatDate(achievement.date) }}</h5>
           </article>
+
+          <v-card class="w-[90%] d-flex items-center ga-1 px-5 mb-5 elevation-5">
+            <v-avatar :image="(achievement.sk_official_img ? ($store.getters.base + 'public/OfficialImages/' + achievement.sk_official_img) : ($store.getters.base + 'public/OfficialImages/no-avatar.jpg'))" size="50"></v-avatar>
+            <v-card-text class="d-flex flex-col">
+              <span class="text-sm">Hon. {{ achievement.sk_official_name }}</span>
+              <span class="uppercase text-xs">{{ achievement.sk_official_position }}</span>
+            </v-card-text>
+          </v-card>
   
           <v-expand-transition>
             <div v-show="showStates[index]">
@@ -158,7 +165,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 1.5rem;
+    gap: 1rem;
     position: relative;
     transition: transform 0.3s ease-in-out, border 0.3s ease-in-out;
     padding-bottom: 2rem;

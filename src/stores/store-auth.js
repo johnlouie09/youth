@@ -14,6 +14,9 @@ export default {
         },
         getBarangayName(state) {
             return state.user.barangay.name;
+        },
+        getBarangaySlug(state) {
+            return state.user.barangay.slug;
         }
     },
 
