@@ -1,46 +1,3 @@
-<template>
-    <v-container class="announcement-main">
-        <h1>ANNOUNCEMENTS</h1>
-        <div class="w-full d-flex flex-row flex-wrap justify-center ga-10 items-start">
-            <v-card 
-            v-for="announcement in announcements" 
-            :key="announcement.id"
-            class="announcement-card w-[30%] h-[500px] d-flex flex-col justify-start ga-5 pa-8 elevation-10 rounded-xl"
-            >
-            <v-img 
-                :src="announcement.img 
-                        ? ($store.getters.base + 'public/announcements/' + announcement.img) 
-                        : ($store.getters.base + 'public/announcements/exx.jpg')"
-                class="rounded h-[400px]"
-                contain
-            ></v-img>
-
-            <div class="w-full d-flex justify-center items-center">
-                <!-- The button is hidden by default; CSS will reveal it on hover -->
-                <v-btn class="delete-btn" color="red-lighten-1" @click="confirmDelete(announcement.id)">DELETE</v-btn>
-            </div>
-            </v-card>
-        </div>
-
-
-        <v-btn
-            class="w-[30%] d-flex items-center justify-center px-10 py-10 text-lg"
-            elevation="10"
-            >
-                <v-icon>mdi-plus-circle-outline</v-icon>
-                <span class="ml-4"  @click="triggerFileInput">ADD ACHIEVEMENT</span>
-        </v-btn>
-    </v-container>
-
-    <input
-        ref="fileInput"
-        type="file"
-        accept="image/*"
-        class="hidden"
-        @change="handleFileUpload"
-    />
-</template>
-  
 <script>
 import $ from 'jquery';
 export default {
@@ -189,20 +146,64 @@ export default {
 };
 </script>
 
+<template>
+    <v-container class="announcement-main">
+        <!-- Title Section -->
+        <div class="title d-flex items-center justify-center ma-5">
+            <v-icon class="mr-5" size="75">mdi-bullhorn</v-icon>
+            <h2 class="font-black text-3xl">ANNOUNCEMENTS</h2>
+            <v-icon class="ml-5" size="75">mdi-bullhorn</v-icon>
+        </div>
+
+        <div class="w-full d-flex flex-row flex-wrap justify-center ga-10 items-start">
+            <v-card 
+            v-for="announcement in announcements" 
+            :key="announcement.id"
+            class="announcement-card w-[30%] h-[500px] d-flex flex-col justify-start ga-5 pa-8 elevation-10 rounded-xl"
+            >
+            <v-img 
+                :src="announcement.img 
+                        ? ($store.getters.base + 'public/announcements/' + announcement.img) 
+                        : ($store.getters.base + 'public/announcements/exx.jpg')"
+                class="rounded h-[400px]"
+                contain
+            ></v-img>
+
+            <div class="w-full d-flex justify-center items-center">
+                <!-- The button is hidden by default; CSS will reveal it on hover -->
+                <v-btn class="delete-btn" color="red-lighten-1" @click="confirmDelete(announcement.id)">DELETE</v-btn>
+            </div>
+            </v-card>
+        </div>
+
+
+        <v-btn
+            class="w-[30%] d-flex items-center justify-center px-10 py-10 text-lg ma-5"
+            elevation="10"
+            @click="triggerFileInput"
+            >
+                <v-icon>mdi-plus-circle-outline</v-icon>
+                <span class="ml-4">ADD ANNOUNCEMENT</span>
+        </v-btn>
+    </v-container>
+
+    <input
+        ref="fileInput"
+        type="file"
+        accept="image/*"
+        class="hidden"
+        @change="handleFileUpload"
+    />
+</template>
+
 <style scoped>
 .announcement-main {
-    padding: 4rem 5rem;
+    padding: 2rem 5rem;
     display: flex;
     flex-direction: column;
     justify-content: start;
     align-items: center;
-    gap: 3rem;
-}
-
-h1 {
-    text-align: center;
-    font-size: 2rem;
-    font-weight: bolder;
+    gap: 1rem;
 }
 
 .announcement-img {

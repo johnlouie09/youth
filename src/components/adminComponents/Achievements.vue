@@ -6,10 +6,6 @@
     components: {
       FormAchievement,
     },
-    props: {
-      id: Number
-    },
-    emits: ['fetchOfficialInfo'],
     data() {
       return {
         hoverIndex: null,
@@ -42,16 +38,14 @@
       },
 
       fetchBarangayAchievements() {
-        const api_base = 'http://localhost/youth/app/api.php';
-        const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
         $.ajax({
-          url: `${api_base}?e=barangay&a=achievements`,
+          url: `${this.$store.getters.api_base}?e=barangay&a=achievements`,
           type: 'POST',
           xhrFields: {
             withCredentials: true
           },
           headers: {
-            'X-CSRF-Token': csrfToken
+            'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
           },
           data: {
             barangayId: 1,
@@ -67,9 +61,6 @@
             } else if (jqXHR.responseText) {
               errorMsg = jqXHR.responseText;
             }
-          },
-          complete: () => {
-            // Optional: any actions after completion.
           }
         });
       },
@@ -129,8 +120,9 @@
 
     <!-- Title Section -->
     <v-card-title class="title d-flex items-center justify-center ma-5">
-      <v-icon class="me-2" size="30">mdi-trophy</v-icon>
-      <h2 class="uppercase font-extrabold text-2xl">PERSONAL ACHIEVEMENTS</h2>
+      <v-icon class="mr-3" size="75">mdi-trophy</v-icon>
+      <h2 class="font-black text-3xl">BARANGAY ACHIEVEMENTS</h2>
+      <v-icon class="ml-3" size="75">mdi-trophy</v-icon>
     </v-card-title>
 
     <!-- Achievements List -->
@@ -158,7 +150,7 @@
             <h5 class="text-xs font-italic absolute bottom-0 right-0 pa-5">{{ formatDate(achievement.date) }}</h5>
           </article>
 
-          <v-card class="w-[80%] d-flex items-center ga-1 px-5 mb-5">
+          <v-card class="w-[80%] d-flex items-center ga-1 px-5 mb-5 elevation-5">
             <v-avatar :image="(achievement.sk_official_img ? ($store.getters.base + 'public/OfficialImages/' + achievement.sk_official_img) : ($store.getters.base + 'public/OfficialImages/no-avatar.jpg'))" size="50"></v-avatar>
             <v-card-text class="d-flex flex-col">
               <span class="text-sm">{{ achievement.sk_official_name }}</span>

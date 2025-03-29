@@ -3,28 +3,25 @@
         <!-- Cards Section -->
         <v-row class="cards" justify="center">
             <v-col
-                v-for="card in data.cardsData"
-                :key="card.title"
                 cols="12" md="4"
             >
-                <DashboardCards :card="card" />
+                <DashboardCards :card="dashBoardData.skOfficialCount" />
             </v-col>
         </v-row>
 
         <!-- Features Section -->
-        <v-row class="feats" justify="space-between">
-            <!-- Suggestions -->
+        <!-- <v-row class="feats" justify="space-between">
+       
             <v-col cols="12" md="5">
                 <Suggestions />
             </v-col>
 
-            <!-- Analytics & Button -->
             <v-col cols="12" md="7">
                 <v-card class="pa-4">
                     <Analytics />
                 </v-card>
             </v-col>
-        </v-row>
+        </v-row> -->
 
         <v-btn
             class="to-website mt-4"
@@ -50,20 +47,15 @@ export default {
     },
     data() {
         return {
-            data: {
-                cardsData: [
-                    {
+            dashBoardData: {
+                    skOfficialCount: {
                         type: 'officials',
                         title: 'OFFICIALS',
                         icon: 'mdi-account-group',
-                        details: [
-                            { position: 'CHAIRPERSON', number: 1 },
-                            { position: 'TREASURER', number: 1 },
-                            { position: 'SECRETARY', number: 1 },
-                            { position: 'KAGAWADS', number: 1 },
-                        ]
+                        details: []
                     },
-                    {
+
+                    achievementReport: {
                         type: 'achievements',
                         title: 'ACHIEVEMENTS',
                         icon: 'mdi-trophy',
@@ -72,7 +64,7 @@ export default {
                             quantity: 64
                         }
                     },
-                    {
+                    announcementReport: {
                         type: 'announcements',
                         title: 'ANNOUNCEMENTS',
                         icon: 'mdi-bullhorn',
@@ -81,7 +73,6 @@ export default {
                             quantity: 98
                         }
                     }
-                ]
             },
             api_base: (import.meta.env.DEV ? 'http://localhost/youth' : '/youth') + '/app/api.php',
             testData: {
@@ -90,8 +81,43 @@ export default {
         };
     },
     methods: {
+        async getDashboardData() {
+            const api_base = 'http://localhost/youth/app/api.php';
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+            await $.ajax({
+                url: `${api_base}?e=barangay&a=barangay-dashboard`,
+                type: 'POST',
+                xhrFields: {
+                withCredentials: true
+                },
+                headers: {
+                    'X-CSRF-Token': csrfToken
+                },
+                data: {
+                    barangaySlug: this.$route.params.barangaySlug,
+                },
+                success: (data) => {
+                    this.dashBoardData.skOfficialCount.details = data.data.SkOfficialCount
+                },
+
+                error: (jqXHR, textStatus, errorThrown) => {
+                    console.error("Error:", textStatus, errorThrown);
+                    let errorMsg = "An error occurred while processing your request.";
+                    if (jqXHR.responseJSON && jqXHR.responseJSON.error) {
+                        errorMsg = jqXHR.responseJSON.message;
+                    } else if (jqXHR.responseText) {
+                        errorMsg = jqXHR.responseText;
+                    }
+                    this.requestError = errorMsg;
+                    },
+                complete: () => {
+                    this.loading = false;
+                }
+            });
+        }
     },
     created() {
+        this.getDashboardData();
     }
 };
 </script>

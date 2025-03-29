@@ -17,13 +17,14 @@
 
                     <!-- Officials Section -->
                     <v-row v-if="card.type === 'officials'" justify="center" align="center">
-                        <v-col cols="12" class="d-flex justify-start align-start flex-column">
-                            <p v-for="detail in card.details" :key="detail.position">
-                                <span class="number me-2">{{ detail.number }}</span>
-                                {{ detail.position }}
+                        <v-col cols="12" class="flex flex-col justify-start items-start">
+                            <p v-for="(number, position) in card.details" :key="position">
+                            <span class="number me-2">{{ number }}</span>
+                            {{ position }}
                             </p>
                         </v-col>
                     </v-row>
+
 
                     <!-- Achievements & Announcements Section -->
                     <v-row
