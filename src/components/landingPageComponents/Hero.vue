@@ -9,8 +9,8 @@
         <div class="carousel-container">
             <div ref="swiperContainer" class="swiper mySwiper">
                 <div class="swiper-wrapper">
-                    <div class="swiper-slide" v-for="n in 10" :key="n">
-                        <img :src="`/exx.jpg`" :alt="`Movie ${n}`" />
+                    <div class="swiper-slide" v-for="image in shuffledImages">
+                        <img :src="($store.getters.base + 'public/achievements/' + image) " />
                     </div>
                 </div>
             </div> 
@@ -25,11 +25,14 @@ import "swiper/css/effect-coverflow";
 import "swiper/css/autoplay";
 import "swiper/css/pagination";
 import { EffectCoverflow, Autoplay, Pagination } from "swiper/modules";
+import $ from 'jquery';
 
 export default {
     name: "HeroComponent",
     data() {
-        return {};
+        return {
+            shuffledImages: [],
+        };
     },
     mounted() {
         this.$nextTick(() => {
@@ -37,6 +40,30 @@ export default {
         });
     },
     methods: {
+         // Shuffle an array using the Fisher-Yates algorithm.
+        shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+        },
+
+        // Fetch image filenames from the backend and shuffle them.
+        getImageFilenames() {
+            $.ajax({
+                url:  `${this.$store.getters['api_base']}?e=barangay&a=image-filenames`,
+                type: 'GET',
+                success: (data) => {
+                // Assuming data is an array of filenames.
+                this.shuffledImages = this.shuffleArray(data);
+                console.log("Shuffled Images:", this.shuffledImages);
+                },
+                error: (jqXHR, textStatus, errorThrown) => {
+                console.error("Error fetching images:", textStatus, errorThrown);
+                }
+            });
+        },
         initSwiper() {
             new Swiper(this.$refs.swiperContainer, {
                 modules: [EffectCoverflow, Autoplay, Pagination],
@@ -53,7 +80,7 @@ export default {
                 },
                 loop: true,
                 autoplay: {
-                    delay: 1500,
+                    delay: 1000,
                     disableOnInteraction: true,
                 },
                 // Add pagination configuration
@@ -64,6 +91,9 @@ export default {
             });
         },
     },
+    created() {
+        this.getImageFilenames();
+    }
 };
 </script>
 
