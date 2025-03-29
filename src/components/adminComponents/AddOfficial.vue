@@ -136,7 +136,6 @@ export default {
       dialog: true,
       skOfficial: {},
       positions: [
-        "SK Chairperson",
         "SK Secretary",
         "SK Treasurer",
         "SK Kagawad"
