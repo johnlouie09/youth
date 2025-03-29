@@ -5,7 +5,7 @@ require_once __DIR__ . '/../../models/SkOfficial.php';
 require_once __DIR__ . '/../../models/Achievement.php';
 require_once __DIR__ . '/../../models/Announcement.php';
 
-// Test 1: SK Official Position Count (SkOfficial)
+// Test 1: SK Official Position Count
 echo "<h2>Overall Position Count (All Barangays)</h2>";
 try {
     $allCounts = SkOfficial::getPositionCount();
@@ -15,20 +15,20 @@ try {
 }
 echo "<hr>";
 
-echo "<h2>Position Count for Barangay with slug san-francisco</h2>";
+echo "<h2>Position Count for Barangay with slug 'san-francisco'</h2>";
 try {
     $barangayCounts = SkOfficial::getPositionCount('san-francisco');
     print_r($barangayCounts);
 } catch (Exception $e) {
-    echo "Error: " . $e->getMessage();
+    echo "Error: " . $e->getMessage() . "\n";
 }
 echo "<hr>";
 
-
-// Test 2: Monthly/Annual Achievements Summary (Achievement)
-echo "<h2>Monthly/Annual Achievements Summary</h2>";
+// Test 2: Monthly/Annual Achievements Summary for a Specific Barangay
+echo "<h2>Monthly/Annual Achievements Summary for Barangay 'san-francisco'</h2>";
 try {
-    $summary = Achievement::getMonthlySummary();
+    // pass the barangay slug to filter the summary
+    $summary = Achievement::getMonthlySummary('san-francisco');
     echo "Monthly Summary:\n";
     print_r($summary['monthly']);
     echo "\nAnnual Summary:\n";
@@ -38,15 +38,14 @@ try {
 }
 echo "<hr>";
 
-
-// Test 3: Annual Announcements Count (Announcement)
-echo "<h2>Annual Announcements Count for 2025</h2>";
+// Test 3: Annual Announcements Count for a Specific Barangay and Year
+echo "<h2>Annual Announcements Count for 2025 in Barangay 'san-francisco'</h2>";
 try {
-    $annualCount = Announcement::getAnnualCount(2025);
-    echo "Total Announcements in 2025: " . $annualCount . "\n";
+    // now getAnnualCount() expects a barangay slug and a year
+    $annualCount = Announcement::getAnnualCount('san-francisco', 2025);
+    echo "Total Announcements in 2025 for 'san-francisco': " . $annualCount . "\n";
 } catch (Exception $e) {
     echo "Error in getAnnualCount(): " . $e->getMessage() . "\n";
 }
 
 echo "</pre>";
-
