@@ -3,8 +3,8 @@
         <!-- Cards Section -->
         <v-container class="cards" justify="center">
                 <DashboardCards :card="dashBoardData.skOfficialCount" />
-                <DashboardCards :card="dashBoardData.skOfficialCount" />
-                <DashboardCards :card="dashBoardData.skOfficialCount" />
+                <DashboardCards :card="dashBoardData.achievementReport" />
+                <DashboardCards :card="dashBoardData.announcementReport" />
         </v-container>
 
         <!-- Features Section -->
@@ -21,12 +21,14 @@
             </v-col>
         </v-row> -->
 
+        <!-- Go to Barangay Website Button -->
         <v-btn
-            class="d-flex items-center justify-center w-auto px-15 py-10 text-lg"
-            color="black"
-            height="64"
+        class="d-flex items-center justify-center w-auto px-15 py-10 text-lg"
+        color="black"
+        height="64"
+        @click="openBarangayWebsite"
         >
-            GO TO {{ this.$store.getters['auth/getBarangayName'] }} WEBSITE
+            GO TO {{ barangayName }} WEBSITE
         </v-btn>
 
     </v-container>
@@ -58,22 +60,15 @@ export default {
                         type: 'achievements',
                         title: 'ACHIEVEMENTS',
                         icon: 'mdi-trophy',
-                        details: {
-                            date: new Date(2025, 1),
-                            quantity: 64
-                        }
+                        details: {}
                     },
                     announcementReport: {
                         type: 'announcements',
                         title: 'ANNOUNCEMENTS',
                         icon: 'mdi-bullhorn',
-                        details: {
-                            date: new Date(2025, 7),
-                            quantity: 98
-                        }
+                        details: {}
                     }
             },
-            api_base: (import.meta.env.DEV ? 'http://localhost/youth' : '/youth') + '/app/api.php',
             testData: {
                 skOfficial: null
             }
@@ -81,22 +76,24 @@ export default {
     },
     methods: {
         async getDashboardData() {
-            const api_base = 'http://localhost/youth/app/api.php';
-            const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+
             await $.ajax({
-                url: `${api_base}?e=barangay&a=barangay-dashboard`,
+                url: `${this.$store.getters.api_base}?e=barangay&a=barangay-dashboard`,
                 type: 'POST',
                 xhrFields: {
                 withCredentials: true
                 },
                 headers: {
-                    'X-CSRF-Token': csrfToken
+                    'X-CSRF-Token': csrfTokendocument.querySelector('meta[name="csrf-token"]').content
                 },
                 data: {
                     barangaySlug: this.$route.params.barangaySlug,
                 },
                 success: (data) => {
-                    this.dashBoardData.skOfficialCount.details = data.data.SkOfficialCount
+                    console.log(data);
+                    this.dashBoardData.skOfficialCount.details = data.data.SkOfficialCount;
+                    this.dashBoardData.achievementReport.details = data.data.reportAchievement;
+                    this.dashBoardData.announcementReport.details = data.data.reportAnnouncement;
                 },
 
                 error: (jqXHR, textStatus, errorThrown) => {
@@ -113,7 +110,14 @@ export default {
                     this.loading = false;
                 }
             });
-        }
+        },
+        openBarangayWebsite() {
+            // Resolve the URL using Vue Router
+            // Ensure that your router configuration has a route named 'barangay-website'
+            const resolvedRoute = this.$router.resolve({ name: 'barangay-landingpage', params: { slug: this.barangaySlug } });
+            // Open the resolved URL in a new window
+            window.open(resolvedRoute.href, '_blank');
+        },
     },
     computed: {
         barangayName() {

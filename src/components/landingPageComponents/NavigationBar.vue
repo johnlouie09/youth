@@ -14,14 +14,7 @@
         :class="[view.class, { active: isActive(view.to) }]"
       >
         {{ view.name.toUpperCase() }}
-    </v-btn>
-      <RouterLink
-        v-if="$route.path === '/barangay'"
-        to="/barangay/send-message"
-        class="view message"
-      >
-        <v-icon>mdi-message</v-icon>
-      </RouterLink>
+      </v-btn>
       <ThemeSwitcher />
     </ul>
   </v-sheet>
@@ -36,9 +29,7 @@ export default {
   data() {
     return {
       views: [
-        { name: "Home", to: "/", class: "view home" },
-        { name: "About", to: "/about", class: "view about" },
-        { name: "Contact", to: "/contact", class: "view contact" }
+        { name: "Home", to: "/", class: "view home" }
       ]
     };
   },
@@ -77,7 +68,7 @@ export default {
   justify-content: space-between;
   align-items: center;
   border-radius: 1rem;
-  padding: 0px 2rem;
+  padding: 0px 4rem;
   overflow: hidden;
 }
 
@@ -99,9 +90,10 @@ export default {
 ul {
   width: 60%;
   display: flex;
-  justify-content: space-around;
+  justify-content: flex-end;
   align-items: center;
   font-weight: bold;
+  gap: 2rem;
 }
 
 .view {
