@@ -573,9 +573,141 @@ else if ($action === 'addEducation') {
 
 
 
+else if ($action === 'addOfficial') {
+    // Ensure officialInfo is provided
+    if (!isset($_POST['officialInfo'])) {
+        returnError('Official information is required.', 400);
+    }
+    
+    // Decode JSON data if necessary
+    $officialInfo = is_array($_POST['officialInfo']) 
+        ? $_POST['officialInfo'] 
+        : json_decode($_POST['officialInfo'], true);
+    
+    if (!$officialInfo) {
+        returnError('Invalid official information format.', 400);
+    }
+    
+    // Check required fields: Barangay ID, Full Name, Email, and Position
+    if (!isset($officialInfo['barangay_id'])) {
+        returnError('Barangay ID is required.', 400);
+    }
+    if (!isset($officialInfo['full_name']) || trim($officialInfo['full_name']) === '') {
+        returnError('Full Name is required.', 400);
+    }
+    if (!isset($officialInfo['email']) || trim($officialInfo['email']) === '') {
+        returnError('Email is required.', 400);
+    }
+    if (!isset($officialInfo['position']) || trim($officialInfo['position']) === '') {
+        returnError('SK Official position is required.', 400);
+    }
+    
+    // Validate SK position using allowed constants
+    $allowedPositions = [
+        SkOfficial::POSITION_SK_CHAIRPERSON,
+        SkOfficial::POSITION_SK_SECRETARY,
+        SkOfficial::POSITION_SK_TREASURER,
+        SkOfficial::POSITION_SK_KAGAWAD
+    ];
+    if (!in_array($officialInfo['position'], $allowedPositions)) {
+        returnError('Invalid SK Official position provided.', 400);
+    }
+    
+    // Create a new SK Official instance
+    $official = new SkOfficial();
+    
+    // Set the provided properties
+    $official->setBarangayId($officialInfo['barangay_id']);
+    
+    // Use the provided slug if available; otherwise, auto-generate from full_name
+    if (isset($officialInfo['slug']) && trim($officialInfo['slug']) !== '') {
+        $official->setSlug($officialInfo['slug']);
+    } else {
+        $slug = strtolower(explode(" ", $officialInfo['full_name'])[0]);
+        $official->setSlug($slug);
+    }
+    
+    // Do not set username and password from the input; set them as empty strings.
+    $official->setUsername('');
+    $official->setPassword('');
+    
+    // Set the remaining properties
+    $official->setFullName($officialInfo['full_name']);
+    $official->setPosition($officialInfo['position']);
+    if (isset($officialInfo['contact_number'])) {
+        $official->setContactNumber($officialInfo['contact_number']);
+    }
+    $official->setEmail($officialInfo['email']);
+    if (isset($officialInfo['birthday'])) {
+        $official->setBirthday($officialInfo['birthday']);
+    }
+    if (isset($officialInfo['motto'])) {
+        $official->setMotto($officialInfo['motto']);
+    }
+    if (isset($officialInfo['img'])) {
+        $official->setImg($officialInfo['img']);
+    }
+    if (isset($officialInfo['term_start'])) {
+        $official->setTermStart($officialInfo['term_start']);
+    }
+    if (isset($officialInfo['term_end'])) {
+        $official->setTermEnd($officialInfo['term_end']);
+    }
+    
+    // Process file upload if provided
+    if (isset($_FILES['file']) && $_FILES['file']['error'] === UPLOAD_ERR_OK) {
+        // Define the upload directory
+        $uploadDir = __DIR__ . '/../public/OfficialImages/';
+        if (!is_dir($uploadDir)) {
+            mkdir($uploadDir, 0755, true);
+        }
+        
+        // Sanitize the filename and construct the target path
+        $filename = basename($_FILES['file']['name']);
+        $targetFile = rtrim($uploadDir, '/') . '/' . $filename;
+        
+        if (move_uploaded_file($_FILES['file']['tmp_name'], $targetFile)) {
+            $official->setImg($filename);
+        } else {
+            returnError("Failed to upload file.", 500);
+        }
+    }
+    
+    // Attempt to insert the new official into the database
+    if ($official->insert()) {
+        returnSuccess([
+            'message' => 'SK Official added successfully.',
+            'official' => $official->getAssoc()
+        ]);
+    } else {
+        returnError("Failed to add SK Official.", 500);
+    }
+}
 
 
-
+else if ($action === 'deleteOfficial') {
+    // Ensure the official ID is provided.
+    if (!isset($_POST['id'])) {
+        returnError('Official ID is required.', 400);
+    }
+    
+    $id = $_POST['id'];
+    // Fetch the official from the database
+    $official = SkOfficial::findBy('id', $id);
+    
+    if (!$official) {
+        returnError("No official found with ID $id.", 404);
+    }
+    
+    // Attempt to delete the official.
+    if ($official->delete()) {
+        returnSuccess([
+            'message' => 'SK Official deleted successfully.'
+        ]);
+    } else {
+        returnError("Failed to delete SK Official.", 500);
+    }
+}
 
 /** Invalid Request *******************************************/
 else

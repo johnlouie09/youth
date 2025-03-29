@@ -11,21 +11,71 @@
                 cover
             ></v-avatar>
             <h3 class="text-h6 font-weight-medium mt-2">{{ official.full_name }}</h3>
-            <v-btn color="primary" variant="outlined" class="mt-3" @click="toEditingOfficial(official)">
-                EDIT
-            </v-btn>
+            <div class="d-flex gap-5">
+                <v-btn color="primary" variant="outlined" class="mt-3" @click="toEditingOfficial(official)">
+                    EDIT
+                </v-btn>
+
+                <v-btn color="error" variant="outlined" class="mt-3"  @click="confirmDelete(official.id)">
+                    DELETE
+                </v-btn>
+            </div>
         </v-card-text>
     </v-card>
+    <Dialogs></Dialogs>
 </template>
 
 <script>
+import Dialogs from '@/components/dialogs/Dialogs.vue';
+import $ from 'jquery';
 export default {
     props: {
         official: Object
     },
+    components: {
+        Dialogs
+    },
+    emits: ['fetchInfo'],
     methods: {
         toEditingOfficial(official) {
             this.$router.replace({ name: 'admin-edit-official', params: { officialSlug: official.slug }});
+        },
+
+        // Confirm deletion using the Vuex dialog module
+        confirmDelete(officialId) {
+        this.$store.commit('dialog/confirm/show', {
+            title: 'Delete Official',
+            prompt: 'Are you sure you want to delete this official?',
+            color: 'red',
+            yesText: 'Delete',
+            noText: 'Cancel',
+            onConfirm: async () => {
+            this.deleteOfficial(officialId);
+            },
+            onCancel: () => {
+            console.log('Deletion cancelled');
+            }
+        });
+        },
+        // Delete official via AJAX
+        deleteOfficial(officialId) {
+        $.ajax({
+            url: `${this.$store.getters['api_base']}?e=sk-official&a=deleteOfficial`,
+            type: 'POST',
+            xhrFields: { withCredentials: true },
+            headers: {
+            'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
+            },
+            data: { id: officialId },
+            success: (data) => {
+            console.log("Official deleted successfully", data);
+            // Optionally, notify parent to refresh the list:
+            this.$emit('fetchInfo', true);
+            },
+            error: (jqXHR, textStatus, errorThrown) => {
+            console.error("Error deleting official:", textStatus, errorThrown);
+            }
+        });
         }
     }
 };

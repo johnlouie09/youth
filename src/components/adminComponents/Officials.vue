@@ -4,22 +4,43 @@
             <h1>BARANGAY {{this.$store.getters["auth/getBarangayName"].toUpperCase()}} OFFICIALS</h1>
         </div>
         <div class="cards">
-            <OfficialCard v-for="official in officials" :key="official.id" :official="official" />
+            <OfficialCard v-for="official in officials" :key="official.id" :official="official" @fetchInfo="getOfficials()"/>
         </div>
+
+        <!-- Add New Education Button -->
+        <v-btn
+        @click="showAddSkOfficial = true"
+        class="d-flex items-center justify-center w-auto px-15 py-10 text-lg"
+        elevation="10"
+        >
+            <v-icon>mdi-plus-circle-outline</v-icon>
+            <span class="ml-2">ADD SK OFFICIAL</span>
+        </v-btn>
+
+        <AddOfficial
+        v-if="showAddSkOfficial"
+        @fetchOfficialInfo="getOfficials()"
+        @close="showAddSkOfficial = false">
+        
+        </AddOfficial>
+
     </v-container>
 </template>
 
 <script>
 import OfficialCard from "./subcomponents/officials/OfficialCard.vue";
+import AddOfficial from "./AddOfficial.vue";
 import $ from 'jquery';
 
 export default {
     components: {
-        OfficialCard
+        OfficialCard,
+        AddOfficial
     },
     data() {
         return {
-            officials: null
+            officials: null,
+            showAddSkOfficial: false
         };
     },
     methods: {
@@ -56,7 +77,17 @@ export default {
                     this.loading = false;
                 }
             });
-        }
+        },
+
+        /**
+         * Handles child events by closing the new achievement form
+         * and emitting an event to refresh official information.
+         */
+         handleChildEvent(payload) {
+            this.showNewEducation = false;
+            this.editingIndex = null;
+
+        },
     },
     created() {
         this.getOfficials();
@@ -69,6 +100,8 @@ export default {
     padding: 4rem 7rem;
     display: flex;
     flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
     gap: 4rem;
 }
 .cards {
