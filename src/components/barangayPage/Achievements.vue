@@ -2,7 +2,7 @@
     <v-container fluid class="achievement-main pa-0 ma-0 mb-15">
       <h1 class="gradient-text font-black uppercase py-10">Achievements</h1>
       <div class="achievements">
-        <v-card elevation="15" 
+        <v-card elevation="10" 
             v-for="(achievement, index) in achievements" :key="index"
             class="card"
         >

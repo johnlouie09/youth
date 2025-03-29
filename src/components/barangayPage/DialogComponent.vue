@@ -44,7 +44,7 @@
       <v-divider class="mt-5"></v-divider>
 
       <!-- Content Sections -->
-      <v-container style="overflow-y: auto; display: flex; justify-content: center; height: 100%; padding: 0;">
+      <v-container style="position: relative; overflow-y: auto; display: flex; justify-content: center; height: 100%; padding: 0;">
         <!-- Profile Information Section -->
         <v-sheet 
           v-if="activeTab === 'profile'" class="w-full rounded-lg overflow-auto dark-gradient">
@@ -70,7 +70,7 @@
                 </v-card-item>
               </v-card>
             </v-sheet>
-            <v-card class="d-flex flex-row justify-start items-center w-full px-5 py-1">
+            <v-card class="d-flex flex-row justify-start items-center w-full px-5 py-1 mb-5">
               <v-icon>mdi-cake-variant</v-icon>
               <v-card-item> 
                 <p class="text-base">{{ formatDate(officialInfos.personalInfo?.birthday) || '' }}</p>
@@ -78,7 +78,7 @@
               </v-card-item>
             </v-card>
 
-            <div class="d-flex w-full justify-center items-center">
+            <div class="d-flex w-full justify-center items-center pb-5">
               <div class="d-flex flex-col items-center justify-center w-[50%] pa-2 elevation-5">
                 <h4 class="text-lg font-bold">TERM START</h4>
                 <span>{{ formatDate(officialInfos.personalInfo?.term_start) }}</span>
@@ -88,9 +88,9 @@
                 <span>{{ formatDate(officialInfos.personalInfo?.term_end) }}</span>
               </div>
             </div>
-
-            <p class="d-block w-[70%] text-center text-xl text-grey font-italic motto-text relative bottom-0 right-0">"{{ officialInfos.personalInfo?.motto }}"</p>
+            <p class="d-block w-[100%] text-center text-xl text-grey font-italic motto-text relative bottom-0 right-0">"{{ officialInfos.personalInfo?.motto }}"</p>
           </v-container>
+          
 
         </v-sheet>
 

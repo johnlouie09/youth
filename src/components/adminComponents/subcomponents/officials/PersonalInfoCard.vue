@@ -148,46 +148,50 @@
 </script>
 
 <template>
-  <!-- Achievement Image and Motto Card -->
-  <v-card justify="center" class="intro pa-4 info-card">
-    <div class="image-container pa-5">
-      <!-- Image Container -->
-      <v-avatar 
-      :image="filePreview || (personalInfo.img ? ($store.getters.base + 'public/OfficialImages/' + personalInfo.img) : '/public/OfficialImages/no-avatar.jpg')"
-      alt="Profile Image" 
-      cover
-      size="200"
-      class="rounded-circle"
-      />
 
-      <!-- Floating Upload Icon -->
-      <v-btn class="upload-icon" icon @click="triggerFileInput">
-        <v-icon>mdi-camera</v-icon>
-      </v-btn>
 
-      <!-- Hidden File Input -->
-      <input 
-        ref="fileInput" 
-        type="file" 
-        accept="image/*" 
-        class="hidden"
-        @change="handleFileUpload"
-      >
-    </div>
-
-    <!-- Motto Textarea -->
-    <v-textarea 
-    class="motto" 
-    label="Motto" 
-    width="80%" 
-    v-model="personalInfo.motto" 
-    auto-grow 
-    rows="1">
-    </v-textarea>
-  </v-card>
 
   <!-- Personal Information Section -->
   <v-card class="personal-info w-[60%] d-flex flex-col justify-center items-center ga-5" elevation="5">
+
+    <!-- Official Image and Motto Card -->
+    <v-card justify="center" class="intro pa-4 info-card">
+      <div class="image-container pa-5">
+        <!-- Image Container -->
+        <v-avatar 
+        :image="filePreview || (personalInfo.img ? ($store.getters.base + 'public/OfficialImages/' + personalInfo.img) : '/public/OfficialImages/no-avatar.jpg')"
+        alt="Profile Image" 
+        cover
+        size="200"
+        class="rounded-circle"
+        />
+
+        <!-- Floating Upload Icon -->
+        <v-btn class="upload-icon" icon @click="triggerFileInput">
+          <v-icon>mdi-camera</v-icon>
+        </v-btn>
+
+        <!-- Hidden File Input -->
+        <input 
+          ref="fileInput" 
+          type="file" 
+          accept="image/*" 
+          class="hidden"
+          @change="handleFileUpload"
+        >
+      </div>
+
+      <!-- Motto Textarea -->
+      <v-textarea 
+      class="motto" 
+      label="Motto" 
+      width="80%" 
+      v-model="personalInfo.motto" 
+      auto-grow 
+      rows="1">
+      </v-textarea>
+    </v-card>
+
     <!-- Title Section -->
     <v-card-title class="d-flex align-center justify-center ga-3">
       <v-icon class="active me-2" size="40">mdi-account-circle</v-icon>
@@ -248,7 +252,6 @@
             variant="solo"
           />
         </div>
-
         <!-- Action Buttons -->
         <div v-if="hasChanges" class="button-container">
           <v-btn color="teal-lighten-1" @click="saveChanges">Save Changes</v-btn>
@@ -268,7 +271,7 @@
 }
 
 .intro {
-  width: 50%;
+  width: 80%;
   flex-wrap: nowrap;
   flex-direction: column;
   justify-items: center;
