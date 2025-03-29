@@ -118,21 +118,27 @@ class Announcement extends Model
 
 
     /**
-     * Returns the count of announcements made in a given year.
+     * Returns the count of announcements made in a given year for a specific barangay.
      *
-     * @param int $year The year for which to count announcements.
+     * @param string $barangaySlug
+     * @param int $year
      * @return int
      * @throws Exception
      */
-    public static function getAnnualCount(int $year): int
+    public static function getAnnualCount(string $barangaySlug, int $year): int
     {
         $conn = self::getConnectionStatic();
-        $query = "SELECT COUNT(*) AS count FROM `" . self::$table . "` WHERE YEAR(created_at) = ?";
+        $query = "
+        SELECT COUNT(*) AS count
+        FROM `" . self::$table . "` a
+        JOIN barangays b ON a.barangay_id = b.id
+        WHERE YEAR(a.created_at) = ? AND b.slug = ?
+    ";
         $stmt = $conn->prepare($query);
         if (!$stmt) {
             throw new Exception("Prepare failed: " . $conn->error);
         }
-        $stmt->bind_param("i", $year);
+        $stmt->bind_param("is", $year, $barangaySlug);
         $stmt->execute();
         $result = $stmt->get_result();
         $row = $result->fetch_assoc();
