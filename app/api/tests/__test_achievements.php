@@ -15,6 +15,8 @@ foreach ($achievements as $achievement) {
     echo "Subtitle: " . $achievement['subtitle'] . "\n";
     // instead of showing sk_official_id, we expect to see sk_official_name:
     echo "Official Name: " . $achievement['sk_official_name'] . "\n";
+    echo "Official Image: " . $achievement['sk_official_img'] . "\n";
+    echo "Official Position: " . $achievement['sk_official_position'] . "\n";
     echo "Date: " . $achievement['date'] . "\n";
     echo "Info: " . $achievement['info'] . "\n";
     echo "-----------------------------\n";
