@@ -7,6 +7,7 @@ if (!defined('__BASE')) { exit(); }
 require_once __DIR__ . '/models/Barangay.php';
 require_once __DIR__ . '/models/SkOfficial.php';
 require_once __DIR__ . '/models/Announcement.php';
+require_once __DIR__ . '/models/Achievement.php';
 /** Extract Action */
 $action = $_GET['a'] ?? '';
 
@@ -26,7 +27,9 @@ else if($action === 'barangayInfo') {
 }
 else if($action === 'barangay-dashboard') {
     returnSuccess([
-        'SkOfficialCount' => $SKOfficialsCount = SkOfficial::getPositionCount( $_POST['barangaySlug'])
+        'SkOfficialCount' => $SKOfficialsCount = SkOfficial::getPositionCount( $_POST['barangaySlug']),
+        'reportAchievement' => $BarangayAchievement = Achievement::getMonthlySummary($_POST['barangaySlug']),
+        'reportAnnouncement' => $barangayAnnouncement = Announcement::getAnnualCount($_POST['barangaySlug'], 2025)
     ]);
 }
 else if($action === 'sk-officials') {
@@ -131,4 +134,25 @@ else if ($action === 'delete-announcement') {
     } else {
         returnError("Failed to delete announcement. No changes detected or an error occurred.", 500);
     }
+}
+
+else if ($action === 'image-filenames') {
+    // Define the directory containing your images.
+    // Adjust the path as necessary (ensure the path is correct relative to this file).
+    $imageDir = __DIR__ . '\..\public\achievements';
+
+    // Check if the directory exists.
+    if (!is_dir($imageDir)) {
+        echo json_encode([]);
+        exit;
+    }
+
+    // Scan the directory for files and filter to include only image files.
+    $files = array_filter(scandir($imageDir), function($file) use ($imageDir) {
+        $filePath = $imageDir . '/' . $file;
+        return is_file($filePath) && preg_match('/\.(jpg|jpeg|png|gif)$/i', $file);
+    });
+
+    // Re-index the array and return the result as JSON.
+    echo json_encode(array_values($files));
 }
