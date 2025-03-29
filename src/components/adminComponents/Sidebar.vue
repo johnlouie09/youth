@@ -32,7 +32,7 @@
       </v-list>
   
       <!-- Logout Button at the Bottom Center -->
-      <v-card class="logout d-flex items-center justify-center w-[90%] pa-5 gap-5">
+      <v-card class="logout d-flex items-center justify-center w-[90%] pa-5 gap-5 mb-5">
         <ThemeSwitcher class="w-[10%]" />
         <v-btn class="pa-3 w-[50%] d-flex justify-center items-center" color="error" variant="outlined" @click="logout">
           <v-icon left>mdi-logout</v-icon>

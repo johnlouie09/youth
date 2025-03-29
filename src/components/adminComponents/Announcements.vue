@@ -178,12 +178,12 @@ export default {
 
 
         <v-btn
-            class="w-[30%] d-flex items-center justify-center px-10 py-10 text-lg ma-5"
+            class="d-flex items-center justify-center w-auto px-15 py-10 text-lg ma-5"
             elevation="10"
             @click="triggerFileInput"
             >
                 <v-icon>mdi-plus-circle-outline</v-icon>
-                <span class="ml-4">ADD ANNOUNCEMENT</span>
+                <span class="ml-2">ADD ANNOUNCEMENT</span>
         </v-btn>
     </v-container>
 

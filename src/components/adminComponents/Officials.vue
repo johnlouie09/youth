@@ -4,7 +4,7 @@
             <h1>BARANGAY {{this.$store.getters["auth/getBarangayName"].toUpperCase()}} OFFICIALS</h1>
         </div>
         <div class="cards">
-            <OfficialCard v-for="official in officials" :key="official.id" :official="official" @fetchInfo="getOfficials()"/>
+            <OfficialCard :loading="loading" v-for="official in officials" :key="official.id" :official="official" @fetchInfo="getOfficials()"/>
         </div>
 
         <!-- Add New Education Button -->
@@ -40,7 +40,8 @@ export default {
     data() {
         return {
             officials: null,
-            showAddSkOfficial: false
+            showAddSkOfficial: false,
+            loading: false
         };
     },
     methods: {

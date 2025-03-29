@@ -1,5 +1,5 @@
 <template>
-    <v-container>
+    <v-container class="d-flex justify-evenly flex-row pa-0" style="width: 40%;">
         <v-card class="dashboard-card" elevation="10">
             <!-- Card Title -->
             <v-card-title :class="['card-title', card.type]">
@@ -67,6 +67,7 @@ export default {
 <style scoped>
 /* Base Card Styling */
 .dashboard-card {
+    width: 100%;
     height: 256px;
     background-color: var(--v-theme-surface);
     border-radius: 0.5rem;

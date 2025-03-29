@@ -13,8 +13,6 @@
                         <img :src="`/exx.jpg`" :alt="`Movie ${n}`" />
                     </div>
                 </div>
-                <!-- Pagination element -->
-                <div class="swiper-pagination"></div>
             </div> 
         </div>
     </div>

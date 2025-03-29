@@ -43,10 +43,10 @@
           {{ requestError.toUpperCase() }}
         </div>
         <!-- Forgot Password Link -->
-        <div class="text-right ma-4">
+        <!-- <div class="text-right ma-4">
           <a href="#" class="forgot-link">Forgot your password?</a>
         </div>
-  
+   -->
         <!-- Login Button with loading prop -->
         <v-btn color="primary" block type="submit" :loading="loading">
           Log In

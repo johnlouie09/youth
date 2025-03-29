@@ -1,13 +1,11 @@
 <template>
     <v-container class="dashboard-main" fluid>
         <!-- Cards Section -->
-        <v-row class="cards" justify="center">
-            <v-col
-                cols="12" md="4"
-            >
+        <v-container class="cards" justify="center">
                 <DashboardCards :card="dashBoardData.skOfficialCount" />
-            </v-col>
-        </v-row>
+                <DashboardCards :card="dashBoardData.skOfficialCount" />
+                <DashboardCards :card="dashBoardData.skOfficialCount" />
+        </v-container>
 
         <!-- Features Section -->
         <!-- <v-row class="feats" justify="space-between">
@@ -24,12 +22,13 @@
         </v-row> -->
 
         <v-btn
-            class="to-website mt-4"
+            class="d-flex items-center justify-center w-auto px-15 py-10 text-lg"
             color="black"
             height="64"
         >
-            GO TO SAN FRANCISCO WEBSITE
+            GO TO {{ this.$store.getters['auth/getBarangayName'] }} WEBSITE
         </v-btn>
+
     </v-container>
 </template>
 
@@ -116,6 +115,11 @@ export default {
             });
         }
     },
+    computed: {
+        barangayName() {
+            return this.$store.getters['auth/getBarangayName'];
+        }
+    },
     created() {
         this.getDashboardData();
     }
@@ -127,14 +131,20 @@ export default {
 
 <style scoped>
 .dashboard-main {
-    padding: 36px 72px;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
+    height: 100vh;
+    padding: 4rem;
+    gap: 2rem;
 }
 
 .cards {
+    display: flex;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+    gap: 4rem;
     width: 100%;
 }
 

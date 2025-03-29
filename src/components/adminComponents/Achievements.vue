@@ -179,12 +179,12 @@
 
       <!-- Add New Achievement Button -->
       <v-btn
-        class="d-flex items-center justify-center px-10 py-10 text-lg"
+        class="d-flex items-center justify-center w-auto px-15 py-10 text-lg ma-5"
         elevation="10"
         @click="showNewAchievement = true"
       >
         <v-icon>mdi-plus-circle-outline</v-icon>
-        <span class="ml-4">ADD PERSONAL ACHIEVEMENT</span>
+        <span class="ml-2">ADD PERSONAL ACHIEVEMENT</span>
       </v-btn>
     </div>
 

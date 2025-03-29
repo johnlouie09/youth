@@ -7,8 +7,6 @@
                     <img :src="`/public/announcements/${announcement.img}`" :alt="announcement.title"/>
                 </div>
             </div>
-            <!-- Pagination container -->
-            <div class="swiper-pagination"></div>
         </div>
     </div>
 </template>
