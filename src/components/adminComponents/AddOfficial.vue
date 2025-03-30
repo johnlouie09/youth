@@ -14,7 +14,7 @@
         <!-- Image Container -->
         <div class="image relative pa-0">
             <v-avatar 
-            :image="filePreview || (skOfficial.img ? ($store.getters.base + 'public/OfficialImages/' + skOfficial.img) : '/public/OfficialImages/no-avatar.jpg')"
+            :image="filePreview || (skOfficial.img ? ($store.getters.base + 'public/OfficialImages/' + skOfficial.img) : '/public/OfficialImages/no-avatar.png')"
             alt="Profile Image" 
             cover
             size="125"

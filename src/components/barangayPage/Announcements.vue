@@ -49,11 +49,11 @@ export default {
                     stretch: 0,
                     depth: 300,
                     modifier: 1,
-                    slideShadows: false,
+                    slideShadows: true,
                 },
                 loop: true,
                 autoplay: {
-                    delay: 3000,
+                    delay: 10000,
                     disableOnInteraction: false,
                 },
                 pagination: {

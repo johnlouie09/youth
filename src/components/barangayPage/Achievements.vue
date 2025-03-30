@@ -15,7 +15,7 @@
           </article>
 
           <v-card class="w-[90%] d-flex items-center ga-1 px-5 mb-5 elevation-5">
-            <v-avatar :image="(achievement.sk_official_img ? ($store.getters.base + 'public/OfficialImages/' + achievement.sk_official_img) : ($store.getters.base + 'public/OfficialImages/no-avatar.jpg'))" size="50"></v-avatar>
+            <v-avatar :image="(achievement.sk_official_img ? ($store.getters.base + 'public/OfficialImages/' + achievement.sk_official_img) : ($store.getters.base + 'public/OfficialImages/no-avatar.png'))" size="50"></v-avatar>
             <v-card-text class="d-flex flex-col">
               <span class="text-sm">Hon. {{ achievement.sk_official_name }}</span>
               <span class="uppercase text-xs">{{ achievement.sk_official_position }}</span>

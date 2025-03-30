@@ -76,16 +76,13 @@ export default {
     },
     methods: {
         async getDashboardData() {
-
             await $.ajax({
                 url: `${this.$store.getters.api_base}?e=barangay&a=barangay-dashboard`,
                 type: 'POST',
                 xhrFields: {
                 withCredentials: true
                 },
-                headers: {
-                    'X-CSRF-Token': csrfTokendocument.querySelector('meta[name="csrf-token"]').content
-                },
+                headers: { 'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content },
                 data: {
                     barangaySlug: this.$route.params.barangaySlug,
                 },

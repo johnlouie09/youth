@@ -1,7 +1,7 @@
 <template>
     <v-card class="official-card" elevation="4" @click="fillDialog(official)">
         <v-avatar
-        :image="official.img ? ($store.getters.base + 'public/OfficialImages/' + official.img) : '/public/OfficialImages/no-avatar.jpg'"
+        :image="official.img ? ($store.getters.base + 'public/OfficialImages/' + official.img) : '/public/OfficialImages/no-avatar.png'"
         cover
         alt="SK Logo"
         class="official-pic rounded-circle"

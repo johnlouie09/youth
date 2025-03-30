@@ -72,24 +72,24 @@ export default {
                 centeredSlides: true,
                 slidesPerView: "auto",
                 coverflowEffect: {
-                    rotate: 30,
-                    stretch: 0,
-                    depth: 400,
-                    modifier: 1,
-                    slideShadows: true,
+                rotate: 30,
+                stretch: 0,
+                depth: 400,
+                modifier: 1,
+                slideShadows: true,
                 },
                 loop: true,
                 autoplay: {
-                    delay: 1000,
-                    disableOnInteraction: true,
+                delay: 1100, // Autoplay delay in milliseconds
+                disableOnInteraction: false, // Continue autoplay even after user interactions
                 },
-                // Add pagination configuration
                 pagination: {
-                    el: ".swiper-pagination",
-                    clickable: true,
+                el: ".swiper-pagination",
+                clickable: true,
                 },
             });
-        },
+        }
+        ,
     },
     created() {
         this.getImageFilenames();
