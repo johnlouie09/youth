@@ -5,8 +5,8 @@ require_once __DIR__ . '/Model.php';
 class Youth extends Model
 {
     /** static data */
-    public static $table            = 'youths';
-    public static $table_columns    = [];
+    public    static $table         = 'youths';
+    public    static $table_columns = [];
     protected static $basic_columns = ['id', 'username', 'full_name', 'email'];
 
     /** properties */
