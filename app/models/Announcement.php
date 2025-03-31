@@ -78,6 +78,27 @@ class Announcement extends Model
 
 
     /**
+     * Gets the announcement data as an associative array, with the 'img' field returned as an array of image filenames.
+     *
+     * @param bool $basic
+     * @return array
+     */
+    public function getAssoc(bool $basic = false): array
+    {
+        $arr = parent::getAssoc($basic);
+
+        // Convert the 'img' field to an array.
+        if (!empty($arr['img'])) {
+            $arr['img'] = array_map('trim', explode(',', $arr['img']));
+        } else {
+            $arr['img'] = [];
+        }
+
+        return $arr;
+    }
+
+
+    /**
      * Retrieves all Announcement records, optionally filtering by Barangay.
      *
      * @param bool $assoc
@@ -113,6 +134,36 @@ class Announcement extends Model
             $announcements[] = $assoc ? $announcement->getAssoc($assoc_basic) : $announcement;
         }
 
+        return $announcements;
+    }
+
+
+    /**
+     * Retrieves a limited number of random Announcement records across all barangays.
+     *
+     * @param int $limit
+     * @param bool $assoc
+     * @param bool $assoc_basic
+     * @return array
+     * @throws Exception
+     */
+    public static function getRandomAnnouncements(int $limit = 50, bool $assoc = false, bool $assoc_basic = false): array
+    {
+        $conn = self::getConnectionStatic();
+        $query = "SELECT * FROM `" . self::$table . "` ORDER BY RAND() LIMIT ?";
+        $stmt = $conn->prepare($query);
+        if (!$stmt) {
+            throw new Exception("Prepare failed: " . $conn->error);
+        }
+        $stmt->bind_param("i", $limit);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $announcements = [];
+        while ($row = $result->fetch_assoc()) {
+            $announcement = new Announcement();
+            $announcement->hydrate($row);
+            $announcements[] = $assoc ? $announcement->getAssoc($assoc_basic) : $announcement;
+        }
         return $announcements;
     }
 
