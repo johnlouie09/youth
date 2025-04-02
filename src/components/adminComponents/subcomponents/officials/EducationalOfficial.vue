@@ -17,7 +17,7 @@
             >
                 <div class="educational-details">
                     <v-avatar 
-                    :image="(item.school_logo ? ($store.getters.base + 'public/schoolLogos/' + item.school_logo) : ($store.getters.base + 'public/schoolLogos/favicon.ico'))" size="80"></v-avatar>
+                    :image="(item.school_logo ? ($store.getters.base + 'public/schoolLogos/' + item.school_logo) : ($store.getters.base + 'public/schoolLogos/no-avatar.png'))" size="80"></v-avatar>
                     <article>
                         <h2 class="uppercase text-lg font-extrabold">{{ item.school_name }}</h2>
                         <p class="text-base">{{ item.course }}</p>

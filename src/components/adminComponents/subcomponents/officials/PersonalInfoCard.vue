@@ -159,7 +159,7 @@
       <div class="image-container pa-5">
         <!-- Image Container -->
         <v-avatar 
-        :image="filePreview || (personalInfo.img ? ($store.getters.base + 'public/OfficialImages/' + personalInfo.img) : '/public/OfficialImages/no-avatar.jpg')"
+        :image="filePreview || (personalInfo.img ? ($store.getters.base + 'public/OfficialImages/' + personalInfo.img) : '/public/OfficialImages/no-avatar.png')"
         alt="Profile Image" 
         cover
         size="200"

@@ -48,7 +48,7 @@
             'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
           },
           data: {
-            barangayId: 1,
+            barangayId: this.$store.getters['auth/getBarangayId'],
           },
           success: (data) => {
             this.achievements = data.data.achievements;
@@ -137,10 +137,10 @@
           @mouseleave="hoverIndex = null"
         >
           <!-- Achievement Image -->
-          <v-img
+          <img
             :src="`/public/achievements/${achievement.img}`"
             alt=""
-            class="elevation-5 w-full rounded-t-lg"
+            class="elevation-5 w-full max-h-[225px] rounded-t-lg"
           />
 
           <!-- Achievement Details -->
@@ -153,7 +153,7 @@
           <v-card class="w-[80%] d-flex items-center ga-1 px-5 mb-5 elevation-5">
             <v-avatar :image="(achievement.sk_official_img ? ($store.getters.base + 'public/OfficialImages/' + achievement.sk_official_img) : ($store.getters.base + 'public/OfficialImages/no-avatar.png'))" size="50"></v-avatar>
             <v-card-text class="d-flex flex-col">
-              <span class="text-sm">{{ achievement.sk_official_name }}</span>
+              <span class="text-sm">Hon. {{ achievement.sk_official_name }}</span>
               <span class="uppercase text-xs">{{ achievement.sk_official_position }}</span>
             </v-card-text>
           </v-card>
