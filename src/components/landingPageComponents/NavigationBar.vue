@@ -1,6 +1,6 @@
 <template>
   <v-sheet class="nav-main" v-if="!shouldHideNav" elevation="10">
-    <div class="logo">
+    <div class="logo relative">
       <img class="barangay-logo" :src="`${$store.getters['base']}Group.svg`" alt="Barangay Logo">
       <img class="logo-name" :src="`${$store.getters['base']}youth-name.svg`" alt="Youth Name">
     </div>
@@ -15,8 +15,11 @@
       >
         {{ view.name.toUpperCase() }}
       </v-btn>
-      <ThemeSwitcher />
+
+      <v-icon>mdi-message</v-icon>
     </ul>
+
+    <ThemeSwitcher />
   </v-sheet>
 </template>
 
@@ -29,7 +32,9 @@ export default {
   data() {
     return {
       views: [
-        { name: "Home", to: "/", class: "view home" }
+        { name: "Home", to: "/", class: "view home" },
+        { name: "Contact", to: "/contact", class: "view contact" },
+        { name: "About", to: "/about", class: "view about" }
       ]
     };
   },
@@ -88,12 +93,11 @@ export default {
 }
 
 ul {
-  width: 60%;
   display: flex;
   justify-content: flex-end;
   align-items: center;
   font-weight: bold;
-  gap: 2rem;
+  gap: 3rem;
 }
 
 .view {

@@ -80,7 +80,7 @@ export default {
                 },
                 loop: true,
                 autoplay: {
-                delay: 1100, // Autoplay delay in milliseconds
+                delay: 1000, // Autoplay delay in milliseconds
                 disableOnInteraction: false, // Continue autoplay even after user interactions
                 },
                 pagination: {
@@ -189,16 +189,7 @@ h2 {
     width: 100%;
     height: 80vh;
     border-radius: 2rem;
+    opacity: .7;
 }
 
-/* Optional: Style pagination bullets */
-.swiper-pagination-bullet {
-    background-color: #fff;
-    opacity: 0.7;
-}
-
-.swiper-pagination-bullet-active {
-    background-color: #001d61;
-    opacity: 1;
-}
 </style>

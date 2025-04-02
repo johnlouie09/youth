@@ -1,14 +1,14 @@
 <template>
-    <v-container fluid class="pt-0">
+    <v-container fluid class="pa-0">
         <v-card class="pa-9 pb-4">
-            <h2 class="suggestions-title text-center font-weight-bold">YOUTH SUGGESTIONS NOTIFICATIONS</h2>
+            <h2 class="py-5 text-center text-2xl font-weight-bold">YOUTH MESSAGES NOTIFICATIONS</h2>
 
             <v-tabs v-model="tab" grow>
                 <v-tab>UNREAD</v-tab>
                 <v-tab>ALL</v-tab>
             </v-tabs>
 
-            <v-container class="overflow-y-auto" style="max-height: 500px;">
+            <v-container class="overflow-y-scroll h-[400px]">
                 <v-list>
                     <v-list-item v-for="n in 10" :key="n" class="mb-3 rounded">
                         <v-list-item-title class="font-weight-bold">{{ messages.title }}</v-list-item-title>
@@ -62,9 +62,5 @@ export default {
 
 .v-list-item {
     padding: 16px;
-}
-
-.suggestions-title {
-    padding: 3rem 2rem;
 }
 </style>

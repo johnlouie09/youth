@@ -1,16 +1,17 @@
 <template>
-    <v-navigation-drawer v-model="drawer" app width="280" class="pa-3 pt-7 pb-7">
+    <v-navigation-drawer v-model="drawer" app width="280" class="relative d-flex flex-col pa-3 pt-7 pb-7">
       <!-- Logo and Barangay Name -->
-      <v-list-item class="logo-container mb-5">
-        <template v-slot:prepend>
+      <v-list-item class="logo-container">
+        <div class="d-flex justify-center items-center py-5" @click="openBarangayWebsite">
           <v-avatar size="45">
             <v-img :src="`${$store.getters['base']}Group.svg`" alt="Barangay Logo"></v-img>
           </v-avatar>
-        </template>
-        <v-list-item>
-          <v-list-item-title>BARANGAY</v-list-item-title>
-          <v-list-item-subtitle>{{ barangaySlug.toUpperCase() }}</v-list-item-subtitle>
-        </v-list-item>
+
+          <v-list-item>
+              <v-list-item-title>BARANGAY</v-list-item-title>
+              <v-list-item-subtitle>{{ barangaySlug.toUpperCase() }}</v-list-item-subtitle>
+            </v-list-item>
+          </div>
       </v-list-item>
   
       <!-- Navigation Menu -->
@@ -31,14 +32,23 @@
         </v-list-item>
       </v-list>
   
+      <!-- Go to Barangay Website Button -->
+      <v-btn
+      class="d-flex items-center justify-center w-auto ma-auto"
+      height="64"
+      @click="openBarangayWebsite"
+      >
+          GO TO WEBSITE
+      </v-btn>
+
       <!-- Logout Button at the Bottom Center -->
-      <v-card class="logout d-flex items-center justify-center w-[90%] pa-5 gap-5 mb-5">
+      <div class="logout absolute bottom-0 d-flex items-center justify-center w-[250px] py-10 gap-5">
         <ThemeSwitcher class="w-[10%]" />
         <v-btn class="pa-3 w-[50%] d-flex justify-center items-center" color="error" variant="outlined" @click="logout">
           <v-icon left>mdi-logout</v-icon>
           <span>LOG OUT</span>
         </v-btn>
-      </v-card>
+      </div>
 
     </v-navigation-drawer>
   </template>
@@ -69,6 +79,9 @@
           { menuName: "Achievements", icon: "mdi-trophy", to: `/admin/${this.barangaySlug}/achievements` },
           { menuName: "Settings and Profile", icon: "mdi-cog", to: `/admin/${this.barangaySlug}/settings` },
           ];
+      },
+      barangayName() {
+        return this.$store.getters['auth/getBarangayName'];
       }
     },
     methods: {
@@ -98,7 +111,14 @@
       },
       isActive(menuRoute) {
         return this.$route.path.startsWith(menuRoute);
-      }
+      },
+      openBarangayWebsite() {
+            // Resolve the URL using Vue Router
+            // Ensure that your router configuration has a route named 'barangay-website'
+            const resolvedRoute = this.$router.resolve({ name: 'barangay-landingpage', params: { slug: this.barangaySlug } });
+            // Open the resolved URL in a new window
+            window.open(resolvedRoute.href, '_blank');
+        }
     }
   };
   </script>
@@ -114,14 +134,6 @@
     flex-direction: column;
     transition: width 0.3s;
   }
-  
-  .logout {
-    position: absolute;
-    bottom: 0;
-    margin: auto;
-    
-  }
-  
   
   @media (max-width: 600px) {
     .v-navigation-drawer {

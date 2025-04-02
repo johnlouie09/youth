@@ -8,29 +8,10 @@
         </v-container>
 
         <!-- Features Section -->
-        <!-- <v-row class="feats" justify="space-between">
-       
-            <v-col cols="12" md="5">
-                <Suggestions />
-            </v-col>
-
-            <v-col cols="12" md="7">
-                <v-card class="pa-4">
-                    <Analytics />
-                </v-card>
-            </v-col>
-        </v-row> -->
-
-        <!-- Go to Barangay Website Button -->
-        <v-btn
-        class="d-flex items-center justify-center w-auto px-15 py-10 text-lg"
-        color="black"
-        height="64"
-        @click="openBarangayWebsite"
-        >
-            GO TO {{ barangayName }} WEBSITE
-        </v-btn>
-
+        <v-container class="feats" justify="space-between">
+            <Suggestions />  
+            <Analytics />
+        </v-container>
     </v-container>
 </template>
 
@@ -132,24 +113,23 @@ export default {
 
 <style scoped>
 .dashboard-main {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: center;
-    height: 100vh;
-    padding: 4rem;
-    gap: 2rem;
+    display: grid;
+    grid-template-rows: 35% 1fr;
+    padding: 1.5rem 3rem;
+    gap: 1rem;
+    overflow: hidden;
 }
 
 .cards {
-    display: flex;
-    justify-content: space-evenly;
-    flex-wrap: wrap;
-    gap: 4rem;
-    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
 }
 
 .feats {
-    width: 100%;
+    display: grid;
+    grid-template-columns: 50% 50%;
+    grid-template-rows: 1fr;
+    column-gap: 2rem;
 }
 </style>

@@ -6,7 +6,7 @@
             v-for="(achievement, index) in achievements" :key="index"
             class="card"
         >
-          <img :src="`/public/achievements/${achievement.img}`" alt="" class="elevation-10">
+          <img :src="`/public/achievements/${achievement.img}`" alt="" class="w-full max-h-[225px] elevation-10">
           
           <article class="relative pb-5">
             <h3 class="text-lg uppercase font-extrabold">{{ achievement.title }}</h3>
@@ -174,11 +174,7 @@
   .card:hover {
     transform: scale(1.07);
   }
-  
-  .card img {
-    width: 100%;
-  }
-  
+
   
   article {
     width: 90%;
