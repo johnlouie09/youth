@@ -38,14 +38,17 @@ try {
 }
 echo "<hr>";
 
-// Test 3: Annual Announcements Count for a Specific Barangay and Year
-echo "<h2>Annual Announcements Count for 2025 in Barangay 'san-francisco'</h2>";
+// Test 3: Monthly/Annual Announcements Summary for a Specific Barangay
+echo "<h2>Monthly/Annual Announcements Summary for Barangay 'san-francisco'</h2>";
 try {
-    // now getAnnualCount() expects a barangay slug and a year
-    $annualCount = Announcement::getAnnualCount('san-francisco', 2025);
-    echo "Total Announcements in 2025 for 'san-francisco': " . $annualCount . "\n";
+    // pass the barangay slug to filter the summary
+    $summary = Announcement::getMonthlySummary('san-francisco');
+    echo "Monthly Summary:\n";
+    print_r($summary['monthly']);
+    echo "\nAnnual Summary:\n";
+    print_r($summary['annual']);
 } catch (Exception $e) {
-    echo "Error in getAnnualCount(): " . $e->getMessage() . "\n";
+    echo "Error in getMonthlySummary(): " . $e->getMessage() . "\n";
 }
 
 echo "</pre>";
