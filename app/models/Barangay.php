@@ -7,13 +7,14 @@ class Barangay extends Model
     /** static data */
     public    static $table         = 'barangays';
     public    static $table_columns = [];
-    protected static $basic_columns = ['id', 'slug', 'name', 'img'];
+    protected static $basic_columns = ['id', 'slug', 'name', 'img', 'is_agreed'];
 
     /** properties */
     protected $cluster_id = 0;
     protected $slug       = '';
     protected $name       = '';
     protected $img        = '';
+    protected $is_agreed  = 0;
 
 
     /**
@@ -78,6 +79,16 @@ class Barangay extends Model
 
 
     /**
+     * Gets Barangay is_agreed
+     * @return int
+     */
+    public function getIsAgreed()
+    {
+        return $this->is_agreed;
+    }
+
+
+    /**
      * Sets Barangay cluster_id.
      * @param $cluster_id
      * @return void
@@ -118,6 +129,17 @@ class Barangay extends Model
     public function setImg($img)
     {
         $this->img = $img;
+    }
+
+
+    /**
+     * Sets Barangay is_agreed
+     * @param $is_agreed
+     * @return void
+     */
+    public function setIsAgreed($is_agreed)
+    {
+        $this->is_agreed = $is_agreed;
     }
 
 
@@ -299,6 +321,20 @@ class Barangay extends Model
 
 
     /**
+     * Gets all Youths that belong to this Barangay.
+     *
+     * @param bool $assoc
+     * @param bool $assoc_basic
+     * @return array
+     */
+    public function getYouths(bool $assoc = false, bool $assoc_basic = false): array
+    {
+        require_once __DIR__ . '/Youth.php';
+        return Youth::all($assoc, $assoc_basic, $this);
+    }
+
+
+    /**
      * Gets all achievements for this Barangay across all its SK Officials.
      *
      * This method retrieves every SK Official in this Barangay and then merges all of their achievements.
@@ -307,7 +343,8 @@ class Barangay extends Model
      * @param bool $assoc_basic
      * @return array
      */
-    public function getAllAchievements(bool $assoc = false, bool $assoc_basic = false): array {
+    public function getAllAchievements(bool $assoc = false, bool $assoc_basic = false): array
+    {
         $allAchievements = [];
         // retrieve all SK Officials for this Barangay
         $skOfficials = $this->getSkOfficials();
@@ -328,6 +365,36 @@ class Barangay extends Model
 
 
     /**
+     * Gets all feedbacks for this Barangay across all its youths.
+     *
+     * This method retrieves every youth in this Barangay and then merges all of their feedbacks.
+     *
+     * @param bool $assoc
+     * @param bool $assoc_basic
+     * @return array
+     */
+    public function getAllFeedbacks(bool $assoc = false, bool $assoc_basic = false): array
+    {
+        $allFeedbacks = [];
+        // retrieve all Youths for this Barangay
+        $youths = $this->getYouths();
+        require_once __DIR__ . '/Feedback.php';
+        foreach ($youths as $youth) {
+            // ensure we have an object instance
+            if (!is_object($youth)) {
+                require_once __DIR__ . '/Youth.php';
+                $youth = new Youth($youth['id']);
+            }
+            // retrieve the feedbacks for this Youth
+            $feedbacks = $youth->getFeedbacks($assoc, $assoc_basic);
+            // merge them into one array
+            $allFeedbacks = array_merge($allFeedbacks, $feedbacks);
+        }
+        return $allFeedbacks;
+    }
+
+
+    /**
      * Insert barangay
      *
      * @return bool
@@ -335,8 +402,8 @@ class Barangay extends Model
      */
     public function insert(): bool
     {
-        $stmt = $this->getConnection()->prepare("INSERT INTO `" . self::$table . "` (`cluster_id`, `slug`, `name`, `img`) VALUES (?, ?, ?, ?)");
-        $stmt->bind_param("isss", $this->cluster_id, $this->slug, $this->name, $this->img);
+        $stmt = $this->getConnection()->prepare("INSERT INTO `" . self::$table . "` (`cluster_id`, `slug`, `name`, `img`, `is_agreed`) VALUES (?, ?, ?, ?, ?)");
+        $stmt->bind_param("isssi", $this->cluster_id, $this->slug, $this->name, $this->img, $this->is_agreed);
         $stmt->execute();
         if ($stmt->affected_rows > 0) {
             $this->setId($stmt->insert_id);
@@ -354,8 +421,8 @@ class Barangay extends Model
      */
     public function update(): bool
     {
-        $stmt = $this->getConnection()->prepare("UPDATE `" . self::$table . "` SET `cluster_id` = ?, `slug` = ?, `name` = ?, `img` = ? WHERE `id` = ?");
-        $stmt->bind_param("isssi", $this->cluster_id, $this->slug, $this->name, $this->img, $this->id);
+        $stmt = $this->getConnection()->prepare("UPDATE `" . self::$table . "` SET `cluster_id` = ?, `slug` = ?, `name` = ?, `img` = ?, `is_agreed` = ? WHERE `id` = ?");
+        $stmt->bind_param("isssii", $this->cluster_id, $this->slug, $this->name, $this->img, $this->is_agreed, $this->id);
         $stmt->execute();
         return $stmt->affected_rows > 0;
     }
