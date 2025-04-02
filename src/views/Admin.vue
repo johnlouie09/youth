@@ -77,5 +77,19 @@ const isDark = computed(() => theme.current.value.dark);
     #363636,
     #0e0e0e
   );
+  background-size: 200% 200%;
+  animation: moveGradient 10s linear infinite;
+}
+
+@keyframes moveGradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }
 </style>
