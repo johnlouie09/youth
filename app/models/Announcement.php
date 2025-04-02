@@ -7,11 +7,15 @@ class Announcement extends Model
     /** static data */
     public    static $table         = 'announcements';
     public    static $table_columns = [];
-    protected static $basic_columns = ['id', 'img'];
+    protected static $basic_columns = ['id', 'img', 'title', 'date', 'is_featured'];
 
     /** properties */
     protected $barangay_id = 0;
-    protected $img        = '';
+    protected $img         = '';
+    protected $title       = '';
+    protected $description = '';
+    protected $date        = '';
+    protected $is_featured = 0;
 
 
     /**
@@ -56,6 +60,45 @@ class Announcement extends Model
 
 
     /**
+     * Gets Announcement title
+     * @return string
+     */
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+
+    /** Gets Announcement description
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+
+    /**
+     * Gets Announcement date
+     * @return string
+     */
+    public function getDate()
+    {
+        return $this->date;
+    }
+
+
+    /**
+     * Gets Announcement is_featured
+     * @return int
+     */
+    public function getIsFeatured()
+    {
+        return $this->is_featured;
+    }
+
+
+    /**
      * Sets Announcement barangay_id.
      * @param $barangay_id
      * @return void
@@ -67,13 +110,57 @@ class Announcement extends Model
 
 
     /**
-     * Sets Barangay img.
+     * Sets Announcement img.
      * @param $img
      * @return void
      */
     public function setImg($img)
     {
         $this->img = $img;
+    }
+
+
+    /**
+     * Sets Announcement title
+     * @param $title
+     * @return void
+     */
+    public function setTitle($title)
+    {
+        $this->title = $title;
+    }
+
+
+    /**
+     * Sets Announcement description
+     * @param $description
+     * @return void
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+    }
+
+
+    /**
+     * Sets Announcement date
+     * @param $date
+     * @return void
+     */
+    public function setDate($date)
+    {
+        $this->date = $date;
+    }
+
+
+    /**
+     * Sets Announcement is_featured
+     * @param $is_featured
+     * @return void
+     */
+    public function setIsFeatured($is_featured)
+    {
+        $this->is_featured = $is_featured;
     }
 
 
@@ -179,12 +266,10 @@ class Announcement extends Model
     public static function getAnnualCount(string $barangaySlug, int $year): int
     {
         $conn = self::getConnectionStatic();
-        $query = "
-        SELECT COUNT(*) AS count
-        FROM `" . self::$table . "` a
-        JOIN barangays b ON a.barangay_id = b.id
-        WHERE YEAR(a.created_at) = ? AND b.slug = ?
-    ";
+        $query = "SELECT COUNT(*) AS count
+                  FROM `" . self::$table . "` a
+                  JOIN barangays b ON a.barangay_id = b.id
+                  WHERE YEAR(a.created_at) = ? AND b.slug = ?";
         $stmt = $conn->prepare($query);
         if (!$stmt) {
             throw new Exception("Prepare failed: " . $conn->error);
@@ -194,6 +279,92 @@ class Announcement extends Model
         $result = $stmt->get_result();
         $row = $result->fetch_assoc();
         return (int)$row['count'];
+    }
+
+
+    /**
+     * Returns a summary of announcements per month and total announcements per year.
+     * If a barangay slug is provided, the summary is generated only for that specific barangay.
+     *
+     * @param string|null $barangaySlug
+     * @return array
+     * @throws Exception
+     */
+    public static function getMonthlySummary(?string $barangaySlug = null): array
+    {
+        $conn = self::getConnectionStatic();
+
+        // Monthly summary using the "date" column
+        if ($barangaySlug !== null) {
+            $queryMonthly = "SELECT YEAR(a.date) AS year, MONTHNAME(a.date) AS month, COUNT(*) AS count
+                             FROM `" . self::$table . "` a
+                             JOIN barangays b ON a.barangay_id = b.id
+                             WHERE b.slug = ?
+                             GROUP BY YEAR(a.date), MONTH(a.date)
+                             ORDER BY YEAR(a.date) ASC, MONTH(a.date) ASC";
+            $stmt = $conn->prepare($queryMonthly);
+            if (!$stmt) {
+                throw new Exception("Prepare failed: " . $conn->error);
+            }
+            $stmt->bind_param("s", $barangaySlug);
+        } else {
+            $queryMonthly = "SELECT YEAR(date) AS year, MONTHNAME(date) AS month, COUNT(*) AS count
+                             FROM `" . self::$table . "`
+                             GROUP BY YEAR(date), MONTH(date)
+                             ORDER BY YEAR(date) ASC, MONTH(date) ASC";
+            $stmt = $conn->prepare($queryMonthly);
+            if (!$stmt) {
+                throw new Exception("Prepare failed: " . $conn->error);
+            }
+        }
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $monthlyGrouped = [];
+        while ($row = $result->fetch_assoc()) {
+            $year = $row['year'];
+            if (!isset($monthlyGrouped[$year])) {
+                $monthlyGrouped[$year] = [];
+            }
+            $monthlyGrouped[$year][] = [
+                'month' => $row['month'],
+                'count' => $row['count'],
+            ];
+        }
+
+        // Annual summary using the "date" column
+        if ($barangaySlug !== null) {
+            $queryAnnual = "SELECT YEAR(a.date) AS year, COUNT(*) AS total
+                            FROM `" . self::$table . "` a
+                            JOIN barangays b ON a.barangay_id = b.id
+                            WHERE b.slug = ?
+                            GROUP BY YEAR(a.date)
+                            ORDER BY year ASC";
+            $stmt = $conn->prepare($queryAnnual);
+            if (!$stmt) {
+                throw new Exception("Prepare failed: " . $conn->error);
+            }
+            $stmt->bind_param("s", $barangaySlug);
+        } else {
+            $queryAnnual = "SELECT YEAR(date) AS year, COUNT(*) AS total
+                            FROM `" . self::$table . "`
+                            GROUP BY YEAR(date)
+                            ORDER BY year ASC";
+            $stmt = $conn->prepare($queryAnnual);
+            if (!$stmt) {
+                throw new Exception("Prepare failed: " . $conn->error);
+            }
+        }
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $annual = [];
+        while ($row = $result->fetch_assoc()) {
+            $annual[] = $row;
+        }
+
+        return [
+            'monthly' => $monthlyGrouped,
+            'annual'  => $annual
+        ];
     }
 
 
@@ -221,8 +392,8 @@ class Announcement extends Model
      */
     public function insert(): bool
     {
-        $stmt = $this->getConnection()->prepare("INSERT INTO `" . self::$table . "` (`barangay_id`, `img`) VALUES (?, ?)");
-        $stmt->bind_param("is", $this->barangay_id, $this->img);
+        $stmt = $this->getConnection()->prepare("INSERT INTO `" . self::$table . "` (`barangay_id`, `img`, `title`, `description`, `date`, `is_featured`) VALUES (?, ?, ?, ?, ?, ?)");
+        $stmt->bind_param("issssi", $this->barangay_id, $this->img, $this->title, $this->description, $this->is_featured);
         $stmt->execute();
         if ($stmt->affected_rows > 0) {
             $this->setId($stmt->insert_id);
@@ -240,8 +411,8 @@ class Announcement extends Model
      */
     public function update(): bool
     {
-        $stmt = $this->getConnection()->prepare("UPDATE `" . self::$table . "` SET `barangay_id` = ?, `img` = ? WHERE `id` = ?");
-        $stmt->bind_param("isi", $this->barangay_id, $this->img, $this->id);
+        $stmt = $this->getConnection()->prepare("UPDATE `" . self::$table . "` SET `barangay_id` = ?, `img` = ?, `title` = ?, `description` = ?, `date` = ?, `is_featured` = ? WHERE `id` = ?");
+        $stmt->bind_param("issssii", $this->barangay_id, $this->img, $this->title, $this->description, $this->date, $this->is_featured, $this->id);
         $stmt->execute();
         return $stmt->affected_rows > 0;
     }

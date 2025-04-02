@@ -310,29 +310,25 @@ class Achievement extends Model
         $conn = self::getConnectionStatic();
 
         if ($barangaySlug !== null) {
-            // When filtering by barangay, join with the barangays table and filter by slug
-            $queryMonthly = "
-            SELECT YEAR(a.date) AS year, MONTHNAME(a.date) AS month, COUNT(*) AS count
-            FROM `" . self::$table . "` a
-            JOIN barangays b ON a.sk_official_id IN (
-                SELECT id FROM sk_officials WHERE barangay_id = b.id
-            )
-            WHERE b.slug = ?
-            GROUP BY YEAR(a.date), MONTH(a.date)
-            ORDER BY YEAR(a.date) ASC, MONTH(a.date) ASC
-        ";
+            // when filtering by barangay, join with the barangays table and filter by slug
+            $queryMonthly = "SELECT YEAR(a.date) AS year, MONTHNAME(a.date) AS month, COUNT(*) AS count
+                             FROM `" . self::$table . "` a
+                             JOIN barangays b ON a.sk_official_id IN (
+                                 SELECT id FROM sk_officials WHERE barangay_id = b.id
+                             )
+                             WHERE b.slug = ?
+                             GROUP BY YEAR(a.date), MONTH(a.date)
+                             ORDER BY YEAR(a.date) ASC, MONTH(a.date) ASC";
             $stmt = $conn->prepare($queryMonthly);
             if (!$stmt) {
                 throw new Exception("Prepare failed: " . $conn->error);
             }
             $stmt->bind_param("s", $barangaySlug);
         } else {
-            $queryMonthly = "
-            SELECT YEAR(date) AS year, MONTHNAME(date) AS month, COUNT(*) AS count
-            FROM `" . self::$table . "`
-            GROUP BY YEAR(date), MONTH(date)
-            ORDER BY YEAR(date) ASC, MONTH(date) ASC
-        ";
+            $queryMonthly = "SELECT YEAR(date) AS year, MONTHNAME(date) AS month, COUNT(*) AS count
+                             FROM `" . self::$table . "`
+                             GROUP BY YEAR(date), MONTH(date)
+                             ORDER BY YEAR(date) ASC, MONTH(date) ASC";
             $stmt = $conn->prepare($queryMonthly);
             if (!$stmt) {
                 throw new Exception("Prepare failed: " . $conn->error);
@@ -354,27 +350,23 @@ class Achievement extends Model
 
         // Annual summary
         if ($barangaySlug !== null) {
-            $queryAnnual = "
-            SELECT YEAR(a.date) AS year, COUNT(*) AS total
-            FROM `" . self::$table . "` a
-            JOIN sk_officials s ON a.sk_official_id = s.id
-            JOIN barangays b ON s.barangay_id = b.id
-            WHERE b.slug = ?
-            GROUP BY YEAR(a.date)
-            ORDER BY year ASC
-        ";
+            $queryAnnual = "SELECT YEAR(a.date) AS year, COUNT(*) AS total
+                            FROM `" . self::$table . "` a
+                            JOIN sk_officials s ON a.sk_official_id = s.id
+                            JOIN barangays b ON s.barangay_id = b.id
+                            WHERE b.slug = ?
+                            GROUP BY YEAR(a.date)
+                            ORDER BY year ASC";
             $stmt = $conn->prepare($queryAnnual);
             if (!$stmt) {
                 throw new Exception("Prepare failed: " . $conn->error);
             }
             $stmt->bind_param("s", $barangaySlug);
         } else {
-            $queryAnnual = "
-            SELECT YEAR(date) AS year, COUNT(*) AS total
-            FROM `" . self::$table . "`
-            GROUP BY YEAR(date)
-            ORDER BY year ASC
-        ";
+            $queryAnnual = "SELECT YEAR(date) AS year, COUNT(*) AS total
+                            FROM `" . self::$table . "`
+                            GROUP BY YEAR(date)
+                            ORDER BY year ASC";
             $stmt = $conn->prepare($queryAnnual);
             if (!$stmt) {
                 throw new Exception("Prepare failed: " . $conn->error);

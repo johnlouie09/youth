@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 31, 2025 at 10:16 PM
+-- Generation Time: Apr 02, 2025 at 09:01 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -71,6 +71,10 @@ CREATE TABLE `announcements` (
   `id` int(11) NOT NULL,
   `barangay_id` int(11) NOT NULL,
   `img` varchar(255) NOT NULL,
+  `title` varchar(100) NOT NULL,
+  `description` varchar(255) NOT NULL,
+  `date` date NOT NULL,
+  `is_featured` tinyint(1) NOT NULL DEFAULT 0,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -79,12 +83,15 @@ CREATE TABLE `announcements` (
 -- Dumping data for table `announcements`
 --
 
-INSERT INTO `announcements` (`id`, `barangay_id`, `img`, `created_at`, `updated_at`) VALUES
-(1, 1, 'bb_tryout.jpg', '2025-03-26 04:57:46', '2025-03-26 04:57:46'),
-(2, 1, 'interzone_bb.jpg', '2025-03-26 04:57:46', '2025-03-26 04:57:46'),
-(3, 1, 'kk_ass.jpg', '2025-03-26 04:57:46', '2025-03-26 04:57:46'),
-(4, 1, 'teentrail.jpg', '2025-03-26 04:57:46', '2025-03-26 04:57:46'),
-(5, 1, 'youthnight.jpg', '2025-03-26 04:57:46', '2025-03-26 04:57:46');
+INSERT INTO `announcements` (`id`, `barangay_id`, `img`, `title`, `description`, `date`, `is_featured`, `created_at`, `updated_at`) VALUES
+(1, 1, 'bb_tryout.jpg', 'title', 'description', '2025-04-09', 1, '2025-04-02 05:36:19', '2025-04-02 05:36:42'),
+(2, 1, 'interzone_bb.jpg', 'title', 'description', '2025-04-10', 1, '2025-04-02 05:36:19', '2025-04-02 05:37:45'),
+(3, 1, 'kk_ass.jpg', 'title', 'description', '2025-04-09', 1, '2025-04-02 05:36:19', '2025-04-02 05:37:45'),
+(4, 1, 'teentrail.jpg', 'title', 'description', '2025-04-15', 1, '2025-04-02 05:36:19', '2025-04-02 05:37:45'),
+(5, 1, 'youthnight.jpg', 'title', 'description', '2025-04-11', 1, '2025-04-02 05:36:19', '2025-04-02 05:37:45'),
+(6, 1, 'bayliwan.jpg', 'title', 'description', '2024-04-10', 1, '2025-04-02 05:36:19', '2025-04-02 05:40:42'),
+(7, 1, 'kakawnan.jpg', 'title', 'description', '2024-04-10', 1, '2025-04-02 05:36:19', '2025-04-02 05:40:42'),
+(8, 1, 'hahaha.jpg', 'title', 'description', '2024-04-09', 1, '2025-04-02 05:36:19', '2025-04-02 05:40:42');
 
 -- --------------------------------------------------------
 
@@ -496,7 +503,7 @@ ALTER TABLE `achievements`
 -- AUTO_INCREMENT for table `announcements`
 --
 ALTER TABLE `announcements`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `barangays`
