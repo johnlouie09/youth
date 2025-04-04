@@ -47,7 +47,7 @@
       <v-container style="position: relative; overflow-y: auto; display: flex; justify-content: center; height: 100%; padding: 0;">
         <!-- Profile Information Section -->
         <v-sheet 
-          v-if="activeTab === 'profile'" class="w-full rounded-lg overflow-auto dark-gradient">
+          v-if="activeTab === 'profile'" class="w-full rounded-lg overflow-auto">
           <v-card-title class="text-center sticky z-10 top-0 pa-0 pt-5 bg-inherit">
             <v-icon class="mr-2">mdi-account</v-icon>PROFILE INFORMATION
             <v-divider class="mt-5"></v-divider>
@@ -95,7 +95,7 @@
         </v-sheet>
 
         <!-- Educational Backgrounds Section -->
-        <v-sheet v-if="activeTab === 'education'" class="overflow-auto w-full dark-gradient">
+        <v-sheet v-if="activeTab === 'education'" class="overflow-auto w-full">
           <v-card-title class="text-center sticky top-0 z-10 pa-0 pt-5 bg-inherit">
             <v-icon class="mr-2">mdi-school</v-icon>EDUCATIONAL BACKGROUNDS
             <v-divider class="mt-5"></v-divider>
@@ -120,7 +120,7 @@
         </v-sheet>
 
         <!-- Personal Achievements Section -->
-        <v-sheet v-if="activeTab === 'achievements'" class="overflow-auto w-full dark-gradient">
+        <v-sheet v-if="activeTab === 'achievements'" class="overflow-auto w-full">
           <v-card-title class="text-center sticky top-0 z-10 pa-0 pt-5 mb-10 bg-inherit">
             <v-icon class="mr-2">mdi-trophy</v-icon>PERSONAL ACHIEVEMENTS
             <v-divider class="mt-5"></v-divider>
@@ -261,16 +261,4 @@ export default {
   background-image: linear-gradient(45deg, #004bf9, #f65c66, #ffd45e);
   border-radius: 50%;
 }
-
-.dark-gradient {
-  background-image: linear-gradient(
-    45deg,
-    #363636,
-    #0e0e0e,
-    #363636,
-    #0e0e0e
-  );
-}
-
-
 </style>
