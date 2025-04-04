@@ -4,12 +4,12 @@
     class="login-container"
     :style="{ backgroundImage: backgroundImage }"
   >
-    <v-card class="login-card" elevation="20" dark>
+    <v-card class="login-card" elevation="20">
       <!-- Logo centered above the form -->
-      <div>
+      <div class="logo-container">
         <v-img
           src="/public/Flogo.svg"
-          max-width="300"
+          max-width="220"
           class="mx-auto mb-5"
         />
       </div>
@@ -172,6 +172,18 @@ export default {
   width: 30%;
   border-radius: 1rem;
   padding: 3rem 2rem;
+
+  /* Glassmorphism styles */
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+}
+
+.logo-container {
+  display: flex;
+  justify-content: center;
 }
 
 .forgot-link {
@@ -189,5 +201,23 @@ export default {
   display: flex;
   justify-content: center;
   color: rgb(245, 49, 49);
+  margin-bottom: 1rem;
+  font-size: 120%;
+}
+
+.v-text-field {
+  margin-bottom: 1.5rem;
+}
+
+.v-text-field .v-icon {
+  color: #fff;
+}
+
+.v-text-field .v-field__outline {
+  border-color: rgba(255, 255, 255, 0.5) !important;
+}
+
+.v-text-field .v-field-label {
+  color: rgba(255, 255, 255, 0.7) !important;
 }
 </style>
