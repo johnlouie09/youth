@@ -1,8 +1,11 @@
 <template>
     <div>
-        <v-btn icon @click="dialog = true">
-            <v-icon>mdi-message</v-icon>
-        </v-btn>
+        <div  class="form-button">  
+            <v-btn icon @click="dialog = true">
+                <v-icon>mdi-message</v-icon>
+            </v-btn>
+        </div>
+
 
         <v-dialog v-model="dialog" max-width="800px">
             <v-card class="d-flex justify-center items-center pa-10" style="border-radius: 1rem;">
@@ -95,6 +98,15 @@ export default {
     margin-top: 10px;
 }
 
-
+.form-button {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    position: fixed;
+    margin: 2rem;
+    bottom: 0; /* distance from the bottom */
+    right: 0; /* distance from the right */
+    z-index: 1000; /* ensures the button stays on top of other elements */
+}
 </style>
 

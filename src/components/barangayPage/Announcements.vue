@@ -15,6 +15,21 @@
             </v-tabs>
         </div>
 
+        <div class="relative w-[80%] d-flex flex-col justify-center items-center gap-5">
+            <h1 class="title">ANNOUNCEMENTS</h1>
+            <v-tabs grow class="w-[50%] d-flex justify-center gap-5">
+                <v-tab>FEATURED</v-tab>
+                <v-tab>
+                    <v-select 
+                    class="w-[100%]"
+                    :items="items"
+                    v-model='selectedAnnoncementItem'>
+                    </v-select>
+                </v-tab>
+
+            </v-tabs>
+        </div>
+
         <div ref="swiperContainer" class="swiper mySwiper">
             <div class="swiper-wrapper">
                 <div class="swiper-slide" v-for="announcement in announcements" :key="announcement.id">
@@ -108,7 +123,7 @@ export default {
                 coverflowEffect: {
                     rotate: 5,
                     stretch: 0,
-                    depth: 400,
+                    depth: 150,
                     modifier: 1,
                     slideShadows: true,
                 },

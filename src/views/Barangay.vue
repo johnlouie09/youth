@@ -92,6 +92,8 @@ export default {
     <Achievements v-if="barangayInfo.id" :barangayId="barangayInfo.id"/>
 
     <!-- Supporting Components -->
+
+    <!-- Supporting Components -->
     <DialogComponent/>
 
     <div class="form-button">
