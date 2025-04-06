@@ -1,5 +1,5 @@
 <template>
-    <v-btn @click="toggleTheme" :color="theme.global.name.value === 'dark' ? 'white' : 'black'">
+    <v-btn class="but" @click="toggleTheme" :color="theme.global.name.value === 'dark' ? 'white' : 'black'">
         <v-icon>{{ theme.global.name.value === 'dark' ? 'mdi-weather-night' : 'mdi-white-balance-sunny' }}</v-icon>
     </v-btn>
 </template>
@@ -26,3 +26,7 @@ export default {
     }
 }
 </script>
+
+<style scoped>
+
+</style>

@@ -29,15 +29,25 @@ const router = createRouter({
       component: () => import('../views/Contact.vue'),
     },
     {
+      path: '/youth-login',
+      name: 'youth-login',
+      component: () => import('../views/YouthLogin.vue'),
+    },
+    {
       path: '/:catchAll(.*)',
       name: 'NotFound',
       component: () => import('../components/404.vue'),
-    },
-    
+    },  
     {
       path: '/youth/:barangaySlug',
       name: 'barangay-landingpage',
       component: () => import('../views/Barangay.vue')
+    },
+
+    {
+      path: '/form',
+      name: 'barangay-form',
+      component: () => import('../components/barangayPage/FeedbackForm.vue')
     },
     
 
@@ -84,6 +94,11 @@ const router = createRouter({
           path: 'settings',
           name: 'admin-settings',
           component: () => import('../components/adminComponents/Settings.vue'),
+        },
+        {
+          path: 'youth-request',
+          name: 'admin-youth-request',
+          component: () => import('../components/adminComponents/YouthRequest.vue'),
         },
         {
           path: 'notices',

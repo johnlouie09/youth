@@ -100,9 +100,10 @@ export default {
         monthOptions: {
             immediate: true,
             handler(newOptions) {
-                if (newOptions.length && !this.selectedMonth) {
-                    this.selectedMonth = newOptions[0].value;
-                }
+            if (newOptions.length && !this.selectedMonth) {
+                // Set the selectedMonth to the value of the last option in the array
+                this.selectedMonth = newOptions[newOptions.length - 1].value;
+            }
             }
         }
     }

@@ -1,10 +1,59 @@
 <template>
     <div class="carousel-container">
-        <h1 class="title">ANNOUNCEMENTS</h1>
+        <div class="relative w-[80%] d-flex flex-col justify-center items-center gap-5">
+            <h1 class="title">ANNOUNCEMENTS</h1>
+            <v-tabs grow class="w-[50%] d-flex justify-center gap-5">
+                <v-tab>FEATURED</v-tab>
+                <v-tab>
+                    <v-select 
+                    class="w-[100%]"
+                    :items="items"
+                    v-model='selectedAnnoncementItem'>
+                    </v-select>
+                </v-tab>
+
+            </v-tabs>
+        </div>
+
         <div ref="swiperContainer" class="swiper mySwiper">
             <div class="swiper-wrapper">
                 <div class="swiper-slide" v-for="announcement in announcements" :key="announcement.id">
-                    <img :src="`/public/announcements/${announcement.img}`" :alt="announcement.title"/>
+
+
+                    <div 
+                    style="border-radius: 1rem;"
+                    class="announcement-card bg-black h-auto d-flex flex-col items-center justify-start ga-5 elevation-10 py-5 px-5"
+                    >
+                        <img 
+                            :src="announcement.img 
+                                    ? ($store.getters.base + 'public/announcements/' + announcement.img) 
+                                    : ($store.getters.base + 'public/announcements/exx.jpg')"
+                            :alt="announcement.title"
+                            style="border-radius: .5rem;"
+                            cover
+                        ></img>
+
+                        <article class="w-[90%] relative py-5 pb-10 elevation-10">
+                            <h4 class="uppercase text-center text-base font-extrabold mb-2">
+                                {{ announcement.title }}
+                            </h4>
+
+                            <p class="text-sm font-medium">
+                                {{ announcement.description }} Lorem ipsum dolor, sit amet consectetur adipisicing elit. Eligendi quo facere cum.
+                            </p>
+
+                            <span class="text-xs font-italic absolute bottom-0 right-0 pa-2">
+                                {{ formatDateStr(announcement.date) }}
+                            </span>
+                        </article>
+
+                    </div>
+
+
+                    
+                        <!-- <img :src="`/public/announcements/${announcement.img}`" :alt="announcement.title"/> -->
+                    
+                    
                 </div>
             </div>
         </div>
@@ -27,7 +76,10 @@ export default {
     },
     data() {
         return {
-            announcements: []
+            announcements: [],
+            items: ['Select a Month', 'January', 'February', 'March', 'April'],
+            selectedAnnoncementItem: 'Select a Month',
+
         };
     },
     mounted() {
@@ -36,22 +88,31 @@ export default {
         });
     },
     methods: {
+        formatDateStr(dateStr) {
+            if (!dateStr) return '';
+            const date = new Date(dateStr);
+            return date.toLocaleDateString('en-US', {
+            month: 'long',
+            day: 'numeric',
+            year: 'numeric'
+            });
+        },
         initSwiper() {
             new Swiper(this.$refs.swiperContainer, {
-                initialSlide: 3,
+                initialSlide: 1,
                 modules: [EffectCoverflow, Autoplay, Pagination],
                 effect: "coverflow",
                 grabCursor: true,
                 centeredSlides: true,
                 slidesPerView: "auto",
                 coverflowEffect: {
-                    rotate: 15,
+                    rotate: 5,
                     stretch: 0,
-                    depth: 300,
+                    depth: 400,
                     modifier: 1,
                     slideShadows: true,
                 },
-                loop: true,
+                loop: false,
                 autoplay: {
                     delay: 10000,
                     disableOnInteraction: false,
@@ -96,7 +157,6 @@ export default {
         }
     },
     created() {
-        this.achievements = [];
         this.fetchBarangayAnnouncements();
     },
     watch: {
@@ -111,25 +171,25 @@ export default {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 3rem;
+    gap: 2rem;
     align-items: center;
     width: 100%;
 }
 
 .swiper {
-    width: 80%;
+    width: 75%;
 }
 
 .swiper-slide {
     background-position: center;
     background-size: cover;
-    width: 500px;
+    width: 455px;
     position: relative;
 }
 
 .swiper-slide img {
     width: 100%;
-    height: 600px;
+    height: 650px;
     border-radius: 1rem;
 }
 

@@ -44,9 +44,16 @@
         </div>
         
         <!-- Login Button with loading prop -->
-        <v-btn color="primary" block type="submit" :loading="loading">
-          Log In
-        </v-btn>
+        <div class="d-flex flex-col gap-3">
+          <v-btn color="primary" block type="submit" :loading="loading">
+            Log In
+          </v-btn>
+
+          <v-btn color="primary" block :loading="loading" @click="signupDialog = true">
+            Sign Up
+          </v-btn>
+        </div>
+
       </v-form>
     </v-card>
 
@@ -59,6 +66,84 @@
     >
       Privacy Policy
     </v-btn>
+
+
+    <v-dialog v-model="signupDialog" width="800px" scrollable persistent>
+      <v-card class="w-full d-flex justify-center items-center py-15">
+        <h1 class="gradient-text text-3xl font-black">SIGN UP</h1>
+        <div class="image-container pa-5 relative">
+          <!-- Image Container -->
+          <v-avatar 
+          :image="filePreview || (newUser.img ? ($store.getters.base + 'public/OfficialImages/' + newUser.img) : '/public/OfficialImages/no-avatar.png')"
+          alt="Profile Image" 
+          cover
+          size="200"
+          class="rounded-circle"
+          />
+
+          <!-- Floating Upload Icon -->
+          <v-btn class="upload-icon" icon @click="triggerFileInput">
+            <v-icon>mdi-camera</v-icon>
+          </v-btn>
+
+          <!-- Hidden File Input -->
+          <input 
+            ref="fileInput" 
+            type="file" 
+            accept="image/*" 
+            class="hidden"
+            @change="handleFileUpload"
+          >
+        </div>
+
+        <!-- Form Section -->
+        <v-card-text class="w-[80%] d-flex flex-col justify-center">
+            <!-- Full Name Field -->
+            <v-text-field
+              class="w-full text-lg"
+              v-model="newUser.full_name"
+              label="Full Name"
+              variant="outlined"
+              clearable
+            ></v-text-field>
+
+            <!-- Email Field -->
+            <v-text-field
+              v-model="newUser.email"
+              label="Email"
+              variant="outlined"
+              type="email"
+              clearable
+            ></v-text-field>
+
+            <!-- Contact Number Field -->
+            <v-text-field
+              v-model="newUser.contact_number"
+              label="Password"
+              variant="outlined"
+              clearable
+            ></v-text-field>
+
+
+        </v-card-text>
+
+        <!-- Action Buttons -->
+        <div class="button-container">
+          <v-btn color="teal-lighten-1" @click="saveChanges">SIGN UP</v-btn>
+        </div>
+
+        <!-- Close Button -->
+        <v-card-actions class="absolute top-0 right-0 pa-5">
+          <v-btn icon color="error" @click="signupDialog = false">
+              <v-icon>mdi-close</v-icon>
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+
+
+
 
 <!-- Privacy Policy Dialog -->
 <v-dialog v-model="dialog" width="80%" scrollable persistent>
@@ -175,7 +260,9 @@ export default {
       usernameError: '',
       passwordError: '',
       requestError: '',
-      dialog: false // controls the Privacy Policy dialog
+      dialog: false, // controls the Privacy Policy dialog,
+      signupDialog: false,
+      newUser: {}
     };
   },
   setup() {
@@ -292,10 +379,6 @@ export default {
   opacity: 0.8;
 }
 
-.privacy-toggle:hover {
-  opacity: 0.8;
-}
-
 .reqErr {
   width: 100%;
   display: flex;
@@ -324,4 +407,14 @@ export default {
 .dialog {
   padding: 1rem;
 }
+
+.upload-icon {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    width: 48px;
+    margin: 1rem;
+}
+
 </style>

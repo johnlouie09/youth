@@ -175,11 +175,9 @@ class Announcement extends Model
         $arr = parent::getAssoc($basic);
 
         // Convert the 'img' field to an array.
-        if (!empty($arr['img'])) {
-            $arr['img'] = array_map('trim', explode(',', $arr['img']));
-        } else {
-            $arr['img'] = [];
-        }
+        if (empty($arr['img'])) {
+            $arr['img'] = '';
+        } 
 
         return $arr;
     }
@@ -393,7 +391,8 @@ class Announcement extends Model
     public function insert(): bool
     {
         $stmt = $this->getConnection()->prepare("INSERT INTO `" . self::$table . "` (`barangay_id`, `img`, `title`, `description`, `date`, `is_featured`) VALUES (?, ?, ?, ?, ?, ?)");
-        $stmt->bind_param("issssi", $this->barangay_id, $this->img, $this->title, $this->description, $this->is_featured);
+        // Make sure $this->date is defined (as a string, e.g., "2025-03-30")
+        $stmt->bind_param("issssi", $this->barangay_id, $this->img, $this->title, $this->description, $this->date, $this->is_featured);
         $stmt->execute();
         if ($stmt->affected_rows > 0) {
             $this->setId($stmt->insert_id);

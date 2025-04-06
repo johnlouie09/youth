@@ -1,25 +1,44 @@
-
 <template>
     <div>
-        <v-btn @click="dialog = true">Open Form</v-btn>
+        <v-btn icon @click="dialog = true">
+            <v-icon>mdi-message</v-icon>
+        </v-btn>
 
-        <v-dialog v-model="dialog" max-width="500px">
-            <v-card>
-                <v-card-title class="text-h5">User Information</v-card-title>
-                <v-card-text>
+        <v-dialog v-model="dialog" max-width="800px">
+            <v-card class="d-flex justify-center items-center pa-10" style="border-radius: 1rem;">
+                <v-card-title class="text-xl font-extrabold">MESSAGE FOR BARANGAY {{ barangayName.toUpperCase() }}</v-card-title>
+                
+                <v-card-text class="w-full">
                     <v-form ref="form">
-                        <v-text-field v-model="firstName" label="First Name" required></v-text-field>
-                        <v-text-field v-model="lastName" label="Last Name" required></v-text-field>
-                        <v-text-field v-model="middleInitial" label="Middle Initial" maxlength="1"></v-text-field>
-                        <v-text-field v-model="address" label="Address" required></v-text-field>
-                        <v-text-field v-model="age" label="Age" type="number" required></v-text-field>
-                        <v-textarea v-model="description" label="Description" auto-grow outlined></v-textarea>
+                        <v-text-field 
+                            class="w-full text-lg"
+                            v-model="firstName" 
+                            label="Full Name" 
+                            variant="outlined"
+                            required>
+                        </v-text-field>
+
+                        <v-text-field 
+                            class="w-full text-lg"
+                            v-model="messageTitle" 
+                            label="Message Title" 
+                            variant="outlined"
+                            required>
+                        </v-text-field>
+                       
+                        <v-textarea 
+                            v-model="description" 
+                            label="Description" 
+                            auto-grow 
+                            outlined>
+                        </v-textarea>
                     </v-form>
                     <p v-if="isSubmitted" class="success-message">Form submitted successfully!</p>
                 </v-card-text>
+
                 <v-card-actions>
-                    <v-btn color="grey" @click="dialog = false">Close</v-btn>
-                    <v-btn color="primary" @click="submitForm">Submit</v-btn>
+                    <v-btn color="red-lighten-1" @click="dialog = false">Close</v-btn>
+                    <v-btn color="teal-lighten-1" @click="submitForm">Submit</v-btn>
                 </v-card-actions>
             </v-card>
         </v-dialog>
@@ -27,6 +46,9 @@
 </template>
 <script>
 export default {
+    props: {
+        barangayName: String
+    },
     data() {
         return {
             form: null,
@@ -72,4 +94,7 @@ export default {
     font-weight: bold;
     margin-top: 10px;
 }
+
+
 </style>
+

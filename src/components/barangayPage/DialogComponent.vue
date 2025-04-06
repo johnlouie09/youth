@@ -178,7 +178,8 @@ export default {
         educationalBackgrounds: [],
         achievements: []
       },
-      activeTab: 'profile' // Default active tab.
+      activeTab: 'profile', // Default active tab.
+      filePreview : null
     };
   },
   methods: {

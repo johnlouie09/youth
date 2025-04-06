@@ -15,8 +15,6 @@
       >
         {{ view.name.toUpperCase() }}
       </v-btn>
-
-      <v-icon>mdi-message</v-icon>
     </ul>
 
     <ThemeSwitcher />
@@ -40,7 +38,7 @@ export default {
   },
   computed: {
     shouldHideNav() {
-      return this.$route.path.startsWith('/admin') || this.$route.path === '/login';
+      return this.$route.path.startsWith('/admin') || this.$route.path === '/login' || this.$route.path === '/youth-login';
     }
   },
   methods: {

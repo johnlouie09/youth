@@ -1,58 +1,34 @@
 <script>
+import { VDateInput } from 'vuetify/lib/labs/components.mjs';
+import FormAnnouncement from './subcomponents/FormAnnouncement.vue';
 import $ from 'jquery';
+
 export default {
     data() {
         return {
             announcements: {},
-            file: null,
-            newAnnouncement: {}
+            editingIndex: null,
+            showNewAnnouncement: false
         };
     },
     methods: {
-        // Trigger the hidden file input
-        triggerFileInput() {
-        this.$refs.fileInput.click();
-        },
-        // Handle file upload and create a preview
-        handleFileUpload(event) {
-            const file = event.target.files[0];
-            if (file) {
-                this.file = file;
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                this.filePreview = e.target.result;
-                // Store the filename for later use
-                this.newAnnouncement.img = file.name;
-                };
-                reader.readAsDataURL(file);
+        async confirmDelete(announcementId) {
+            this.$store.commit('dialog/confirm/show', {
+            title: 'Delete Announcement',
+            prompt: 'Are you sure you want to delete this announcement?',
+            color: 'red',
+            yesText: 'Delete',
+            noText: 'Cancel',
+            onConfirm: async () => {
+                await this.deleteAnnouncement(announcementId);
+            },
+            onCancel: () => {
+                console.log('Deletion cancelled');
             }
-            this.addAnnouncement();
+            });
         },
-              /**
-       * Shows a confirmation dialog for deletion and, if confirmed,
-       * calls the deleteAchievement method.
-       */
-      async confirmDelete(announcementId) {
-        this.$store.commit('dialog/confirm/show', {
-          title: 'Delete Announcement',
-          prompt: 'Are you sure you want to delete this announcement?',
-          color: 'red',
-          yesText: 'Delete',
-          noText: 'Cancel',
-          onConfirm: async () => {
-            await this.deleteAnnouncement(announcementId);
-          },
-          onCancel: () => {
-            console.log('Deletion cancelled');
-          }
-        });
-      },
-
-      /**
-       * Deletes an announcement via an AJAX request.
-       */
-      deleteAnnouncement(announcementId) {
-        $.ajax({
+        deleteAnnouncement(announcementId) {
+            $.ajax({
             url: `${this.$store.getters['api_base']}?e=barangay&a=delete-announcement`,
             type: 'POST',
             xhrFields: { withCredentials: true },
@@ -69,45 +45,6 @@ export default {
             }
             });
         },
-    
-
-        addAnnouncement() {
-            // Set the barangay ID for the new announcement using the store getter.
-            this.newAnnouncement.barangay_id = this.$store.getters['auth/getBarangayId'];
-            
-            // Create a FormData object and append announcement info as JSON.
-            const formData = new FormData();
-            formData.append("announcementInfo", JSON.stringify(this.newAnnouncement));
-            
-            // Append the file if one was selected.
-            if (this.file) {
-                formData.append("file", this.file);
-            }
-            
-            // Send AJAX request to the backend API.
-            $.ajax({
-                url: `${this.$store.getters['api_base']}?e=barangay&a=add-announcement`,
-                type: 'POST',
-                xhrFields: { withCredentials: true },
-                headers: { 'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content },
-                processData: false,
-                contentType: false,
-                data: formData,
-                success: (data) => {
-                    this.newAnnouncement = {};
-                    this.file = null;
-                    this.fetchBarangayAnnouncements();
-                    console.log("Announcement data has been added successfully", data);
-                
-                },
-                error: (jqXHR, textStatus, errorThrown) => {
-                console.error("Error adding announcement:", textStatus, errorThrown);
-                }
-            });
-        },
-
-
-
         fetchBarangayAnnouncements() {
             $.ajax({
             url: `${this.$store.getters.api_base}?e=barangay&a=announcements`,
@@ -138,10 +75,44 @@ export default {
                 // Optional: any actions after completion.
             }
             });
+        },
+        closeForm() {
+            this.showAddAnnouncementForm = false;
+            this.file = null;
+            this.filePreview = null;
+            this.editing = false;
+        },
+        // Helper Methods
+        formatDate(date) {
+            if (!date) return "";
+            const d = new Date(date);
+            return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
+        },
+        editAnnouncement(announcement) {
+            this.announcement = announcement;
+            this.announcement.date = new Date(announcement.date);
+            this.showAddAnnouncementForm = true;
+            this.editing = true;
+        },
+        formatDateStr(dateStr) {
+            if (!dateStr) return '';
+            const date = new Date(dateStr);
+            return date.toLocaleDateString('en-US', {
+            month: 'long',
+            day: 'numeric',
+            year: 'numeric'
+            });
         }
+
+    },
+    watch: {
     },
     created() {
         this.fetchBarangayAnnouncements();
+    },
+    components: {
+        VDateInput,
+        FormAnnouncement
     }
 };
 </script>
@@ -155,67 +126,86 @@ export default {
             <v-icon class="ml-5" size="75">mdi-bullhorn</v-icon>
         </div>
 
-        <div class="w-full d-flex flex-row flex-wrap justify-center ga-10 items-start">
+        <div class="w-full d-flex flex-row flex-wrap justify-evenly ga-10 items-start">
             <v-card 
-            v-for="announcement in announcements" 
-            :key="announcement.id"
-            class="announcement-card w-[30%] h-[500px] d-flex flex-col justify-start ga-5 pa-8 elevation-10 rounded-xl"
+            v-for="(announcement, index) in announcements" 
+            :key="index"
+            style="border-radius: 1rem;"
+            class="announcement-card max-w-[450px] h-auto d-flex flex-col items-center justify-start ga-5 elevation-10 py-5 px-5"
             >
-            <v-img 
+            <img 
                 :src="announcement.img 
                         ? ($store.getters.base + 'public/announcements/' + announcement.img) 
                         : ($store.getters.base + 'public/announcements/exx.jpg')"
-                class="rounded h-[400px]"
-                contain
-            ></v-img>
+                class="rounded w-[350px] h-[500px]"
+                style="border-radius: .5rem;"
+                cover
+            ></img>
 
-            <div class="w-full d-flex justify-center items-center">
+            <v-card-item class="w-[90%] relative py-5 pb-10 elevation-10">
+                <h4 class="uppercase text-base font-extrabold">
+                    {{ announcement.title }}
+                </h4>
+
+                <p class="text-sm font-medium">
+                    {{ announcement.description }}
+                </p>
+
+                <span class="text-xs font-italic absolute bottom-0 right-0 pa-5">
+                    {{ formatDateStr(announcement.date) }}
+                </span>
+            </v-card-item>
+
+            <v-card-actions class="actions w-[70%] d-flex justify-evenly items-center py-5 hidden">
                 <!-- The button is hidden by default; CSS will reveal it on hover -->
+                <v-btn class="edit-btn" color="teal-lighten-1" @click="editingIndex = index" >EDIT</v-btn>
                 <v-btn class="delete-btn" color="red-lighten-1" @click="confirmDelete(announcement.id)">DELETE</v-btn>
-            </div>
+            </v-card-actions>
+
+            <!-- Edit Achievement Form (shown for updating an achievement) -->
+            <FormAnnouncement
+                v-if="editingIndex === index"
+                :action="'updating'"
+                :announcement="announcement"
+                @fetchInfo="fetchBarangayAnnouncements"
+            />
+
             </v-card>
         </div>
-
 
         <v-btn
             class="d-flex items-center justify-center w-auto px-15 py-10 text-lg ma-5"
             elevation="10"
-            @click="triggerFileInput"
+            @click="showNewAnnouncement = true"
             >
                 <v-icon>mdi-plus-circle-outline</v-icon>
                 <span class="ml-2">ADD ANNOUNCEMENT</span>
         </v-btn>
-    </v-container>
 
-    <input
-        ref="fileInput"
-        type="file"
-        accept="image/*"
-        class="hidden"
-        @change="handleFileUpload"
-    />
+
+        <!-- New Announcement Dialog -->
+        <FormAnnouncement
+        v-if="showNewAnnouncement"
+        :announcement="{}"
+        :action="'adding'"
+        @close="showNewAnnouncement = false"
+        @fetchInfo="fetchBarangayAnnouncements">
+        </FormAnnouncement>
+    </v-container>
 </template>
 
 <style scoped>
 .announcement-main {
-    padding: 2rem 5rem;
+    padding: 2rem 0rem;
     display: flex;
     flex-direction: column;
     justify-content: start;
     align-items: center;
     gap: 1rem;
+    width: 90%;
 }
 
 .announcement-img {
     border-radius: .5rem;
-}
-
-.announcement-card .delete-btn {
-    display: none;
-    transition: opacity 300ms ease-in-out;
-}
-
-.announcement-card:hover .delete-btn {
-    display: block;
 }
 </style>

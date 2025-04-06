@@ -1,7 +1,7 @@
 <template>
-    <v-container fluid class="pa-0">
+    <v-container fluid class="pa-0 h-auto">
         <v-card class="pa-9 pb-4">
-            <h2 class="py-5 text-center text-2xl font-weight-bold">YOUTH MESSAGES NOTIFICATIONS</h2>
+            <h2 class="py-5 text-center text-2xl font-weight-black gradient-text">YOUTH MESSAGES INBOX</h2>
 
             <v-tabs v-model="tab" grow>
                 <v-tab>UNREAD</v-tab>
@@ -10,10 +10,17 @@
 
             <v-container class="overflow-y-scroll h-[400px]">
                 <v-list>
-                    <v-list-item v-for="n in 10" :key="n" class="mb-3 rounded">
-                        <v-list-item-title class="font-weight-bold">{{ messages.title }}</v-list-item-title>
-                        <v-list-item-subtitle>{{ messages.description }}</v-list-item-subtitle>
-                        <span class="text-right text-caption font-weight-bold">{{ messages.time }}</span>
+                    <v-list-item v-for="n in 10" :key="n" class="mb-3 rounded ">
+                        <div class="d-flex flex-col mb-1">
+                            <v-list-item-title class="font-weight-bold">{{ messages.title }}</v-list-item-title>
+                            <h3 class="text-xs">From: {{ messages.sender }}</h3>
+                        </div>
+
+                        <div>
+                            <v-list-item-subtitle class="text-base">{{ messages.description }}</v-list-item-subtitle>
+                            <span class="text-right text-caption font-weight-bold">{{ messages.time }}</span>
+                        </div>
+                        
                     </v-list-item>
                 </v-list>
             </v-container>
@@ -27,6 +34,7 @@ export default {
         return {
             tab: 0,
             messages: {
+                sender: "Bruno Mars ft. Cardi B",
                 title: "Youth Skills Development Program",
                 description: "Implement monthly workshops on practical skills such as basic coding, graphic design, entrepreneurship, and financial literacy. This will help equip ...",
                 time: "1 hr ago"

@@ -60,35 +60,61 @@ else if ($action === 'add-announcement') {
     if (!isset($_POST['announcementInfo'])) {
         returnError('Invalid announcement information received.', 400);
     }
-
-    // Decode the JSON data (if not already an array).
-    $announcementInfo = is_array($_POST['announcementInfo']) ? $_POST['announcementInfo'] : json_decode($_POST['announcementInfo'], true);
+    
+    // Decode JSON data (if not already an array)
+    $announcementInfo = is_array($_POST['announcementInfo']) 
+        ? $_POST['announcementInfo'] 
+        : json_decode($_POST['announcementInfo'], true);
+    
     if (!$announcementInfo) {
         returnError('Invalid announcement information format.', 400);
     }
-
+    
     // Ensure that a barangay ID is provided.
     if (!isset($announcementInfo['barangay_id'])) {
         returnError('Barangay ID is required.', 400);
     }
-
+    // Ensure required fields are provided.
+    if (!isset($announcementInfo['title']) || trim($announcementInfo['title']) === '') {
+        returnError('Announcement title is required.', 400);
+    }
+    if (!isset($announcementInfo['description']) || trim($announcementInfo['description']) === '') {
+        returnError('Announcement description is required.', 400);
+    }
+    if (!isset($announcementInfo['date']) || trim($announcementInfo['date']) === '') {
+        returnError('Announcement date is required.', 400);
+    }
+    // If is_featured is not provided, default it to 0.
+    if (!isset($announcementInfo['is_featured'])) {
+        $announcementInfo['is_featured'] = 0;
+    }
+    
+    // Create a new Announcement instance.
     $announcement = new Announcement();
-
-    // Set the barangay ID.
+    
+    // Set properties from the received data.
     $announcement->setBarangayId($announcementInfo['barangay_id']);
-
-    // Process file upload if a file was provided.
+    $announcement->setTitle($announcementInfo['title']);
+    $announcement->setDescription($announcementInfo['description']);
+    $announcement->setDate($announcementInfo['date']);
+    $announcement->setIsFeatured($announcementInfo['is_featured']);
+    
+    // Process file upload if a file is provided.
     if (isset($_FILES['file']) && $_FILES['file']['error'] === UPLOAD_ERR_OK) {
-        // Define the upload directory (adjust the path as needed).
+        // Define the upload directory (adjust the path as necessary).
         $uploadDir = __DIR__ . '/../public/announcements/';
+        
         // Create the directory if it doesn't exist.
         if (!is_dir($uploadDir)) {
             mkdir($uploadDir, 0755, true);
         }
+        
         // Sanitize the filename.
         $filename = basename($_FILES['file']['name']);
-        // Set the target file path.
-        $targetFile = $uploadDir . $filename;
+        
+        // Set the target file path (ensure the directory ends with a slash).
+        $targetFile = rtrim($uploadDir, '/') . '/' . $filename;
+        
         // Move the uploaded file.
         if (move_uploaded_file($_FILES['file']['tmp_name'], $targetFile)) {
             $announcement->setImg($filename);
@@ -96,11 +122,11 @@ else if ($action === 'add-announcement') {
             returnError("Failed to upload file.", 500);
         }
     } else if (isset($announcementInfo['img'])) {
-        // If no file was uploaded, use the provided image value if any.
+        // If no file was uploaded, use the provided image value (if any).
         $announcement->setImg($announcementInfo['img']);
     }
-
-    // Insert the new announcement.
+    
+    // Attempt to insert the new announcement into the database.
     if ($announcement->insert()) {
         returnSuccess([
             'message' => 'Announcement added successfully.',
@@ -110,6 +136,91 @@ else if ($action === 'add-announcement') {
         returnError("Announcement insertion failed.", 500);
     }
 }
+
+else if ($action === 'update-announcement') {
+    // Ensure announcement data exists.
+    if (!isset($_POST['announcementInfo'])) {
+        returnError('Invalid announcement information received.', 400);
+    }
+    
+    // Decode JSON data (if not already an array).
+    $announcementInfo = is_array($_POST['announcementInfo']) 
+        ? $_POST['announcementInfo'] 
+        : json_decode($_POST['announcementInfo'], true);
+    
+    if (!$announcementInfo) {
+        returnError('Invalid announcement information format.', 400);
+    }
+    
+    // Ensure that required fields are provided.
+    if (!isset($announcementInfo['id']) || trim($announcementInfo['id']) === '') {
+        returnError('Announcement ID is required for update.', 400);
+    }
+    if (!isset($announcementInfo['barangay_id'])) {
+        returnError('Barangay ID is required.', 400);
+    }
+    if (!isset($announcementInfo['title']) || trim($announcementInfo['title']) === '') {
+        returnError('Announcement title is required.', 400);
+    }
+    if (!isset($announcementInfo['description']) || trim($announcementInfo['description']) === '') {
+        returnError('Announcement description is required.', 400);
+    }
+    if (!isset($announcementInfo['date']) || trim($announcementInfo['date']) === '') {
+        returnError('Announcement date is required.', 400);
+    }
+    // Default is_featured to 0 if not provided.
+    if (!isset($announcementInfo['is_featured'])) {
+        $announcementInfo['is_featured'] = 0;
+    }
+    
+    // Create an Announcement instance with the given ID.
+    $announcement = new Announcement($announcementInfo['id']);
+    
+    // Set properties from the received data.
+    $announcement->setBarangayId($announcementInfo['barangay_id']);
+    $announcement->setTitle($announcementInfo['title']);
+    $announcement->setDescription($announcementInfo['description']);
+    $announcement->setDate($announcementInfo['date']);
+    $announcement->setIsFeatured($announcementInfo['is_featured']);
+    
+    // Process file upload if a file is provided.
+    if (isset($_FILES['file']) && $_FILES['file']['error'] === UPLOAD_ERR_OK) {
+        // Define the upload directory (adjust the path as necessary).
+        $uploadDir = __DIR__ . '/../public/announcements/';
+        
+        // Create the directory if it doesn't exist.
+        if (!is_dir($uploadDir)) {
+            mkdir($uploadDir, 0755, true);
+        }
+        
+        // Sanitize the filename.
+        $filename = basename($_FILES['file']['name']);
+        
+        // Set the target file path.
+        $targetFile = rtrim($uploadDir, '/') . '/' . $filename;
+        
+        // Move the uploaded file.
+        if (move_uploaded_file($_FILES['file']['tmp_name'], $targetFile)) {
+            $announcement->setImg($filename);
+        } else {
+            returnError("Failed to upload file.", 500);
+        }
+    } else if (isset($announcementInfo['img'])) {
+        // If no file was uploaded, use the provided image value (if any).
+        $announcement->setImg($announcementInfo['img']);
+    }
+    
+    // Attempt to update the announcement in the database.
+    if ($announcement->update()) {
+        returnSuccess([
+            'message' => 'Announcement updated successfully.',
+            'announcement' => $announcement->getAssoc()
+        ]);
+    } else {
+        returnError("Announcement update failed.", 500);
+    }
+}
+
 
 else if ($action === 'delete-announcement') {
     // Ensure the announcement ID is provided

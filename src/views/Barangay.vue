@@ -4,6 +4,8 @@ import Announcements from '@/components/barangayPage/Announcements.vue';
 import Cards from '@/components/barangayPage/Cards.vue';
 import Achievements from '@/components/barangayPage/Achievements.vue';
 import DialogComponent from '@/components/barangayPage/DialogComponent.vue';
+import FeedbackForm from '@/components/barangayPage/FeedbackForm.vue';
+import YouthAccount from '@/components/barangayPage/YouthAccount.vue';
 import $ from 'jquery';
 
 export default {
@@ -12,12 +14,16 @@ export default {
     Announcements,
     Cards,
     Achievements,
-    DialogComponent
+    DialogComponent,
+    FeedbackForm,
+    YouthAccount
   },
   data() {
     return {
       barangaySlug: this.$route.params.barangaySlug,
-      barangayInfo: {}  
+      barangayInfo: {},
+      showYouthAccount: false,
+      dialog: false
     };
   },
   methods: {
@@ -84,8 +90,46 @@ export default {
     <Announcements v-if="barangayInfo.id" :barangayId="barangayInfo.id"/>
     <Cards v-if="barangayInfo.id" :barangayId="barangayInfo.id"/>
     <Achievements v-if="barangayInfo.id" :barangayId="barangayInfo.id"/>
+
+    <!-- Supporting Components -->
     <DialogComponent/>
+
+    <div class="form-button">
+      <v-btn icon @click="dialog = true">
+        <v-icon>mdi-account-circle</v-icon>
+      </v-btn>
+
+      
+      <FeedbackForm :barangayName="barangayInfo.name"></FeedbackForm>
+    </div>
+
+
+
   </v-container>
+
+    <v-dialog v-model="dialog" max-width="800px">
+        <v-card class="d-flex justify-center items-center pa-15" style="border-radius: 1rem;">
+            <h1 class="text-2xl font-extrabold">YOUTH ACCOUNT</h1>
+
+            <div class="w-[90%] d-flex justify-evenly py-10">
+              <v-avatar :image='"/public/OfficialImages/no-avatar.png"' size="150">
+              </v-avatar>
+
+              <article>
+                <v-card-text>NAME: Charles Harvey Gonzaga</v-card-text>
+                <v-card-text>Barangay: San Francisco, Iriga City</v-card-text>
+                <v-card-text>Email: harveygonzaga222@gmail.com</v-card-text>
+              </article>
+
+            </div>
+
+          <v-btn class="d-flex justify-center pa-5 items-center gap-3" color="error" variant="outlined" @click="dialog = false">
+            <v-icon>mdi-logout</v-icon>
+            <span>LOG OUT</span>
+          </v-btn>
+                
+        </v-card>
+    </v-dialog>
 </template>
 
 <style scoped>
@@ -147,6 +191,17 @@ export default {
 
 .dp-barangay > * {
   z-index: 2;
+}
+
+.form-button {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    position: fixed;
+    margin: 2rem;
+    bottom: 0; /* distance from the bottom */
+    right: 0; /* distance from the right */
+    z-index: 1000; /* ensures the button stays on top of other elements */
 }
 
 @keyframes animate-gradient {

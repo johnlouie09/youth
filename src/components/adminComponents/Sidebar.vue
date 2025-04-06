@@ -1,5 +1,14 @@
 <template>
     <v-navigation-drawer v-model="drawer" app width="280" class="relative d-flex flex-col pa-3 pt-7 pb-7">
+     
+      <!-- Toggle Button Fixed at the Top Right -->
+      <v-btn
+      class="toggle-drawer"
+      icon
+      @click="toggleDrawer"
+      >
+        <v-icon>{{ drawer ? 'mdi-menu-open' : 'mdi-menu' }}</v-icon>
+      </v-btn>
       <!-- Logo and Barangay Name -->
       <v-list-item class="logo-container">
         <div class="d-flex justify-center items-center py-5" @click="openBarangayWebsite">
@@ -28,7 +37,7 @@
           <template v-slot:prepend>
             <v-icon>{{ menuObj.icon }}</v-icon>
           </template>
-          <v-list-item-title style="font-size: 1rem;">{{ menuObj.menuName }}</v-list-item-title>
+          <v-list-item-title class="item" style="font-size: 1rem; height: auto;">{{ menuObj.menuName }}</v-list-item-title>
         </v-list-item>
       </v-list>
   
@@ -47,6 +56,54 @@
         <v-btn class="pa-3 w-[50%] d-flex justify-center items-center" color="error" variant="outlined" @click="logout">
           <v-icon left>mdi-logout</v-icon>
           <span>LOG OUT</span>
+        </v-btn>
+      </div>
+    </v-navigation-drawer>
+
+
+
+    <v-navigation-drawer v-if="drawer === false" app width="100" class="relative d-flex flex-col pa-3 pt-7 pb-7">
+      <v-list-item>
+        <v-btn
+        class="w-full"
+        icon
+        @click="toggleDrawer"
+        >
+          <v-icon>{{ drawer ? 'mdi-menu-open' : 'mdi-menu' }}</v-icon>
+        </v-btn>
+      </v-list-item>
+      
+
+      
+      <!-- Logo and Barangay Name -->
+      <v-list-item class="logo-container">
+        <div class="d-flex justify-center items-center py-5" @click="openBarangayWebsite">
+          <v-avatar size="30">
+            <v-img :src="`${$store.getters['base']}Group.svg`" alt="Barangay Logo"></v-img>
+          </v-avatar>
+        </div>
+      </v-list-item>
+  
+      <!-- Navigation Menu -->
+      <v-list density="compact" nav>
+        <v-list-item
+          v-for="menuObj in menuObjs"
+          :key="menuObj.menuName"
+          :to="menuObj.to"
+          :class="{ active: isActive(menuObj.to) }"
+          density="compact"
+          class="mb-6 d-flex justify-center items-center"
+          @click="navigate(menuObj.to)"
+        >
+            <v-icon>{{ menuObj.icon }}</v-icon>
+        </v-list-item>
+      </v-list>
+
+      <!-- Logout Button at the Bottom Center -->
+      <div class="absolute bottom-0 d-flex flex-col items-center justify-center gap-5">
+        <ThemeSwitcher/>
+        <v-btn class="d-flex justify-center pa-0 items-center" color="error" variant="outlined" @click="logout">
+          <v-icon>mdi-logout</v-icon>
         </v-btn>
       </div>
 
@@ -73,11 +130,13 @@
       // Build the menu objects dynamically using the slug from the URL.
       menuObjs() {
           return [
-          { menuName: "Dashboard", icon: "mdi-view-dashboard", to: `/admin/${this.barangaySlug}/dashboard` },
-          { menuName: "Officials", icon: "mdi-account-group", to: `/admin/${this.barangaySlug}/officials` },
-          { menuName: "Announcements", icon: "mdi-bullhorn", to: `/admin/${this.barangaySlug}/announcements` },
-          { menuName: "Achievements", icon: "mdi-trophy", to: `/admin/${this.barangaySlug}/achievements` },
+          { menuName: "Dashboard", icon: "mdi-view-dashboard", to: `/admin/${this.barangaySlug}/dashboard`},
+          { menuName: "Officials", icon: "mdi-account-group", to: `/admin/${this.barangaySlug}/officials`},
+          { menuName: "Announcements", icon: "mdi-bullhorn", to: `/admin/${this.barangaySlug}/announcements`},
+          { menuName: "Achievements", icon: "mdi-trophy", to: `/admin/${this.barangaySlug}/achievements`},
+          { menuName: "Youth Request", icon: "mdi-bell", to: `/admin/${this.barangaySlug}/youth-request`},
           { menuName: "Settings and Profile", icon: "mdi-cog", to: `/admin/${this.barangaySlug}/settings` },
+          
           ];
       },
       barangayName() {
@@ -118,7 +177,10 @@
             const resolvedRoute = this.$router.resolve({ name: 'barangay-landingpage', params: { slug: this.barangaySlug } });
             // Open the resolved URL in a new window
             window.open(resolvedRoute.href, '_blank');
-        }
+      },
+      toggleDrawer() {
+        this.drawer = !this.drawer;
+      },
     }
   };
   </script>
@@ -128,17 +190,18 @@
     background-color: rgba(255, 255, 255, 0.1);
   }
 
-  
   .v-navigation-drawer {
     display: flex;
     flex-direction: column;
     transition: width 0.3s;
   }
-  
-  @media (max-width: 600px) {
-    .v-navigation-drawer {
-      width: 56px !important;
-    }
-  }
+
+  /* Toggle Button Styles */
+.toggle-drawer {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 2000;
+}
   </style>
   
