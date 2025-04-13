@@ -1,9 +1,23 @@
 <?php
+
+// enable error reporting for development
+ini_set('display_errors', 1);           // tells PHP to display runtime errors
+ini_set('display_startup_errors', 1);   // tells PHP to display errors that occur during PHP's startup sequence
+error_reporting(E_ALL);                    // sets the error reporting level to report all PHP errors
+
+
 /** Guard Constant */
 define('__BASE', __DIR__);
 
+// Define allowed origins
+$allowedOrigins = ['http://localhost:5173', 'https://testdeploy.irigayouth.com'];
+$origin = $_SERVER['HTTP_ORIGIN'] ?? '';
+
+// Handle OPTIONS preflight requests
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
-    header('Access-Control-Allow-Origin: http://localhost:5173');
+    if (in_array($origin, $allowedOrigins)) {
+        header('Access-Control-Allow-Origin: ' . $origin);
+    }
     header("Access-Control-Allow-Credentials: true");
     header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
     header('Access-Control-Allow-Headers: Content-Type, X-CSRF-Token');
@@ -11,8 +25,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     exit;
 }
 
-/** Request Headers */
-header('Access-Control-Allow-Origin: http://localhost:5173');
+// Set headers for regular requests
+if (in_array($origin, $allowedOrigins)) {
+    header('Access-Control-Allow-Origin: ' . $origin);
+} else {
+    header('Access-Control-Allow-Origin: https://testdeploy.irigayouth.com'); // Default to production
+}
 header("Access-Control-Allow-Credentials: true");
 header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type, X-CSRF-Token');

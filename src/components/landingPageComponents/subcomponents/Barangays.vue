@@ -16,14 +16,16 @@
             class="barangay custom-card hoverable"
             width="350px"
             height="250px"
-            :style="{
-                'background-image': `url(/public/barangayHall/${barangay.img})`,
+            :style="barangay.img ? {
+                'background-image': `url(${this.$store.getters.base}/barangayHall/${barangay.img.toLowerCase()}?v=1)`,
                 'background-size': 'cover',
                 'background-position': 'center'
-            }"
+            } : {}"
             @click = "toBarangay(barangay)"
         >
-            <v-card-title class="overlay-titles-barangays" style="font-weight: 900; font-size: 1rem;">{{ barangay.name.toUpperCase() }}</v-card-title>
+            <v-card-title class="overlay-titles-barangays" style="font-weight: 900; font-size: 1rem;">
+                {{ barangay.name.toUpperCase() }}
+            </v-card-title>
         </v-card>
     </v-container>
 </template>
@@ -74,9 +76,11 @@ export default {
                 },
                 success: (data) => {
                     this.barangays = data.data.barangays;
+                    console.log("Barangays Data:", this.barangays); // Debug the data
                 },
                 error: (jqXHR, textStatus, errorThrown) => {
                     console.error("Error:", textStatus, errorThrown);
+                    this.error = "Failed to fetch barangays. Please try again.";
                 },
                 complete: () => {
                     this.loading = false;
@@ -118,6 +122,7 @@ export default {
     align-items: flex-end;
     padding-bottom: .5rem;
     overflow: hidden;
+    background-color: #f0f0f0;
 }
 
 /* Corrected hover effect using transform */

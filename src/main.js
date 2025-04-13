@@ -26,18 +26,19 @@ const vuetify = createVuetify({
 
 const app = createApp(App)
 
-axios.defaults.baseURL = import.meta.env.PROD
-  ? `${import.meta.env.BASE_URL}/app`
-  : 'http://localhost/youth/app'
+// set axios base URL to a relative path
+axios.defaults.baseURL = '/app'
 
-const api_base = import.meta.env.PROD
-  ? `${import.meta.env.BASE_URL}/app/api.php`
-  : 'http://localhost/youth/app/api.php'
-app.config.globalProperties.$api_base = api_base
+// define api_base as a relative path
+const api_base = '/app/api.php'
+const fullApiUrl = `${window.location.origin}${api_base}`
+app.config.globalProperties.$api_base = fullApiUrl // use full URL globally
 
-// Fetch the CSRF token and set it in the meta tag.
+console.log('Full API URL:', fullApiUrl)
+
+// fetch the CSRF token and set it in the meta tag
 $.ajax({
-  url: `${api_base}?e=csrf`,
+  url: `${fullApiUrl}?e=csrf`,
   type: 'GET',
   dataType: 'json',
   xhrFields: { withCredentials: true },
@@ -49,16 +50,16 @@ $.ajax({
   }
 })
 
-// Fetch session info for the logged-in sk-official.
+// fetch session info for the logged-in sk-official
 $.ajax({
   type: 'GET',
   xhrFields: { withCredentials: true },
-  url: `${api_base}?e=sk-official&a=session`,
+  url: `${fullApiUrl}?e=sk-official&a=session`,
   success: (data) => {
     store.commit('auth/setUser', data?.data)
   },
   error: () => {
-    // Handle session error if needed.
+    // handle session error if needed
   },
   complete: () => {
     app.use(router)

@@ -1,7 +1,7 @@
 <template>
     <div class="hero-container">
         <div class="content">
-            <div><img  :src="`${$store.getters['base']}Group.svg`" alt="Group Logo" /></div>
+            <div><img  :src="$store.getters['base'] + '/Group.svg'" alt="Group Logo" /></div>
             <h1>YOUTH ORIENTED UNIFIED TRANSPARENCY HUB</h1>
             <h2>IRIGA CITY</h2>
         </div>
@@ -10,7 +10,7 @@
             <div ref="swiperContainer" class="swiper mySwiper">
                 <div class="swiper-wrapper">
                     <div class="swiper-slide" v-for="image in shuffledImages">
-                        <img :src="($store.getters.base + 'public/achievements/' + image) " />
+                        <img :src="($store.getters.base + '/achievements/' + image)" />
                     </div>
                 </div>
             </div> 
@@ -52,16 +52,15 @@ export default {
         // Fetch image filenames from the backend and shuffle them.
         getImageFilenames() {
             $.ajax({
-                url:  `${this.$store.getters['api_base']}?e=barangay&a=image-filenames`,
-                type: 'GET',
-                success: (data) => {
-                // Assuming data is an array of filenames.
+              url: `${this.$api_base}?e=barangay&a=image-filenames`,
+              type: 'GET',
+              success: (data) => {
                 this.shuffledImages = this.shuffleArray(data);
                 console.log("Shuffled Images:", this.shuffledImages);
-                },
-                error: (jqXHR, textStatus, errorThrown) => {
+              },
+              error: (jqXHR, textStatus, errorThrown) => {
                 console.error("Error fetching images:", textStatus, errorThrown);
-                }
+              }
             });
         },
         initSwiper() {
@@ -72,20 +71,20 @@ export default {
                 centeredSlides: true,
                 slidesPerView: "auto",
                 coverflowEffect: {
-                rotate: 30,
-                stretch: 0,
-                depth: 400,
-                modifier: 1,
-                slideShadows: true,
+                    rotate: 30,
+                    stretch: 0,
+                    depth: 400,
+                    modifier: 1,
+                    slideShadows: true,
                 },
                 loop: true,
                 autoplay: {
-                delay: 1000, // Autoplay delay in milliseconds
-                disableOnInteraction: false, // Continue autoplay even after user interactions
+                    delay: 1000,
+                    disableOnInteraction: false,
                 },
                 pagination: {
-                el: ".swiper-pagination",
-                clickable: true,
+                    el: ".swiper-pagination",
+                    clickable: true,
                 },
             });
         }
