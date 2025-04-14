@@ -13,7 +13,7 @@
       <v-list-item class="logo-container">
         <div class="d-flex justify-center items-center py-5" @click="openBarangayWebsite">
           <v-avatar size="45">
-            <v-img :src="`${$store.getters['base']}Group.svg`" alt="Barangay Logo"></v-img>
+            <v-img :src="$store.getters['base'] + '/Group.svg'" alt="Barangay Logo"></v-img>
           </v-avatar>
 
           <v-list-item>
@@ -79,7 +79,7 @@
       <v-list-item class="logo-container">
         <div class="d-flex justify-center items-center py-5" @click="openBarangayWebsite">
           <v-avatar size="30">
-            <v-img :src="`${$store.getters['base']}Group.svg`" alt="Barangay Logo"></v-img>
+            <v-img :src="$store.getters['base'] + '/Group.svg'" alt="Barangay Logo"></v-img>
           </v-avatar>
         </div>
       </v-list-item>

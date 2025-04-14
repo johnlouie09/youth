@@ -94,7 +94,5 @@ export default {
     font-weight: bold;
     margin-top: 10px;
 }
-
-
 </style>
 

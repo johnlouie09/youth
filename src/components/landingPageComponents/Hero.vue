@@ -52,7 +52,7 @@ export default {
         // Fetch image filenames from the backend and shuffle them.
         getImageFilenames() {
             $.ajax({
-              url: `${this.$api_base}?e=barangay&a=image-filenames`,
+              url: `${this.$store.getters['api_base']}?e=barangay&a=image-filenames`,
               type: 'GET',
               success: (data) => {
                 this.shuffledImages = this.shuffleArray(data);
@@ -79,7 +79,7 @@ export default {
                 },
                 loop: true,
                 autoplay: {
-                    delay: 1000,
+                    delay: 2300,
                     disableOnInteraction: false,
                 },
                 pagination: {
@@ -125,7 +125,7 @@ export default {
 }
 
 .content img {
-    width: 250px; /* Adjust size as needed */
+    width: 250px;
 }
 
 

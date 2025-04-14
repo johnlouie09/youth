@@ -5,55 +5,42 @@
             <v-tabs grow class="w-[50%] d-flex justify-center gap-5">
                 <v-tab>FEATURED</v-tab>
                 <v-tab>
-                    <v-select 
-                    class="w-[100%]"
-                    :items="items"
-                    v-model='selectedAnnoncementItem'>
-                    </v-select>
+                    <v-select
+                        class="w-[100%]"
+                        :items="items"
+                        v-model="selectedAnnoncementItem"
+                    />
                 </v-tab>
-
             </v-tabs>
         </div>
 
         <div ref="swiperContainer" class="swiper mySwiper">
             <div class="swiper-wrapper">
                 <div class="swiper-slide" v-for="announcement in announcements" :key="announcement.id">
-
-
-                    <div 
-                    style="border-radius: 1rem;"
-                    class="announcement-card bg-black h-auto d-flex flex-col items-center justify-start ga-5 elevation-10 py-5 px-5"
-                    >
-                        <img 
-                            :src="announcement.img 
-                                    ? ($store.getters.base + 'public/announcements/' + announcement.img) 
-                                    : ($store.getters.base + 'public/announcements/exx.jpg')"
+                    <div class="announcement-card bg-black h-auto d-flex flex-col items-center justify-start ga-5 elevation-10 py-5 px-5">
+                        <img
+                            :src="announcement.img
+                                ? (baseUrl + '/announcements/' + announcement.img)
+                                : (baseUrl + '/announcements/exx.jpg')"
                             :alt="announcement.title"
                             style="border-radius: .5rem;"
                             cover
-                        ></img>
-
+                        />
                         <article class="w-[90%] relative py-5 pb-10 elevation-10">
                             <h4 class="uppercase text-center text-base font-extrabold mb-2">
-                                {{ announcement.title }}
+                                {{ announcement.title || 'No Title' }}
                             </h4>
-
                             <p class="text-sm font-medium">
-                                {{ announcement.description }} Lorem ipsum dolor, sit amet consectetur adipisicing elit. Eligendi quo facere cum.
+                                {{ announcement.description || 'No description available.' }} Lorem ipsum dolor, sit amet consectetur adipisicing elit.
                             </p>
-
                             <span class="text-xs font-italic absolute bottom-0 right-0 pa-2">
                                 {{ formatDateStr(announcement.date) }}
-                            </span>
+                              </span>
                         </article>
-
                     </div>
-
-
-                    
-                        <!-- <img :src="`/public/announcements/${announcement.img}`" :alt="announcement.title"/> -->
-                    
-                    
+                </div>
+                <div class="swiper-slide" v-if="announcements.length === 0">
+                    <p>No announcements available.</p>
                 </div>
             </div>
         </div>
@@ -79,8 +66,15 @@ export default {
             announcements: [],
             items: ['Select a Month', 'January', 'February', 'March', 'April'],
             selectedAnnoncementItem: 'Select a Month',
-
+            isFetchingAnnouncements: false,
         };
+    },
+    computed: {
+        baseUrl() {
+            return window.location.origin === 'http://localhost:5173'
+                ? 'http://localhost:5173'
+                : this.$store.getters['base'];
+        }
     },
     mounted() {
         this.$nextTick(() => {
@@ -92,13 +86,19 @@ export default {
             if (!dateStr) return '';
             const date = new Date(dateStr);
             return date.toLocaleDateString('en-US', {
-            month: 'long',
-            day: 'numeric',
-            year: 'numeric'
+                month: 'long',
+                day: 'numeric',
+                year: 'numeric'
             });
         },
         initSwiper() {
-            new Swiper(this.$refs.swiperContainer, {
+            const swiperContainer = this.$refs.swiperContainer;
+            if (!swiperContainer) {
+                console.error('Swiper container not found!');
+                return;
+            }
+
+            const swiper = new Swiper(swiperContainer, {
                 initialSlide: 1,
                 modules: [EffectCoverflow, Autoplay, Pagination],
                 effect: "coverflow",
@@ -114,7 +114,7 @@ export default {
                 },
                 loop: false,
                 autoplay: {
-                    delay: 10000,
+                    delay: 5000,
                     disableOnInteraction: false,
                 },
                 pagination: {
@@ -124,43 +124,106 @@ export default {
             });
         },
         async fetchBarangayAnnouncements() {
-        const api_base = 'http://localhost/youth/app/api.php';
-        await $.ajax({
-          url: `${api_base}?e=barangay&a=announcements`,
-          type: 'POST',
-          xhrFields: {
-            withCredentials: true
-          },
-          headers: {
-            'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
-          },
-          data: {
-            barangayId: this.barangayId,
-          },
-          success: (data) => {
-            this.announcements = data.data.announcements;
-            console.log(data);
-          },
-          error: (jqXHR, textStatus, errorThrown) => {
-            console.error("Error:", textStatus, errorThrown);
-            let errorMsg = "An error occurred while processing your request.";
-            if (jqXHR.responseJSON && jqXHR.responseJSON.error) {
-              errorMsg = jqXHR.responseJSON.message;
-            } else if (jqXHR.responseText) {
-              errorMsg = jqXHR.responseText;
+            if (this.isFetchingAnnouncements) {
+                console.log('Fetch already in progress, skipping...');
+                return;
             }
-          },
-          complete: () => {
-            // Optional: any actions after completion.
-          }
-        });
+            this.isFetchingAnnouncements = true;
+            try {
+                await $.ajax({
+                    url: `${this.$store.getters['api_base']}?e=barangay&a=announcements`,
+                    type: 'POST',
+                    xhrFields: { withCredentials: true },
+                    headers: { 'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content },
+                    data: { barangayId: this.barangayId },
+                    beforeSend: function(xhr) {
+                        const token = document.querySelector('meta[name="csrf-token"]').content || '';
+                    },
+                    success: (data, textStatus, jqXHR) => {
+                        try {
+                            this.announcements = data.data.announcements || [];
+                            this.fetchImageFilenames();
+                        } catch (error) {
+                            console.error('Error parsing JSON response:', error);
+                            console.log('Raw response:', jqXHR.responseText);
+                            this.announcements = [];
+                            this.$nextTick(() => {
+                                this.initSwiper();
+                            });
+                        }
+                    },
+                    error: (jqXHR, textStatus, errorThrown) => {
+                        console.error("Fetch error:", textStatus, errorThrown);
+                        console.log('Raw response:', jqXHR.responseText);
+                        this.announcements = [];
+                        this.$nextTick(() => {
+                            this.initSwiper();
+                        });
+                    },
+                    complete: () => {
+                        this.isFetchingAnnouncements = false;
+                    }
+                });
+            } catch (error) {
+                console.error('Promise rejection:', error);
+                this.announcements = [];
+                this.isFetchingAnnouncements = false;
+                this.$nextTick(() => {
+                    this.initSwiper();
+                });
+            }
+        },
+        async fetchImageFilenames() {
+            try {
+                await $.ajax({
+                    url: `${this.$store.getters['api_base']}?e=barangay&a=image_filenames`,
+                    type: 'GET',
+                    xhrFields: { withCredentials: true },
+                    data: { barangayId: this.barangayId, type: 'announcements' },
+                    success: (data, textStatus, jqXHR) => {
+                        try {
+                            const imageFilenames = data.data || [];
+                            console.log('Image filenames:', imageFilenames);
+                            this.announcements = this.announcements.map((announcement, index) => ({
+                                ...announcement,
+                                img: imageFilenames[index] || announcement.img || 'exx.jpg'
+                            }));
+                            console.log('Updated announcements with images:', this.announcements);
+                            this.$nextTick(() => {
+                                this.initSwiper();
+                            });
+                        } catch (error) {
+                            console.error('Error parsing image filenames JSON:', error);
+                            console.log('Raw response:', jqXHR.responseText);
+                            this.$nextTick(() => {
+                                this.initSwiper();
+                            });
+                        }
+                    },
+                    error: (jqXHR, textStatus, errorThrown) => {
+                        console.error("Error fetching image filenames:", textStatus, errorThrown);
+                        this.$nextTick(() => {
+                            this.initSwiper();
+                        });
+                    }
+                });
+            } catch (error) {
+                console.error('Promise rejection in fetchImageFilenames:', error);
+                this.$nextTick(() => {
+                    this.initSwiper();
+                });
+            }
         }
     },
     created() {
         this.fetchBarangayAnnouncements();
     },
     watch: {
-
+        barangayId(newVal, oldVal) {
+            if (newVal !== oldVal) {
+                this.fetchBarangayAnnouncements();
+            }
+        }
     }
 };
 </script>
@@ -172,7 +235,6 @@ export default {
     align-items: center;
     justify-content: center;
     gap: 2rem;
-    align-items: center;
     width: 100%;
 }
 
@@ -193,7 +255,6 @@ export default {
     border-radius: 1rem;
 }
 
-/* Optional: Style pagination bullets */
 .swiper-pagination-bullet {
     background-color: #fff;
     opacity: 0.7;
