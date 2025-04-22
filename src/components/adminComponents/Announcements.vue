@@ -135,8 +135,8 @@ export default {
             >
             <img 
                 :src="announcement.img 
-                        ? ($store.getters.base + 'public/announcements/' + announcement.img) 
-                        : ($store.getters.base + 'public/announcements/exx.jpg')"
+                        ? ($store.getters.base + '/announcements/' + announcement.img)
+                        : ($store.getters.base + '/announcements/exx.jpg')"
                 class="rounded w-[350px] h-[500px]"
                 style="border-radius: .5rem;"
                 cover

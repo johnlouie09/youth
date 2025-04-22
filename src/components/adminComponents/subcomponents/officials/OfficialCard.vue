@@ -5,7 +5,7 @@
       </v-card-title>
       <v-card-text class="d-flex flex-column align-center mt-4">
         <v-avatar
-          :image="official.img ? ($store.getters.base + 'public/OfficialImages/' + official.img) : '/public/OfficialImages/no-avatar.png'"
+          :image="official.img ? ($store.getters.base + '/OfficialImages/' + official.img) : '/OfficialImages/no-avatar.png'"
           alt="Official Img" 
           size="150"
           cover

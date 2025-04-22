@@ -5,7 +5,7 @@
             <div class="d-flex items-start gap-5 w-full">
                 <div class="d-flex items-start relative pa-0">
                     <v-img
-                    :src="filePreview || (announcementsannouncementIInfo.img ? ($store.getters.base + 'public/announcements/' + announcementInfo.img) : '/public/kalinisan.jpg')"
+                    :src="filePreview || (announcementsannouncementIInfo.img ? ($store.getters.base + 'announcements/' + announcementInfo.img) : '/kalinisan.jpg')"
                     alt="Profile Image" 
                     cover
                     width="400"

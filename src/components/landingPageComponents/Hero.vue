@@ -79,7 +79,7 @@ export default {
                 },
                 loop: true,
                 autoplay: {
-                    delay: 2300,
+                    delay: 2000,
                     disableOnInteraction: false,
                 },
                 pagination: {

@@ -4,7 +4,7 @@
             <h3 class="text-2xl pa-5 gradient-text font-black">YOUTH ACCOUNT REQUEST</h3>
             <v-card v-for="n of 20" class="w-full min-h-50 d-flex flex-col justify-center items-center gap-5 elevation-10 pa-10 px-8" style="border-radius: 1rem;">
                 <div class="w-full d-flex justify-center items-center gap-3">
-                    <v-avatar :image='"/public/OfficialImages/no-avatar.png"' size="75">
+                    <v-avatar :image='"/OfficialImages/no-avatar.png"' size="75">
                     </v-avatar>
 
                     <article class="w-auto">

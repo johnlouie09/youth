@@ -140,10 +140,9 @@ methods: {
     },
 
     getOfficials() {
-        const api_base = 'http://localhost/youth/app/api.php';
         const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
         $.ajax({
-            url: `${api_base}?e=barangay&a=sk-officials`,
+            url: `${this.$store.getters['api_base']}?e=barangay&a=sk-officials`,
             type: 'POST',
             xhrFields: {
             withCredentials: true
@@ -254,7 +253,7 @@ components: {
         <!-- Achievement Display Image -->
         <div class="w-[60%] d-flex justify-center items-center relative">
             <v-img
-            :src="filePreview || (achievementInfo.img ? ($store.getters.base + 'public/achievements/' + achievementInfo.img) : ($store.getters.base + 'public/exx.jpg'))"
+            :src="filePreview || (achievementInfo.img ? ($store.getters.base + 'achievements/' + achievementInfo.img) : ($store.getters.base + 'exx.jpg'))"
             alt=""
             class="elevation-5 rounded-lg"
             ></v-img>
