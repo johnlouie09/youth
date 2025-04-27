@@ -18,7 +18,7 @@ export default {
     methods: {
         async fetchClusters() {
             this.loading = true;
-            const api_base = 'http://localhost/youth/app/api.php';
+            const api_base = '/app/api.php';
             await $.ajax({
                 url: `${api_base}?e=cluster&a=fetchClusters`,
                 type: 'GET',

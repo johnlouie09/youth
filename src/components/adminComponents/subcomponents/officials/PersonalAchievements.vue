@@ -129,7 +129,7 @@
         >
           <!-- Achievement Image -->
           <v-img
-            :src="`/public/achievements/${achievement.img}`"
+            :src="`/achievements/${achievement.img}`"
             alt=""
             class="elevation-5 w-full rounded-t-lg"
           />

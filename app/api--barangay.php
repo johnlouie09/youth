@@ -8,6 +8,9 @@ require_once __DIR__ . '/models/Barangay.php';
 require_once __DIR__ . '/models/SkOfficial.php';
 require_once __DIR__ . '/models/Announcement.php';
 require_once __DIR__ . '/models/Achievement.php';
+require_once __DIR__ . '/models/Cluster.php';
+
+
 /** Extract Action */
 $action = $_GET['a'] ?? '';
 
@@ -250,15 +253,20 @@ else if ($action === 'delete-announcement') {
 else if ($action === 'image-filenames') {
     // Define the directory containing your images.
     // Adjust the path as necessary (ensure the path is correct relative to this file).
-    $imageDir = __DIR__ . '\..\public\achievements';
+    $imageDirLocal = __DIR__ . '/../public/achievements';  // Local path
+    $imageDirDeployed = __DIR__ . '/../achievements';      // Deployed path
 
-    // Check if the directory exists.
-    if (!is_dir($imageDir)) {
+    // Use the directory that exists
+    if (is_dir($imageDirLocal)) {
+        $imageDir = $imageDirLocal;
+    } elseif (is_dir($imageDirDeployed)) {
+        $imageDir = $imageDirDeployed;
+    } else {
         echo json_encode([]);
         exit;
     }
 
-    // Scan the directory for files and filter to include only image files.
+    // Scan the directory for files and filter to include only image files
     $files = array_filter(scandir($imageDir), function($file) use ($imageDir) {
         $filePath = $imageDir . '/' . $file;
         return is_file($filePath) && preg_match('/\.(jpg|jpeg|png|gif)$/i', $file);

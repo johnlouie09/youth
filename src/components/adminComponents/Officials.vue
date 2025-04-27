@@ -18,12 +18,10 @@
         </v-btn>
 
         <AddOfficial
-        v-if="showAddSkOfficial"
-        @fetchOfficialInfo="getOfficials()"
-        @close="showAddSkOfficial = false">
-        
+            v-if="showAddSkOfficial"
+            @fetchOfficialInfo="getOfficials()"
+            @close="showAddSkOfficial = false">
         </AddOfficial>
-
     </v-container>
 </template>
 
@@ -46,10 +44,9 @@ export default {
     },
     methods: {
         getOfficials() {
-            const api_base = 'http://localhost/youth/app/api.php';
             const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
             $.ajax({
-                url: `${api_base}?e=barangay&a=sk-officials`,
+                url: `${this.$store.getters['api_base']}?e=barangay&a=sk-officials`,
                 type: 'POST',
                 xhrFields: {
                 withCredentials: true

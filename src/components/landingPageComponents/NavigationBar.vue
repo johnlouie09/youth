@@ -1,8 +1,8 @@
 <template>
   <v-sheet class="nav-main" v-if="!shouldHideNav" elevation="10">
     <div class="logo relative">
-      <img class="barangay-logo" :src="`${$store.getters['base']}Group.svg`" alt="Barangay Logo">
-      <img class="logo-name" :src="`${$store.getters['base']}youth-name.svg`" alt="Youth Name">
+      <img class="barangay-logo" :src="$store.getters['base'] + '/Group.svg'" alt="Barangay Logo">
+      <img class="logo-name" :src="$store.getters['base'] + '/youth-name.svg'" alt="Youth Name">
     </div>
 
     <ul>

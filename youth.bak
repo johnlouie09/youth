@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 26, 2025 at 06:02 AM
+-- Generation Time: Apr 02, 2025 at 09:01 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -57,7 +57,9 @@ INSERT INTO `achievements` (`id`, `sk_official_id`, `title`, `subtitle`, `info`,
 (11, 23, 'Financial Transparency Report', 'Detailed Fund Utilization', 'Published a comprehensive financial transparency report detailing the SK fund deposits, expenditures, and impact on community projects. This report helped build trust among the constituents.', '7.jpg', '2025-03-21', '2025-03-24 06:45:44', '2025-03-24 07:00:46'),
 (12, 23, 'Youth Empowerment Summit', 'Inspiring Future Leaders', 'Hosted a summit to empower local youth by providing leadership training, mentorship, and career guidance. The event featured influential speakers and interactive sessions.', '2.jpg', '2025-03-22', '2025-03-24 06:45:44', '2025-03-24 07:00:46'),
 (13, 23, 'Public Service Award', 'Recognized for Excellence', 'Received a public service award for outstanding contributions to community development and transparent governance. The award recognized the effective management of SK funds and community initiatives.', '3.jpg', '2025-03-23', '2025-03-24 06:45:44', '2025-03-24 07:00:46'),
-(14, 23, 'Digital Innovation Workshop', 'Enhancing Digital Skills', 'Conducted a digital innovation workshop aimed at improving the technological skills of the youth, focusing on digital literacy, cybersecurity, and creative problem solving. The workshop provided practical skills for modern challenges.', '5.jpg', '2025-03-24', '2025-03-24 06:45:44', '2025-03-24 07:00:46');
+(14, 23, 'Digital Innovation Workshop', 'Enhancing Digital Skills', 'Conducted a digital innovation workshop aimed at improving the technological skills of the youth, focusing on digital literacy, cybersecurity, and creative problem solving. The workshop provided practical skills for modern challenges.', '5.jpg', '2025-03-24', '2025-03-24 06:45:44', '2025-03-24 07:00:46'),
+(15, 1, 'Achievement from Feb', 'Something happened on Feb', 'May nangyari nung February', NULL, '2025-02-14', '2025-03-26 15:26:20', '2025-03-26 15:26:20'),
+(16, 1, '2024 achievement', 'Something happened on 2024', 'May na achieve ako nung 2024', NULL, '2024-01-10', '2025-03-26 15:33:20', '2025-03-26 15:33:20');
 
 -- --------------------------------------------------------
 
@@ -69,6 +71,10 @@ CREATE TABLE `announcements` (
   `id` int(11) NOT NULL,
   `barangay_id` int(11) NOT NULL,
   `img` varchar(255) NOT NULL,
+  `title` varchar(100) NOT NULL,
+  `description` varchar(255) NOT NULL,
+  `date` date NOT NULL,
+  `is_featured` tinyint(1) NOT NULL DEFAULT 0,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -77,12 +83,15 @@ CREATE TABLE `announcements` (
 -- Dumping data for table `announcements`
 --
 
-INSERT INTO `announcements` (`id`, `barangay_id`, `img`, `created_at`, `updated_at`) VALUES
-(1, 1, 'bb_tryout.jpg', '2025-03-26 04:57:46', '2025-03-26 04:57:46'),
-(2, 1, 'interzone_bb.jpg', '2025-03-26 04:57:46', '2025-03-26 04:57:46'),
-(3, 1, 'kk_ass.jpg', '2025-03-26 04:57:46', '2025-03-26 04:57:46'),
-(4, 1, 'teentrail.jpg', '2025-03-26 04:57:46', '2025-03-26 04:57:46'),
-(5, 1, 'youthnight.jpg', '2025-03-26 04:57:46', '2025-03-26 04:57:46');
+INSERT INTO `announcements` (`id`, `barangay_id`, `img`, `title`, `description`, `date`, `is_featured`, `created_at`, `updated_at`) VALUES
+(1, 1, 'bb_tryout.jpg', 'title', 'description', '2025-04-09', 1, '2025-04-02 05:36:19', '2025-04-02 05:36:42'),
+(2, 1, 'interzone_bb.jpg', 'title', 'description', '2025-04-10', 1, '2025-04-02 05:36:19', '2025-04-02 05:37:45'),
+(3, 1, 'kk_ass.jpg', 'title', 'description', '2025-04-09', 1, '2025-04-02 05:36:19', '2025-04-02 05:37:45'),
+(4, 1, 'teentrail.jpg', 'title', 'description', '2025-04-15', 1, '2025-04-02 05:36:19', '2025-04-02 05:37:45'),
+(5, 1, 'youthnight.jpg', 'title', 'description', '2025-04-11', 1, '2025-04-02 05:36:19', '2025-04-02 05:37:45'),
+(6, 1, 'bayliwan.jpg', 'title', 'description', '2024-04-10', 1, '2025-04-02 05:36:19', '2025-04-02 05:40:42'),
+(7, 1, 'kakawnan.jpg', 'title', 'description', '2024-04-10', 1, '2025-04-02 05:36:19', '2025-04-02 05:40:42'),
+(8, 1, 'hahaha.jpg', 'title', 'description', '2024-04-09', 1, '2025-04-02 05:36:19', '2025-04-02 05:40:42');
 
 -- --------------------------------------------------------
 
@@ -96,6 +105,7 @@ CREATE TABLE `barangays` (
   `slug` varchar(32) NOT NULL,
   `name` varchar(100) NOT NULL,
   `img` varchar(255) NOT NULL,
+  `is_agreed` tinyint(1) NOT NULL DEFAULT 0,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -104,31 +114,43 @@ CREATE TABLE `barangays` (
 -- Dumping data for table `barangays`
 --
 
-INSERT INTO `barangays` (`id`, `cluster_id`, `slug`, `name`, `img`, `created_at`, `updated_at`) VALUES
-(1, 1, 'san-francisco', 'San Francisco', 'san_francisco_bh.jpg', '2025-02-17 08:00:20', '2025-03-13 13:32:13'),
-(2, 1, 'francia', 'Francia', 'francia_bh.png', '2025-02-17 08:00:20', '2025-03-13 13:32:13'),
-(3, 1, 'la-purisima', 'La Purisima', 'lapurisima_bh.png', '2025-02-17 08:00:20', '2025-03-13 13:32:13'),
-(4, 1, 'san-juan', 'San Juan', 'san_juan_bh.jpg', '2025-02-17 08:00:20', '2025-03-13 13:32:13'),
-(5, 1, 'san-jose', 'San Jose', 'san_jose_bh.jpg', '2025-02-17 08:00:20', '2025-03-13 13:32:13'),
-(6, 1, 'san-miguel', 'San Miguel', 'san_miguel_bh.png', '2025-02-17 08:00:20', '2025-03-13 13:32:13'),
-(7, 2, 'san-nicolas', 'San Nicolas', 'san_nicolas_bh.png', '2025-02-17 08:00:20', '2025-03-13 13:32:13'),
-(8, 3, 'del-rosario', 'Del Rosario', '', '2025-02-17 08:00:20', '2025-03-10 08:42:59'),
-(9, 3, 'santiago', 'Santiago', 'santiago_bh.jpeg', '2025-02-17 08:00:20', '2025-03-13 13:32:13'),
-(10, 3, 'sto-domingo', 'Sto. Domingo', 'sto_domingo_bh.png', '2025-02-17 08:00:20', '2025-03-13 13:32:13'),
-(11, 3, 'la-anunciacion', 'La Anunciacion', '', '2025-02-17 08:00:20', '2025-03-10 08:42:59'),
-(12, 4, 'sta-cruz-norte', 'Sta. Cruz Norte', '', '2025-02-17 08:07:33', '2025-03-10 08:42:59'),
-(13, 4, 'cristo-rey', 'Cristo Rey', '', '2025-02-17 08:07:33', '2025-03-10 08:42:59'),
-(14, 4, 'san-vicente-norte', 'San Vicente Norte', '', '2025-02-17 08:07:33', '2025-03-10 08:42:59'),
-(15, 4, 'antipolo', 'Antipolo', '', '2025-02-17 08:07:33', '2025-03-10 08:42:59'),
-(16, 4, 'sta-maria', 'Sta. Maria', 'sta_maria_bh.png', '2025-02-17 08:07:33', '2025-03-13 13:32:13'),
-(17, 4, 'san-pedro', 'San Pedro', '', '2025-02-17 08:07:33', '2025-03-10 08:42:59'),
-(18, 4, 'san-rafael', 'San Rafael', '', '2025-02-17 08:07:33', '2025-03-10 08:42:59'),
-(19, 5, 'sta-cruz-sur', 'Sta. Cruz Sur', '', '2025-02-17 08:07:33', '2025-03-10 08:42:59'),
-(20, 5, 'sto-niño', 'Sto. Niño', '', '2025-02-17 08:07:33', '2025-03-10 08:42:59'),
-(21, 5, 'san-vicente-sur', 'San Vicente Sur', '', '2025-02-17 08:07:33', '2025-03-10 08:42:59'),
-(22, 5, 'salvacion', 'Salvacion', '', '2025-02-17 08:07:33', '2025-03-10 08:42:59'),
-(23, 2, 'updated-barangay', 'Updated Barangay', '', '2025-03-18 09:54:37', '2025-03-18 09:54:37'),
-(24, 2, 'updated-barangay', 'Updated Barangay', '', '2025-03-19 01:18:34', '2025-03-19 01:18:34');
+INSERT INTO `barangays` (`id`, `cluster_id`, `slug`, `name`, `img`, `is_agreed`, `created_at`, `updated_at`) VALUES
+(1, 1, 'san-francisco', 'San Francisco', 'san_francisco_bh.jpg', 1, '2025-02-17 08:00:20', '2025-03-31 06:34:03'),
+(2, 1, 'francia', 'Francia', 'francia_bh.png', 1, '2025-02-17 08:00:20', '2025-03-31 06:34:03'),
+(3, 1, 'la-purisima', 'La Purisima', 'lapurisima_bh.png', 1, '2025-02-17 08:00:20', '2025-03-31 06:35:32'),
+(4, 1, 'san-juan', 'San Juan', 'san_juan_bh.jpg', 1, '2025-02-17 08:00:20', '2025-03-31 06:35:32'),
+(5, 1, 'san-jose', 'San Jose', 'san_jose_bh.jpg', 1, '2025-02-17 08:00:20', '2025-03-31 06:35:32'),
+(6, 1, 'san-miguel', 'San Miguel', 'san_miguel_bh.png', 1, '2025-02-17 08:00:20', '2025-03-31 06:35:32'),
+(7, 2, 'san-nicolas', 'San Nicolas', 'san_nicolas_bh.png', 1, '2025-02-17 08:00:20', '2025-03-31 06:35:32'),
+(8, 3, 'del-rosario', 'Del Rosario', '', 1, '2025-02-17 08:00:20', '2025-03-31 06:35:32'),
+(9, 3, 'santiago', 'Santiago', 'santiago_bh.jpeg', 1, '2025-02-17 08:00:20', '2025-03-31 06:35:32'),
+(10, 3, 'sto-domingo', 'Sto. Domingo', 'sto_domingo_bh.png', 1, '2025-02-17 08:00:20', '2025-03-31 06:35:32'),
+(11, 3, 'la-anunciacion', 'La Anunciacion', '', 1, '2025-02-17 08:00:20', '2025-03-31 06:35:32'),
+(12, 4, 'sta-cruz-norte', 'Sta. Cruz Norte', '', 1, '2025-02-17 08:07:33', '2025-03-31 06:35:32'),
+(13, 4, 'cristo-rey', 'Cristo Rey', '', 1, '2025-02-17 08:07:33', '2025-03-31 06:35:32'),
+(14, 4, 'san-vicente-norte', 'San Vicente Norte', '', 1, '2025-02-17 08:07:33', '2025-03-31 06:35:32'),
+(15, 4, 'antipolo', 'Antipolo', '', 1, '2025-02-17 08:07:33', '2025-03-31 06:35:32'),
+(16, 4, 'sta-maria', 'Sta. Maria', 'sta_maria_bh.png', 1, '2025-02-17 08:07:33', '2025-03-31 06:35:32'),
+(17, 4, 'san-pedro', 'San Pedro', '', 1, '2025-02-17 08:07:33', '2025-03-31 06:35:32'),
+(18, 4, 'san-rafael', 'San Rafael', '', 1, '2025-02-17 08:07:33', '2025-03-31 06:35:32'),
+(19, 5, 'sta-cruz-sur', 'Sta. Cruz Sur', '', 1, '2025-02-17 08:07:33', '2025-03-31 06:35:32'),
+(20, 5, 'sto-niño', 'Sto. Niño', '', 1, '2025-02-17 08:07:33', '2025-03-31 06:35:32'),
+(21, 5, 'san-vicente-sur', 'San Vicente Sur', '', 1, '2025-02-17 08:07:33', '2025-03-31 06:35:32'),
+(22, 5, 'salvacion', 'Salvacion', '', 1, '2025-02-17 08:07:33', '2025-03-31 06:35:32'),
+(23, 1, 'san-roque', 'San Roque', '', 0, '2025-03-31 06:36:29', '2025-03-31 06:36:29'),
+(24, 2, 'san-agustin', 'San Agustin', '', 0, '2025-03-31 06:43:55', '2025-03-31 06:43:55'),
+(25, 2, 'san-isidro', 'San Isidro', '', 0, '2025-03-31 06:43:55', '2025-03-31 06:43:55'),
+(26, 3, 'sta-elena', 'Sta. Elena', '', 0, '2025-03-31 06:43:55', '2025-03-31 06:43:55'),
+(27, 4, 'niño-jesus', 'Niño Jesus', '', 0, '2025-03-31 06:43:55', '2025-03-31 06:43:55'),
+(28, 4, 'perpetual-help', 'Perpetual Help', '', 0, '2025-03-31 06:43:55', '2025-03-31 06:43:55'),
+(29, 4, 'sagrada', 'Sagrada', '', 0, '2025-03-31 06:43:55', '2025-03-31 06:43:55'),
+(30, 4, 'san-andres', 'San Andres', '', 0, '2025-03-31 06:43:55', '2025-03-31 06:43:55'),
+(31, 4, 'san-ramon', 'San Ramon', '', 0, '2025-03-31 06:43:55', '2025-03-31 06:43:55'),
+(32, 4, 'sta-isabel', 'Sta. Isabel', '', 0, '2025-03-31 06:43:55', '2025-03-31 06:43:55'),
+(33, 4, 'sta-teresita', 'Sta. Teresita', '', 0, '2025-03-31 06:43:55', '2025-03-31 06:43:55'),
+(34, 5, 'la-medalla', 'La Medalla', '', 0, '2025-03-31 06:43:55', '2025-03-31 06:43:55'),
+(35, 5, 'la-trinidad', 'La Trinidad', '', 0, '2025-03-31 06:43:55', '2025-03-31 06:43:55'),
+(36, 5, 'san-antonio', 'San Antonio', '', 0, '2025-03-31 06:43:55', '2025-03-31 06:43:55');
 
 -- --------------------------------------------------------
 
@@ -203,6 +225,22 @@ CREATE TABLE `events` (
 
 INSERT INTO `events` (`id`, `barangay_id`, `event_name`, `event_date`, `location`, `description`, `created_at`, `updated_at`) VALUES
 (1, 1, 'Sample Event', '2025-03-12', 'Sample Location', 'Sample Description', '2025-03-12 10:47:05', '2025-03-12 10:47:05');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `feedbacks`
+--
+
+CREATE TABLE `feedbacks` (
+  `id` int(11) NOT NULL,
+  `youth_id` int(11) NOT NULL,
+  `subject` varchar(100) NOT NULL,
+  `message` text NOT NULL,
+  `is_read` tinyint(1) NOT NULL DEFAULT 0,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -348,6 +386,23 @@ INSERT INTO `sk_officials` (`id`, `barangay_id`, `slug`, `username`, `password`,
 (29, 1, 'kagawad4-san-francisco', 'kagawad4_sf', 'password', 'SK Kagawad 4 - San Francisco', 'SK Kagawad', '09176234567', 'kagawad4_sf@localhost.net', '1995-06-06', 'Promoting unity', '', '2025-01-01', '2025-12-31', NULL, NULL, '2025-03-26 04:21:13', '2025-03-26 04:21:13'),
 (30, 1, 'kagawad5-san-francisco', 'kagawad5_sf', 'password', 'SK Kagawad 5 - San Francisco', 'SK Kagawad', '09177234567', 'kagawad5_sf@localhost.net', '1996-07-07', 'Inspiring change', '', '2025-01-01', '2025-12-31', NULL, NULL, '2025-03-26 04:21:13', '2025-03-26 04:21:13');
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `youths`
+--
+
+CREATE TABLE `youths` (
+  `id` int(11) NOT NULL,
+  `barangay_id` int(11) NOT NULL,
+  `username` varchar(50) DEFAULT NULL,
+  `password` varchar(50) DEFAULT NULL,
+  `full_name` varchar(100) NOT NULL,
+  `email` varchar(100) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 --
 -- Indexes for dumped tables
 --
@@ -393,6 +448,13 @@ ALTER TABLE `events`
   ADD KEY `barangay_id` (`barangay_id`);
 
 --
+-- Indexes for table `feedbacks`
+--
+ALTER TABLE `feedbacks`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `youth_id` (`youth_id`);
+
+--
 -- Indexes for table `logs`
 --
 ALTER TABLE `logs`
@@ -421,6 +483,13 @@ ALTER TABLE `sk_officials`
   ADD KEY `barangay_id` (`barangay_id`);
 
 --
+-- Indexes for table `youths`
+--
+ALTER TABLE `youths`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `barangay_id` (`barangay_id`);
+
+--
 -- AUTO_INCREMENT for dumped tables
 --
 
@@ -428,19 +497,19 @@ ALTER TABLE `sk_officials`
 -- AUTO_INCREMENT for table `achievements`
 --
 ALTER TABLE `achievements`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT for table `announcements`
 --
 ALTER TABLE `announcements`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `barangays`
 --
 ALTER TABLE `barangays`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
 
 --
 -- AUTO_INCREMENT for table `clusters`
@@ -459,6 +528,12 @@ ALTER TABLE `education_levels`
 --
 ALTER TABLE `events`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `feedbacks`
+--
+ALTER TABLE `feedbacks`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `logs`
@@ -483,6 +558,12 @@ ALTER TABLE `sk_educations`
 --
 ALTER TABLE `sk_officials`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
+
+--
+-- AUTO_INCREMENT for table `youths`
+--
+ALTER TABLE `youths`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- Constraints for dumped tables
@@ -513,6 +594,12 @@ ALTER TABLE `events`
   ADD CONSTRAINT `events_ibfk_1` FOREIGN KEY (`barangay_id`) REFERENCES `barangays` (`id`) ON DELETE CASCADE;
 
 --
+-- Constraints for table `feedbacks`
+--
+ALTER TABLE `feedbacks`
+  ADD CONSTRAINT `feedbacks_ibfk_1` FOREIGN KEY (`youth_id`) REFERENCES `youths` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
 -- Constraints for table `projects`
 --
 ALTER TABLE `projects`
@@ -530,6 +617,12 @@ ALTER TABLE `sk_educations`
 --
 ALTER TABLE `sk_officials`
   ADD CONSTRAINT `sk_officials_ibfk_1` FOREIGN KEY (`barangay_id`) REFERENCES `barangays` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `youths`
+--
+ALTER TABLE `youths`
+  ADD CONSTRAINT `youths_ibfk_1` FOREIGN KEY (`barangay_id`) REFERENCES `barangays` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
