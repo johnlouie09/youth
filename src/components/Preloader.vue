@@ -1,33 +1,48 @@
-<script setup>
-import { ref, onMounted } from "vue";
+<template>
+    <div v-if="isLoading" class="mil-preloader">
+        <div class="mil-preloader-animation">
+            <div class="mil-pos-abs mil-animation-2">
+                <div class="mil-reveal-frame">
+                    <img :src="$store.getters['base'] + '/youth.svg'" alt="Youth Logo" class="preloader-svg" />
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+
+<script>
 import gsap from "gsap";
 
-const isLoading = ref(true);
+export default {
+    data() {
+        return {
+            isLoading: true,
+        };
+    },
+    mounted() {
+        const tl = gsap.timeline({
+            delay: 0.3,
+            onComplete: () => {
+                this.isLoading = false;
+            },
+        });
 
-onMounted(() => {
-    const tl = gsap.timeline({
-        delay: 0.3,
-        onComplete: () => {
-            isLoading.value = false;
-        },
-    });
-
-    tl.fromTo(
+        tl.fromTo(
             ".preloader-svg",
             { opacity: 0, x: 50 },
             { opacity: 1, x: 0, duration: 1.5, ease: "power3.out" }
-    );
+        );
 
-    tl.to({}, { duration: 0 });
+        tl.to({}, { duration: 0 });
 
-    tl.to(".preloader-svg", {
-        opacity: 0,
-        y: -50,
-        duration: 1,
-        ease: "power3.in",
-    });
+        tl.to(".preloader-svg", {
+            opacity: 0,
+            y: -50,
+            duration: 1,
+            ease: "power3.in",
+        });
 
-    tl.to(
+        tl.to(
             ".mil-preloader",
             {
                 opacity: 0,
@@ -35,21 +50,12 @@ onMounted(() => {
                 ease: "power3.out",
             },
             "-=0.3"
-    );
-});
+        );
+    },
+};
 </script>
 
-<template>
-    <div v-if="isLoading" class="mil-preloader">
-        <div class="mil-preloader-animation">
-            <div class="mil-pos-abs mil-animation-2">
-                <div class="mil-reveal-frame">
-                    <img :src="`${$store.getters['base']}youth.svg`" alt="Youth Logo" class="preloader-svg" />
-                </div>
-            </div>
-        </div>
-    </div>
-</template>
+
 
 <style lang="scss" scoped>
 $dark: #111;
@@ -58,13 +64,16 @@ $light: #fff;
 
 .mil-preloader {
     position: fixed;
-    z-index: 9;
+    z-index: 10;
     top: 0;
     left: 0;
     width: 100%;
     height: 100vh;
     background-color: $dark;
     overflow: hidden;
+    background-image: linear-gradient(45deg, #363636, #0e0e0e, #363636, #0e0e0e);
+    background-position: center;
+    background-attachment: fixed;
 
     &-animation {
         opacity: 1;

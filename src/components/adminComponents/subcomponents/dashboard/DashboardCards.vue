@@ -1,47 +1,61 @@
 <template>
-    <v-container>
-        <v-card class="dashboard-card" elevation="10">
-            <!-- Card Title -->
-            <v-card-title :class="['card-title', card.type]">
-                {{ card.title }}
-            </v-card-title>
+    <v-container class="d-flex flex-column justify-evenly pa-0 elevation-10" style="width: 100%;">
+        <!-- Card Title -->
+        <v-card-title :class="['card-title', card.type]">
+            {{ card.title }}
+        </v-card-title>
 
-            <v-card-text class="card-body">
-                <v-container class="fill-height">
-                    <v-row justify="center" align="center">
-                        <!-- MDI ICON -->
-                        <v-col cols="12" class="text-center">
-                            <v-icon :icon="card.icon" size="100"></v-icon>
-                        </v-col>
-                    </v-row>
+        <v-card-text class="card-body d-flex">
+            <!-- Dropdown for selecting month (returns the entire object) -->
+            <v-select
+                v-if="card.type === 'achievements' || card.type === 'announcements'"
+                v-model="selectedMonth"
+                :items="monthOptions"
+                item-title="title"
+                item-value="value"
+                label="Select Month"
+                outlined
+                class="w-[60%] pa-0"
+            />
 
-                    <!-- Officials Section -->
-                    <v-row v-if="card.type === 'officials'" justify="center" align="center">
-                        <v-col cols="12" class="d-flex justify-start align-start flex-column">
-                            <p v-for="detail in card.details" :key="detail.position">
-                                <span class="number me-2">{{ detail.number }}</span>
-                                {{ detail.position }}
-                            </p>
-                        </v-col>
-                    </v-row>
 
-                    <!-- Achievements & Announcements Section -->
-                    <v-row
-                        v-else-if="card.type === 'achievements' || card.type === 'announcements'"
-                        justify="center" align="center"
-                    >
-                        <v-col cols="12" class="d-flex flex-column align-center text-center">
-                            <!-- Date Display Only (No Arrow, No Clickable Action) -->
-                            <h4>{{ formattedDate }}</h4>
+            <v-container class="fill-height w-full justify-evenly pa-0">
+                <div justify="center" class="pa-0">
+                    <!-- MDI ICON -->
+                    <v-icon :icon="card.icon" size="100"></v-icon>
+                </div>
 
-                            <!-- Quantity -->
-                            <h2>{{ card.details.quantity }}</h2>
-                            <h5>TOTAL</h5>
-                        </v-col>
-                    </v-row>
-                </v-container>
-            </v-card-text>
-        </v-card>
+                <!-- Officials Section -->
+                <div v-if="card.type === 'officials'" justify="center" align="center">
+                    <article cols="12" class="flex flex-col justify-start items-start">
+                        <p v-for="(number, position) in card.details" :key="position">
+                        <span class="number me-2">{{ number }}</span>
+                        {{ position }}
+                        </p>
+                    </article>
+                </div>
+
+                <!-- Achievements -->
+                <div
+                
+                v-if="card.type === 'achievements'"
+                justify="center"
+                class="d-flex flex-col pa-0">
+                    <span class='text-8xl font-extrabold'>{{ selectedCount }}</span>
+                    <span class="text-xs font-bold">TOTAL</span>
+                </div>
+
+                <!--Announcements Section -->
+                <div
+                v-if="card.type === 'announcements'"
+                justify="center"
+                class="d-flex flex-col pa-0">
+                    <span class='text-8xl font-extrabold'>{{ selectedCount }}</span>
+                    <span class="text-sm font-bold">2025</span>
+                </div>
+                
+            </v-container>
+        </v-card-text>
     </v-container>
 </template>
 
@@ -52,26 +66,63 @@ export default {
     },
     data() {
         return {
-            selectedDate: new Date()
+            selectedMonth: null,
         };
     },
     computed: {
+        monthOptions() {
+            const options = [];
+            const monthlyData = this.card?.details?.monthly || {};
+
+            for (const year in monthlyData) {
+                const months = monthlyData[year];
+                months.forEach(entry => {
+                    options.push({
+                        title: `${entry.month} - ${year}`,
+                        value: { ...entry, year }
+                    });
+                });
+            }
+            return options;
+        },
+        selectedMonthData() {
+            return this.selectedMonth || {};
+        },
+        selectedCount() {
+            return this.selectedMonthData.count || 0;
+        },
         formattedDate() {
-            return this.selectedDate.toLocaleString('en-US', { month: 'short' }).toUpperCase() + ' - ' + this.selectedDate.getFullYear();
+            if (!this.selectedMonth) return '';
+            return `${this.selectedMonth.month.toUpperCase()} - ${this.selectedMonth.year}`;
+        }
+    },
+    watch: {
+        monthOptions: {
+            immediate: true,
+            handler(newOptions) {
+            if (newOptions.length && !this.selectedMonth) {
+                // Set the selectedMonth to the value of the last option in the array
+                this.selectedMonth = newOptions[newOptions.length - 1].value;
+            }
+            }
         }
     }
+
+
 };
 </script>
 
 <style scoped>
 /* Base Card Styling */
 .dashboard-card {
-    height: 256px;
+    width: 100%;
+    height: auto;
     background-color: var(--v-theme-surface);
     border-radius: 0.5rem;
     box-shadow: 0px 15px 15px 0px rgba(0, 0, 0, 0.25);
     display: flex;
     flex-direction: column;
+    
 }
 
 /* Title Styles */
@@ -82,7 +133,7 @@ export default {
     box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
     border-radius: 0.5rem 0.5rem 0 0;
     font-weight: bold;
-    padding: 10px;
+    padding: 1rem;
 }
 
 /* Dynamic Colors */
@@ -101,10 +152,11 @@ export default {
 /* Card Body */
 .card-body {
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     text-align: center;
-    flex-grow: 1;
+    padding: 1rem 1rem 1.5rem 1rem;
 }
 
 /* Officials List */

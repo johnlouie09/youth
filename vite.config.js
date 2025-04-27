@@ -20,9 +20,15 @@ export default ({mode}) => {
         '@': fileURLToPath(new URL('./src', import.meta.url))
       }
     },
-    base: isProduction ? '/youth/' : '/',
+    base: '/',
     server: {
-      host: 'localhost'
+      host: 'localhost',
+      proxy: {
+        '/app': {
+          target: 'http://localhost/youth',
+          changeOrigin: true,
+        }
+      }
     },
     build: {
       outDir: 'dist'

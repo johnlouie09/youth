@@ -1,6 +1,5 @@
 .custom-card {
     transition: all 0.3s ease-in-out;
-    border-radius: 20px;
     position: relative;
 
 }
@@ -8,8 +7,6 @@
 .custom-card::before {
     content: "";
     inset: 0;
-    border-radius: 20px;
-    padding: 3px;
     background: linear-gradient(45deg, #3772FF, #DF2935, #FDCA40);
 
     -webkit-mask:

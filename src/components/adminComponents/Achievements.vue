@@ -1,238 +1,260 @@
-<template>
-  <v-container class="achievement-main">
-    <h1>ACHIEVEMENTS</h1>
-
-    <div class="year" v-for="year in Object.keys(achievements).sort().reverse()" :key="year">
-        <v-sheet class="month" v-for="month in Object.keys(achievements[year]).sort((a, b) => 
-            new Date(`${b} 1, ${year}`).getTime() - new Date(`${a} 1, ${year}`).getTime()
-        )" :key="month">
-            <div class="title">
-                {{ `${month.toUpperCase()} - ${year}` }}
-            </div>
-
-            <div class="achievements">
-                <v-card elevation="15" 
-                    v-for="achievement in achievements[year][month]" 
-                    :key="achievement.title" 
-                    class="card"
-                    @mouseover="hoverIndex = achievement.title" 
-                    @mouseleave="hoverIndex = null">
-                    
-                    <img :src="achievement.img" alt="">
-                    <article>
-                        <h3>{{ achievement.title }}</h3>
-                        <h5>{{ achievement.subtitle }}</h5>
-                        <p>{{ achievement.info }}</p>
-                    </article>
-                    
-                    <div class="btns" v-if="hoverIndex === achievement.title">
-                        <v-btn color="teal-lighten-1" @click="startEditing(year, month, achievement)">EDIT</v-btn>
-                        <v-btn color="red-lighten-1" @click="deleteBarangayAchievement(achievement.id)">DELETE</v-btn>
-                    </div>
-                </v-card>
-            </div>
-
-            <addBarangayAchievement 
-            :year= "parseInt(year)" :month="new Date(`${month} 1, ${year}`).getMonth() + 1" 
-            :barangayId="barangayId"
-            @achievementAdded="fetchBarangayAchievements"
-            ></addBarangayAchievement>
-        </v-sheet>
-    </div>
-
-    <!-- Show Editing Component When Editing -->
-    <updateBarangayAchievement 
-        v-if="editingAchievement" 
-        :barangayAchievement="editingAchievement"
-        @close="closeEditing"
-        @achievementUpdated="fetchBarangayAchievements"
-        />
-  </v-container>
-
-
-</template>
-
 <script>
-import axios from 'axios';
-import addBarangayAchievement from './subcomponents/achievement/inputForm/addBarangayAchievement.vue';
-import updateBarangayAchievement from './subcomponents/achievement/inputForm/updateBarangayAchievement.vue';
-import DialogConfirm from '../dialogs/DialogConfirm.vue';
+import FormAchievement from './subcomponents/officials/InputForms/FormAchievement.vue';
+import $ from 'jquery';
 
 export default {
     components: {
-        addBarangayAchievement,
-        updateBarangayAchievement,
-        DialogConfirm,
+        FormAchievement,
     },
     data() {
         return {
             hoverIndex: null,
-            editingAchievement: null,
-            barangayId: 1,
+            editingIndex: null,
             achievements: {},
-            loading: false,
-            error: null,
+            personalAchievements: [],
+            // Controls the visibility of the new achievement form
+            showNewAchievement: false
         };
     },
     methods: {
-        async fetchBarangayAchievements() {
-            try {
-                this.loading = true;
-                this.error = null;
-                const response = await axios.get(`/api/BarangayAchievement.php?barangay_id=${this.barangayId}`);
+        /**
+        * Set the editing index for a given achievement.
+        */
+        editAchievement(index) {
+            this.editingIndex = index;
+        },
 
-                if (response.data.success) {
-                    this.achievements = response.data.data;
-                } else {
-                    this.error = 'Failed to fetch barangays';
+        /**
+        * Format a date string to a localized string.
+        */
+        formatDate(dateStr) {
+            if (!dateStr) return '';
+            const date = new Date(dateStr);
+            return date.toLocaleDateString('en-US', {
+                month: 'long',
+                day: 'numeric',
+                year: 'numeric'
+            });
+        },
+
+        fetchBarangayAchievements() {
+            $.ajax({
+                url: `${this.$store.getters.api_base}?e=barangay&a=achievements`,
+                type: 'POST',
+                xhrFields: {
+                    withCredentials: true
+                },
+                headers: {
+                    'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
+                },
+                data: {
+                    barangayId: this.$store.getters['auth/getBarangayId'],
+                },
+                success: (data) => {
+                    this.achievements = data.data.achievements;
+                },
+                error: (jqXHR, textStatus, errorThrown) => {
+                    console.error("Error:", textStatus, errorThrown);
+                    let errorMsg = "An error occurred while processing your request.";
+                    if (jqXHR.responseJSON && jqXHR.responseJSON.error) {
+                        errorMsg = jqXHR.responseJSON.message;
+                    } else if (jqXHR.responseText) {
+                        errorMsg = jqXHR.responseText;
+                    }
                 }
-            } catch (err) {
-                this.error = 'Error connecting to the server';
-                console.error('Error:', err);
-            } finally {
-                this.loading = false;
-            }
+            });
         },
-        async deleteBarangayAchievement(achievementId) {
-            try {
-                const response = await axios.delete('http://localhost/youth/app/api/BarangayAchievement.php', {
-                    data: { id: achievementId }
-                });
-                if (response.data.success) {
-                    console.log('Achievement deleted successfully:', response.data.message);
-                    await this.fetchBarangayAchievements();
-                } else {
-                    console.error('Deletion failed:', response.data.error);
+
+        /**
+        * Shows a confirmation dialog for deletion and, if confirmed,
+        * calls the deleteAchievement method.
+        */
+        async confirmDelete(achievementId) {
+            this.$store.commit('dialog/confirm/show', {
+                title: 'Delete Achievement',
+                prompt: 'Are you sure you want to delete this achievement?',
+                color: 'red',
+                yesText: 'Delete',
+                noText: 'Cancel',
+                onConfirm: async () => {
+                    await this.deleteAchievement(achievementId);
+                },
+                onCancel: () => {
+                    console.log('Deletion cancelled');
                 }
-            } catch (error) {
-                console.error('Error deleting achievement:', error);
-            }
+            });
         },
-        startEditing(year, month, achievement) {
-            this.editingAchievement = { year, month, ...achievement };
-        },
-        closeEditing() {
-            this.editingAchievement = null;
-        },
+
+        /**
+        * Deletes an achievement via an AJAX request.
+        */
+        deleteAchievement(achievementId) {
+            $.ajax({
+                url: `${this.$store.getters['api_base']}?e=sk-official&a=deleteAchievement`,
+                type: 'POST',
+                xhrFields: { withCredentials: true },
+                headers: {
+                    'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
+                },
+                data: { id: achievementId },
+                success: (data) => {
+                    console.log("Achievement deleted successfully", data);
+                    // Emit event to refresh official information
+                    this.fetchBarangayAchievements();
+                },
+                error: (jqXHR, textStatus, errorThrown) => {
+                    console.error("Error deleting achievement:", textStatus, errorThrown);
+                }
+            });
+        }
     },
-    mounted() {
+    created() {
         this.fetchBarangayAchievements();
+    },
+    watch: {
+
     }
 };
 </script>
 
+<template>
+    <v-card class="achievements-section">
+        <!-- Title Section -->
+        <v-card-title class="title d-flex items-center justify-center ma-5">
+            <v-icon class="mr-3" size="75">mdi-trophy</v-icon>
+            <h2 class="font-black text-3xl">BARANGAY ACHIEVEMENTS</h2>
+            <v-icon class="ml-3" size="75">mdi-trophy</v-icon>
+        </v-card-title>
+
+        <!-- Achievements List -->
+        <div class="achievements-cards">
+            <v-container class="d-flex flex-row flex-wrap justify-evenly p-5 pt-0 gap-10">
+                <v-card
+                    v-for="(achievement, index) in achievements"
+                    :key="index"
+                    class="achievement-card w-[30%] min-w-[250px] rounded-lg d-flex flex-col justify-start items-center overflow-hidden pb-10"
+                    elevation="5"
+                    @mouseover="hoverIndex = index"
+                    @mouseleave="hoverIndex = null"
+                >
+                    <!-- Achievement Image -->
+                    <img
+                        :src="`/achievements/${achievement.img}`"
+                        alt=""
+                        class="elevation-5 w-full max-h-[225px] rounded-t-lg"
+                    />
+
+                    <!-- Achievement Details -->
+                    <article class="d-flex flex-col items-start w-[90%] my-5">
+                        <h3 class="uppercase text-lg font-extrabold">{{ achievement.title }}</h3>
+                        <h5 class="text-base font-medium">{{ achievement.subtitle }}</h5>
+                        <h5 class="text-xs font-italic absolute bottom-0 right-0 pa-5">{{ formatDate(achievement.date) }}</h5>
+                    </article>
+
+                    <v-card class="w-[80%] d-flex items-center ga-1 px-5 mb-5 elevation-5">
+                        <v-avatar :image="(achievement.sk_official_img ? ($store.getters.base + '/OfficialImages/' + achievement.sk_official_img) : ($store.getters.base + '/OfficialImages/no-avatar.png'))" size="50"></v-avatar>
+                        <v-card-text class="d-flex flex-col">
+                            <span class="text-sm">Hon. {{ achievement.sk_official_name }}</span>
+                            <span class="uppercase text-xs">{{ achievement.sk_official_position }}</span>
+                        </v-card-text>
+                    </v-card>
+
+                    <!-- Action Buttons on Hover -->
+                    <transition name="fade">
+                        <div v-if="hoverIndex === index" class="achievement-card-actions">
+                            <v-icon class="edit-icon" size="25" @click="editAchievement(index)">mdi-pencil-circle</v-icon>
+                            <v-icon class="delete-icon" size="25" @click="confirmDelete(achievement.id)">mdi-delete-circle</v-icon>
+                        </div>
+                    </transition>
+
+                    <!-- Edit Achievement Form (shown for updating an achievement) -->
+                    <FormAchievement
+                        v-if="editingIndex === index"
+                        :action="'updating-main'"
+                        :achievement="achievement"
+                        @close="editingIndex = null"
+                        @fetchInfo="fetchBarangayAchievements"
+                    />
+                </v-card>
+            </v-container>
+
+            <!-- Add New Achievement Button -->
+            <v-btn
+                class="d-flex items-center justify-center w-auto px-15 py-10 text-lg ma-5"
+                elevation="10"
+                @click="showNewAchievement = true"
+            >
+                <v-icon>mdi-plus-circle-outline</v-icon>
+                <span class="ml-2">ADD PERSONAL ACHIEVEMENT</span>
+            </v-btn>
+        </div>
+
+        <!-- New Achievement Dialog -->
+        <FormAchievement
+            v-if="showNewAchievement"
+            :achievement="{ sk_official_id: id }"
+            :action="'adding-main'"
+            @close="showNewAchievement = false"
+            @fetchInfo="fetchBarangayAchievements"
+        />
+    </v-card>
+</template>
 
 <style scoped>
-.achievement-main {
-  padding: 4rem 6rem;
-  display: flex;
-  flex-direction: column;
-  gap: 3rem;
+.achievement-card {
+    transition: transform 0.3s ease;
 }
 
-h1 {
-  text-align: center;
-  font-size: 2rem;
-  font-weight: bolder;
+.achievement-card:hover {
+    transform: scale(1.05);
 }
 
-.month {
-  width: fit-content;
-  padding: 1rem 2rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  border-radius: 2rem;
-  align-items: center;
-  gap: 2.5rem;
-  width: 100%;
+/* Other existing styles */
+.achievements-section {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    border-radius: 1rem;
+    padding: 2rem 0;
+    gap: 1rem;
 }
 
-.month .title {
-  border-bottom: 4px solid #616bfc;
-  font-size: 1.5rem;
-  font-weight: bolder;
-  padding: 1rem 0;
-  text-align: center;
-  width: 100%;
+.achievements-cards {
+    padding: 1rem 2rem;
+    width: 90%;
+    height: 90vh;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+    overflow-y: scroll;
 }
 
-.achievements {
-  width: 90%;
-  display: flex;
-  justify-content: space-evenly;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 2.5rem;
+.achievement-card-actions {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    padding: 1rem;
+    display: flex;
+    gap: 10px;
 }
 
-.achievements .card {
-  width: 362px;
-  padding: 2rem 2rem;
-  border-radius: .5rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1rem;
-  position: relative;
-  transition: transform 0.3s ease-in-out;
+.edit-icon, .delete-icon {
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out;
 }
 
-.achievements .card:hover {
-  transform: translateY(-5px);
+.edit-icon:hover {
+    transform: scale(1.1);
+    color: #4caf4fa1;
 }
 
-.card img{
-  width: 100%;
-  height: 187px;
-
-}
-
-article h3 {
-  font: 1.25rem;
-  font-weight: bold;
-}
-
-article {
-  width: 100%;
-}
-
-article h4 {
-  font-size: 1rem;
-}
-
-article p {
-  height: 50px;
-  max-height: 50px;
-  font-size: .75rem;
-  overflow: hidden;
-}
-
-.btns {
-  display: flex;
-  width: 100%;
-  justify-content: space-evenly;
-}
-
-.achievements .card:hover .edit {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.achievements {
-  display: flex;
-
-}
-
-.year {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  gap: 7rem;
+.delete-icon:hover {
+    transform: scale(1.1);
+    color: #f443369c;
 }
 </style>
 
-
-
-
-
+  

@@ -1,6 +1,6 @@
 <template>
     <v-container class="analytics-box">
-        <v-tabs v-model="tab" color="primary" grow>
+        <v-tabs v-model="tab" class='w-[80%]' color="primary" grow>
             <v-tab>DAILY</v-tab>
             <v-tab>MONTHLY</v-tab>
             <v-tab>YEARLY</v-tab>
@@ -116,7 +116,6 @@ export default {
 
 <style scoped>
 .analytics-box {
-    height: 75%;
     width: 100%;
     border-radius: 0.5rem;
     box-shadow: 0px 15px 15px 0px rgba(0, 0, 0, 0.25);
@@ -124,10 +123,11 @@ export default {
     display: flex;
     flex-direction: column;
     align-items: center;
+    height: 100%;
+    
 }
 .analytics-content {
     width: 100%;
-    height: 100%;
     padding: 1rem;
 }
 .views {

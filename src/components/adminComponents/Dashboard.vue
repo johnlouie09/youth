@@ -1,38 +1,17 @@
 <template>
     <v-container class="dashboard-main" fluid>
         <!-- Cards Section -->
-        <v-row class="cards" justify="center">
-            <v-col
-                v-for="card in cardsData"
-                :key="card.title"
-                cols="12" md="4"
-            >
-                <DashboardCards :card="card" />
-            </v-col>
-        </v-row>
+        <v-container class="cards" justify="center">
+                <DashboardCards :card="dashBoardData.skOfficialCount" />
+                <DashboardCards :card="dashBoardData.achievementReport" />
+                <DashboardCards :card="dashBoardData.announcementReport" />
+        </v-container>
 
         <!-- Features Section -->
-        <v-row class="feats" justify="space-between">
-            <!-- Suggestions -->
-            <v-col cols="12" md="5">
-                <Suggestions />
-            </v-col>
-
-            <!-- Analytics & Button -->
-            <v-col cols="12" md="7">
-                <v-card class="pa-4">
-                    <Analytics />
-                </v-card>
-            </v-col>
-        </v-row>
-
-        <v-btn
-            class="to-website mt-4"
-            color="black"
-            height="64"
-        >
-            GO TO SAN FRANCISCO WEBSITE
-        </v-btn>
+        <v-container class="feats" justify="space-between">
+            <Suggestions />  
+            <Analytics />
+        </v-container>
     </v-container>
 </template>
 
@@ -40,6 +19,7 @@
 import DashboardCards from './subcomponents/dashboard/DashboardCards.vue';
 import Analytics from './subcomponents/dashboard/Analytics.vue';
 import Suggestions from './subcomponents/dashboard/Suggestions.vue';
+import $ from 'jquery';
 
 export default {
     components: {
@@ -49,58 +29,107 @@ export default {
     },
     data() {
         return {
-            cardsData: [
-                {
-                    type: 'officials',
-                    title: 'OFFICIALS',
-                    icon: 'mdi-account-group', // Changed to MDI icon
-                    details: [
-                        { position: 'CHAIRPERSON', number: 1 },
-                        { position: 'TREASURER', number: 1 },
-                        { position: 'SECRETARY', number: 1 },
-                        { position: 'KAGAWADS', number: 1 },
-                    ]
-                },
-                {
-                    type: 'achievements',
-                    title: 'ACHIEVEMENTS',
-                    icon: 'mdi-trophy', // Changed to MDI icon
-                    details: {
-                        date: new Date(2025, 1),
-                        quantity: 64
+            dashBoardData: {
+                    skOfficialCount: {
+                        type: 'officials',
+                        title: 'OFFICIALS',
+                        icon: 'mdi-account-group',
+                        details: []
+                    },
+
+                    achievementReport: {
+                        type: 'achievements',
+                        title: 'ACHIEVEMENTS',
+                        icon: 'mdi-trophy',
+                        details: {}
+                    },
+                    announcementReport: {
+                        type: 'announcements',
+                        title: 'ANNOUNCEMENTS',
+                        icon: 'mdi-bullhorn',
+                        details: {}
                     }
-                },
-                {
-                    type: 'announcements',
-                    title: 'ANNOUNCEMENTS',
-                    icon: 'mdi-bullhorn', // Changed to MDI icon
-                    details: {
-                        date: new Date(2025, 7),
-                        quantity: 98
-                    }
-                }
-            ]
+            },
+            testData: {
+                skOfficial: null
+            }
         };
+    },
+    methods: {
+        async getDashboardData() {
+            await $.ajax({
+                url: `${this.$store.getters.api_base}?e=barangay&a=barangay-dashboard`,
+                type: 'POST',
+                xhrFields: {
+                withCredentials: true
+                },
+                headers: { 'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content },
+                data: {
+                    barangaySlug: this.$route.params.barangaySlug,
+                },
+                success: (data) => {
+                    console.log(data);
+                    this.dashBoardData.skOfficialCount.details = data.data.SkOfficialCount;
+                    this.dashBoardData.achievementReport.details = data.data.reportAchievement;
+                    this.dashBoardData.announcementReport.details = data.data.reportAnnouncement;
+                },
+
+                error: (jqXHR, textStatus, errorThrown) => {
+                    console.error("Error:", textStatus, errorThrown);
+                    let errorMsg = "An error occurred while processing your request.";
+                    if (jqXHR.responseJSON && jqXHR.responseJSON.error) {
+                        errorMsg = jqXHR.responseJSON.message;
+                    } else if (jqXHR.responseText) {
+                        errorMsg = jqXHR.responseText;
+                    }
+                    this.requestError = errorMsg;
+                    },
+                complete: () => {
+                    this.loading = false;
+                }
+            });
+        },
+        openBarangayWebsite() {
+            // Resolve the URL using Vue Router
+            // Ensure that your router configuration has a route named 'barangay-website'
+            const resolvedRoute = this.$router.resolve({ name: 'barangay-landingpage', params: { slug: this.barangaySlug } });
+            // Open the resolved URL in a new window
+            window.open(resolvedRoute.href, '_blank');
+        },
+    },
+    computed: {
+        barangayName() {
+            return this.$store.getters['auth/getBarangayName'];
+        }
+    },
+    created() {
+        this.getDashboardData();
     }
 };
 </script>
 
 
 
+
 <style scoped>
 .dashboard-main {
-    padding: 36px 72px;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: center;
+    display: grid;
+    grid-template-rows: 35% 1fr;
+    padding: 1.5rem 3rem;
+    gap: 1rem;
+    overflow: hidden;
 }
 
 .cards {
-    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
 }
 
 .feats {
-    width: 100%;
+    display: grid;
+    grid-template-columns: 50% 50%;
+    grid-template-rows: 1fr;
+    column-gap: 2rem;
 }
 </style>

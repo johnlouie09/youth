@@ -16,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         exit;
     }
 
-    $query = "SELECT id, name FROM barangays WHERE cluster_id = ? ORDER BY name";
+    $query = "SELECT id, name, img FROM barangays WHERE cluster_id = ? ORDER BY name";
     $stmt = $conn->prepare($query);
     $stmt->bind_param('i', $clusterId);
     $stmt->execute();

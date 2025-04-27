@@ -1,14 +1,14 @@
 <?php
 /*
 |-----------------------------------------------------------------------
-| Database Configuration
+| Online Database Configuration
 |-----------------------------------------------------------------------
-| Enter the configuration for your MySQL Database
+| Enter the configuration for your MySQL Online Database
 |
-|    host    ->  your config host
-|    user    ->  your config username
-|    pass    ->  your config password
-|    dbname  ->  your config name
+|    host    ->  localhost
+|    user    ->  u893457880_istambay
+|    pass    ->  1stambaySaKanto
+|    dbname  ->  u893457880_youth
 |
 */
 
