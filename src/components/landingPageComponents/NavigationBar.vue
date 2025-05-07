@@ -1,24 +1,37 @@
 <template>
   <v-sheet class="nav-main" v-if="!shouldHideNav" elevation="10">
-    <div class="logo relative">
-      <img class="barangay-logo" :src="$store.getters['base'] + '/Group.svg'" alt="Barangay Logo">
-      <img class="logo-name" :src="$store.getters['base'] + '/youth-name.svg'" alt="Youth Name">
-    </div>
+    <ul class="logo d-flex flex-row items-center gap-3" @click="navigate('/')">
+      <v-avatar :image="$store.getters.base + 'public/Group.svg'"></v-avatar> 
+      <img style="height: 1.5vh;" src="../../../public/youth-name.svg"></img>
+    </ul>
 
-    <ul>
+    <ul class="w-[50%] d-flex justify-evenly items-center ">
+      <v-divider vertical></v-divider>
       <v-btn 
         v-for="view in views" 
         :key="view.to" 
-        :to="view.to"
         @click="navigate(view.to)" 
-        :class="[view.class, { active: isActive(view.to) }]"
+        class="custom-btn text-xl font-bold pa-3 px-10 h-auto"
+        :class="[view.class, { 'active-btn': isActive(view.to), 'custom-btn': true }]"
       >
-        {{ view.name.toUpperCase() }}
+        <span class="overlay-titles">{{ view.name.toUpperCase() }}</span>
       </v-btn>
+      <v-divider vertical></v-divider>
     </ul>
 
-    <ThemeSwitcher />
+
+
+    <v-sheet class="d-flex flex-row justify-center items-center gap-5">
+      <v-btn class="text-xl font-bold pa-3 px-10 h-auto elevation-0" @click="navigate('/login')">
+        Log in
+        <v-icon class="ml-2">
+          mdi-login-variant
+        </v-icon>
+      </v-btn>
+    </v-sheet>
   </v-sheet>
+
+  
 </template>
 
 <script>
@@ -64,60 +77,20 @@ export default {
   left: 50%;
   transform: translateX(-50%);
   z-index: 1000;
-  width: 60%;
-  height: 7vh;
-  color: #848484;
+  height: 8vh;
+  width: 90%;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-radius: 1rem;
+  border-radius: 2rem;
   padding: 0px 4rem;
-  overflow: hidden;
-}
-
-.logo {
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.barangay-logo {
-  height: 3.5vh;
-}
-
-.logo-name {
-  height: 1.5vh;
-}
-
-ul {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  font-weight: bold;
-  gap: 3rem;
 }
 
 .view {
-  font-size: 1rem;
-  padding: 0.5rem 1rem;
+  font-size: .8rem;
+  padding: 0rem 3rem;
   border-radius: 0.5rem;
   transition: color 0.3s ease, border-bottom 0.3s ease;
   cursor: pointer;
-}
-
-.view:hover {
-  color: #3772FF;
-}
-
-.active {
-  border: 1px solid #3772FF;
-  color: #3772FF;
-}
-
-.message {
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 </style>

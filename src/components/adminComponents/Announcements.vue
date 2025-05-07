@@ -121,7 +121,7 @@ export default {
     <v-container class="announcement-main">
         <!-- Title Section -->
         <div class="title d-flex items-center justify-center ma-5">
-            <v-icon class="mr-5" size="75">mdi-bullhorn</v-icon>
+            <v-icon class="mr-5 scale-x-[-1]" size="75">mdi-bullhorn</v-icon>
             <h2 class="font-black text-3xl">ANNOUNCEMENTS</h2>
             <v-icon class="ml-5" size="75">mdi-bullhorn</v-icon>
         </div>
@@ -166,6 +166,7 @@ export default {
             <FormAnnouncement
                 v-if="editingIndex === index"
                 :action="'updating'"
+                @close="showNewAnnouncement = false"
                 :announcement="announcement"
                 @fetchInfo="fetchBarangayAnnouncements"
             />

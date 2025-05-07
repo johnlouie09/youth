@@ -17,6 +17,7 @@
     border-radius: 20px;
     padding: 3px;
     background: linear-gradient(45deg, #3772FF, #DF2935, #FDCA40);
+    filter: drop-shadow(0 0 48px #DD4040) drop-shadow(0 0 18px #DD4040) drop-shadow(0 0 9px #DD4040);
 
     -webkit-mask:
             linear-gradient(white 0 0) content-box,
@@ -46,7 +47,7 @@
     }
 }
 .custom-btn {
-    border-radius: 10px;
+    border-radius: .5rem;
     position: relative; /* Added to ensure the ::before pseudo-element is positioned correctly */
 }
 
@@ -54,7 +55,7 @@
     content: "";
     position: absolute;
     inset: 0;
-    border-radius: 10px;
+    border-radius: .5rem;
     padding: 3px;
     background: linear-gradient(45deg, #3772FF, #DF2935, #FDCA40);
     -webkit-mask: linear-gradient(white 0 0) content-box, linear-gradient(white 0 0);
@@ -85,6 +86,7 @@
     background: transparent;
     font-weight: bold;
     transition: all 0.3s ease-in-out;
+    
 }
 
 /* Hover state to apply gradient to the text */

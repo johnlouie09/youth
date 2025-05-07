@@ -15,11 +15,13 @@ export default createStore({
   state: {
     app: {},
     csrfToken: null,
-    api_base: '/app/api.php'
+    api_base: '/app/api.php',
+    base: '/'
   },
   getters: {
     base(state) {
-      return import.meta.env.VITE_APP_DOMAIN || import.meta.env.BASE_URL;
+      return state.base
+      // return import.meta.env.VITE_APP_DOMAIN || import.meta.env.BASE_URL;
     },
     api_base(state) {
       return state.api_base;

@@ -5,20 +5,6 @@
             <v-tabs grow class="w-[50%] d-flex justify-center gap-5">
                 <v-tab>FEATURED</v-tab>
                 <v-tab>
-                    <v-select
-                        class="w-[100%]"
-                        :items="items"
-                        v-model="selectedAnnoncementItem"
-                    />
-                </v-tab>
-            </v-tabs>
-        </div>
-
-        <div class="relative w-[80%] d-flex flex-col justify-center items-center gap-5">
-            <h1 class="title">ANNOUNCEMENTS</h1>
-            <v-tabs grow class="w-[50%] d-flex justify-center gap-5">
-                <v-tab>FEATURED</v-tab>
-                <v-tab>
                     <v-select 
                     class="w-[100%]"
                     :items="items"
@@ -32,34 +18,86 @@
         <div ref="swiperContainer" class="swiper mySwiper">
             <div class="swiper-wrapper">
                 <div class="swiper-slide" v-for="announcement in announcements" :key="announcement.id">
-                    <div class="announcement-card bg-black h-auto d-flex flex-col items-center justify-start ga-5 elevation-10 py-5 px-5">
-                        <img
-                            :src="announcement.img
-                                ? (baseUrl + '/announcements/' + announcement.img)
-                                : (baseUrl + '/announcements/exx.jpg')"
+
+
+                    <v-card
+                    style="border-radius: 1rem;"
+                    class="announcement-card h-auto d-flex flex-col items-center justify-start ga-5 elevation-10 py-5 px-5 ma-5"
+                    >
+                        <img 
+                            :src="announcement.img 
+                                    ? ($store.getters.base + 'public/announcements/' + announcement.img) 
+                                    : ($store.getters.base + 'public/announcements/exx.jpg')"
                             :alt="announcement.title"
-                            style="border-radius: .5rem;"
+                            style="border-radius: .5rem; width: 350px ;height: 500px;"
                             cover
-                        />
+                        ></img>
+
                         <article class="w-[90%] relative py-5 pb-10 elevation-10">
                             <h4 class="uppercase text-center text-base font-extrabold mb-2">
-                                {{ announcement.title || 'No Title' }}
+                                {{ announcement.title }}
                             </h4>
+
                             <p class="text-sm font-medium">
-                                {{ announcement.description || 'No description available.' }} Lorem ipsum dolor, sit amet consectetur adipisicing elit.
+                                {{ announcement.description }} Lorem ipsum dolor, sit amet consectetur adipisicing elit. Eligendi quo facere cum.
                             </p>
+
                             <span class="text-xs font-italic absolute bottom-0 right-0 pa-2">
                                 {{ formatDateStr(announcement.date) }}
-                              </span>
+                            </span>
                         </article>
-                    </div>
-                </div>
-                <div class="swiper-slide" v-if="announcements.length === 0">
-                    <p>No announcements available.</p>
+
+                        <v-card-actions>
+                            <v-btn @click="showAnnouncement(announcement)" color="teal-lighten-1">SEE DETAILS</v-btn>
+                        </v-card-actions>
+                    </v-card>
+
+
+                    
+                        <!-- <img :src="`/public/announcements/${announcement.img}`" :alt="announcement.title"/> -->
+                    
+                    
                 </div>
             </div>
         </div>
     </div>
+
+
+    <v-dialog v-model=showAnnouncementDetails width="auto" max-width="1000px" max-height="80vh">
+        <v-card class="d-flex justify-center items-center py-10 gap-5" style="border-radius: 1rem;">
+            <h1 class="w-full text-2xl font-extrabold text-center uppercase py-5">Barangay Clean-Up Drive</h1>
+            <div class="announcementDialog w-[90%] gap-10">
+                <div class="d-flex flex-col justify-around items-center py-5">
+                    <h3><i class="text-lg font-extrabold">WHAT:</i> Barangay Clean-Up Drive to collect trash, recycle, and improve public spaces.</h3>
+
+                    <div>
+                        <h3><i class="text-lg font-extrabold">WHEN:</i> April 15, 2025 | 7:00 AM – 12:00 PM</h3>
+                    </div>
+
+                    <h3><i class="text-lg font-extrabold">WHERE:</i> Barangay Francia, Iriga City – Starting at Barangay Hall, covering nearby areas.</h3>
+                </div>
+    
+                <div>
+                    <img 
+                        :src="announcementDetails.img 
+                                ? ($store.getters.base + 'public/announcements/' + announcementDetails.img) 
+                                : ($store.getters.base + 'public/announcements/exx.jpg')"
+                        :alt="announcementDetails.title"
+                        style="border-radius: .5rem; width: 350px; height: 500px;"
+                        cover
+                    ></img>
+                </div>
+
+                <div class="d-flex flex-col justify-around items-center py-5">                      
+                    <div>
+                        <h3><i class="text-lg font-extrabold">WHO:</i> Organized by Barangay San Francisco. Open to all residents, especially youth and local groups.</h3>
+                    </div>
+
+                    <h3><i class="text-lg font-extrabold">WHY:</i> To promote cleanliness, reduce waste, and build community responsibility.</h3>
+                </div>
+            </div>
+        </v-card>
+    </v-dialog>
 </template>
 
 <script>
@@ -81,7 +119,8 @@ export default {
             announcements: [],
             items: ['Select a Month', 'January', 'February', 'March', 'April'],
             selectedAnnoncementItem: 'Select a Month',
-            isFetchingAnnouncements: false,
+            showAnnouncementDetails: false,
+            isFetchingAnnouncements: false
         };
     },
     computed: {
@@ -97,6 +136,10 @@ export default {
         });
     },
     methods: {
+        showAnnouncement(announcement) {
+            this.announcementDetails = { ...announcement };
+            this.showAnnouncementDetails = true
+        },
         formatDateStr(dateStr) {
             if (!dateStr) return '';
             const date = new Date(dateStr);
@@ -115,21 +158,19 @@ export default {
 
             const swiper = new Swiper(swiperContainer, {
                 initialSlide: 1,
-                modules: [EffectCoverflow, Autoplay, Pagination],
-                effect: "coverflow",
+                modules: [EffectCoverflow, Autoplay, Pagination],       
                 grabCursor: true,
                 centeredSlides: true,
                 slidesPerView: "auto",
                 coverflowEffect: {
-                    rotate: 5,
+                    rotate: 0,
                     stretch: 0,
-                    depth: 150,
+                    depth: 0,
                     modifier: 1,
-                    slideShadows: true,
                 },
                 loop: false,
                 autoplay: {
-                    delay: 5000,
+                    delay: 10000,
                     disableOnInteraction: false,
                 },
                 pagination: {
@@ -157,7 +198,6 @@ export default {
                     success: (data, textStatus, jqXHR) => {
                         try {
                             this.announcements = data.data.announcements || [];
-                            this.fetchImageFilenames();
                         } catch (error) {
                             console.error('Error parsing JSON response:', error);
                             console.log('Raw response:', jqXHR.responseText);
@@ -188,47 +228,6 @@ export default {
                 });
             }
         },
-        async fetchImageFilenames() {
-            try {
-                await $.ajax({
-                    url: `${this.$store.getters['api_base']}?e=barangay&a=image_filenames`,
-                    type: 'GET',
-                    xhrFields: { withCredentials: true },
-                    data: { barangayId: this.barangayId, type: 'announcements' },
-                    success: (data, textStatus, jqXHR) => {
-                        try {
-                            const imageFilenames = data.data || [];
-                            console.log('Image filenames:', imageFilenames);
-                            this.announcements = this.announcements.map((announcement, index) => ({
-                                ...announcement,
-                                img: imageFilenames[index] || announcement.img || 'exx.jpg'
-                            }));
-                            console.log('Updated announcements with images:', this.announcements);
-                            this.$nextTick(() => {
-                                this.initSwiper();
-                            });
-                        } catch (error) {
-                            console.error('Error parsing image filenames JSON:', error);
-                            console.log('Raw response:', jqXHR.responseText);
-                            this.$nextTick(() => {
-                                this.initSwiper();
-                            });
-                        }
-                    },
-                    error: (jqXHR, textStatus, errorThrown) => {
-                        console.error("Error fetching image filenames:", textStatus, errorThrown);
-                        this.$nextTick(() => {
-                            this.initSwiper();
-                        });
-                    }
-                });
-            } catch (error) {
-                console.error('Promise rejection in fetchImageFilenames:', error);
-                this.$nextTick(() => {
-                    this.initSwiper();
-                });
-            }
-        }
     },
     created() {
         this.fetchBarangayAnnouncements();
@@ -254,14 +253,17 @@ export default {
 }
 
 .swiper {
-    width: 75%;
+    width: 100%;
+    overflow: visible;
 }
 
 .swiper-slide {
     background-position: center;
     background-size: cover;
     width: 455px;
-    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .swiper-slide img {
@@ -270,6 +272,7 @@ export default {
     border-radius: 1rem;
 }
 
+/* Optional: Style pagination bullets */
 .swiper-pagination-bullet {
     background-color: #fff;
     opacity: 0.7;
@@ -284,4 +287,10 @@ export default {
     font-size: 2.5rem;
     font-weight: 900;
 }
+
+.announcementDialog{
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+}
+
 </style>

@@ -17,7 +17,7 @@
             width="350px"
             height="250px"
             :style="barangay.img ? {
-                'background-image': `url(${this.$store.getters.base}/barangayHall/${barangay.img.toLowerCase()}?v=1)`,
+                'background-image': `url(${this.$store.getters.base}public/barangayHall/${barangay.img.toLowerCase()}?v=1)`,
                 'background-size': 'cover',
                 'background-position': 'center'
             } : {}"
