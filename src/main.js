@@ -6,6 +6,7 @@ import * as components from 'vuetify/components'
 import * as directives from 'vuetify/directives'
 import axios from 'axios'
 import $ from 'jquery'
+import '@fontsource/inter'; // defaults to weight 400
 
 import { createApp } from 'vue'
 import { createPinia } from 'pinia' 

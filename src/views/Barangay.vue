@@ -6,6 +6,7 @@ import Achievements from '@/components/barangayPage/Achievements.vue';
 import DialogComponent from '@/components/barangayPage/DialogComponent.vue';
 import FeedbackForm from '@/components/barangayPage/FeedbackForm.vue';
 import YouthAccount from '@/components/barangayPage/YouthAccount.vue';
+import SocialLinks from '@/components/landingPageComponents/SocialLinks.vue';
 import $ from 'jquery';
 
 export default {
@@ -16,6 +17,7 @@ export default {
         Achievements,
         DialogComponent,
         FeedbackForm,
+        SocialLinks,
         YouthAccount
     },
     data() {
@@ -76,7 +78,7 @@ export default {
     <v-container
         :theme="themeName"
         fluid
-        class="d-flex flex-col justify-center items-center gap-[5rem] pa-0 ma-0 bg-gradient-to-br from-gray-50 via-gray-100 to-gray-200"
+        class="d-flex flex-col justify-center items-center gap-[10rem] pa-0 ma-0 bg-gradient-to-br from-gray-50 via-gray-100 to-gray-200"
         :class="['barangay-main', { 'dark-gradient': isDark }]"
     >
         <div class="dp-barangay elevation-15"
@@ -86,6 +88,8 @@ export default {
                 BARANGAY {{ barangayInfo.name ? barangayInfo.name.toUpperCase() : '' }}
             </h1>
             <img class="logo w-80 h-auto" :src="$store.getters['base'] + 'public/Logoseal.svg'" alt="logo"/>
+            <SocialLinks class="absolute left-1/2 top-8/10 transform -translate-x-1/2 -translate-y-1/2 d-flex flex-column justify-center items-center gap-3"></SocialLinks>
+            
         </div>
         <Announcements v-if="barangayInfo.id" :barangayId="barangayInfo.id"/>
         <Cards v-if="barangayInfo.id" :barangayId="barangayInfo.id"/>
@@ -111,6 +115,7 @@ export default {
 .dp-barangay {
     position: relative;
     display: flex;
+    flex-direction: row;
     justify-content: space-between;
     align-items: center;
     width: 100%;

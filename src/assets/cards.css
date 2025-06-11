@@ -1,7 +1,6 @@
 .custom-card {
     transition: all 0.3s ease-in-out;
     position: relative;
-
 }
 
 .custom-card::before {
