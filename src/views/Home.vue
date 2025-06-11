@@ -48,8 +48,6 @@ export default {
     <Hero />
     <BarangaysNavigation/>
     <faqs />
-    <SocialLinks></SocialLinks>
-    <ThemeSwitcher class="theme"></ThemeSwitcher>
   </v-container>
 </template>
 
@@ -68,7 +66,6 @@ export default {
   background-position: center;
   background-attachment: fixed;
   background-size: 150% 150%;
-  background-image: linear-gradient(45deg, #ff4c4c, #ffffff, #7aa4ff, #ffffff, #ffde4b);
   animation: moveGradient 20s linear infinite;
 }
 

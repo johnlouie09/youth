@@ -1,8 +1,8 @@
 <template>
   <v-sheet class="nav-main" v-if="!shouldHideNav" elevation="10">
     <ul class="logo d-flex flex-row items-center gap-3" @click="navigate('/')">
-      <v-avatar :image="$store.getters.base + 'public/Group.svg'"></v-avatar> 
-      <img style="height: 1.5vh;" src="../../../public/youth-name.svg"></img>
+      <v-avatar :image="$store.getters.base + 'Group.svg'"></v-avatar> 
+      <img style="height: 1.5vh;" :src="$store.getters.base + 'youth-name.svg'"></img>
     </ul>
 
     <ul class="w-[50%] d-flex justify-evenly items-center ">
@@ -21,7 +21,8 @@
 
 
 
-    <v-sheet class="d-flex flex-row justify-center items-center gap-5">
+    <v-sheet class="d-flex flex-row justify-center items-center gap-1">
+      <ThemeSwitcher class="theme"></ThemeSwitcher>
       <v-btn class="text-xl font-bold pa-3 px-10 h-auto elevation-0" @click="navigate('/login')">
         Log in
         <v-icon class="ml-2">
@@ -82,7 +83,7 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-radius: 2rem;
+  border-radius: 1rem;
   padding: 0px 4rem;
 }
 

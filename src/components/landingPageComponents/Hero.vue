@@ -12,7 +12,7 @@
                     class="center-avatar">
                 </v-avatar>
             </div>
-            
+            <SocialLinks class="d-flex flex-column justify-center items-center gap-3 px-15"></SocialLinks>  
         </div>
 
         <div class="magicpattern top-[-50%] left-[-12%]"/>
@@ -30,8 +30,86 @@
     <div class="carousel-container">
         <div ref="swiperContainer" class="swiper mySwiper">
             <div class="swiper-wrapper">
-                <div class="swiper-slide" v-for="image in shuffledImages">
-                    <img :src="($store.getters.base + 'public/achievements/' + image) " />
+
+                <div class="swiper-slide pa-5 d-flex flex-col justify-evenly items-center ga-5">
+                    <img :src="$store.getters.base + `public/announcements/kalinisan.jpg`" class="max-h-[300px] rounded-lg" alt="">
+                    <div class="w-full text-center">
+                        <h4 class="uppercase font-bold text-sm">San Francisco, Iriga City</h4>
+                        <h3 class="capitalize font-extrabold text-lg">Kalinisan Program</h3>
+                        <span class="italic text-xs">February 15, 2025</span>
+                    </div>
+                </div>
+
+                <div class="swiper-slide d-flex flex-col justify-evenly items-center ga-5">
+                    <img :src="$store.getters.base + `public/achievements/1.jpg`" class="rounded-lg" alt="">
+                    <div class="w-full">
+                        <h4 class="uppercase font-bold text-sm">San Francisico, Iriga City</h4>
+                        <h3 class="capitalize font-extrabold text-lg">Community Volunteers</h3>
+                        <h4 class="w-full italic text-xs text-end">March 19, 2025</h4>
+                    </div>
+                </div>
+
+                <div class="swiper-slide pa-5 d-flex flex-col justify-evenly items-center ga-5">
+                    <img :src="$store.getters.base + `public/announcements/kalinisan.jpg`" class="max-h-[300px] rounded-lg" alt="">
+                    <div class="w-full text-center">
+                        <h4 class="uppercase font-bold text-sm">San Francisco, Iriga City</h4>
+                        <h3 class="capitalize font-extrabold text-lg">Kalinisan Program</h3>
+                        <span class="italic text-xs">February 15, 2025</span>
+                    </div>
+                </div>
+
+                <div class="swiper-slide d-flex flex-col justify-evenly items-center ga-5">
+                    <img :src="$store.getters.base + `public/achievements/1.jpg`" class="rounded-lg" alt="">
+                    <div class="w-full">
+                        <h4 class="uppercase font-bold text-sm">San Francisico, Iriga City</h4>
+                        <h3 class="capitalize font-extrabold text-lg">Community Volunteers</h3>
+                        <h4 class="w-full italic text-xs text-end">March 19, 2025</h4>
+                    </div>
+                </div>
+
+                <div class="swiper-slide pa-5 d-flex flex-col justify-evenly items-center ga-5">
+                    <img :src="$store.getters.base + `public/announcements/kalinisan.jpg`" class="max-h-[300px] rounded-lg" alt="">
+                    <div class="w-full text-center">
+                        <h4 class="uppercase font-bold text-sm">San Francisco, Iriga City</h4>
+                        <h3 class="capitalize font-extrabold text-lg">Kalinisan Program</h3>
+                        <span class="italic text-xs">February 15, 2025</span>
+                    </div>
+                </div>
+
+                <div class="swiper-slide d-flex flex-col justify-evenly items-center ga-5">
+                    <img :src="$store.getters.base + `public/achievements/1.jpg`" class="rounded-lg" alt="">
+                    <div class="w-full">
+                        <h4 class="uppercase font-bold text-sm">San Francisico, Iriga City</h4>
+                        <h3 class="capitalize font-extrabold text-lg">Community Volunteers</h3>
+                        <h4 class="w-full italic text-xs text-end">March 19, 2025</h4>
+                    </div>
+                </div>
+
+                <div class="swiper-slide pa-5 d-flex flex-col justify-evenly items-center ga-5">
+                    <img :src="$store.getters.base + `public/announcements/kalinisan.jpg`" class="max-h-[300px] rounded-lg" alt="">
+                    <div class="w-full text-center">
+                        <h4 class="uppercase font-bold text-sm">San Francisco, Iriga City</h4>
+                        <h3 class="capitalize font-extrabold text-lg">Kalinisan Program</h3>
+                        <span class="italic text-xs">February 15, 2025</span>
+                    </div>
+                </div>
+
+                <div class="swiper-slide d-flex flex-col justify-evenly items-center ga-5">
+                    <img :src="$store.getters.base + `public/achievements/1.jpg`" class="rounded-lg" alt="">
+                    <div class="w-full">
+                        <h4 class="uppercase font-bold text-sm">San Francisico, Iriga City</h4>
+                        <h3 class="capitalize font-extrabold text-lg">Community Volunteers</h3>
+                        <h4 class="w-full italic text-xs text-end">March 19, 2025</h4>
+                    </div>
+                </div>
+
+                <div class="swiper-slide pa-5 d-flex flex-col justify-evenly items-center ga-5">
+                    <img :src="$store.getters.base + `public/announcements/kalinisan.jpg`" class="max-h-[300px] rounded-lg" alt="">
+                    <div class="w-full text-center">
+                        <h4 class="uppercase font-bold text-sm">San Francisco, Iriga City</h4>
+                        <h3 class="capitalize font-extrabold text-lg">Kalinisan Program</h3>
+                        <span class="italic text-xs">February 15, 2025</span>
+                    </div>
                 </div>
             </div>
         </div> 
@@ -46,9 +124,13 @@ import "swiper/css/autoplay";
 import "swiper/css/pagination";
 import { EffectCoverflow, Autoplay, Pagination } from "swiper/modules";
 import $ from 'jquery';
+import SocialLinks from "./SocialLinks.vue";
 
 export default {
     name: "HeroComponent",
+    components : {
+        SocialLinks
+    },
     data() {
         return {
             shuffledImages: [],
@@ -86,7 +168,6 @@ export default {
         initSwiper() {
             new Swiper(this.$refs.swiperContainer, {
                 modules: [EffectCoverflow, Autoplay, Pagination],
-                effect: "coverflow",
                 grabCursor: true,
                 centeredSlides: true,
                 slidesPerView: "auto",
@@ -96,10 +177,10 @@ export default {
                     depth: 0,
                     modifier: 1,
                     slideShadows: true,
+                    loop: true,
                 },
-                loop: false,
                 autoplay: {
-                    delay: 1000,
+                    delay: 100000,
                     disableOnInteraction: false,
                 },
                 pagination: {
@@ -274,18 +355,13 @@ p {
     background-position: center;
     background-size: cover;
     width: 25%;
-    text-align: center;
-    position: relative;
     margin: 1rem;
 }
 
-.swiper-slide img {
+.swiper-wrapper {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 100%;
-    border-radius: 1rem;
-
 }
 
 

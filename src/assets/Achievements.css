@@ -5,7 +5,6 @@
 .custom-card {
     position: relative;
     overflow: hidden;
-    border-radius: 20px; /* Smooth corners */
     transition: border 0.3s ease-in-out;
 }
 
@@ -14,7 +13,7 @@
     content: "";
     position: absolute;
     inset: 0;
-    border-radius: 20px;
+    border-radius: inherit;
     padding: 3px;
     background: linear-gradient(45deg, #3772FF, #DF2935, #FDCA40);
     filter: drop-shadow(0 0 48px #DD4040) drop-shadow(0 0 18px #DD4040) drop-shadow(0 0 9px #DD4040);

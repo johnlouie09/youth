@@ -1,7 +1,7 @@
 <template>
-    <v-card class="official-card" elevation="4" @click="fillDialog(official)">
+    <v-card class="official-card elevation-10" @click="fillDialog(official)">
         <v-avatar
-        :image="official.img ? ($store.getters.base + '/OfficialImages/' + official.img) : '/OfficialImages/no-avatar.png'"
+        :image="official.img ? ($store.getters.base + 'public/OfficialImages/' + official.img) : '/OfficialImages/no-avatar.png'"
         cover
         alt="SK Logo"
         class="official-pic rounded-circle"
@@ -43,19 +43,24 @@ export default {
 
 <style scoped>
 .official-card {
-    position: relative;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    max-width: 450px;
     gap: .5rem;
-    width: 100%;
-    height: 90%;
     border-radius: 20px;
     padding: 3rem 2rem;
     background: linear-gradient(to bottom, #5B6A99 0%, #5B6A99 30%, transparent 30%, transparent 100%);
-    min-width: 300px;
+}
+
+.chairperson-card {
+    width: 600px;
+}
+
+.members-card {
+    height: 300px;
+    width: 350px;
+    margin: .5rem 0;
 }
 
 .chairperson-card .official-pic{
