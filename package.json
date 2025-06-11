@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@fontsource/inter": "^5.2.5",
     "@tailwindcss/vite": "^4.0.0",
     "axios": "^1.7.9",
     "bespoke": "^1.1.0",
@@ -28,6 +29,7 @@
     "vue-coverflow": "^2.2.0",
     "vue-material-design-icons": "^5.3.1",
     "vue-router": "^4.5.0",
+    "vue3-carousel": "^0.15.1",
     "vuetify": "^3.7.11",
     "vuex": "^4.1.0"
   },
