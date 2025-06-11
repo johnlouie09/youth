@@ -1,10 +1,12 @@
 <template>
-    <v-container fluid class="achievement-main pa-0 ma-0 mb-15">
-        <h1 class="gradient-text font-black uppercase py-10">Achievements</h1>
+
+    <!-- Achievements Card -->
+    <v-container fluid class="achievement-main pa-0 ma-0 mb-15 d-flex flex-col ga-15">
+        <h1 class="gradient-text font-black uppercase">Achievements</h1>
         <div class="achievements">
-            <v-card elevation="10"
+            <v-card
                 v-for="(achievement, index) in achievements" :key="index"
-                class="card"
+                class="card custom-card elevation-10"
             >
                 <img :src="`/achievements/${achievement.img}`" alt="" class="w-full max-h-[225px] elevation-10">
 
@@ -27,24 +29,76 @@
                     </v-card-text>
                 </v-card>
 
-                <v-expand-transition>
-                    <div v-show="showStates[index]">
-                        <v-divider></v-divider>
-                        <v-card-text>
-                            {{ achievement.info }}
-                        </v-card-text>
-                    </div>
-                </v-expand-transition>
-
-                <v-btn @click="toggleShow(index)" color="green-darken-3">
-                {{ showStates[index] ? 'Show Less' : 'Show More' }}
+                <v-btn 
+                class="px-5" 
+                color="teal-darken-3"
+                @click="showAchievement(achievement)">
+                DETAILS
                 </v-btn>
             </v-card>
         </div>
     </v-container>
+
+    <!-- Achievement Dialog -->
+    <v-dialog v-model=showAchievementDetails width="1100px" height="95vh">
+        <v-sheet class="hella rounded-3xl" style="border-radius: 2rem; overflow: hidden;"> 
+
+            <!-- Achievement Images Slideshow -->
+            <div ref="swiperContainer" class="swiper mySwiper w-[95%] h-[45%]">
+                <div class="swiper-wrapper">
+                    <div class="swiper-slide" v-for="n of 10">
+                        <img 
+                            :src="achievementDetails.img 
+                                    ? ($store.getters.base + 'public/achievements/' + achievementDetails.img) 
+                                    : ($store.getters.base + 'public/achievements/exx.jpg')"
+                            style="border-radius: .5rem; width: 611px; height: 314px;"
+                            cover
+                        ></img>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- Achievement Details -->
+            <div class="w-full h-[40%] d-flex flex-col justify-around items-center gap-1" style="font-family: 'Inter', sans-serif;">
+                <div class="d-flex flex-col justify-center items-center ga-2">
+                    <h2 class='uppercase text-2xl font-extrabold'>{{ achievementDetails.title }}</h2>
+                    <h3 class="capitalize w-[55%] text-sm text-center italic font-light">{{ achievementDetails.subtitle }} Lorem, ipsum dolor sit amet consectetur adipisicing elit. Veniam rem dolorum quam! Odio t. Veniam rem dolorum quam! </h3>
+                    <h3 class="font-bold text-xs">{{ formatDate(achievementDetails.date) }}</h3>
+                </div>
+
+                <p class="w-full h-[60%] text-base text-center overflow-y-auto my-2 px-2 py-4 rounded-md">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Et exercitationem perferendis voluptates at. Qui, repudiandae fuga expedita possimus nisi necessitatibus consequuntur molestiae quisquam doloribus, culpa ipsum esse numquam eos. Sint. Lorem ipsum dolor sit amet consectetur adipisicing elit. Atque ducimus nobis iusto explicabo, voluptatem quae. Commodi rem, officiis, rerum veritatis autem pariatur delectus voluptatibus nobis nam, consectetur animi nihil necessitatibus? Adolelscent Health Forum is a youth-centered event organized by the SK to educate and empower teenagers on important health topics such as mental wellness, reproductive health, nutrition, and substance abuse prevention. The forum features expert speakers, interactive discussions, and open forums to encourage active participation and awareness. It aims to create a safe and supportive environment where adolescents can ask questions, share experiences, and learn about healthy lifestyle choices. Through this activity, the SK seeks to promote holistic well-being among the youth in the barangay. This initiative aligns with the advocacy of promoting youth health and development</p>
+            </div>
+
+            <!-- SK Official Comments -->
+            <v-sheet class="h-[16%] w-[90%] d-flex ga-8 items-center px-10 py-5 elevation-10">
+                <div class="d-flex flex-col justify-center items-center ga-2 w-auto">
+                    <v-avatar                         
+                    :image="achievementDetails.sk_official_img
+                    ? (baseUrl + '/OfficialImages/' + achievementDetails.sk_official_img)
+                    : (baseUrl + '/OfficialImages/no-avatar.png')"
+                    size="70">
+                    </v-avatar>
+                    <h3 class="w-full uppercase text-xs whitespace-nowrap overflow-hidden text-ellipsis">{{ achievementDetails.sk_official_position }}</h3>
+                </div>
+
+                <div class="d-flex flex-col justify-center ga-1 h-full">
+                    <h3 class="font-bold text-sm">Hon. {{ achievementDetails.sk_official_name }}</h3>
+                    <p class="italic font-extralight text-sm overflow-y-auto h-full">"As SK Chairperson, I am proud of the successful launch of the Adolescent Health Forum, which empowered our youth with knowledge, encouraged open dialogue, and reinforced our commitment to promoting their overall well-being and development."</p>
+                </div>
+            </v-sheet>
+        </v-sheet>
+    </v-dialog>
+
 </template>
 
 <script>
+import { Swiper } from "swiper";
+import "swiper/css";
+import "swiper/css/effect-coverflow";
+import "swiper/css/autoplay";
+import "swiper/css/pagination";
+import { EffectCoverflow, Autoplay, Pagination } from "swiper/modules";
 import $ from 'jquery';
 
 export default {
@@ -57,8 +111,10 @@ export default {
     data() {
         return {
             myBarangayId: this.barangayId,
-            showStates: [],
-            achievements: []  // Initialize as an array, not a string.
+            achievements: [],  // Initialize as an array, not a string.
+
+            showAchievementDetails: false,
+            achievementDetails: []
         };
     },
     methods: {
@@ -105,7 +161,52 @@ export default {
                     // Optional: any actions after completion.
                 }
             });
+        },
+        showAchievement(achievement){
+            this.showAchievementDetails = true;
+            this.achievementDetails = { ... achievement };
+
+            this.$nextTick(() => {
+                this.initSwiper(); // Now the dialog content (including swiperContainer) is mounted
+            });
+        },
+        initSwiper() {
+            const swiperContainer = this.$refs.swiperContainer;
+            if (!swiperContainer) {
+                console.error('Swiper container not found!');
+                return;
+            }
+
+            // Ensure Swiper modules are imported above:
+            // import Swiper from 'swiper';
+            // import { EffectCoverflow, Autoplay, Pagination } from 'swiper/modules';
+
+            const swiper = new Swiper(swiperContainer, {
+                effect: "coverflow",
+                grabCursor: true,
+                centeredSlides: true,
+                slidesPerView: "auto",
+                loop: true, // Enables continuous autoplay loop
+                autoplay: {
+                    delay: 3000, // 3 seconds per slide
+                    disableOnInteraction: false,
+                },
+                coverflowEffect: {
+                    rotate: 10,      // More rotation = more 3D effect
+                    stretch: 0,      // Space between slides
+                    depth: 200,      // Controls how "deep" slides appear in 3D
+                    modifier: 1,     // Intensity of the coverflow
+                    scale: 1,
+                    slideShadows: true,
+                },
+                pagination: {
+                    el: ".swiper-pagination",
+                    clickable: true,
+                },
+                modules: [EffectCoverflow, Autoplay, Pagination],
+            });
         }
+
     },
     created() {
         // Initialize achievements as an empty array so that .map() works.
@@ -135,6 +236,14 @@ export default {
 </script>
 
 <style scoped>
+.hella {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    padding: 3rem 4rem;
+}
+
 .achievements {
     width: 100%;
     display: flex;
@@ -173,7 +282,7 @@ h1 {
 
 .card {
     width: 400px;
-    border-radius: 1.5rem;
+    border-radius: 1rem;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -184,11 +293,33 @@ h1 {
 }
 
 .card:hover {
-    transform: scale(1.07);
+    transform: scale(1.04);
 }
 
 article {
     width: 90%;
 }
+
+
+.swiper {
+    width: 100%;
+    height: 314px;
+}
+
+.swiper-slide {
+    background-position: center;
+    background-size: cover;
+    width: 611px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+
+.swiper-slide img {
+    width: 100%;
+    border-radius: 1rem;
+}
+
 </style>
   
