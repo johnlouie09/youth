@@ -86,7 +86,7 @@ export default {
     align-items: center;
     gap: 2rem;
     padding: 3rem 5rem;
-    border-radius: 2.5rem;
+    border-radius: 2rem;
     z-index: 2;
 }
 

@@ -13,14 +13,17 @@
             v-for="barangay in barangays"
             :key="barangay.id"
             elevation="10"
-            class="barangay custom-card hoverable"
+            class="barangay custom-card"
             width="350px"
             height="250px"
             :style="barangay.img ? {
                 'background-image': `url(${this.$store.getters.base}public/barangayHall/${barangay.img.toLowerCase()}?v=1)`,
                 'background-size': 'cover',
                 'background-position': 'center'
-            } : {}"
+            } : {                
+                'background-image': `url(${this.$store.getters.base}public/barangayHall/no-avatar.svg?v=1)`,
+                'background-size': 'contain',
+                'background-position': 'center'}"
             @click = "toBarangay(barangay)"
         >
             <v-card-title class="overlay-titles-barangays" style="font-weight: 900; font-size: 1rem;">
@@ -113,7 +116,7 @@ export default {
 
 /* Add transition for smooth scaling */
 .barangay {
-    border-radius: 1.25rem;
+    border-radius: 1rem;
     transition: transform 0.3s ease-in-out;
     opacity: .6;
     color: white;
@@ -122,16 +125,11 @@ export default {
     align-items: flex-end;
     padding-bottom: .5rem;
     overflow: hidden;
-    background-color: #f0f0f0;
 }
 
 /* Corrected hover effect using transform */
 .barangay:hover {
     transform: scale(1.1);
     opacity: 1;
-}
-
-.hoverable {
-    cursor: pointer;
 }
 </style>
