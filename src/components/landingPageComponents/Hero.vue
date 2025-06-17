@@ -180,7 +180,7 @@ export default {
                     loop: true,
                 },
                 autoplay: {
-                    delay: 100000,
+                    delay: 3000,
                     disableOnInteraction: false,
                 },
                 pagination: {
@@ -354,8 +354,9 @@ p {
 .swiper-slide {
     background-position: center;
     background-size: cover;
-    width: 25%;
-    margin: 1rem;
+    width: auto;
+    max-width: 25%;
+    margin: 1rem 2rem;
 }
 
 .swiper-wrapper {

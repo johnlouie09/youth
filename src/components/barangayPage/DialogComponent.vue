@@ -271,7 +271,7 @@
                     <v-container class="d-flex flex-row flex-wrap justify-evenly pa-5 ga-10">
                         <v-card
                         v-for="n of 3"
-                        class="custom-card border rounded-xl elevation-10"
+                        class="custom-card border rounded-lg elevation-10"
                         :class="{'d-flex flex-col ga-5 items-center w-[90%] elevation-10 px-15 py-10' : showAdvocacyDetails, 'd-flex ga-10 w-[90%] max-h-[250px]' : !showAdvocacyDetails}">
 
                             <!-- Advocacy Image, Title and Subtitle -->
@@ -356,7 +356,7 @@
                     <v-container class="d-flex flex-row flex-wrap justify-evenly pa-5 ga-10">
                         <v-card
                         v-for="n of 2"
-                        class="custom-card d-flex flex-col justify-center items-center ga-5 py-10 pb-3 w-[90%] border rounded-xl elevation-10">
+                        class="custom-card d-flex flex-col justify-center items-center ga-5 py-10 pb-3 w-[90%] border rounded-lg elevation-10">
 
                             <div class="w-[90%] d-flex flex-col justify-center items-center ga-3">
                                 <div class="d-flex flex-col justify-center items-center">
@@ -424,7 +424,7 @@
                     <v-container class="d-flex flex-row flex-wrap justify-evenly pa-5 ga-10">
                         <v-card
                         v-for="n of 5"
-                        class="custom-card w-[90%] d-flex justify-center items-center border rounded-xl elevation-10"
+                        class="custom-card w-[90%] d-flex justify-center items-center border rounded-lg elevation-10"
                         :class="{'flex-col py-10 ga-5' : showProgramDetails, 'ga-5 max-h-[300px] px-7 py-5' : !showProgramDetails}">
 
                             <div
@@ -465,6 +465,7 @@
                                 :class="{'text-xl w-[90%]' : showProgramDetails, 'w-full' : !showProgramDetails}"
                                 >
                                     Kabataan Hub: Skills and Livelihood Training
+                                    <v-divider v-if="!showProgramDetails" class="my-1"></v-divider>
                                 </h3>
 
                                 

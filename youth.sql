@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 14, 2025 at 04:04 PM
+-- Generation Time: Jun 17, 2025 at 08:39 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -323,6 +323,23 @@ INSERT INTO `projects` (`id`, `barangay_id`, `project_name`, `budget`, `status`,
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `sk_advocacies`
+--
+
+CREATE TABLE `sk_advocacies` (
+  `id` int(11) NOT NULL,
+  `sk_official_id` int(11) NOT NULL,
+  `title` varchar(50) NOT NULL,
+  `subtitle` varchar(100) NOT NULL,
+  `detail` varchar(255) NOT NULL,
+  `thumbnail` varchar(50) NOT NULL,
+  `created_at` datetime DEFAULT current_timestamp(),
+  `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `sk_educations`
 --
 
@@ -368,6 +385,7 @@ CREATE TABLE `sk_officials` (
   `full_name` varchar(150) NOT NULL,
   `position` enum('SK Chairperson','SK Secretary','SK Treasurer','SK Kagawad') NOT NULL,
   `contact_number` varchar(14) NOT NULL,
+  `address` varchar(100) NOT NULL,
   `email` varchar(100) NOT NULL,
   `birthday` date DEFAULT NULL,
   `motto` text NOT NULL,
@@ -384,34 +402,68 @@ CREATE TABLE `sk_officials` (
 -- Dumping data for table `sk_officials`
 --
 
-INSERT INTO `sk_officials` (`id`, `barangay_id`, `slug`, `username`, `password`, `full_name`, `position`, `contact_number`, `email`, `birthday`, `motto`, `img`, `term_start`, `term_end`, `reset_token`, `token_expires`, `created_at`, `updated_at`) VALUES
-(1, 1, 'dessa-mare', 'dessa', '123456', 'Dessa Mare P. Lontayao', 'SK Chairperson', '09274668490', 'dessa@localhost.net', '2003-03-28', '\"Bilang inyong SK Chairperson, ako’y naninindigan para sa kabataang may boses, may pangarap, at may lakas ng loob na maglingkod. Sama-sama tayong kikilos para sa makabuluhang pagbabago sa ating barangay.\"', 'images.jpeg', '2022-04-07', '2025-06-28', 'c88b1862cafeb7644995da16b1a5a031', '2025-03-18 10:15:31', '2025-02-21 06:16:33', '2025-05-22 13:43:55'),
-(2, 2, 'irish', 'irish', 'qwerty', 'Irish N. Zaragoza', 'SK Chairperson', '09082565497', 'irish@localhost.net', NULL, '', '', NULL, NULL, NULL, NULL, '2025-02-21 06:41:36', '2025-03-17 05:33:27'),
-(3, 3, 'anthony', '', '', 'Anthony T. Balbuena', 'SK Chairperson', '09915612246', 'anthony@localhost.net', NULL, '', '', NULL, NULL, NULL, NULL, '2025-02-21 06:41:36', '2025-03-17 05:50:47'),
-(4, 4, 'aiden-osward', '', '', 'Aiden Osward M. Basagre', 'SK Chairperson', '09617360226', 'aiden@localhost.net', NULL, '', '', NULL, NULL, NULL, NULL, '2025-02-21 06:41:36', '2025-03-17 05:50:47'),
-(5, 5, 'neil-christian', '', '', 'Neil Christian D. Vargas', 'SK Chairperson', '09773292890', 'neil@localhost.net', NULL, '', '', NULL, NULL, NULL, NULL, '2025-02-21 06:41:36', '2025-03-17 05:50:47'),
-(6, 6, 'jade-dustin', '', '', 'Jade Dustin F. Villareal', 'SK Chairperson', '09291118624', 'jade@localhost.net', NULL, '', '', NULL, NULL, NULL, NULL, '2025-02-21 06:41:36', '2025-03-17 05:50:47'),
-(7, 7, 'kim-roland', '', '', 'Kim Roland P. Vargas', 'SK Chairperson', '09618808019', 'kim@localhost.net', NULL, '', '', NULL, NULL, NULL, NULL, '2025-02-21 06:41:36', '2025-03-17 05:50:47'),
-(8, 8, 'leiriz', '', '', 'Leiriz C. Ibarreta', 'SK Chairperson', '09508374203', 'leiriz@localhost.net', NULL, '', '', NULL, NULL, NULL, NULL, '2025-02-21 06:41:36', '2025-03-17 05:50:47'),
-(9, 9, 'bea-franchezka', '', '', 'Bea Franchezka Naldo', 'SK Chairperson', '09484018819', 'bea@localhost.net', NULL, 'Unified Youth for One Santiago', '', NULL, NULL, NULL, NULL, '2025-02-21 06:41:36', '2025-03-17 05:50:47'),
-(10, 10, 'rex', '', '', 'Rex A. Embestro', 'SK Chairperson', '09915618021', 'rex@localhost.net', NULL, '', '', NULL, NULL, NULL, NULL, '2025-02-21 06:41:36', '2025-03-17 05:50:47'),
-(11, 11, 'rico', '', '', 'Rico Maniscan', 'SK Chairperson', '0', 'rico@localhost.net', NULL, '', '', NULL, NULL, NULL, NULL, '2025-02-21 06:41:36', '2025-03-17 05:50:47'),
-(12, 12, 'jhustine', '', '', 'Jhustine A. Robles', 'SK Chairperson', '09674164962', 'jhustine@localhost.net', NULL, '', '', NULL, NULL, NULL, NULL, '2025-02-21 06:41:36', '2025-03-17 05:50:47'),
-(13, 13, 'james-lorren', '', '', 'James Lorren J. Brondial', 'SK Chairperson', '09092168955', 'james@localhost.net', NULL, '', '', NULL, NULL, NULL, NULL, '2025-02-21 06:41:36', '2025-03-17 05:50:47'),
-(14, 14, 'eddel-mae', '', '', 'Eddel Mae D. Brago', 'SK Chairperson', '09203025407', 'eddel@localhost.net', NULL, '', '', NULL, NULL, NULL, NULL, '2025-02-21 06:41:36', '2025-03-17 05:58:47'),
-(15, 15, 'prince-leonard', '', '', 'Prince Leonard W. Llagas', 'SK Chairperson', '09518971664', 'prince@localhost.net', NULL, '', '', NULL, NULL, NULL, NULL, '2025-02-21 06:41:36', '2025-03-17 05:58:47'),
-(16, 16, 'diana-rose', '', '', 'Diana Rose A. Canlas', 'SK Chairperson', '09950653343', 'diana@localhost.net', NULL, '', '', NULL, NULL, NULL, NULL, '2025-02-21 06:41:36', '2025-03-17 05:58:47'),
-(17, 17, 'mary-grace', '', '', 'Mary Grace A. Biag', 'SK Chairperson', '09916828638', 'mary@localhost.net', NULL, '', '', NULL, NULL, NULL, NULL, '2025-02-21 06:41:36', '2025-03-17 05:58:47'),
-(18, 18, 'jean-lyka', '', '', 'Jean-Lyka C. Villanueva', 'SK Chairperson', '09919459266', 'jean@localhost.net', NULL, '', '', NULL, NULL, NULL, NULL, '2025-02-21 06:41:36', '2025-03-17 05:58:47'),
-(19, 19, 'james', '', '', 'James S. Tasarra', 'SK Chairperson', '09630466338', 'james@localhost.net', NULL, '', '', NULL, NULL, NULL, NULL, '2025-02-21 06:41:36', '2025-03-17 05:58:47'),
-(20, 20, 'aliza-mae', '', '', 'Aliza Mae P. Viñas', 'SK Chairperson', '09383706542', 'aliza@localhost.net', NULL, '', '', NULL, NULL, NULL, NULL, '2025-02-21 06:41:36', '2025-03-17 05:58:47'),
-(21, 21, 'erika-mae', '', '', 'Erika Mae V. Molina', 'SK Chairperson', '09389182048', 'erika@localhost.net', NULL, '', '', NULL, NULL, NULL, NULL, '2025-02-21 06:41:36', '2025-03-17 05:58:47'),
-(22, 22, 'jessa-mae', '', '', 'Jessa Mae C. Matubis', 'SK Chairperson', '09486804219', 'jessa@localhost.net', NULL, '', '', NULL, NULL, NULL, NULL, '2025-02-21 06:41:36', '2025-03-17 05:58:47'),
-(23, 1, 'sample', 'sample', '', 'Lee Hye-ri', 'SK Secretary', '09709542681', 'sample_official@localhost.net', '1994-06-09', 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nesciunt', 'Screenshot 2025-05-22 214258.png', '2024-03-05', '2025-06-13', NULL, NULL, '2025-03-12 10:58:56', '2025-05-29 01:52:57'),
-(24, 1, 'secretary-san-francisco', 'secretary-sf', 'password', 'Honda Civic', 'SK Secretary', '09171234567', 'secretary_sf@localhost.net', '1990-01-01', 'Leading with diligence', 'wp2367468.jpg', '2025-01-01', '2025-12-31', NULL, NULL, '2025-03-26 04:21:13', '2025-05-22 13:45:24'),
-(25, 1, 'treasurer-san-francisco', 'treasurer_sf', 'password', 'SK Treasurer - San Francisco', 'SK Treasurer', '09172234567', 'treasurer_sf@localhost.net', '1991-02-02', 'Managing funds responsible', '', '2025-01-01', '2025-12-31', NULL, NULL, '2025-03-26 04:21:13', '2025-03-26 04:21:13'),
-(26, 1, 'kagawad1-san-francisco', 'kagawad1_sf', 'password', 'SK Kagawad 1 - San Francisco', 'SK Kagawad', '09173234567', 'kagawad1_sf@localhost.net', '1992-03-03', 'Empowering youth', '', '2025-01-01', '2025-12-31', NULL, NULL, '2025-03-26 04:21:13', '2025-03-26 04:21:13'),
-(27, 1, 'kagawad2-san-francisco', 'kagawad2_sf', 'password', 'SK Kagawad 2 - San Francisco', 'SK Kagawad', '09174234567', 'kagawad2_sf@localhost.net', '1993-04-04', 'Striving for progress', '', '2025-01-01', '2025-12-31', NULL, NULL, '2025-03-26 04:21:13', '2025-03-26 04:21:13');
+INSERT INTO `sk_officials` (`id`, `barangay_id`, `slug`, `username`, `password`, `full_name`, `position`, `contact_number`, `address`, `email`, `birthday`, `motto`, `img`, `term_start`, `term_end`, `reset_token`, `token_expires`, `created_at`, `updated_at`) VALUES
+(1, 1, 'dessa-mare', 'dessa', '123456', 'Dessa Mare P. Lontayao', 'SK Chairperson', '09274668490', '', 'dessa@localhost.net', '2003-03-28', '\"Bilang inyong SK Chairperson, ako’y naninindigan para sa kabataang may boses, may pangarap, at may lakas ng loob na maglingkod. Sama-sama tayong kikilos para sa makabuluhang pagbabago sa ating barangay.\"', 'images.jpeg', '2022-04-07', '2025-06-28', 'c88b1862cafeb7644995da16b1a5a031', '2025-03-18 10:15:31', '2025-02-21 06:16:33', '2025-05-22 13:43:55'),
+(2, 2, 'irish', 'irish', 'qwerty', 'Irish N. Zaragoza', 'SK Chairperson', '09082565497', '', 'irish@localhost.net', NULL, '', '', NULL, NULL, NULL, NULL, '2025-02-21 06:41:36', '2025-03-17 05:33:27'),
+(3, 3, 'anthony', '', '', 'Anthony T. Balbuena', 'SK Chairperson', '09915612246', '', 'anthony@localhost.net', NULL, '', '', NULL, NULL, NULL, NULL, '2025-02-21 06:41:36', '2025-03-17 05:50:47'),
+(4, 4, 'aiden-osward', '', '', 'Aiden Osward M. Basagre', 'SK Chairperson', '09617360226', '', 'aiden@localhost.net', NULL, '', '', NULL, NULL, NULL, NULL, '2025-02-21 06:41:36', '2025-03-17 05:50:47'),
+(5, 5, 'neil-christian', '', '', 'Neil Christian D. Vargas', 'SK Chairperson', '09773292890', '', 'neil@localhost.net', NULL, '', '', NULL, NULL, NULL, NULL, '2025-02-21 06:41:36', '2025-03-17 05:50:47'),
+(6, 6, 'jade-dustin', '', '', 'Jade Dustin F. Villareal', 'SK Chairperson', '09291118624', '', 'jade@localhost.net', NULL, '', '', NULL, NULL, NULL, NULL, '2025-02-21 06:41:36', '2025-03-17 05:50:47'),
+(7, 7, 'kim-roland', '', '', 'Kim Roland P. Vargas', 'SK Chairperson', '09618808019', '', 'kim@localhost.net', NULL, '', '', NULL, NULL, NULL, NULL, '2025-02-21 06:41:36', '2025-03-17 05:50:47'),
+(8, 8, 'leiriz', '', '', 'Leiriz C. Ibarreta', 'SK Chairperson', '09508374203', '', 'leiriz@localhost.net', NULL, '', '', NULL, NULL, NULL, NULL, '2025-02-21 06:41:36', '2025-03-17 05:50:47'),
+(9, 9, 'bea-franchezka', '', '', 'Bea Franchezka Naldo', 'SK Chairperson', '09484018819', '', 'bea@localhost.net', NULL, 'Unified Youth for One Santiago', '', NULL, NULL, NULL, NULL, '2025-02-21 06:41:36', '2025-03-17 05:50:47'),
+(10, 10, 'rex', '', '', 'Rex A. Embestro', 'SK Chairperson', '09915618021', '', 'rex@localhost.net', NULL, '', '', NULL, NULL, NULL, NULL, '2025-02-21 06:41:36', '2025-03-17 05:50:47'),
+(11, 11, 'rico', '', '', 'Rico Maniscan', 'SK Chairperson', '0', '', 'rico@localhost.net', NULL, '', '', NULL, NULL, NULL, NULL, '2025-02-21 06:41:36', '2025-03-17 05:50:47'),
+(12, 12, 'jhustine', '', '', 'Jhustine A. Robles', 'SK Chairperson', '09674164962', '', 'jhustine@localhost.net', NULL, '', '', NULL, NULL, NULL, NULL, '2025-02-21 06:41:36', '2025-03-17 05:50:47'),
+(13, 13, 'james-lorren', '', '', 'James Lorren J. Brondial', 'SK Chairperson', '09092168955', '', 'james@localhost.net', NULL, '', '', NULL, NULL, NULL, NULL, '2025-02-21 06:41:36', '2025-03-17 05:50:47'),
+(14, 14, 'eddel-mae', '', '', 'Eddel Mae D. Brago', 'SK Chairperson', '09203025407', '', 'eddel@localhost.net', NULL, '', '', NULL, NULL, NULL, NULL, '2025-02-21 06:41:36', '2025-03-17 05:58:47'),
+(15, 15, 'prince-leonard', '', '', 'Prince Leonard W. Llagas', 'SK Chairperson', '09518971664', '', 'prince@localhost.net', NULL, '', '', NULL, NULL, NULL, NULL, '2025-02-21 06:41:36', '2025-03-17 05:58:47'),
+(16, 16, 'diana-rose', '', '', 'Diana Rose A. Canlas', 'SK Chairperson', '09950653343', '', 'diana@localhost.net', NULL, '', '', NULL, NULL, NULL, NULL, '2025-02-21 06:41:36', '2025-03-17 05:58:47'),
+(17, 17, 'mary-grace', '', '', 'Mary Grace A. Biag', 'SK Chairperson', '09916828638', '', 'mary@localhost.net', NULL, '', '', NULL, NULL, NULL, NULL, '2025-02-21 06:41:36', '2025-03-17 05:58:47'),
+(18, 18, 'jean-lyka', '', '', 'Jean-Lyka C. Villanueva', 'SK Chairperson', '09919459266', '', 'jean@localhost.net', NULL, '', '', NULL, NULL, NULL, NULL, '2025-02-21 06:41:36', '2025-03-17 05:58:47'),
+(19, 19, 'james', '', '', 'James S. Tasarra', 'SK Chairperson', '09630466338', '', 'james@localhost.net', NULL, '', '', NULL, NULL, NULL, NULL, '2025-02-21 06:41:36', '2025-03-17 05:58:47'),
+(20, 20, 'aliza-mae', '', '', 'Aliza Mae P. Viñas', 'SK Chairperson', '09383706542', '', 'aliza@localhost.net', NULL, '', '', NULL, NULL, NULL, NULL, '2025-02-21 06:41:36', '2025-03-17 05:58:47'),
+(21, 21, 'erika-mae', '', '', 'Erika Mae V. Molina', 'SK Chairperson', '09389182048', '', 'erika@localhost.net', NULL, '', '', NULL, NULL, NULL, NULL, '2025-02-21 06:41:36', '2025-03-17 05:58:47'),
+(22, 22, 'jessa-mae', '', '', 'Jessa Mae C. Matubis', 'SK Chairperson', '09486804219', '', 'jessa@localhost.net', NULL, '', '', NULL, NULL, NULL, NULL, '2025-02-21 06:41:36', '2025-03-17 05:58:47'),
+(23, 1, 'sample', 'sample', '', 'Lee Hye-ri', 'SK Secretary', '09709542681', '', 'sample_official@localhost.net', '1994-06-09', 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Nesciunt', 'Screenshot 2025-05-22 214258.png', '2024-03-05', '2025-06-13', NULL, NULL, '2025-03-12 10:58:56', '2025-05-29 01:52:57'),
+(24, 1, 'secretary-san-francisco', 'secretary-sf', 'password', 'Honda Civic', 'SK Secretary', '09171234567', '', 'secretary_sf@localhost.net', '1990-01-01', 'Leading with diligence', 'wp2367468.jpg', '2025-01-01', '2025-12-31', NULL, NULL, '2025-03-26 04:21:13', '2025-05-22 13:45:24'),
+(25, 1, 'treasurer-san-francisco', 'treasurer_sf', 'password', 'SK Treasurer - San Francisco', 'SK Treasurer', '09172234567', '', 'treasurer_sf@localhost.net', '1991-02-02', 'Managing funds responsible', '', '2025-01-01', '2025-12-31', NULL, NULL, '2025-03-26 04:21:13', '2025-03-26 04:21:13'),
+(26, 1, 'kagawad1-san-francisco', 'kagawad1_sf', 'password', 'SK Kagawad 1 - San Francisco', 'SK Kagawad', '09173234567', '', 'kagawad1_sf@localhost.net', '1992-03-03', 'Empowering youth', '', '2025-01-01', '2025-12-31', NULL, NULL, '2025-03-26 04:21:13', '2025-03-26 04:21:13'),
+(27, 1, 'kagawad2-san-francisco', 'kagawad2_sf', 'password', 'SK Kagawad 2 - San Francisco', 'SK Kagawad', '09174234567', '', 'kagawad2_sf@localhost.net', '1993-04-04', 'Striving for progress', '', '2025-01-01', '2025-12-31', NULL, NULL, '2025-03-26 04:21:13', '2025-03-26 04:21:13');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `sk_platforms`
+--
+
+CREATE TABLE `sk_platforms` (
+  `id` int(11) NOT NULL,
+  `sk_advocacy_id` int(11) NOT NULL,
+  `title` varchar(50) NOT NULL,
+  `detail` varchar(255) NOT NULL,
+  `created_at` datetime DEFAULT current_timestamp(),
+  `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `sk_programs`
+--
+
+CREATE TABLE `sk_programs` (
+  `id` int(11) NOT NULL,
+  `sk_platform_id` int(11) NOT NULL,
+  `achievement_id` int(11) NOT NULL,
+  `title` varchar(50) NOT NULL,
+  `subtitle` varchar(100) NOT NULL,
+  `detail` text NOT NULL,
+  `thumbnail` varchar(50) NOT NULL,
+  `status` enum('Done','Pending','Dismissed','') NOT NULL,
+  `created_at` datetime DEFAULT current_timestamp(),
+  `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -421,9 +473,11 @@ INSERT INTO `sk_officials` (`id`, `barangay_id`, `slug`, `username`, `password`,
 
 CREATE TABLE `social_links` (
   `id` int(11) NOT NULL,
-  `link_owner` int(11) NOT NULL,
-  `name` varchar(50) NOT NULL,
-  `link` text NOT NULL,
+  `platform` varchar(50) NOT NULL,
+  `url` text NOT NULL,
+  `icon` varchar(50) NOT NULL,
+  `linkable_id` int(11) NOT NULL,
+  `linkable_type` varchar(50) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `update_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -517,6 +571,13 @@ ALTER TABLE `projects`
   ADD KEY `barangay_id` (`barangay_id`);
 
 --
+-- Indexes for table `sk_advocacies`
+--
+ALTER TABLE `sk_advocacies`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `sk_advocacyfk1` (`sk_official_id`);
+
+--
 -- Indexes for table `sk_educations`
 --
 ALTER TABLE `sk_educations`
@@ -530,6 +591,21 @@ ALTER TABLE `sk_educations`
 ALTER TABLE `sk_officials`
   ADD PRIMARY KEY (`id`),
   ADD KEY `barangay_id` (`barangay_id`);
+
+--
+-- Indexes for table `sk_platforms`
+--
+ALTER TABLE `sk_platforms`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `sk_platformfk1` (`sk_advocacy_id`);
+
+--
+-- Indexes for table `sk_programs`
+--
+ALTER TABLE `sk_programs`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `sk_programsfk1` (`sk_platform_id`),
+  ADD KEY `sk_programsfk2` (`achievement_id`);
 
 --
 -- Indexes for table `social_links`
@@ -609,6 +685,12 @@ ALTER TABLE `projects`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
+-- AUTO_INCREMENT for table `sk_advocacies`
+--
+ALTER TABLE `sk_advocacies`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `sk_educations`
 --
 ALTER TABLE `sk_educations`
@@ -619,6 +701,18 @@ ALTER TABLE `sk_educations`
 --
 ALTER TABLE `sk_officials`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
+
+--
+-- AUTO_INCREMENT for table `sk_platforms`
+--
+ALTER TABLE `sk_platforms`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `sk_programs`
+--
+ALTER TABLE `sk_programs`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `social_links`
@@ -679,6 +773,12 @@ ALTER TABLE `projects`
   ADD CONSTRAINT `projects_ibfk_1` FOREIGN KEY (`barangay_id`) REFERENCES `barangays` (`id`) ON DELETE CASCADE;
 
 --
+-- Constraints for table `sk_advocacies`
+--
+ALTER TABLE `sk_advocacies`
+  ADD CONSTRAINT `sk_advocacyfk1` FOREIGN KEY (`sk_official_id`) REFERENCES `sk_officials` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
 -- Constraints for table `sk_educations`
 --
 ALTER TABLE `sk_educations`
@@ -690,6 +790,19 @@ ALTER TABLE `sk_educations`
 --
 ALTER TABLE `sk_officials`
   ADD CONSTRAINT `sk_officials_ibfk_1` FOREIGN KEY (`barangay_id`) REFERENCES `barangays` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `sk_platforms`
+--
+ALTER TABLE `sk_platforms`
+  ADD CONSTRAINT `sk_platformfk1` FOREIGN KEY (`sk_advocacy_id`) REFERENCES `sk_advocacies` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `sk_programs`
+--
+ALTER TABLE `sk_programs`
+  ADD CONSTRAINT `sk_programsfk1` FOREIGN KEY (`sk_platform_id`) REFERENCES `sk_platforms` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `sk_programsfk2` FOREIGN KEY (`achievement_id`) REFERENCES `achievements` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
 -- Constraints for table `youths`

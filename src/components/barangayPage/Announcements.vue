@@ -63,7 +63,7 @@
 
     <!-- Announcement Dialog -->
     <v-dialog v-model=showAnnouncementDetails width="auto" max-width="1200px" max-height="90vh">
-        <v-card class="d-flex justify-center items-center py-15 ga-8" style="border-radius: 1rem;">
+        <v-card class="d-flex justify-center items-center py-15 ga-5" style="border-radius: 1rem;">
             <h1 class="w-[90%] text-3xl font-extrabold text-center uppercase">{{ announcementDetails.title }} <v-divider class="mt-3"></v-divider></h1>
             <div class="announcementDialog w-[90%]">
                 <div class="d-flex flex-col justify-around items-center py-5">
