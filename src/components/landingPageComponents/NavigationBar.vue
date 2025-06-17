@@ -5,7 +5,7 @@
       <img style="height: 1.5vh;" :src="$store.getters.base + 'youth-name.svg'"></img>
     </ul>
 
-    <ul class="w-[50%] d-flex justify-evenly items-center ">
+    <ul class="w-[50%] d-flex justify-evenly items-center">
       <v-divider vertical></v-divider>
       <v-btn 
         v-for="view in views" 
@@ -84,7 +84,7 @@ export default {
   justify-content: space-between;
   align-items: center;
   border-radius: 1rem;
-  padding: 0px 4rem;
+  padding: 0px 2%;
 }
 
 .view {

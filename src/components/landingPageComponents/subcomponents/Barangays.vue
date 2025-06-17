@@ -26,7 +26,7 @@
                 'background-position': 'center'}"
             @click = "toBarangay(barangay)"
         >
-            <v-card-title class="overlay-titles-barangays" style="font-weight: 900; font-size: 1rem;">
+            <v-card-title class="overlay-titles-barangays" style="font-weight: 900; font-size: 1rem; opacity: 1;">
                 {{ barangay.name.toUpperCase() }}
             </v-card-title>
         </v-card>
@@ -119,7 +119,6 @@ export default {
     border-radius: 1rem;
     transition: transform 0.3s ease-in-out;
     opacity: .6;
-    color: white;
     display: flex;
     justify-content: center;
     align-items: flex-end;
