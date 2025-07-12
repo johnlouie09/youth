@@ -1,10 +1,12 @@
 <script>
 import Footer from "./components/landingPageComponents/Footer.vue";
 import NavigationBar from "./components/landingPageComponents/NavigationBar.vue";
+import ThemeSwitcher from "./components/ThemeSwitcher.vue";
 export default {
   components: {
     NavigationBar,
-    Footer
+    Footer,
+    ThemeSwitcher
   }
 };
 </script>
@@ -12,7 +14,7 @@ export default {
 <template>
   <v-app>
     <NavigationBar></NavigationBar>
-    <v-main>
+    <v-main class="relative">
       <v-container class="pa-0" fluid >
         <RouterView />
       </v-container>
@@ -21,6 +23,7 @@ export default {
 </template>
 
 <style scoped>
+
 
 </style>
   

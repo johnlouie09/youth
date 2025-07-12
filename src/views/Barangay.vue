@@ -6,6 +6,7 @@ import Achievements from '@/components/barangayPage/Achievements.vue';
 import DialogComponent from '@/components/barangayPage/DialogComponent.vue';
 import FeedbackForm from '@/components/barangayPage/FeedbackForm.vue';
 import YouthAccount from '@/components/barangayPage/YouthAccount.vue';
+import SocialLinks from '@/components/landingPageComponents/SocialLinks.vue';
 import $ from 'jquery';
 
 export default {
@@ -16,6 +17,7 @@ export default {
         Achievements,
         DialogComponent,
         FeedbackForm,
+        SocialLinks,
         YouthAccount
     },
     data() {
@@ -76,50 +78,27 @@ export default {
     <v-container
         :theme="themeName"
         fluid
-        class="d-flex flex-col justify-center items-center gap-[5rem] pa-0 ma-0 bg-gradient-to-br from-gray-50 via-gray-100 to-gray-200"
+        class="d-flex flex-col justify-center items-center gap-[10rem] pa-0 ma-0 bg-gradient-to-br from-gray-50 via-gray-100 to-gray-200"
         :class="['barangay-main', { 'dark-gradient': isDark }]"
     >
         <div class="dp-barangay elevation-15"
-            :style="{ 'background-image': `url(${this.$store.getters.base}/barangayHall/${barangayInfo.img})` }">
-            <img class="logo w-80 h-auto" :src="$store.getters['base'] + '/Logoseal.svg'" alt="logo"/>
+            :style="{ 'background-image': `url(${this.$store.getters.base}public/barangayHall/${barangayInfo.img})` }">
+            <img class="logo w-80 h-auto" :src="$store.getters['base'] + 'public/Logoseal.svg'" alt="logo"/>
             <h1>
                 BARANGAY {{ barangayInfo.name ? barangayInfo.name.toUpperCase() : '' }}
             </h1>
-            <img class="logo w-80 h-auto" :src="$store.getters['base'] + '/Logoseal.svg'" alt="logo"/>
+            <img class="logo w-80 h-auto" :src="$store.getters['base'] + 'public/Logoseal.svg'" alt="logo"/>
+            <SocialLinks class="absolute left-1/2 top-8/10 transform -translate-x-1/2 -translate-y-1/2 d-flex flex-column justify-center items-center gap-3"></SocialLinks>
+            
         </div>
         <Announcements v-if="barangayInfo.id" :barangayId="barangayInfo.id"/>
         <Cards v-if="barangayInfo.id" :barangayId="barangayInfo.id"/>
-        <Achievements v-if="barangayInfo.id" :barangayId="barangayInfo.id"/>
+        <Achievements v-if="barangayInfo.id" :barangayId="barangayInfo.id"></Achievements>
 
-        <!-- Supporting Components -->
-        <DialogComponent/>
+    <!-- Supporting Components -->
+    <DialogComponent/>
 
-        <div class="form-button">
-            <v-btn icon @click="dialog = true">
-                <v-icon>mdi-account-circle</v-icon>
-            </v-btn>
-            <FeedbackForm :barangayName="barangayInfo.name"></FeedbackForm>
-        </div>
-    </v-container>
-
-    <v-dialog v-model="dialog" max-width="800px">
-        <v-card class="d-flex justify-center items-center pa-15" style="border-radius: 1rem;">
-            <h1 class="text-2xl font-extrabold">YOUTH ACCOUNT</h1>
-
-            <div class="w-[90%] d-flex justify-evenly py-10">
-                <v-avatar :image='"/OfficialImages/no-avatar.png"' size="150" />
-                <article>
-                    <v-card-text>NAME: Charles Harvey Gonzaga</v-card-text>
-                    <v-card-text>Barangay: San Francisco, Iriga City</v-card-text>
-                    <v-card-text>Email: harveygonzaga222@gmail.com</v-card-text>
-                </article>
-            </div>
-            <v-btn class="d-flex justify-center pa-5 items-center gap-3" color="error" variant="outlined" @click="dialog = false">
-                <v-icon>mdi-logout</v-icon>
-                <span>LOG OUT</span>
-            </v-btn>
-        </v-card>
-    </v-dialog>
+  </v-container>
 </template>
 
 <style scoped>
@@ -136,6 +115,7 @@ export default {
 .dp-barangay {
     position: relative;
     display: flex;
+    flex-direction: row;
     justify-content: space-between;
     align-items: center;
     width: 100%;

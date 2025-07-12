@@ -1,50 +1,155 @@
 <template>
+
+    <!-- Announcements Cards -->
     <div class="carousel-container">
         <div class="relative w-[80%] d-flex flex-col justify-center items-center gap-5">
             <h1 class="title">ANNOUNCEMENTS</h1>
             <v-tabs grow class="w-[50%] d-flex justify-center gap-5">
                 <v-tab>FEATURED</v-tab>
                 <v-tab>
-                    <v-select
-                        class="w-[100%]"
-                        :items="items"
-                        v-model="selectedAnnoncementItem"
-                    />
+                    <v-select 
+                    class="w-[100%]"
+                    :items="items"
+                    v-model='selectedAnnoncementItem'>
+                    </v-select>
                 </v-tab>
+
             </v-tabs>
         </div>
 
         <div ref="swiperContainer" class="swiper mySwiper">
-            <div class="swiper-wrapper">
-                <div class="swiper-slide" v-for="announcement in announcements" :key="announcement.id">
-                    <div class="announcement-card bg-black h-auto d-flex flex-col items-center justify-start ga-5 elevation-10 py-5 px-5">
-                        <img
-                            :src="announcement.img
-                                ? (baseUrl + '/announcements/' + announcement.img)
-                                : (baseUrl + '/announcements/exx.jpg')"
-                            :alt="announcement.title"
-                            style="border-radius: .5rem;"
-                            cover
-                        />
-                        <article class="w-[90%] relative py-5 pb-10 elevation-10">
-                            <h4 class="uppercase text-center text-base font-extrabold mb-2">
-                                {{ announcement.title || 'No Title' }}
-                            </h4>
-                            <p class="text-sm font-medium">
-                                {{ announcement.description || 'No description available.' }} Lorem ipsum dolor, sit amet consectetur adipisicing elit.
-                            </p>
-                            <span class="text-xs font-italic absolute bottom-0 right-0 pa-2">
-                                {{ formatDateStr(announcement.date) }}
-                              </span>
-                        </article>
-                    </div>
-                </div>
-                <div class="swiper-slide" v-if="announcements.length === 0">
-                    <p>No announcements available.</p>
-                </div>
+            <div class="swiper-wrapper h-full">
+                    <v-card
+                    v-for="announcement in announcements" :key="announcement.id"
+                    style="border-radius: 1rem;"
+                    class="swiper-slide w-sm d-flex flex-col items-center justify-center ga-5 elevation-10 pt-10 pb-5 px-5 ma-5"
+                    >
+                        <div>
+                            <img 
+                                :src="announcement.img 
+                                        ? ($store.getters.base + 'public/announcements/' + announcement.img) 
+                                        : ($store.getters.base + 'public/announcements/exx.jpg')"
+                                :alt="announcement.title"
+                                style="border-radius: .5rem; width: 280px ;height: 400px;"
+                                cover
+                                class="elevation-10"
+                            ></img>
+                        </div>
+
+                        <div class="d-flex flex-col justify-between items-center h-full">
+                            <v-card-item class="w-[90%] relative d-flex py-5 pb-10 elevation-5 rounded-lg">
+                                <h2 class="uppercase text-center text-base font-extrabold mb-2">
+                                    {{ announcement.title }}
+                                    <v-divider class="mt-1"></v-divider>
+                                </h2>
+
+                                <p class="text-sm font-base italic text-center">
+                                    {{ announcement.description }} Lorem ipsum dolor, sit amet consectetur adipisicing elit. Eligendi quo facere com. lorem
+                                </p>
+
+                                <span class="text-xs font-italic absolute bottom-0 right-0 pa-2">
+                                    {{ formatDateStr(announcement.date) }}
+                                </span>
+                            </v-card-item>
+
+                            <v-card-actions class="h-[20%]">
+                                <v-btn @click="showAnnouncement(announcement)" color="teal-lighten-1">SEE DETAILS</v-btn>
+                            </v-card-actions>
+                        </div>
+                    </v-card>                    
             </div>
         </div>
     </div>
+
+    <!-- Announcement Dialog -->
+    <v-dialog v-model=showAnnouncementDetails width="auto" max-width="1200px" max-height="90vh">
+        <v-card class="d-flex justify-center items-center py-15 ga-5" style="border-radius: 1rem;">
+            <h1 class="w-[90%] text-3xl font-extrabold text-center uppercase">{{ announcementDetails.title }} <v-divider class="mt-3"></v-divider></h1>
+            <div class="announcementDialog w-[90%]">
+                <div class="d-flex flex-col justify-around items-center py-5">
+                    <div class="d-flex justify-center items-center ga-3">
+                        <div class="custom-card w-full d-flex justify-center items-center ga-3 elevation-5 py-3 px-5 rounded-md border">
+                            <h3 class='text-center text-sm'><i class="text-lg font-extrabold">WHO</i><br>Organized by Barangay San Francisco. Open to all residents, especially youth and local groups.</h3>
+                        </div>
+
+                        <v-btn icon class="border">
+                            <v-icon :size="30">mdi-account</v-icon>
+                        </v-btn>
+                        
+                    </div>
+
+                    <div class="d-flex justify-center items-center ga-3">
+                        <div class="custom-card w-full d-flex justify-center items-center ga-3 elevation-5 py-3 px-5 rounded-md border">
+                            <h3 class='text-center text-sm'><i class="text-lg font-extrabold">WHY</i><br>To promote cleanliness, reduce waste, and build community responsibility.</h3>
+                        </div>
+                        <v-btn class="border" icon>
+                            <v-icon :size="30">mdi-lightbulb-on-outline</v-icon>
+                        </v-btn>
+                    </div>
+
+                    <div class="d-flex justify-center items-center ga-3">
+                        <div class="custom-card w-full d-flex justify-center items-center ga-3 elevation-5 py-3 px-5 rounded-md border">
+                            <h3 class='text-center text-sm'><i class="text-lg font-extrabold">WHAT</i><br>Barangay Clean-Up Drive to collect trash, recycle, and improve public spaces.</h3>
+                        </div>
+                        <v-btn class="border" icon>
+                            <v-icon :size="30">mdi-help-circle-outline</v-icon>
+                        </v-btn>
+                    </div>
+                </div>
+
+                <div class="d-flex flex-col justify-center items-center ga-3">
+                    <Carousel v-if="showAnnouncementImages" v-bind="config">
+                        <Slide v-for="n of 1">
+                        <img                    
+                        :src="announcementDetails.img 
+                            ? ($store.getters.base + 'public/announcements/' + announcementDetails.img) 
+                            : ($store.getters.base + 'public/announcements/exx.jpg')"
+                        :alt="announcementDetails.title" />
+                        </Slide>
+
+                        <template #addons>
+                        <Navigation />
+                        </template>
+                    </Carousel>
+
+                    <img
+                        class="rounded-lg max-h-[600px] max-w-[400px] elevation-10"
+                        :src="announcementDetails.img 
+                            ? ($store.getters.base + 'public/announcements/' + announcementDetails.img) 
+                            : ($store.getters.base + 'public/announcements/exx.jpg')"
+                        :alt="announcementDetails.title">
+                    </img>
+
+                    <v-card-actions>
+                        <v-btn color="teal">SEE MORE IMAGES</v-btn>
+                    </v-card-actions>
+                </div>
+
+
+
+                
+                <div class="d-flex flex-col justify-around items-center py-5"> 
+                    <div class="d-flex justify-center items-center ga-3">
+                        <v-btn class="border" icon>
+                            <v-icon :size="30">mdi-calendar-clock</v-icon>
+                        </v-btn>
+                        <div class="custom-card w-full d-flex justify-center items-center ga-3 elevation-5 py-3 px-5 rounded-md border">
+                            <h3 class='text-center text-sm'><i class="text-center text-lg font-extrabold">WHEN</i><br>April 15, 2025 | 7:00 AM – 12:00 PM</h3>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-center items-center ga-3">
+                        <v-btn class="border" icon>
+                            <v-icon :size="30">mdi-map-marker</v-icon>
+                        </v-btn>
+                        <div class="custom-card w-full d-flex justify-center items-center ga-3 elevation-5 py-3 px-5 rounded-md border">
+                            <h3 class='text-center text-sm'><i class="text-center text-lg font-extrabold">WHERE</i><br>Barangay Francia, Iriga City – Starting at Barangay Hall, covering nearby areas.</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </v-card>
+    </v-dialog>
 </template>
 
 <script>
@@ -54,10 +159,18 @@ import "swiper/css/effect-coverflow";
 import "swiper/css/autoplay";
 import "swiper/css/pagination";
 import { EffectCoverflow, Autoplay, Pagination } from "swiper/modules";
+
+import 'vue3-carousel/carousel.css'
+import { Carousel, Slide, Navigation } from 'vue3-carousel'
 import $ from 'jquery';
 
 export default {
     name: "Announcements",
+    components : {
+        Carousel,
+        Slide,
+        Navigation,
+    },
     props: {
         barangayId: Number
     },
@@ -66,8 +179,18 @@ export default {
             announcements: [],
             items: ['Select a Month', 'January', 'February', 'March', 'April'],
             selectedAnnoncementItem: 'Select a Month',
+            announcementDetails: [],
+            showAnnouncementDetails: false,
             isFetchingAnnouncements: false,
+
+
+            config: {
+                height: 500,
+                gap: 5,
+                wrapAround: true,
+            },
         };
+
     },
     computed: {
         baseUrl() {
@@ -82,6 +205,10 @@ export default {
         });
     },
     methods: {
+        showAnnouncement(announcement) {
+            this.announcementDetails = { ...announcement };
+            this.showAnnouncementDetails = true
+        },
         formatDateStr(dateStr) {
             if (!dateStr) return '';
             const date = new Date(dateStr);
@@ -100,21 +227,19 @@ export default {
 
             const swiper = new Swiper(swiperContainer, {
                 initialSlide: 1,
-                modules: [EffectCoverflow, Autoplay, Pagination],
-                effect: "coverflow",
+                modules: [EffectCoverflow, Autoplay, Pagination],       
                 grabCursor: true,
                 centeredSlides: true,
                 slidesPerView: "auto",
                 coverflowEffect: {
-                    rotate: 5,
+                    rotate: 0,
                     stretch: 0,
-                    depth: 400,
+                    depth: 0,
                     modifier: 1,
-                    slideShadows: true,
                 },
                 loop: false,
                 autoplay: {
-                    delay: 5000,
+                    delay: 100000,
                     disableOnInteraction: false,
                 },
                 pagination: {
@@ -142,7 +267,6 @@ export default {
                     success: (data, textStatus, jqXHR) => {
                         try {
                             this.announcements = data.data.announcements || [];
-                            this.fetchImageFilenames();
                         } catch (error) {
                             console.error('Error parsing JSON response:', error);
                             console.log('Raw response:', jqXHR.responseText);
@@ -173,47 +297,6 @@ export default {
                 });
             }
         },
-        async fetchImageFilenames() {
-            try {
-                await $.ajax({
-                    url: `${this.$store.getters['api_base']}?e=barangay&a=image_filenames`,
-                    type: 'GET',
-                    xhrFields: { withCredentials: true },
-                    data: { barangayId: this.barangayId, type: 'announcements' },
-                    success: (data, textStatus, jqXHR) => {
-                        try {
-                            const imageFilenames = data.data || [];
-                            console.log('Image filenames:', imageFilenames);
-                            this.announcements = this.announcements.map((announcement, index) => ({
-                                ...announcement,
-                                img: imageFilenames[index] || announcement.img || 'exx.jpg'
-                            }));
-                            console.log('Updated announcements with images:', this.announcements);
-                            this.$nextTick(() => {
-                                this.initSwiper();
-                            });
-                        } catch (error) {
-                            console.error('Error parsing image filenames JSON:', error);
-                            console.log('Raw response:', jqXHR.responseText);
-                            this.$nextTick(() => {
-                                this.initSwiper();
-                            });
-                        }
-                    },
-                    error: (jqXHR, textStatus, errorThrown) => {
-                        console.error("Error fetching image filenames:", textStatus, errorThrown);
-                        this.$nextTick(() => {
-                            this.initSwiper();
-                        });
-                    }
-                });
-            } catch (error) {
-                console.error('Promise rejection in fetchImageFilenames:', error);
-                this.$nextTick(() => {
-                    this.initSwiper();
-                });
-            }
-        }
     },
     created() {
         this.fetchBarangayAnnouncements();
@@ -239,22 +322,19 @@ export default {
 }
 
 .swiper {
-    width: 75%;
+    width: 100%;
+    height: 80vh;
+    overflow: visible;
 }
 
 .swiper-slide {
     background-position: center;
-    background-size: cover;
-    width: 455px;
-    position: relative;
+    width: 400px;
+    height: auto;    
 }
 
-.swiper-slide img {
-    width: 100%;
-    height: 650px;
-    border-radius: 1rem;
-}
 
+/* Optional: Style pagination bullets */
 .swiper-pagination-bullet {
     background-color: #fff;
     opacity: 0.7;
@@ -269,4 +349,22 @@ export default {
     font-size: 2.5rem;
     font-weight: 900;
 }
+
+.announcementDialog{
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    column-gap: 1.5rem;
+}
+
+.carousel {
+  --vc-nav-background: rgba(255, 255, 255, 0.7);
+  --vc-nav-border-radius: 90%;
+}
+
+img {
+  border-radius: 8px;
+  width: auto;
+  height: auto;
+}
+
 </style>

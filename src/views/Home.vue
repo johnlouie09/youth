@@ -4,14 +4,21 @@ import Preloader from "@/components/Preloader.vue";
 import Hero from "@/components/landingPageComponents/Hero.vue";
 import Faqs from "@/components/landingPageComponents/faqs.vue";
 import BarangaysNavigation from "@/components/landingPageComponents/BarangaysNavigation.vue";
+import SocialLinks from '@/components/landingPageComponents/SocialLinks.vue';
+import ThemeSwitcher from '@/components/ThemeSwitcher.vue';
 
 export default {
   name: "Home",
+  data() {
+    return {}
+  },
   components: {
     Preloader,
     Hero,
     Faqs,
-    BarangaysNavigation
+    BarangaysNavigation,
+    SocialLinks,
+    ThemeSwitcher
   },
   computed: {
     // Call useTheme() directly so that it's available as a computed property.
@@ -35,7 +42,7 @@ export default {
   <Preloader />
   <v-container
     fluid
-    class="home-main bg-gradient-to-br from-gray-50 via-gray-100 to-gray-200"
+    class="home-main"
     :class="{ 'dark-gradient': isDark }"
   >
     <Hero />
@@ -51,14 +58,15 @@ export default {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 7rem;
+  gap: 5rem;
   padding: 0;
   padding-top: 2rem;
-  padding-bottom: 4rem;
+  padding-bottom: 10rem;
   margin: 0;
   background-position: center;
   background-attachment: fixed;
-  animation: moveGradient 10s linear infinite;
+  background-size: 150% 150%;
+  animation: moveGradient 20s linear infinite;
 }
 
 .dark-gradient {
@@ -77,5 +85,13 @@ export default {
   100% {
     background-position: 0% 50%;
   }
+}
+
+.theme {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  margin: 3rem;
+  z-index: 2;
 }
 </style>

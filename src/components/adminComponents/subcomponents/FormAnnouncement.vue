@@ -5,7 +5,7 @@
             <div class="d-flex items-start gap-5 w-full">
                 <div class="d-flex items-start relative pa-0">
                     <v-img
-                    :src="filePreview || (announcementsannouncementIInfo.img ? ($store.getters.base + 'announcements/' + announcementInfo.img) : '/kalinisan.jpg')"
+                    :src="filePreview || (announcementInfo.img ? ($store.getters.base + 'public/announcements/' + announcementInfo.img) : '/public/announcements/no-avatar.png')"
                     alt="Profile Image" 
                     cover
                     width="400"
@@ -120,7 +120,6 @@ export default {
             initialAnnouncementInfo : {},
             announcementInfo: {},
             dialog: true,
-
             hasChanges: false,
             file: null,
             filePreview : null,
@@ -150,6 +149,12 @@ export default {
         },
         closeForm() {
             this.$emit('close');
+            this.initialAnnouncementInfo = {};
+            this.announcementInfo = {};
+            this.dialog = false;
+            this.hasChanges = false;
+            this.file = null;
+            this.filePreview = null;
         },
         triggerFileInput() {
             this.$refs.fileInput.click();

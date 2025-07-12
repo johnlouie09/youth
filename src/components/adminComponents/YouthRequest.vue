@@ -1,7 +1,7 @@
 <template>
     <v-container class="youth-request h-screen">
         <v-sheet class="d-flex flex-col justify-start items-center gap-5 h-screen overflow-y-auto py-5 px-5">
-            <h3 class="text-2xl pa-5 gradient-text font-black">YOUTH ACCOUNT REQUEST</h3>
+            <h3 class="text-2xl pa-5 gradient-text font-black">YOUTH ACCOUNT REQUESTS</h3>
             <v-card v-for="n of 20" class="w-full min-h-50 d-flex flex-col justify-center items-center gap-5 elevation-10 pa-10 px-8" style="border-radius: 1rem;">
                 <div class="w-full d-flex justify-center items-center gap-3">
                     <v-avatar :image='"/OfficialImages/no-avatar.png"' size="75">

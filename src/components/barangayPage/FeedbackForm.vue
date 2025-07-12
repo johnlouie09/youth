@@ -3,7 +3,7 @@
         <v-btn icon @click="dialog = true">
             <v-icon>mdi-message</v-icon>
         </v-btn>
-
+     
         <v-dialog v-model="dialog" max-width="800px">
             <v-card class="d-flex justify-center items-center pa-10" style="border-radius: 1rem;">
                 <v-card-title class="text-xl font-extrabold">MESSAGE FOR BARANGAY {{ barangayName.toUpperCase() }}</v-card-title>
@@ -94,5 +94,7 @@ export default {
     font-weight: bold;
     margin-top: 10px;
 }
+
+
 </style>
 

@@ -1,30 +1,25 @@
 <template>
     <v-container class="main-barangay-officials elevation-20">
-        <v-card-title class="font-bold">
+        <h1 class="w-full text-center font-extrabold">
             SANGGUNIANG KABATAAN OFFICIALS
-        </v-card-title>
+        </h1>
 
         <div class="officials">
             <!-- SK Chairperson -->
             <OfficialCard 
                 :officialProps="skChairperson || {}" 
-                class="custom-card chairperson-card "
+                class="custom-card chairperson-card"
             />
 
             <!-- SK Members Slider -->
             <div class="members">
-                <v-slide-group selected-class="bg-success" show-arrows class="pa-4">
-                    <v-slide-group-item
-                        v-for="(skMember, index) in skMembers"
-                        :key="index"
-                        v-slot="{ selectedClass }"
-                    >
-                        <OfficialCard
-                            :class="['ml-5', 'mr-5', selectedClass, 'members-card', 'custom-card']"
-                            :officialProps="skMember || {}"
-                        />
-                    </v-slide-group-item>
-                </v-slide-group>
+                <OfficialCard
+                    v-for="(skMember, index) in skMembers"
+                    :key="index"
+                    v-slot="{ selectedClass }"
+                    :class="[selectedClass, 'members-card', 'custom-card', 'mx-3 min-w-[20%]']"
+                    :officialProps="skMember || {}"
+                />
             </div>
         </div>
     </v-container>
@@ -102,11 +97,12 @@ export default {
 
 .main-barangay-officials {
     width: 100%;
+    height: auto;
     padding: 5rem 5rem;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    gap: 2rem;
+    gap: 3rem;
     border-radius: 1rem;
 }
 
@@ -115,23 +111,43 @@ export default {
     flex-direction: row;
     justify-content: space-around;
     align-items: center;
-    gap: 5rem;
+    gap: 2.5rem;
     width: 100%;
 }
 
 .members {
-    width: 70%;
-    height: 35vh;
+    width: 100%;
     display: flex;
-    justify-content: center;
+    justify-content: space-evenly;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
 }
 
-.font-bold {
-    background-image: linear-gradient(45deg, #3772FF 2%, #DF2935 20%, #FDCA40 35%);
+h1 {
+    font-size: 2.3rem;
+    background: linear-gradient(
+        45deg,
+        #0533a0,
+        #ffffff,
+        #DF2935,
+        #FDCA40,
+    );
+    background: linear-gradient(to left, #3772FF, #fffefe, #DF2935, #FDCA40, #3772FF);
+    background-size: 200% 100%;
+    background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    font-weight: 900;
-    font-size: 1.5rem;
+    animation: animate-gradient 4s linear infinite;
+}
+
+@keyframes animate-gradient {
+    from {
+        background-position: 200% 50%;
+    }
+    to {
+        background-position: 0% 50%;
+    }
 }
 </style>
   
