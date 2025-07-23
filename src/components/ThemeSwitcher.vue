@@ -1,17 +1,32 @@
-<script setup>
+<template>
+    <v-btn @click="toggleTheme" icon :color="theme.global.name.value === 'dark' ? 'white' : 'black'" :size="35">
+        <v-icon class="w-full h-full">{{ theme.global.name.value === 'dark' ? 'mdi-weather-night' : 'mdi-white-balance-sunny' }}</v-icon>
+    </v-btn>
+</template>
+<script>
 import {useTheme} from 'vuetify'
 
-// Access Vuetify's theme functionality
-const theme = useTheme()
+export default {
+    setup() {
+        const theme = useTheme();
 
-// Toggle between light and dark themes
-const toggleTheme = () => {
-    theme.global.name.value = theme.global.name.value === 'dark' ? 'light' : 'dark'
+        const toggleTheme = () => {
+            const newTheme = theme.global.name.value === 'dark' ? 'light' : 'dark';
+            theme.global.name.value = newTheme;
+            localStorage.setItem('theme', newTheme);
+        };
+
+        return {theme, toggleTheme};
+    },
+    mounted() {
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) {
+            this.theme.global.name.value = savedTheme;
+        }
+    }
 }
 </script>
 
-<template>
-    <v-btn @click="toggleTheme" :color="theme.global.name.value === 'dark' ? 'yellow' : 'blue'">
-        {{ theme.global.name.value === 'dark' ? 'Switch to Light' : 'Switch to Dark' }}
-    </v-btn>
-</template>
+<style scoped>
+
+</style>
