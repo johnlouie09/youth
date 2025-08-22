@@ -135,19 +135,19 @@ export default {
             >
             <img 
                 :src="announcement.img 
-                        ? ($store.getters.base + '/announcements/' + announcement.img)
-                        : ($store.getters.base + '/announcements/exx.jpg')"
+                        ? ($store.getters.base + 'public/announcements/' + announcement.img)
+                        : ($store.getters.base + 'public/announcements/no-avatar.png')"
                 class="rounded w-[350px] h-[500px]"
                 style="border-radius: .5rem;"
                 cover
             ></img>
 
-            <v-card-item class="w-[90%] relative py-5 pb-10 elevation-10">
-                <h4 class="uppercase text-base font-extrabold">
+            <v-card-item class="w-[90%] py-5 pb-10 elevation-10">
+                <h4 class="uppercase text-base font-extrabold text-center mb-2">
                     {{ announcement.title }}
                 </h4>
 
-                <p class="text-sm font-medium">
+                <p class="text-sm font-medium text-center">
                     {{ announcement.description }}
                 </p>
 
@@ -166,7 +166,7 @@ export default {
             <FormAnnouncement
                 v-if="editingIndex === index"
                 :action="'updating'"
-                @close="showNewAnnouncement = false"
+                @close="editingIndex = null"
                 :announcement="announcement"
                 @fetchInfo="fetchBarangayAnnouncements"
             />

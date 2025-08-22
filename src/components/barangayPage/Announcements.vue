@@ -44,7 +44,7 @@
                                 </h2>
 
                                 <p class="text-sm font-base italic text-center">
-                                    {{ announcement.description }} Lorem ipsum dolor, sit amet consectetur adipisicing elit. Eligendi quo facere com. lorem
+                                    {{ announcement.description }}
                                 </p>
 
                                 <span class="text-xs font-italic absolute bottom-0 right-0 pa-2">
@@ -134,7 +134,7 @@
                             <v-icon :size="30">mdi-calendar-clock</v-icon>
                         </v-btn>
                         <div class="custom-card w-full d-flex justify-center items-center ga-3 elevation-5 py-3 px-5 rounded-md border">
-                            <h3 class='text-center text-sm'><i class="text-center text-lg font-extrabold">WHEN</i><br>April 15, 2025 | 7:00 AM – 12:00 PM</h3>
+                            <h3 class='text-center text-xs'><i class="text-center text-lg font-extrabold">WHEN</i><br>April 15, 2025 | 7:00 AM – 12:00 PM <br>April 15, 2025 | 7:00 AM – 12:00 PM <br>April 15, 2025 | 7:00 AM – 12:00 PM</h3>
                         </div>
                     </div>
 
@@ -323,14 +323,12 @@ export default {
 
 .swiper {
     width: 100%;
-    height: 80vh;
     overflow: visible;
 }
 
 .swiper-slide {
     background-position: center;
     width: 400px;
-    height: auto;    
 }
 
 

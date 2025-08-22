@@ -6,6 +6,7 @@ export default {
     components: {
         FormAchievement,
     },
+
     data() {
         return {
             hoverIndex: null,

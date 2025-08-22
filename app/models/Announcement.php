@@ -7,16 +7,17 @@ class Announcement extends Model
     /** static data */
     public    static $table         = 'announcements';
     public    static $table_columns = [];
-    protected static $basic_columns = ['id', 'img', 'title', 'date', 'is_featured'];
+    protected static $basic_columns = ['id', 'title', 'date', 'is_featured'];
 
     /** properties */
     protected $barangay_id = 0;
-    protected $img         = '';
     protected $title       = '';
     protected $description = '';
-    protected $date        = '';
     protected $is_featured = 0;
-
+    protected $what = '';
+    protected $who = '';
+    protected $why = '';
+    protected $where = '';
 
     /**
      * Constructor
@@ -38,7 +39,6 @@ class Announcement extends Model
         }
     }
 
-
     /**
      * Gets Announcement barangay_id.
      * @return int
@@ -46,16 +46,6 @@ class Announcement extends Model
     public function getBarangayId()
     {
         return $this->barangay_id;
-    }
-
-
-    /**
-     * Gets Announcement img.
-     * @return string
-     */
-    public function getImg()
-    {
-        return $this->img;
     }
 
 
@@ -68,7 +58,6 @@ class Announcement extends Model
         return $this->title;
     }
 
-
     /** Gets Announcement description
      * @return string
      */
@@ -77,16 +66,37 @@ class Announcement extends Model
         return $this->description;
     }
 
-
-    /**
-     * Gets Announcement date
+    /** Gets Announcement what
      * @return string
      */
-    public function getDate()
+    public function getWhat()
     {
-        return $this->date;
+        return $this->what;
     }
 
+    /** Gets Announcement who
+     * @return string
+     */
+    public function getWho()
+    {
+        return $this->who;
+    }
+
+    /** Gets Announcement why
+     * @return string
+     */
+    public function getWhy()
+    {
+        return $this->why;
+    }
+
+    /** Gets Announcement where
+     * @return string
+     */
+    public function getWhere()
+    {
+        return $this->where;
+    }
 
     /**
      * Gets Announcement is_featured
@@ -96,7 +106,6 @@ class Announcement extends Model
     {
         return $this->is_featured;
     }
-
 
     /**
      * Sets Announcement barangay_id.
@@ -108,18 +117,6 @@ class Announcement extends Model
         $this->barangay_id = $barangay_id;
     }
 
-
-    /**
-     * Sets Announcement img.
-     * @param $img
-     * @return void
-     */
-    public function setImg($img)
-    {
-        $this->img = $img;
-    }
-
-
     /**
      * Sets Announcement title
      * @param $title
@@ -129,7 +126,6 @@ class Announcement extends Model
     {
         $this->title = $title;
     }
-
 
     /**
      * Sets Announcement description
@@ -141,17 +137,45 @@ class Announcement extends Model
         $this->description = $description;
     }
 
-
     /**
-     * Sets Announcement date
-     * @param $date
+     * Sets Announcement What Field
+     * @param $what
      * @return void
      */
-    public function setDate($date)
+    public function setWhat($what)
     {
-        $this->date = $date;
+        $this->what = $what;
     }
 
+    /**
+     * Sets Announcement Why Field
+     * @param $why
+     * @return void
+     */
+    public function setWhy($why)
+    {
+        $this->why = $why;
+    }
+
+    /**
+     * Sets Announcement Who Field
+     * @param $who
+     * @return void
+     */
+    public function setWho($who)
+    {
+        $this->who = $who;
+    }
+
+    /**
+     * Sets Announcement Where Field
+     * @param $where
+     * @return void
+     */
+    public function setWhere($where)
+    {
+        $this->where = $where;
+    }
 
     /**
      * Sets Announcement is_featured
@@ -165,31 +189,13 @@ class Announcement extends Model
 
 
     /**
-     * Gets the announcement data as an associative array, with the 'img' field returned as an array of image filenames.
-     *
-     * @param bool $basic
-     * @return array
-     */
-    public function getAssoc(bool $basic = false): array
-    {
-        $arr = parent::getAssoc($basic);
-
-        // Convert the 'img' field to an array.
-        if (empty($arr['img'])) {
-            $arr['img'] = '';
-        } 
-
-        return $arr;
-    }
-
-
-    /**
      * Retrieves all Announcement records, optionally filtering by Barangay.
      *
      * @param bool $assoc
      * @param bool $assoc_basic
      * @param Barangay|null $barangay
      * @return array
+     * @throws Exception
      */
     public static function all(bool $assoc = false, bool $assoc_basic = false, ?Barangay $barangay = null): array
     {
@@ -216,12 +222,45 @@ class Announcement extends Model
         while ($row = $result->fetch_assoc()) {
             $announcement = new Announcement();
             $announcement->hydrate($row);
-            $announcements[] = $assoc ? $announcement->getAssoc($assoc_basic) : $announcement;
+
+            if ($assoc) {
+                $data = $announcement->getAssoc($assoc_basic);
+
+                // ✅ Fetch datetimes
+                require_once __DIR__ . '/AnnouncementDatetime.php';
+                $datetimes = AnnouncementDatetime::getByAnnouncement($row['id'], true);
+                $data['datetimes'] = array_map(function ($dt) {
+                    return [
+                        'id'    => $dt['id'],
+                        'announcementId' => $dt['announcement_id'],
+                        'date'  => $dt['date'],
+                        'start' => $dt['start_time'],
+                        'end'   => $dt['end_time']
+                    ];
+                }, $datetimes);
+
+                // ✅ Fetch images
+                require_once __DIR__ . '/AnnouncementImage.php';
+                $images = AnnouncementImage::getByAnnouncement($row['id'], true);
+                $data['images'] = array_map(function ($img) {
+                    return [
+                        'id'    => $img['id'],
+                        'announcementId' => $img['announcement_id'],
+                        'name'  => $img['name']
+                    ];
+                }, $images);
+
+                // Keep backward compatibility (old `img` field = first image)
+                $data['img'] = !empty($data['images']) ? $data['images'][0]['name'] : '';
+
+                $announcements[] = $data;
+            } else {
+                $announcements[] = $announcement;
+            }
         }
 
         return $announcements;
     }
-
 
     /**
      * Retrieves a limited number of random Announcement records across all barangays.
@@ -252,7 +291,6 @@ class Announcement extends Model
         return $announcements;
     }
 
-
     /**
      * Returns the count of announcements made in a given year for a specific barangay.
      *
@@ -278,7 +316,6 @@ class Announcement extends Model
         $row = $result->fetch_assoc();
         return (int)$row['count'];
     }
-
 
     /**
      * Returns a summary of announcements per month and total announcements per year.
@@ -365,7 +402,6 @@ class Announcement extends Model
         ];
     }
 
-
     /**
      * Gets the Barangay that this Announcement belongs to.
      *
@@ -381,7 +417,6 @@ class Announcement extends Model
         return ($assoc && $barangay) ? $barangay->getAssoc($assoc_basic) : $barangay;
     }
 
-
     /**
      * Insert announcement
      *
@@ -390,17 +425,38 @@ class Announcement extends Model
      */
     public function insert(): bool
     {
-        $stmt = $this->getConnection()->prepare("INSERT INTO `" . self::$table . "` (`barangay_id`, `img`, `title`, `description`, `date`, `is_featured`) VALUES (?, ?, ?, ?, ?, ?)");
-        // Make sure $this->date is defined (as a string, e.g., "2025-03-30")
-        $stmt->bind_param("issssi", $this->barangay_id, $this->img, $this->title, $this->description, $this->date, $this->is_featured);
+        $stmt = $this->getConnection()->prepare("
+            INSERT INTO `" . self::$table . "` 
+            (`barangay_id`, `title`, `description`, `is_featured`, `what`, `who`, `where`, `why`) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        ");
+
+        if (!$stmt) {
+            throw new Exception("Failed to prepare statement: " . $this->getConnection()->error);
+        }
+
+        // Ensure $this->date and optional fields are handled properly
+        $stmt->bind_param(
+            "ississss", 
+            $this->barangay_id,
+            $this->title,
+            $this->description,
+            $this->is_featured,
+            $this->what,
+            $this->who,
+            $this->where,
+            $this->why,
+        );
+
         $stmt->execute();
+
         if ($stmt->affected_rows > 0) {
             $this->setId($stmt->insert_id);
             return true;
         }
+
         return false;
     }
-
 
     /**
      * Update announcement
@@ -410,12 +466,193 @@ class Announcement extends Model
      */
     public function update(): bool
     {
-        $stmt = $this->getConnection()->prepare("UPDATE `" . self::$table . "` SET `barangay_id` = ?, `img` = ?, `title` = ?, `description` = ?, `date` = ?, `is_featured` = ? WHERE `id` = ?");
-        $stmt->bind_param("issssii", $this->barangay_id, $this->img, $this->title, $this->description, $this->date, $this->is_featured, $this->id);
-        $stmt->execute();
-        return $stmt->affected_rows > 0;
+        $stmt = $this->getConnection()->prepare("
+            UPDATE `" . self::$table . "` 
+            SET 
+                `barangay_id` = ?, 
+                `title` = ?, 
+                `description` = ?, 
+                `is_featured` = ?, 
+                `what` = ?, 
+                `who` = ?, 
+                `where` = ?, 
+                `why` = ?
+            WHERE `id` = ?
+        ");
+
+        if (!$stmt) {
+            throw new Exception("Failed to prepare statement: " . $this->getConnection()->error);
+        }
+
+        $stmt->bind_param(
+            "ississssi",
+            $this->barangay_id,
+            $this->title,
+            $this->description,
+            $this->is_featured,
+            $this->what,
+            $this->who,
+            $this->where,
+            $this->why,
+            $this->id
+        );
+
+        if (!$stmt->execute()) {
+            error_log("SQL Execute Error: " . $stmt->error);
+            throw new Exception("Failed to execute update: " . $stmt->error);
+        }
+
+        // Log debug information
+        error_log("Update executed for ID: {$this->id}, affected_rows: " . $stmt->affected_rows);
+        
+        // Return true even if no rows were affected (data might be identical)
+        // This prevents false negatives when updating with same data
+        return $stmt->affected_rows >= 0;
     }
 
+    /**
+     * Update announcement with datetimes
+     *
+     * @param array $datetimes Optional array of datetime data
+     * @return bool
+     * @throws Exception
+     */
+    public function updateWithDatetimes(array $datetimes = []): bool
+    {
+        error_log("updateWithDatetimes called for ID: " . $this->getId());
+        
+        // First update the main announcement
+        $updateResult = $this->update();
+        error_log("Main update result: " . ($updateResult ? 'true' : 'false'));
+        
+        if (!$updateResult) {
+            error_log("Main announcement update failed");
+            return false;
+        }
+
+        // Then handle datetimes if provided
+        if (!empty($datetimes)) {
+            error_log("Processing " . count($datetimes) . " datetimes");
+            try {
+                $this->updateDatetimes($datetimes);
+                error_log("Datetimes updated successfully");
+            } catch (Exception $e) {
+                error_log("Datetime update failed: " . $e->getMessage());
+                // Don't return false here - main update succeeded
+                // throw $e; // Uncomment if you want to fail the entire operation
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Update announcement datetimes
+     *
+     * @param array $datetimes
+     * @return void
+     * @throws Exception
+     */
+    public function updateDatetimes(array $datetimes): void
+    {
+        require_once __DIR__ . '/AnnouncementDatetime.php';
+        
+        // Get existing datetimes
+        $existingDatetimes = AnnouncementDatetime::getByAnnouncement($this->getId());
+        $existingMap = [];
+        foreach ($existingDatetimes as $dt) {
+            $existingMap[$dt->getId()] = $dt;
+        }
+
+        $usedIds = [];
+
+        foreach ($datetimes as $dt) {
+            // Validate required fields
+            if (empty($dt['date'])) {
+                error_log("Skipping datetime with empty date for announcement {$this->getId()}");
+                continue;
+            }
+
+            // Normalize times to HH:mm:ss format
+            $start = $this->normalizeTime($dt['start'] ?? '');
+            $end = $this->normalizeTime($dt['end'] ?? '');
+
+            if (!empty($dt['id']) && isset($existingMap[$dt['id']])) {
+                // Update existing datetime
+                $adt = new AnnouncementDatetime($dt['id']);
+                $adt->setDate($dt['date']);
+                $adt->setStartTime($start);
+                $adt->setEndTime($end);
+                
+                if ($adt->update()) {
+                    $usedIds[] = $dt['id'];
+                    error_log("Updated datetime ID {$dt['id']} for announcement {$this->getId()}");
+                } else {
+                    error_log("Failed to update datetime ID {$dt['id']} for announcement {$this->getId()}");
+                }
+            } else {
+                // Insert new datetime
+                $adt = new AnnouncementDatetime();
+                $adt->setAnnouncementId($this->getId());
+                $adt->setDate($dt['date']);
+                $adt->setStartTime($start);
+                $adt->setEndTime($end);
+                
+                if ($adt->insert()) {
+                    error_log("Inserted new datetime for announcement {$this->getId()} ({$dt['date']} $start-$end)");
+                } else {
+                    error_log("Failed to insert new datetime for announcement {$this->getId()}");
+                }
+            }
+        }
+
+        // Delete unused existing datetimes
+        foreach ($existingMap as $id => $dt) {
+            if (!in_array($id, $usedIds)) {
+                $delDt = new AnnouncementDatetime($id);
+                if ($delDt->delete()) {
+                    error_log("Deleted datetime ID $id for announcement {$this->getId()}");
+                } else {
+                    error_log("Failed to delete datetime ID $id for announcement {$this->getId()}");
+                }
+            }
+        }
+    }
+
+    /**
+     * Normalize time format to HH:mm:ss
+     *
+     * @param string $time
+     * @return string
+     */
+    private function normalizeTime(string $time): string
+    {
+        if (empty($time)) {
+            return '';
+        }
+
+        // If already in HH:mm:ss format, return as is
+        if (preg_match('/^\d{2}:\d{2}:\d{2}$/', $time)) {
+            return $time;
+        }
+
+        // If in HH:mm format, add :00
+        if (preg_match('/^\d{2}:\d{2}$/', $time)) {
+            return $time;
+        }
+
+        // If in H:mm format, pad hour
+        if (preg_match('/^\d{1}:\d{2}$/', $time)) {
+            return '0' . $time;
+        }
+
+        // If in H:mm:ss format, pad hour
+        if (preg_match('/^\d{1}:\d{2}:\d{2}$/', $time)) {
+            return '0' . $time;
+        }
+
+        return $time;
+    }
 
     /**
      * Delete announcement
@@ -425,6 +662,11 @@ class Announcement extends Model
      */
     public function delete(): bool
     {
+        // Delete associated datetimes first
+        require_once __DIR__ . '/AnnouncementDatetime.php';
+        AnnouncementDatetime::deleteByAnnouncement($this->getId());
+        
+        // Delete the announcement
         $stmt = $this->getConnection()->prepare("DELETE FROM `" . self::$table . "` WHERE `id` = ?");
         $stmt->bind_param("i", $this->id);
         $stmt->execute();
