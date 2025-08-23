@@ -19,27 +19,64 @@
                 <!-- Image Form -->
                 <div class="w-full d-flex items-start relative pa-0 col-span-1">
                     <div class="w-full grid grid-cols-3 ga-4">
-                        <div v-for="(image, index) in announcementInfo.images" 
-                            :key="index" 
-                            class="d-flex justify-center items-center col-span-1 w-[130px] h-[185px] relative">
-                        
-                        <v-img
-                            :src="image.preview ? image.preview : ($store.getters.base + 'public/Announcements/' + image.name)"
-                            alt="Preview"
-                            cover
-                            class="rounded-sm h-full w-full"
-                        />
-
-                        <!-- delete button -->
-                        <v-btn 
-                            icon color="error" size="20" 
-                            class="ma-2"
-                            style="position: absolute; bottom: 0; right: 0;"
-                            @click="removeImage(index)"
-                        >
-                            <v-icon size="15">mdi-delete</v-icon>
-                        </v-btn>
+                    
+                        <div class="d-flex justify-evenly items-center col-span-3">
+                            <img
+                            :src="announcementInfo.thumbnail
+                                    ? (announcementInfo.thumbnail.preview 
+                                        ? announcementInfo.thumbnail.preview 
+                                        : ($store.getters.base + 'public/Announcements/' + announcementInfo.thumbnail.name))
+                                    : ($store.getters.base + 'public/Announcements/no-avatar.png')"
+                            class="rounded-sm w-[130px] h-[185px] elevation-5 object-cover"
+                            />
                         </div>
+
+
+
+                        <div v-for="(image, index) in announcementInfo.images" 
+                            :key="index"
+                            class="d-flex justify-center items-center col-span-1 w-[130px] h-[185px] relative">
+
+                            <v-img
+                                :src="image.preview ? image.preview : ($store.getters.base + 'public/Announcements/' + image.name)"
+                                alt="Preview"
+                                cover
+                                class="rounded-sm h-full w-full"
+                            />
+
+                            <!-- delete button -->
+                            <v-btn 
+                                icon size="25"
+                                class="ma-2"
+                                style="position: absolute; bottom: 0; right: 0;"
+                                color="red-darken-3"
+                                @click="removeImage(index)"
+                            >
+                                <v-icon size="15">mdi-delete</v-icon>
+                            </v-btn>
+
+                            <!-- ✅ set thumbnail button -->
+                            <v-btn 
+                                icon size="25"
+                                :color="(
+                                    (announcementInfo.thumbnail_id && announcementInfo.thumbnail_id === image.id) ||
+                                    (announcementInfo.thumbnail_tempId && announcementInfo.thumbnail_tempId === image.tempId)
+                                ) ? 'green-lighten-1' : 'primary'"
+                                class="ma-2"
+                                style="position: absolute; top: 0; right: 0;"
+                                @click="setThumbnail(image)"
+                            >
+                                <v-icon size="15">
+                                    {{
+                                        (announcementInfo.thumbnail_id && announcementInfo.thumbnail_id === image.id) ||
+                                        (announcementInfo.thumbnail_tempId && announcementInfo.thumbnail_tempId === image.tempId)
+                                        ? 'mdi-star'
+                                        : 'mdi-star-outline'
+                                    }}
+                                </v-icon>
+                            </v-btn>
+                        </div>
+
 
                         <div
                             class="custom-card d-flex justify-center items-center col-span-1 w-[130px] h-[185px] border-2 border-dashed"
@@ -329,11 +366,24 @@ export default {
             this.announcementInfo.datetimes.splice(index, 1);
             this.openMenus.splice(index, 1);
         },
-        
+
+        setThumbnail(image) {
+            this.announcementInfo.thumbnail = image;
+
+            if (image.id) {
+                this.announcementInfo.thumbnail_id = image.id; // DB image
+                this.announcementInfo.thumbnail_tempId = null;
+            } else {
+                this.announcementInfo.thumbnail_id = null;
+                this.announcementInfo.thumbnail_tempId = image.tempId; // New image
+            }
+        },
+
         initializeAnnouncementInfo() {
             if (!this.editing) {
                 this.announcementInfo = {
                     title: '',
+                    thumbnail_i: 0,
                     description: '',
                     what: '',
                     who: '',
@@ -397,21 +447,18 @@ export default {
         },   
         handleFileUpload(event) {
             const selectedFiles = Array.from(event.target.files);
-            this.files = []; 
-            this.filePreviews = [];
             this.announcementInfo.images = this.announcementInfo.images || [];
 
             selectedFiles.forEach((file) => {
                 const reader = new FileReader();
                 reader.onload = (e) => {
                     this.files.push(file);
-                    this.filePreviews.push(e.target.result);
 
-                    // ✅ also push into announcementInfo.images
                     this.announcementInfo.images.push({
+                        tempId: `temp_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`, // ✅ unique temp id
                         name: file.name,
                         preview: e.target.result,
-                        isNew: true   // optional flag to know it's not yet saved in DB
+                        isNew: true
                     });
                 };
                 reader.readAsDataURL(file);
@@ -447,13 +494,20 @@ export default {
 
             const announcementData = {
                 ...this.announcementInfo,
+                thumbnail_id: this.announcementInfo.thumbnail_id || null,
+                thumbnail_tempId: this.announcementInfo.thumbnail_tempId || null,
                 datetimes: cleanDatetimes,
                 images: (this.announcementInfo.images || []).map(img => ({
-                    id: img.id || null,                 // keep id if exists
-                    name: img.name,                     // only name
-                    announcement_id: this.announcementInfo.id || null // link to announcement
+                    id: img.id || null,
+                    tempId: img.tempId || null,
+                    name: img.name,
+                    announcement_id: this.announcementInfo.id || null
                 }))
             };
+
+            // remove the thumbnail object (not needed for backend)
+            delete announcementData.thumbnail;
+
 
             // Create FormData object
             const formData = new FormData();
@@ -504,13 +558,20 @@ export default {
             
             const announcementData = {
                 ...this.announcementInfo,
+                thumbnail_id: this.announcementInfo.thumbnail_id || null,
+                thumbnail_tempId: this.announcementInfo.thumbnail_tempId || null,
                 datetimes: cleanDatetimes,
                 images: (this.announcementInfo.images || []).map(img => ({
-                    id: img.id || null,                 // keep id if exists
-                    name: img.name,                     // only name
-                    announcement_id: this.announcementInfo.id || null // link to announcement
+                    id: img.id || null,
+                    tempId: img.tempId || null,
+                    name: img.name,
+                    announcement_id: this.announcementInfo.id || null
                 }))
             };
+
+            // remove the thumbnail object (not needed for backend)
+            delete announcementData.thumbnail;
+
 
             
             const formData = new FormData();
@@ -554,38 +615,45 @@ export default {
             const day = String(d.getDate()).padStart(2, "0");
             return `${d.getFullYear()}-${month}-${day}`;  // ✅ always YYYY-MM-DD
         },
-        
-        removeImage(index) {
-            // ✅ Remove from announcementInfo.images
-            if (this.announcementInfo.images && this.announcementInfo.images[index]) {
-                this.announcementInfo.images.splice(index, 1);
-            }
 
-            // ✅ If it's a newly added file, also remove from files + previews
-            if (this.files[index]) {
-                this.files.splice(index, 1);
-                this.filePreviews.splice(index, 1);
+
+        removeImage(index) {
+            if (this.announcementInfo.images && this.announcementInfo.images[index]) {
+                const removedImage = this.announcementInfo.images[index];
+
+                // Remove from announcementInfo.images
+                this.announcementInfo.images.splice(index, 1);
+
+                // If it's a newly added file, also remove it from files[] by tempId
+                if (removedImage.tempId) {
+                    this.files = this.files.filter(f => f.name !== removedImage.name);
+                }
             }
         }
-
     },
     watch: {
         announcement: {
             immediate: true,
             handler(newVal) {
-                if (newVal && Object.keys(newVal).length > 0) {
-                    // Editing mode - use provided announcement data
-                    this.announcementInfo = JSON.parse(JSON.stringify(newVal));
-                } else {
-                    // Adding mode - initialize empty announcement
-                    this.initializeAnnouncementInfo();
-                }
+            if (newVal && Object.keys(newVal).length > 0) {
+                this.announcementInfo = JSON.parse(JSON.stringify(newVal));
 
-                // Keep a true snapshot for "discardChanges"
-                this.initialAnnouncementInfo = JSON.parse(JSON.stringify(this.announcementInfo));
+                // ✅ find the thumbnail image
+                if (this.announcementInfo.thumbnail_id && this.announcementInfo.images) {
+                const thumb = this.announcementInfo.images.find(
+                    img => img.id === this.announcementInfo.thumbnail_id
+                );
+                this.announcementInfo.thumbnail = thumb || null;
+                }
+            } else {
+                this.initializeAnnouncementInfo();
+            }
+
+            this.initialAnnouncementInfo = JSON.parse(JSON.stringify(this.announcementInfo));
             },
             deep: true
         },
+
         // Watch for any changes in announcementInfo to update the hasChanges flag.
         announcementInfo: {
             handler(newVal) {

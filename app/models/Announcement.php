@@ -12,6 +12,8 @@ class Announcement extends Model
     /** properties */
     protected $barangay_id = 0;
     protected $title       = '';
+    // Announcement.php (class props)
+    protected ?int $thumbnail_id = null;
     protected $description = '';
     protected $is_featured = 0;
     protected $what = '';
@@ -57,6 +59,16 @@ class Announcement extends Model
     {
         return $this->title;
     }
+
+    /**
+     * Gets Announcement thumbnail_id
+     * @return int
+     */
+    public function getThumbnailId()
+    {
+        return $this->thumbnail_id;
+    }
+
 
     /** Gets Announcement description
      * @return string
@@ -126,6 +138,18 @@ class Announcement extends Model
     {
         $this->title = $title;
     }
+
+    /**
+     * Sets Announcement thumbnail_id
+     * @param $thumbnail_id
+     * @return void
+     */
+    public function setThumbnailId(?int $thumbnailId): void
+    {
+        $this->thumbnail_id = $thumbnailId;
+    }
+
+
 
     /**
      * Sets Announcement description
@@ -250,8 +274,17 @@ class Announcement extends Model
                     ];
                 }, $images);
 
-                // Keep backward compatibility (old `img` field = first image)
-                $data['img'] = !empty($data['images']) ? $data['images'][0]['name'] : '';
+                // ✅ Use thumbnail_id if available
+                if (!empty($row['thumbnail_id'])) {
+                    $thumbnail = array_filter($data['images'], function ($img) use ($row) {
+                        return $img['id'] == $row['thumbnail_id'];
+                    });
+                    $thumbnail = reset($thumbnail);
+                    $data['img'] = $thumbnail ? $thumbnail['name'] : (!empty($data['images']) ? $data['images'][0]['name'] : '');
+                } else {
+                    // fallback to first image
+                    $data['img'] = !empty($data['images']) ? $data['images'][0]['name'] : '';
+                }
 
                 $announcements[] = $data;
             } else {
@@ -426,8 +459,8 @@ class Announcement extends Model
     public function insert(): bool
     {
         $stmt = $this->getConnection()->prepare("
-            INSERT INTO `" . self::$table . "` 
-            (`barangay_id`, `title`, `description`, `is_featured`, `what`, `who`, `where`, `why`) 
+            INSERT INTO `announcements` 
+            (`barangay_id`, `title`, `description`, `is_featured`, `what`, `who`, `where`, `why`)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?)
         ");
 
@@ -435,7 +468,6 @@ class Announcement extends Model
             throw new Exception("Failed to prepare statement: " . $this->getConnection()->error);
         }
 
-        // Ensure $this->date and optional fields are handled properly
         $stmt->bind_param(
             "ississss", 
             $this->barangay_id,
@@ -445,7 +477,7 @@ class Announcement extends Model
             $this->what,
             $this->who,
             $this->where,
-            $this->why,
+            $this->why
         );
 
         $stmt->execute();
@@ -476,7 +508,8 @@ class Announcement extends Model
                 `what` = ?, 
                 `who` = ?, 
                 `where` = ?, 
-                `why` = ?
+                `why` = ?, 
+                `thumbnail_id` = ?
             WHERE `id` = ?
         ");
 
@@ -485,7 +518,7 @@ class Announcement extends Model
         }
 
         $stmt->bind_param(
-            "ississssi",
+            "ississssii",
             $this->barangay_id,
             $this->title,
             $this->description,
@@ -494,6 +527,7 @@ class Announcement extends Model
             $this->who,
             $this->where,
             $this->why,
+            $this->thumbnail_id,
             $this->id
         );
 
@@ -502,13 +536,11 @@ class Announcement extends Model
             throw new Exception("Failed to execute update: " . $stmt->error);
         }
 
-        // Log debug information
         error_log("Update executed for ID: {$this->id}, affected_rows: " . $stmt->affected_rows);
-        
-        // Return true even if no rows were affected (data might be identical)
-        // This prevents false negatives when updating with same data
+
         return $stmt->affected_rows >= 0;
     }
+
 
     /**
      * Update announcement with datetimes
@@ -672,4 +704,22 @@ class Announcement extends Model
         $stmt->execute();
         return $stmt->affected_rows > 0;
     }
+
+    public function updateThumbnail(): bool
+    {
+        $stmt = $this->getConnection()->prepare("
+            UPDATE `announcements` 
+            SET `thumbnail_id` = ? 
+            WHERE `id` = ?
+        ");
+
+        if (!$stmt) {
+            throw new Exception("Failed to prepare statement: " . $this->getConnection()->error);
+        }
+
+        $stmt->bind_param("ii", $this->thumbnail_id, $this->id);
+
+        return $stmt->execute();
+    }
+
 }

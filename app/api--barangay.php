@@ -62,7 +62,6 @@ else if($action === 'announcements') {
 }
 
 else if ($action === 'add-announcement') {
-    // Ensure announcement data exists
     if (empty($_POST['announcementInfo'])) {
         returnError('Invalid announcement information received.', 400);
     }
@@ -83,11 +82,10 @@ else if ($action === 'add-announcement') {
         }
     }
 
-    // Validate datetimes - at least one datetime is required
+    // ✅ Datetimes required
     if (!isset($announcementInfo['datetimes']) || !is_array($announcementInfo['datetimes']) || empty($announcementInfo['datetimes'])) {
         returnError('At least one datetime is required for the announcement.', 400);
     }
-
     foreach ($announcementInfo['datetimes'] as $index => $datetime) {
         if (empty($datetime['date'])) returnError("Date is required for datetime entry " . ($index + 1) . ".", 400);
         if (empty($datetime['start'])) returnError("Start time is required for datetime entry " . ($index + 1) . ".", 400);
@@ -97,30 +95,26 @@ else if ($action === 'add-announcement') {
     $announcementInfo['is_featured'] = $announcementInfo['is_featured'] ?? 0;
 
     try {
-        // Create new Announcement instance
         $announcement = new Announcement();
-
-        // Set core fields
         $announcement->setBarangayId($announcementInfo['barangay_id']);
         $announcement->setTitle(trim($announcementInfo['title']));
         $announcement->setDescription(trim($announcementInfo['description']));
         $announcement->setIsFeatured((int) $announcementInfo['is_featured']);
-
-        // ✅ Optional fields
         if (isset($announcementInfo['what'])) $announcement->setWhat($announcementInfo['what']);
         if (isset($announcementInfo['who'])) $announcement->setWho($announcementInfo['who']);
         if (isset($announcementInfo['where'])) $announcement->setWhere($announcementInfo['where']);
         if (isset($announcementInfo['why'])) $announcement->setWhy($announcementInfo['why']);
 
-        // ✅ Insert announcement first
         if ($announcement->insert()) {
             $announcementId = $announcement->getId();
 
-            // --- MULTIPLE IMAGE UPLOAD HANDLING ---
             $uploadDir = __DIR__ . '/../public/Announcements/';
-            if (!is_dir($uploadDir)) {
-                mkdir($uploadDir, 0755, true);
-            }
+            if (!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);
+
+            $thumbnailImageId = null;
+
+            // ✅ Map tempIds to actual DB IDs
+            $tempIdMap = [];
 
             if (!empty($_FILES['files']) && isset($_FILES['files']['name'])) {
                 for ($i = 0; $i < count($_FILES['files']['name']); $i++) {
@@ -133,17 +127,43 @@ else if ($action === 'add-announcement') {
                             $img->setAnnouncementId($announcementId);
                             $img->setName($filename);
                             $img->insert();
-                        } else {
-                            error_log("❌ Failed to upload file: " . $_FILES['files']['name'][$i]);
+
+                            $newImageId = $img->getId();
+
+                            // ✅ Get tempId of this file from announcementInfo.images[]
+                            if (!empty($announcementInfo['images'])) {
+                                foreach ($announcementInfo['images'] as $imgInfo) {
+                                    if ($imgInfo['name'] === $filename && !empty($imgInfo['tempId'])) {
+                                        $tempIdMap[$imgInfo['tempId']] = $newImageId;
+                                    }
+                                }
+                            }
                         }
                     }
                 }
             }
 
+            // ✅ Resolve thumbnail: use thumbnail_tempId if present
+            if (!empty($announcementInfo['thumbnail_tempId']) && isset($tempIdMap[$announcementInfo['thumbnail_tempId']])) {
+                $thumbnailImageId = $tempIdMap[$announcementInfo['thumbnail_tempId']];
+            } elseif (!empty($announcementInfo['thumbnail_id'])) {
+                // fallback in case an existing DB image was selected
+                $thumbnailImageId = $announcementInfo['thumbnail_id'];
+            } else {
+                // ✅ Fallback: first uploaded image
+                if (!empty($tempIdMap)) {
+                    $thumbnailImageId = reset($tempIdMap); // get first mapped image ID
+                }
+            }
+
+            if ($thumbnailImageId !== null) {
+                $announcement->setThumbnailId($thumbnailImageId);
+                $announcement->updateThumbnail();
+            }
+
             // ✅ Insert datetimes
-            $datetimes = $announcementInfo['datetimes'];
             $successfulDatetimes = 0;
-            foreach ($datetimes as $dt) {
+            foreach ($announcementInfo['datetimes'] as $dt) {
                 $start = strlen($dt['start']) === 5 ? $dt['start'] . ':00' : $dt['start'];
                 $end   = strlen($dt['end']) === 5   ? $dt['end']   . ':00' : $dt['end'];
 
@@ -153,9 +173,7 @@ else if ($action === 'add-announcement') {
                 $adt->setStartTime($start);
                 $adt->setEndTime($end);
 
-                if ($adt->insert()) {
-                    $successfulDatetimes++;
-                }
+                if ($adt->insert()) $successfulDatetimes++;
             }
 
             returnSuccess([
@@ -189,16 +207,16 @@ else if ($action === 'update-announcement') {
     }
 
     // Required fields validation
-    if (!isset($announcementInfo['id']) || trim($announcementInfo['id']) === '') {
+    if (empty($announcementInfo['id'])) {
         returnError('Announcement ID is required for update.', 400);
     }
     if (!isset($announcementInfo['barangay_id'])) {
         returnError('Barangay ID is required.', 400);
     }
-    if (!isset($announcementInfo['title']) || trim($announcementInfo['title']) === '') {
+    if (empty($announcementInfo['title'])) {
         returnError('Announcement title is required.', 400);
     }
-    if (!isset($announcementInfo['description']) || trim($announcementInfo['description']) === '') {
+    if (empty($announcementInfo['description'])) {
         returnError('Announcement description is required.', 400);
     }
 
@@ -206,18 +224,14 @@ else if ($action === 'update-announcement') {
 
     try {
         $announcement = new Announcement($announcementInfo['id']);
-        
         if (!$announcement->getId()) {
             returnError('Announcement not found.', 404);
         }
 
-        // Set core fields
         $announcement->setBarangayId($announcementInfo['barangay_id']);
         $announcement->setTitle($announcementInfo['title']);
         $announcement->setDescription($announcementInfo['description']);
         $announcement->setIsFeatured($announcementInfo['is_featured']);
-
-        // Optional fields
         if (isset($announcementInfo['what'])) $announcement->setWhat($announcementInfo['what']);
         if (isset($announcementInfo['who'])) $announcement->setWho($announcementInfo['who']);
         if (isset($announcementInfo['where'])) $announcement->setWhere($announcementInfo['where']);
@@ -225,14 +239,11 @@ else if ($action === 'update-announcement') {
 
         // --- IMAGE HANDLING ---
         $uploadDir = __DIR__ . '/../public/Announcements/';
-        if (!is_dir($uploadDir)) {
-            mkdir($uploadDir, 0755, true);
-        }
+        if (!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);
 
         $announcementId = $announcement->getId();
         $existingImages = AnnouncementImage::getByAnnouncement($announcementId, true);
 
-        // ✅ Build set of current image IDs from payload
         $incomingImages = $announcementInfo['images'] ?? [];
         $incomingIds = array_filter(array_map(fn($img) => $img['id'] ?? null, $incomingImages));
 
@@ -241,16 +252,14 @@ else if ($action === 'update-announcement') {
             if (!in_array($existing['id'], $incomingIds)) {
                 $imgObj = new AnnouncementImage($existing['id']);
                 $imgObj->delete();
-
-                // also delete file from disk (optional)
                 $filePath = $uploadDir . $existing['name'];
-                if (file_exists($filePath)) {
-                    unlink($filePath);
-                }
+                if (file_exists($filePath)) unlink($filePath);
             }
         }
 
-        // ✅ Handle newly uploaded files
+        // ✅ Map tempIds for new uploads
+        $tempIdMap = [];
+
         if (!empty($_FILES['files']) && isset($_FILES['files']['name'])) {
             for ($i = 0; $i < count($_FILES['files']['name']); $i++) {
                 if ($_FILES['files']['error'][$i] === UPLOAD_ERR_OK) {
@@ -262,6 +271,17 @@ else if ($action === 'update-announcement') {
                         $img->setAnnouncementId($announcementId);
                         $img->setName($filename);
                         $img->insert();
+
+                        $newImageId = $img->getId();
+
+                        // Match this upload with its tempId
+                        if (!empty($announcementInfo['images'])) {
+                            foreach ($announcementInfo['images'] as $imgInfo) {
+                                if ($imgInfo['name'] === $filename && !empty($imgInfo['tempId'])) {
+                                    $tempIdMap[$imgInfo['tempId']] = $newImageId;
+                                }
+                            }
+                        }
                     } else {
                         error_log("❌ Failed to upload file: " . $_FILES['files']['name'][$i]);
                     }
@@ -269,10 +289,31 @@ else if ($action === 'update-announcement') {
             }
         }
 
-        // ✅ Update announcement + datetimes
+        // ✅ Resolve thumbnail
+        $thumbnailImageId = null;
+        if (!empty($announcementInfo['thumbnail_tempId']) && isset($tempIdMap[$announcementInfo['thumbnail_tempId']])) {
+            $thumbnailImageId = $tempIdMap[$announcementInfo['thumbnail_tempId']];
+        } elseif (!empty($announcementInfo['thumbnail_id'])) {
+            $thumbnailImageId = $announcementInfo['thumbnail_id']; // existing image
+        } else {
+            // ✅ Fallback: first available image (newly uploaded OR existing)
+            if (!empty($tempIdMap)) {
+                $thumbnailImageId = reset($tempIdMap); // first new upload
+            } elseif (!empty($incomingIds)) {
+                $thumbnailImageId = reset($incomingIds); // first kept existing image
+            }
+        }
+
+
+        if ($thumbnailImageId !== null) {
+            $announcement->setThumbnailId($thumbnailImageId);
+            $announcement->updateThumbnail();
+        }
+
+        // ✅ Update datetimes
         $datetimes = isset($announcementInfo['datetimes']) && is_array($announcementInfo['datetimes']) 
-                    ? $announcementInfo['datetimes'] 
-                    : [];
+            ? $announcementInfo['datetimes'] 
+            : [];
 
         if ($announcement->updateWithDatetimes($datetimes)) {
             returnSuccess([
@@ -289,6 +330,7 @@ else if ($action === 'update-announcement') {
         returnError("An error occurred while updating the announcement: " . $e->getMessage(), 500);
     }
 }
+
 
 else if ($action === 'delete-announcement') {
     // Ensure the announcement ID is provided
