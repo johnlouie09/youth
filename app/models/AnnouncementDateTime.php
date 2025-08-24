@@ -182,6 +182,48 @@ class AnnouncementDatetime extends Model
         }
         return $ids;
     }
+    public static function getAvailableYearMonths(?int $barangayId = null): array
+    {
+        $db = self::getConnectionStatic();
+
+        $sql = "
+            SELECT DISTINCT 
+                DATE_FORMAT(ad.date, '%Y-%m') AS `year_month`
+            FROM " . self::$table . " ad
+            INNER JOIN announcements a ON ad.announcement_id = a.id
+            WHERE 1
+        ";
+
+        $params = [];
+        $types  = "";
+
+        if ($barangayId) {
+            $sql .= " AND a.barangay_id = ? ";
+            $types .= "i";
+            $params[] = $barangayId;
+        }
+
+        $sql .= " ORDER BY ad.date DESC";
+
+        $stmt = $db->prepare($sql);
+
+        if (!empty($params)) {
+            $stmt->bind_param($types, ...$params);
+        }
+
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        $yearMonths = [];
+        while ($row = $result->fetch_assoc()) {
+            $yearMonths[] = $row['year_month'];
+        }
+
+        return $yearMonths;
+    }
+
+
+
 }
 
 

@@ -357,6 +357,60 @@ else if ($action === 'delete-announcement') {
     }
 }
 
+// ✅ Get announcements by month name
+else if ($action === 'announcements-by-month') {
+    $barangayId = $_POST['barangayId'] ?? null;
+    $month = $_POST['month'] ?? null;
+
+    if (!$barangayId || !$month) {
+        returnError("Barangay ID and month are required.", 400);
+    }
+
+    $barangay = Barangay::findBy('id', (int)$barangayId);
+    if (!$barangay) {
+        returnError("Barangay not found.", 404);
+    }
+
+    // Pass $assoc = true to getByMonthYear
+    $announcements = Announcement::getByMonthYear($month, $barangay, true);
+
+    // No need to call getAssoc again — they are already associative arrays
+    returnSuccess([
+        'announcements' => $announcements,
+        'month' => $month
+    ]);
+}
+
+
+// ✅ Get featured announcements
+else if ($action === 'featured-announcements') {
+    $barangayId = $_POST['barangayId'] ?? null;
+    $barangay = $barangayId ? Barangay::findBy('id', (int)$barangayId) : null;
+
+    // Pass assoc + assoc_basic + barangay
+    $announcements = Announcement::getFeatured(true, false, $barangay);
+
+    returnSuccess([
+        'announcements' => $announcements,
+        'featured' => true
+    ]);
+}
+
+// Get available year-months for announcements
+else if ($action === 'available-year-months') {
+    $barangayId = $_POST['barangayId'] ?? null;
+
+    $yearMonths = AnnouncementDatetime::getAvailableYearMonths(
+        $barangayId ? (int)$barangayId : null
+    );
+
+    returnSuccess([
+        'yearMonths' => $yearMonths
+    ]);
+}
+
+
+
 else if ($action === 'image-filenames') {
     // Define the directory containing your images.
     // Adjust the path as necessary (ensure the path is correct relative to this file).

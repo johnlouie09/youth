@@ -194,9 +194,12 @@
                     
                     <v-checkbox
                         v-model="announcementInfo.is_featured"
+                        :true-value="1"
+                        :false-value="0"
                         color="success"
                         label="Feature Announcement"
-                    ></v-checkbox>
+                    />
+
                 </div>
 
                 <!-- 5W and 1H Form -->

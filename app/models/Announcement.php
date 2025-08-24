@@ -295,34 +295,6 @@ class Announcement extends Model
         return $announcements;
     }
 
-    /**
-     * Retrieves a limited number of random Announcement records across all barangays.
-     *
-     * @param int $limit
-     * @param bool $assoc
-     * @param bool $assoc_basic
-     * @return array
-     * @throws Exception
-     */
-    public static function getRandomAnnouncements(int $limit = 50, bool $assoc = false, bool $assoc_basic = false): array
-    {
-        $conn = self::getConnectionStatic();
-        $query = "SELECT * FROM `" . self::$table . "` ORDER BY RAND() LIMIT ?";
-        $stmt = $conn->prepare($query);
-        if (!$stmt) {
-            throw new Exception("Prepare failed: " . $conn->error);
-        }
-        $stmt->bind_param("i", $limit);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        $announcements = [];
-        while ($row = $result->fetch_assoc()) {
-            $announcement = new Announcement();
-            $announcement->hydrate($row);
-            $announcements[] = $assoc ? $announcement->getAssoc($assoc_basic) : $announcement;
-        }
-        return $announcements;
-    }
 
     /**
      * Returns the count of announcements made in a given year for a specific barangay.
@@ -358,6 +330,7 @@ class Announcement extends Model
      * @return array
      * @throws Exception
      */
+    
     public static function getMonthlySummary(?string $barangaySlug = null): array
     {
         $conn = self::getConnectionStatic();
@@ -720,6 +693,199 @@ class Announcement extends Model
         $stmt->bind_param("ii", $this->thumbnail_id, $this->id);
 
         return $stmt->execute();
+    }
+
+    /**
+     * Get announcements by month-year string (e.g. "August 2025")
+     *
+     * @param string $monthYear
+     * @param Barangay|null $barangay
+     * @param bool $assoc
+     * @param bool $assoc_basic
+     * @return array
+     * @throws Exception
+     */
+    public static function getByMonthYear(string $monthYear, ?Barangay $barangay = null, bool $assoc = true, bool $assoc_basic = false): array
+    {
+        $conn = self::getConnectionStatic();
+
+        // Convert "August 2025" to "YYYY-MM"
+        $timestamp = strtotime($monthYear);
+        if (!$timestamp) {
+            throw new Exception("Invalid month-year format: $monthYear");
+        }
+        $yearMonth = date('Y-m', $timestamp); // e.g., "2025-08"
+
+        // Query: join announcement_datetime to announcement
+        $query = "
+            SELECT a.* 
+            FROM `" . Announcement::$table . "` a
+            INNER JOIN `" . AnnouncementDatetime::$table . "` ad
+                ON a.id = ad.announcement_id
+            WHERE ad.date LIKE ?
+        ";
+
+        $params = ["$yearMonth%"];
+        $types = "s";
+
+        if ($barangay !== null) {
+            $query .= " AND a.barangay_id = ?";
+            $params[] = $barangay->getId();
+            $types .= "i";
+        }
+
+        $stmt = $conn->prepare($query);
+        if (!$stmt) {
+            throw new Exception("Prepare failed: " . $conn->error);
+        }
+
+        $stmt->bind_param($types, ...$params);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        $announcements = [];
+        while ($row = $result->fetch_assoc()) {
+            $announcement = new Announcement();
+            $announcement->hydrate($row);
+
+            if ($assoc) {
+                $data = $announcement->getAssoc($assoc_basic);
+
+                // ✅ Fetch datetimes
+                require_once __DIR__ . '/AnnouncementDatetime.php';
+                $datetimes = AnnouncementDatetime::getByAnnouncement($row['id'], true);
+                $data['datetimes'] = array_map(function ($dt) {
+                    return [
+                        'id'             => $dt['id'],
+                        'announcementId' => $dt['announcement_id'],
+                        'date'           => $dt['date'],
+                        'start'          => $dt['start_time'],
+                        'end'            => $dt['end_time']
+                    ];
+                }, $datetimes);
+
+                // ✅ Fetch images
+                require_once __DIR__ . '/AnnouncementImage.php';
+                $images = AnnouncementImage::getByAnnouncement($row['id'], true);
+                $data['images'] = array_map(function ($img) {
+                    return [
+                        'id'             => $img['id'],
+                        'announcementId' => $img['announcement_id'],
+                        'name'           => $img['name']
+                    ];
+                }, $images);
+
+                // ✅ Use thumbnail_id if available
+                if (!empty($row['thumbnail_id'])) {
+                    $thumbnail = array_filter($data['images'], function ($img) use ($row) {
+                        return $img['id'] == $row['thumbnail_id'];
+                    });
+                    $thumbnail = reset($thumbnail);
+                    $data['img'] = $thumbnail
+                        ? $thumbnail['name']
+                        : (!empty($data['images']) ? $data['images'][0]['name'] : '');
+                } else {
+                    // fallback to first image
+                    $data['img'] = !empty($data['images']) ? $data['images'][0]['name'] : '';
+                }
+
+                $announcements[] = $data;
+            } else {
+                $announcements[] = $announcement;
+            }
+        }
+
+        return $announcements;
+    }
+
+    /**
+     * Get featured announcements
+     *
+     * @param bool $assoc
+     * @param bool $assoc_basic
+     * @param Barangay|null $barangay
+     * @return array
+     * @throws Exception
+     */
+    public static function getFeatured(bool $assoc = false, bool $assoc_basic = false, ?Barangay $barangay = null): array
+    {
+        $conn = self::getConnectionStatic();
+
+        $query = "SELECT * FROM `" . self::$table . "` WHERE is_featured = 1";
+        $params = [];
+        $types = "";
+
+        if ($barangay !== null) {
+            $query .= " AND barangay_id = ?";
+            $params[] = $barangay->getId();
+            $types .= "i";
+        }
+
+        $stmt = $conn->prepare($query);
+        if (!$stmt) {
+            throw new Exception("Prepare failed: " . $conn->error);
+        }
+
+        if (!empty($params)) {
+            $stmt->bind_param($types, ...$params);
+        }
+
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        $announcements = [];
+        while ($row = $result->fetch_assoc()) {
+            $announcement = new Announcement();
+            $announcement->hydrate($row);
+
+            if ($assoc) {
+                $data = $announcement->getAssoc($assoc_basic);
+
+                // ✅ Fetch datetimes
+                require_once __DIR__ . '/AnnouncementDatetime.php';
+                $datetimes = AnnouncementDatetime::getByAnnouncement($row['id'], true);
+                $data['datetimes'] = array_map(function ($dt) {
+                    return [
+                        'id'            => $dt['id'],
+                        'announcementId'=> $dt['announcement_id'],
+                        'date'          => $dt['date'],
+                        'start'         => $dt['start_time'],
+                        'end'           => $dt['end_time']
+                    ];
+                }, $datetimes);
+
+                // ✅ Fetch images
+                require_once __DIR__ . '/AnnouncementImage.php';
+                $images = AnnouncementImage::getByAnnouncement($row['id'], true);
+                $data['images'] = array_map(function ($img) {
+                    return [
+                        'id'            => $img['id'],
+                        'announcementId'=> $img['announcement_id'],
+                        'name'          => $img['name']
+                    ];
+                }, $images);
+
+                // ✅ Use thumbnail_id if available
+                if (!empty($row['thumbnail_id'])) {
+                    $thumbnail = array_filter($data['images'], function ($img) use ($row) {
+                        return $img['id'] == $row['thumbnail_id'];
+                    });
+                    $thumbnail = reset($thumbnail);
+                    $data['img'] = $thumbnail
+                        ? $thumbnail['name']
+                        : (!empty($data['images']) ? $data['images'][0]['name'] : '');
+                } else {
+                    // fallback to first image
+                    $data['img'] = !empty($data['images']) ? $data['images'][0]['name'] : '';
+                }
+
+                $announcements[] = $data;
+            } else {
+                $announcements[] = $announcement;
+            }
+        }
+
+        return $announcements;
     }
 
 }

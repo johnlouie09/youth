@@ -1,5 +1,4 @@
 <template>
-
     <!-- Announcements Cards -->
     <div class="carousel-container">
         <div class="relative w-[80%] d-flex flex-col justify-center items-center gap-5">
@@ -13,7 +12,6 @@
                     v-model='selectedAnnoncementItem'>
                     </v-select>
                 </v-tab>
-
             </v-tabs>
         </div>
 
