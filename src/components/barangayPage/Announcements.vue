@@ -3,15 +3,20 @@
     <div class="carousel-container">
         <div class="relative w-[80%] d-flex flex-col justify-center items-center gap-5">
             <h1 class="title">ANNOUNCEMENTS</h1>
-            <v-tabs grow class="w-[50%] d-flex justify-center gap-5">
-                <v-tab>FEATURED</v-tab>
-                <v-tab>
-                    <v-select 
-                    class="w-[100%]"
-                    :items="items"
-                    v-model='selectedAnnoncementItem'>
-                    </v-select>
-                </v-tab>
+            <v-tabs v-model="selectedAnnouncementSort" grow class="my-5">
+                <div class="grid grid-cols-3 ga-5 w-full">
+                    <v-tab value='all' class="border rounded-md col-span-1">ALL</v-tab>
+                    <v-tab value='featured' class="border rounded-md col-span-1">FEATURED</v-tab>
+                    <v-tab value="month" class="border rounded-md col-span-1">
+                        <v-select
+                            v-model="selectedMonth"
+                            class="border rounded-md w-full"
+                            :items="items"
+                            density="comfortable"
+                            hide-details
+                        />
+                    </v-tab>
+                </div>
             </v-tabs>
         </div>
 
@@ -22,11 +27,22 @@
                     style="border-radius: 1rem;"
                     class="swiper-slide w-sm d-flex flex-col items-center justify-center ga-5 elevation-10 pt-10 pb-5 px-5 ma-5"
                     >
+                        <!-- Featured Icon -->
+                        <v-icon 
+                            v-if="announcement.is_featured" 
+                            color="yellow darken-2 ma-5" 
+                            size="30" 
+                            style="position: absolute; top: 0; right: 0; z-index: 10;"
+                            title="Featured Announcement"
+                        >
+                            mdi-star
+                        </v-icon>
+
                         <div>
                             <img 
                                 :src="announcement.img 
-                                        ? ($store.getters.base + 'public/announcements/' + announcement.img) 
-                                        : ($store.getters.base + 'public/announcements/exx.jpg')"
+                                        ? ($store.getters.base + 'public/announcements/' + announcement.img)
+                                        : ($store.getters.base + 'public/announcements/no-avatar.png')"
                                 :alt="announcement.title"
                                 style="border-radius: .5rem; width: 280px ;height: 400px;"
                                 cover
@@ -175,11 +191,13 @@ export default {
     data() {
         return {
             announcements: [],
-            items: ['Select a Month', 'January', 'February', 'March', 'April'],
+            items: [],
             selectedAnnoncementItem: 'Select a Month',
             announcementDetails: [],
             showAnnouncementDetails: false,
             isFetchingAnnouncements: false,
+            selectedAnnouncementSort: 'featured',  // all | featured | month
+            selectedMonth: null,             // holds actual month string
 
 
             config: {
@@ -246,14 +264,14 @@ export default {
                 },
             });
         },
-        async fetchBarangayAnnouncements() {
+        fetchBarangayAnnouncements() {
             if (this.isFetchingAnnouncements) {
                 console.log('Fetch already in progress, skipping...');
                 return;
             }
             this.isFetchingAnnouncements = true;
             try {
-                await $.ajax({
+                $.ajax({
                     url: `${this.$store.getters['api_base']}?e=barangay&a=announcements`,
                     type: 'POST',
                     xhrFields: { withCredentials: true },
@@ -295,14 +313,112 @@ export default {
                 });
             }
         },
+        fetchBarangayFeaturedAnnouncements() {
+            $.ajax({
+            url: `${this.$store.getters.api_base}?e=barangay&a=featured-announcements`,
+            type: 'POST',
+            xhrFields: {
+                withCredentials: true
+            },
+            headers: {
+                'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
+            },
+            data: {
+                barangayId: this.$store.getters['auth/getBarangayId'],
+            },
+            success: (data) => {
+                this.announcements = data.data.announcements;
+                console.log(data);
+            },
+            error: (jqXHR, textStatus, errorThrown) => {
+                console.error("Error:", textStatus, errorThrown);
+                let errorMsg = "An error occurred while processing your request.";
+                if (jqXHR.responseJSON && jqXHR.responseJSON.error) {
+                errorMsg = jqXHR.responseJSON.message;
+                } else if (jqXHR.responseText) {
+                errorMsg = jqXHR.responseText;
+                }
+            },
+            complete: () => {
+                // Optional: any actions after completion.
+            }
+            });
+        },
+        fetchBarangayAnnouncementsByMonth(month) {
+            $.ajax({
+                url: `${this.$store.getters.api_base}?e=barangay&a=announcements-by-month`,
+                type: 'POST',
+                xhrFields: { withCredentials: true },
+                headers: {
+                    'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
+                },
+                data: {
+                    barangayId: this.$store.getters['auth/getBarangayId'],
+                    month: month
+                },
+                success: (data) => {
+                    this.announcements = data.data.announcements;
+                    console.log("Announcements for month:", month, data);
+                },
+                error: (jqXHR, textStatus, errorThrown) => {
+                    console.error("Error fetching announcements by month:", textStatus, errorThrown);
+                }
+            });
+        },
+        fetchAvailableMonths() {
+            $.ajax({
+                url: `${this.$store.getters.api_base}?e=barangay&a=available-year-months`,
+                type: 'POST',
+                xhrFields: { withCredentials: true },
+                headers: {
+                    'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
+                },
+                data: {
+                    barangayId: this.$store.getters['auth/getBarangayId']
+                },
+                success: (data) => {
+                    // Backend returns e.g. ["2025-08", "2025-07", "2024-12"]
+                    const months = data.data.yearMonths.map(ym => {
+                        const [year, month] = ym.split('-');
+                        const monthName = new Date(ym + '-01').toLocaleString('en-US', { month: 'long' });
+                        return `${monthName} ${year}`;
+                    });
+
+                    // Add default option
+                    this.items = ['Select a Month', ...months];
+                    this.selectedMonth = this.items[0];
+                    console.log("Available months:", this.items);
+                },
+                error: (jqXHR, textStatus, errorThrown) => {
+                    console.error("Error fetching months:", textStatus, errorThrown);
+                }
+            });
+        }
     },
     created() {
         this.fetchBarangayAnnouncements();
+        this.fetchAvailableMonths();
     },
     watch: {
         barangayId(newVal, oldVal) {
             if (newVal !== oldVal) {
                 this.fetchBarangayAnnouncements();
+                this.fetchAvailableMonths();
+            }
+        },
+        selectedAnnouncementSort(newVal) {
+            if (newVal === 'all') {
+            this.fetchBarangayAnnouncements();
+            } else if (newVal === 'featured') {
+            this.fetchBarangayFeaturedAnnouncements();
+            } else if (newVal === 'month' && this.selectedMonth && this.selectedMonth !== 'Select a Month') {
+            this.fetchBarangayAnnouncementsByMonth(this.selectedMonth);
+            }
+        },
+        selectedMonth(newMonth) {
+            // Only fetch if the "month" tab is active
+            if (this.selectedAnnouncementSort === 'month' && newMonth && newMonth !== 'Select a Month') {
+            this.fetchBarangayAnnouncementsByMonth(newMonth);
             }
         }
     }
