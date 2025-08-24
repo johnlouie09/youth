@@ -77,13 +77,35 @@
 
     <!-- Announcement Dialog -->
     <v-dialog v-model=showAnnouncementDetails width="auto" max-width="1200px" max-height="90vh">
-        <v-card class="d-flex justify-center items-center py-15 ga-5" style="border-radius: 1rem;">
+        <v-card class="d-flex justify-center items-center py-10 pt-15 ga-5" style="border-radius: 1rem;">
             <h1 class="w-[90%] text-3xl font-extrabold text-center uppercase">{{ announcementDetails.title }} <v-divider class="mt-3"></v-divider></h1>
-            <div class="announcementDialog w-[90%]">
+
+            <v-carousel
+            class="ma-10"
+            style="width: 800px;"
+            v-if="imagesContainer"
+            hide-delimiter-background
+            >
+                <!-- Carousel Items -->
+                <v-carousel-item
+                class="rounded-lg elevation-10"
+                v-for="(image, index) in announcementDetails.images"
+                :key="index"
+                :src="image.name 
+                    ? ($store.getters.base + 'public/announcements/' + image.name) 
+                    : ($store.getters.base + 'public/announcementsno-avatar.png')"
+                contain
+                >
+                </v-carousel-item>
+            </v-carousel>
+
+
+            <div v-if="!imagesContainer" class="announcementDialog w-[90%]">
+                <!-- WHO, WHY AND WHAT CARD -->
                 <div class="d-flex flex-col justify-around items-center py-5">
                     <div class="d-flex justify-center items-center ga-3">
                         <div class="custom-card w-full d-flex justify-center items-center ga-3 elevation-5 py-3 px-5 rounded-md border">
-                            <h3 class='text-center text-sm'><i class="text-lg font-extrabold">WHO</i><br>Organized by Barangay San Francisco. Open to all residents, especially youth and local groups.</h3>
+                            <h3 class='text-center text-sm'><i class="text-lg font-extrabold">WHO</i><br>{{ announcementDetails.who }}</h3>
                         </div>
 
                         <v-btn icon class="border">
@@ -94,7 +116,7 @@
 
                     <div class="d-flex justify-center items-center ga-3">
                         <div class="custom-card w-full d-flex justify-center items-center ga-3 elevation-5 py-3 px-5 rounded-md border">
-                            <h3 class='text-center text-sm'><i class="text-lg font-extrabold">WHY</i><br>To promote cleanliness, reduce waste, and build community responsibility.</h3>
+                            <h3 class='text-center text-sm'><i class="text-lg font-extrabold">WHY</i><br>{{ announcementDetails.why }}</h3>
                         </div>
                         <v-btn class="border" icon>
                             <v-icon :size="30">mdi-lightbulb-on-outline</v-icon>
@@ -103,7 +125,7 @@
 
                     <div class="d-flex justify-center items-center ga-3">
                         <div class="custom-card w-full d-flex justify-center items-center ga-3 elevation-5 py-3 px-5 rounded-md border">
-                            <h3 class='text-center text-sm'><i class="text-lg font-extrabold">WHAT</i><br>Barangay Clean-Up Drive to collect trash, recycle, and improve public spaces.</h3>
+                            <h3 class='text-center text-sm'><i class="text-lg font-extrabold">WHAT</i><br>{{ announcementDetails.what }}</h3>
                         </div>
                         <v-btn class="border" icon>
                             <v-icon :size="30">mdi-help-circle-outline</v-icon>
@@ -111,37 +133,18 @@
                     </div>
                 </div>
 
+                <!-- THUMBNAIL IMAGE -->
                 <div class="d-flex flex-col justify-center items-center ga-3">
-                    <Carousel v-if="showAnnouncementImages" v-bind="config">
-                        <Slide v-for="n of 1">
-                        <img                    
-                        :src="announcementDetails.img 
-                            ? ($store.getters.base + 'public/announcements/' + announcementDetails.img) 
-                            : ($store.getters.base + 'public/announcements/exx.jpg')"
-                        :alt="announcementDetails.title" />
-                        </Slide>
-
-                        <template #addons>
-                        <Navigation />
-                        </template>
-                    </Carousel>
-
                     <img
                         class="rounded-lg max-h-[600px] max-w-[400px] elevation-10"
                         :src="announcementDetails.img 
                             ? ($store.getters.base + 'public/announcements/' + announcementDetails.img) 
-                            : ($store.getters.base + 'public/announcements/exx.jpg')"
+                            : ($store.getters.base + 'public/announcementsno-avatar.png')"
                         :alt="announcementDetails.title">
                     </img>
-
-                    <v-card-actions>
-                        <v-btn color="teal">SEE MORE IMAGES</v-btn>
-                    </v-card-actions>
                 </div>
 
-
-
-                
+                <!-- WHEN AND WHERE -->
                 <div class="d-flex flex-col justify-around items-center py-5"> 
                     <div class="d-flex justify-center items-center ga-3">
                         <v-btn class="border" icon>
@@ -157,11 +160,15 @@
                             <v-icon :size="30">mdi-map-marker</v-icon>
                         </v-btn>
                         <div class="custom-card w-full d-flex justify-center items-center ga-3 elevation-5 py-3 px-5 rounded-md border">
-                            <h3 class='text-center text-sm'><i class="text-center text-lg font-extrabold">WHERE</i><br>Barangay Francia, Iriga City – Starting at Barangay Hall, covering nearby areas.</h3>
+                            <h3 class='text-center text-sm'><i class="text-center text-lg font-extrabold">WHERE</i><br>{{ announcementDetails.where }}</h3>
                         </div>
                     </div>
                 </div>
             </div>
+
+            <v-card-actions>
+                <v-btn color="teal" @click="imagesContainer = !imagesContainer">{{ imagesContainer ? 'LESS IMAGES' : 'MORE IMAGES'}}</v-btn>
+            </v-card-actions>
         </v-card>
     </v-dialog>
 </template>
@@ -174,15 +181,12 @@ import "swiper/css/autoplay";
 import "swiper/css/pagination";
 import { EffectCoverflow, Autoplay, Pagination } from "swiper/modules";
 
-import 'vue3-carousel/carousel.css'
-import { Carousel, Slide, Navigation } from 'vue3-carousel'
+
 import $ from 'jquery';
 
 export default {
     name: "Announcements",
     components : {
-        Carousel,
-        Slide,
         Navigation,
     },
     props: {
@@ -198,13 +202,7 @@ export default {
             isFetchingAnnouncements: false,
             selectedAnnouncementSort: 'featured',  // all | featured | month
             selectedMonth: null,             // holds actual month string
-
-
-            config: {
-                height: 500,
-                gap: 5,
-                wrapAround: true,
-            },
+            imagesContainer : true
         };
 
     },
