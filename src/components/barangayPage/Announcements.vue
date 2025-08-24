@@ -76,7 +76,7 @@
     </div>
 
     <!-- Announcement Dialog -->
-    <v-dialog v-model=showAnnouncementDetails width="auto" max-width="1200px" max-height="90vh">
+    <v-dialog v-model=showAnnouncementDetails min-width='800px' max-width="1200px" max-height="90vh">
         <v-card class="d-flex justify-center items-center py-10 pt-15 ga-5" style="border-radius: 1rem;">
             <h1 class="w-[90%] text-3xl font-extrabold text-center uppercase">{{ announcementDetails.title }} <v-divider class="mt-3"></v-divider></h1>
 
@@ -102,8 +102,8 @@
 
             <div v-if="!imagesContainer" class="announcementDialog w-[90%]">
                 <!-- WHO, WHY AND WHAT CARD -->
-                <div class="d-flex flex-col justify-around items-center py-5">
-                    <div class="d-flex justify-center items-center ga-3">
+                <div class="w-full d-flex flex-col justify-around items-center py-5">
+                    <div class="w-full d-flex justify-center items-center ga-3">
                         <div class="custom-card w-full d-flex justify-center items-center ga-3 elevation-5 py-3 px-5 rounded-md border">
                             <h3 class='text-center text-sm'><i class="text-lg font-extrabold">WHO</i><br>{{ announcementDetails.who }}</h3>
                         </div>
@@ -114,7 +114,7 @@
                         
                     </div>
 
-                    <div class="d-flex justify-center items-center ga-3">
+                    <div class="w-full d-flex justify-center items-center ga-3">
                         <div class="custom-card w-full d-flex justify-center items-center ga-3 elevation-5 py-3 px-5 rounded-md border">
                             <h3 class='text-center text-sm'><i class="text-lg font-extrabold">WHY</i><br>{{ announcementDetails.why }}</h3>
                         </div>
@@ -123,7 +123,7 @@
                         </v-btn>
                     </div>
 
-                    <div class="d-flex justify-center items-center ga-3">
+                    <div class="w-full d-flex justify-center items-center ga-3">
                         <div class="custom-card w-full d-flex justify-center items-center ga-3 elevation-5 py-3 px-5 rounded-md border">
                             <h3 class='text-center text-sm'><i class="text-lg font-extrabold">WHAT</i><br>{{ announcementDetails.what }}</h3>
                         </div>
@@ -145,17 +145,36 @@
                 </div>
 
                 <!-- WHEN AND WHERE -->
-                <div class="d-flex flex-col justify-around items-center py-5"> 
-                    <div class="d-flex justify-center items-center ga-3">
+                <div class="w-full d-flex flex-col justify-around items-center py-5"> 
+                    <div class="w-full d-flex justify-center items-center ga-3">
                         <v-btn class="border" icon>
                             <v-icon :size="30">mdi-calendar-clock</v-icon>
                         </v-btn>
-                        <div class="custom-card w-full d-flex justify-center items-center ga-3 elevation-5 py-3 px-5 rounded-md border">
-                            <h3 class='text-center text-xs'><i class="text-center text-lg font-extrabold">WHEN</i><br>April 15, 2025 | 7:00 AM – 12:00 PM <br>April 15, 2025 | 7:00 AM – 12:00 PM <br>April 15, 2025 | 7:00 AM – 12:00 PM</h3>
+                        <div class="custom-card w-full d-flex flex-col justify-center items-center ga-3 elevation-5 py-3 px-5 rounded-md border">
+                            <h3 class='italic text-center text-lg font-extrabold'>WHEN</h3>
+                            <div
+                            v-for="(dt, dIndex) in announcementDetails.datetimes"
+                            :key="dt.id"
+                            class="w-full"
+                            >
+                                <h5 class="whitespace-nowrap pa-2 border rounded-sm">
+                                    📅 
+                                    {{
+                                        new Date(dt.date + 'T00:00:00').toLocaleDateString('en-US', {
+                                        month: 'long',
+                                        day: 'numeric',
+                                        year: 'numeric'
+                                        })
+                                    }}
+                                    <br>
+                                    ⏰ {{ dt.start }} - {{ dt.end }}
+                                </h5>
+                            </div>
+
                         </div>
                     </div>
 
-                    <div class="d-flex justify-center items-center ga-3">
+                    <div class="w-full d-flex justify-center items-center ga-3">
                         <v-btn class="border" icon>
                             <v-icon :size="30">mdi-map-marker</v-icon>
                         </v-btn>
@@ -202,7 +221,7 @@ export default {
             isFetchingAnnouncements: false,
             selectedAnnouncementSort: 'featured',  // all | featured | month
             selectedMonth: null,             // holds actual month string
-            imagesContainer : true
+            imagesContainer : false
         };
 
     },
