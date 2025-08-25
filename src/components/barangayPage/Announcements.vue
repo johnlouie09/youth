@@ -21,11 +21,11 @@
         </div>
 
         <div ref="swiperContainer" class="swiper mySwiper">
-            <div class="swiper-wrapper h-full">
+            <div class="swiper-wrapper">
                     <v-card
                     v-for="announcement in announcements" :key="announcement.id"
                     style="border-radius: 1rem;"
-                    class="swiper-slide w-sm d-flex flex-col items-center justify-center ga-5 elevation-10 pt-10 pb-5 px-5 ma-5"
+                    class="swiper-slide d-flex flex-col items-center justify-center ga-5 elevation-10 pt-10 pb-5 px-5 ma-5"
                     >
                         <!-- Featured Icon -->
                         <v-icon 
@@ -459,6 +459,7 @@ export default {
 
 .swiper-slide {
     background-position: center;
+    height: 625px;
     width: 400px;
 }
 

@@ -193,89 +193,71 @@ else if ($action === 'updatePersonalInfo') {
 }
 
 
-// SK Official Achievement 
+// SK Official Achievement
 else if ($action === 'updateAchievement') {
-    // Ensure data exists
+
     if (!isset($_POST['achievementInfo'])) {
         returnError('Invalid Achievement Information Received.', 400);
     }
 
-    // Decode JSON if needed (if sent via FormData, it may be a JSON string)
-    $achievementInfo = is_array($_POST['achievementInfo']) 
-        ? $_POST['achievement'] 
+    $achievementInfo = is_array($_POST['achievementInfo'])
+        ? $_POST['achievementInfo']
         : json_decode($_POST['achievementInfo'], true);
 
     if (!$achievementInfo) {
         returnError('Invalid Achievement Information Format.', 400);
     }
 
-    // Ensure ID exists
-    if (!isset($achievementInfo['id'])) {
-        returnError('Achievement ID is required.', 400);
+    // Required fields
+    if (empty($achievementInfo['id'])) {
+        returnError('Achievement ID is required for update.', 400);
+    }
+    if (empty($achievementInfo['sk_official_id'])) {
+        returnError('SK Official ID is required.', 400);
+    }
+    if (empty($achievementInfo['title'])) {
+        returnError('Achievement title is required.', 400);
     }
 
-    // Fetch Achievement from database
-    $achievement = Achievement::findBy('id', $achievementInfo['id']);
+    try {
+        $achievement = new Achievement($achievementInfo['id']);
+        if (!$achievement->getId()) {
+            returnError('Achievement not found.', 404);
+        }
 
-    if (!$achievement) {
-        returnError("No achievement found with ID " . $achievementInfo['id'], 404);
-    }
-
-    // Update fields if provided
-    if (isset($achievementInfo['title'])) {
-        $achievement->setTitle($achievementInfo['title']);
-    }
-    if (isset($achievementInfo['subtitle'])) {
-        $achievement->setSubtitle($achievementInfo['subtitle']);
-    }
-    if (isset($achievementInfo['info'])) {
-        $achievement->setInfo($achievementInfo['info']);
-    }
-    if (isset($achievementInfo['sk_official_id'])) {
+        // ✅ Update basic fields
         $achievement->setSkOfficialId($achievementInfo['sk_official_id']);
-    }
-    if (isset($achievementInfo['date'])) {
-        $achievement->setDate($achievementInfo['date']); // Ensure correct format (e.g., YYYY-MM-DD)
-    }
+        $achievement->setTitle($achievementInfo['title']);
+        if (isset($achievementInfo['subtitle'])) $achievement->setSubtitle($achievementInfo['subtitle']);
+        if (isset($achievementInfo['info'])) $achievement->setInfo($achievementInfo['info']);
+        if (isset($achievementInfo['sk_official_comment'])) $achievement->setSkOfficialComment($achievementInfo['sk_official_comment']);
 
-    // Process file upload if a file was provided
-    if (isset($_FILES['file']) && $_FILES['file']['error'] === UPLOAD_ERR_OK) {
-        // Define the upload directory (adjust the path as needed)
-        $uploadDir = __DIR__ . '/../public/achievements/'; 
-        
-        // Create the directory if it doesn't exist
-        if (!is_dir($uploadDir)) {
-            mkdir($uploadDir, 0755, true);
-        }
-        
-        // Get a sanitized version of the filename
-        $filename = basename($_FILES['file']['name']);
-        
-        // Set the target file path
-        $targetFile = $uploadDir . $filename;
-        
-        // Move the uploaded file to the target directory
-        if (move_uploaded_file($_FILES['file']['tmp_name'], $targetFile)) {
-            // Update the achievement record with the new filename
-            $achievement->setImg($filename);
+        $achievementId = $achievement->getId();
+
+        // ✅ Handle dates with new helper
+        $dates = isset($achievementInfo['dates']) && is_array($achievementInfo['dates'])
+            ? $achievementInfo['dates']
+            : [];
+
+        $success = $achievement->update() && $achievement->updateDates($dates);
+
+        if ($success) {
+            returnSuccess([
+                'message'     => 'Achievement updated successfully.',
+                'achievement' => $achievement->getAssoc(true),
+                'dates'       => AchievementDate::getByAchievement($achievementId, true)
+            ]);
         } else {
-            returnError("Failed to upload file.", 500);
+            returnError("Achievement update failed. Check server logs.", 500);
         }
-    } else if (isset($achievementInfo['img'])) {
-        // If no new file is uploaded, update with the provided img value if any
-        $achievement->setImg($achievementInfo['img']);
-    }
 
-    // Execute update
-    if ($achievement->update()) {
-        returnSuccess([
-            'message' => 'Achievement updated successfully.',
-            'achievement' => $achievement->getAssoc()
-        ]);
-    } else {
-        returnError("Update failed. No changes detected or an error occurred.", 500);
+
+    } catch (Exception $e) {
+        error_log("Achievement update error: " . $e->getMessage());
+        returnError("An error occurred while updating the achievement: " . $e->getMessage(), 500);
     }
 }
+
 
 else if($action === 'addAchievement') {
     // Ensure achievement data exists
@@ -312,37 +294,6 @@ else if($action === 'addAchievement') {
     }
     if (isset($achievementInfo['info'])) {
         $achievement->setInfo($achievementInfo['info']);
-    }
-    if (isset($achievementInfo['date'])) {
-        $achievement->setDate($achievementInfo['date']); // Expected format: YYYY-MM-DD
-    }
-    
-    // Process file upload if a file was provided
-    if (isset($_FILES['file']) && $_FILES['file']['error'] === UPLOAD_ERR_OK) {
-        // Define the upload directory (adjust the path as needed)
-        $uploadDir = __DIR__ . '/../public/achievements/';
-        
-        // Create the directory if it doesn't exist
-        if (!is_dir($uploadDir)) {
-            mkdir($uploadDir, 0755, true);
-        }
-        
-        // Get a sanitized version of the filename
-        $filename = basename($_FILES['file']['name']);
-        
-        // Set the target file path
-        $targetFile = $uploadDir . $filename;
-        
-        // Move the uploaded file to the target directory
-        if (move_uploaded_file($_FILES['file']['tmp_name'], $targetFile)) {
-            // Update the achievement record with the new filename
-            $achievement->setImg($filename);
-        } else {
-            returnError("Failed to upload file.", 500);
-        }
-    } else if (isset($achievementInfo['img'])) {
-        // If no new file is uploaded, update with the provided img value if any
-        $achievement->setImg($achievementInfo['img']);
     }
     
     // Insert the new achievement record

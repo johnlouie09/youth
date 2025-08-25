@@ -10,15 +10,14 @@ class Achievement extends Model
     protected static $basic_columns = ['id', 'title', 'subtitle','info', 'date'];
 
     /** properties */
-    protected $sk_official_id   = 0;
-    protected $sk_official_name = '';
-    protected $title            = '';
-    protected $subtitle         = '';
-    protected $info             = '';
-    protected $img              = '';
-    protected $date             = '';
-
-    protected $sk_official_img       = '';
+    protected $sk_official_id       = 0;
+    protected $sk_official_name     = '';
+    protected $title                = '';
+    protected $subtitle             = '';
+    protected $info                 = '';
+    protected $thumbnail_id         = 0;
+    protected $sk_official_comment  = '';
+    protected $sk_official_img      = '';
     protected $sk_official_position  = '';
 
 
@@ -91,24 +90,22 @@ class Achievement extends Model
         return $this->info;
     }
 
-
     /**
-     * Gets Achievement img.
-     * @return string
+     * Gets Achievement thumbnailId.
+     * @return int
      */
-    public function getImg()
+    public function getThumbnailId()
     {
-        return $this->img;
+        return $this->thumbnail_id;
     }
 
-
     /**
-     * Gets Achievement date.
+     * Gets Achievement skOfficialComment.
      * @return string
      */
-    public function getDate()
+    public function getSkOfficialComment()
     {
-        return $this->date;
+        return $this->sk_official_comment;
     }
 
 
@@ -186,28 +183,25 @@ class Achievement extends Model
         $this->info = $info;
     }
 
-
     /**
-     * Sets Achievement img.
-     * @param $img
+     * Sets Achievement thumbnail_id.
+     * @param $thumbnail_id
      * @return void
      */
-    public function setImg($img)
+    public function setThumbnailId($thumbnail_id)
     {
-        $this->img = $img;
+        $this->thumbnail_id = $thumbnail_id;
     }
-
 
     /**
-     * Sets Achievement date.
-     * @param $date
+     * Sets Achievement sk_official_comment.
+     * @param $sk_official_comment
      * @return void
      */
-    public function setDate($date)
+    public function setSkOfficialComment($sk_official_comment)
     {
-        $this->date = $date;
+        $this->sk_official_comment = $sk_official_comment;
     }
-
 
     /**
      * Sets SK Official's image.
@@ -253,7 +247,8 @@ class Achievement extends Model
 
 
     /**
-     * Retrieves all Achievement records, optionally filtering by SK Official.
+     * Retrieves all Achievement records, optionally filtering by SK Official,
+     * and includes related achievement_date records.
      *
      * @param bool $assoc
      * @param bool $assoc_basic
@@ -262,13 +257,13 @@ class Achievement extends Model
      */
     public static function all(bool $assoc = false, bool $assoc_basic = false, ?SkOfficial $skOfficial = null): array
     {
-        // join achievements (a) with sk_officials (s) to get the official's full_name
+        // Base query: achievements + SK official details
         $query = "SELECT a.*,
-                      s.full_name AS sk_official_name,
-                      s.img AS sk_official_img,
-                      s.position AS sk_official_position
-                  FROM `" . self::$table . "` a
-                  JOIN sk_officials s ON a.sk_official_id = s.id";
+                        s.full_name AS sk_official_name,
+                        s.img AS sk_official_img,
+                        s.position AS sk_official_position
+                FROM `" . self::$table . "` a
+                JOIN sk_officials s ON a.sk_official_id = s.id";
         $params = [];
         $types = "";
 
@@ -282,19 +277,41 @@ class Achievement extends Model
         if (!empty($params)) {
             $stmt->bind_param($types, ...$params);
         }
+
         $stmt->execute();
         $result = $stmt->get_result();
         $achievements = [];
+
         while ($row = $result->fetch_assoc()) {
             $achievement = new Achievement();
             $row['sk_official_name'] = $row['sk_official_name'] ?? '';
             $achievement->setSkOfficialImg($row['sk_official_img'] ?? '');
             $achievement->setSkOfficialPosition($row['sk_official_position'] ?? '');
-            $achievement->hydrate($row); // this calls setSkOfficialName internally
-            $achievements[] = $assoc ? $achievement->getAssoc($assoc_basic) : $achievement;
+            $achievement->hydrate($row);
+
+            if ($assoc) {
+                $data = $achievement->getAssoc($assoc_basic);
+
+                // ✅ Fetch achievement dates
+                require_once __DIR__ . '/AchievementDate.php';
+                $dates = AchievementDate::getByAchievement($row['id'], true);
+                $data['dates'] = array_map(function ($dt) {
+                    return [
+                        'id'             => $dt['id'],
+                        'achievementId'  => $dt['achievement_id'],
+                        'date'           => $dt['date'],
+                    ];
+                }, $dates);
+
+                $achievements[] = $data;
+            } else {
+                $achievements[] = $achievement;
+            }
         }
+
         return $achievements;
     }
+
 
 
     /**
@@ -410,8 +427,8 @@ class Achievement extends Model
      */
     public function insert(): bool
     {
-        $stmt = $this->getConnection()->prepare("INSERT INTO `" . self::$table . "` (`sk_official_id`, `title`, `subtitle`, `info`, `img`, `date`) VALUES (?, ?, ?, ?, ?, ?)");
-        $stmt->bind_param("isssss", $this->sk_official_id, $this->title, $this->subtitle, $this->info, $this->img, $this->date);
+        $stmt = $this->getConnection()->prepare("INSERT INTO `" . self::$table . "` (`sk_official_id`, `title`, `subtitle`, `info`) VALUES (?, ?, ?, ?, ?, ?)");
+        $stmt->bind_param("isss", $this->sk_official_id, $this->title, $this->subtitle, $this->info);
         $stmt->execute();
         if ($stmt->affected_rows > 0) {
             $this->setId($stmt->insert_id);
@@ -429,8 +446,8 @@ class Achievement extends Model
      */
     public function update(): bool
     {
-        $stmt = $this->getConnection()->prepare("UPDATE `" . self::$table . "` SET `sk_official_id` = ?, `title` = ?, `subtitle` = ?, `info` = ?, `img` = ?, `date` = ? WHERE `id` = ?");
-        $stmt->bind_param("isssssi", $this->sk_official_id, $this->title, $this->subtitle, $this->info, $this->img, $this->date, $this->id);
+        $stmt = $this->getConnection()->prepare("UPDATE `" . self::$table . "` SET `sk_official_id` = ?, `title` = ?, `subtitle` = ?, `info` = ?, `thumbnail_id` = ?,  `sk_official_comment` = ? WHERE `id` = ?");
+        $stmt->bind_param("isssisi", $this->sk_official_id, $this->title, $this->subtitle, $this->info, $this->thumbnail_id, $this->sk_official_comment, $this->id);
         $stmt->execute();
         return $stmt->affected_rows > 0;
     }
@@ -449,4 +466,99 @@ class Achievement extends Model
         $stmt->execute();
         return $stmt->affected_rows > 0;
     }
+
+
+    /**
+     * Update achievement dates
+     *
+     * @param array $dates
+     * @return bool
+     * @throws Exception
+     */
+    public function updateDates(array $dates): bool
+    {
+        require_once __DIR__ . '/AchievementDate.php';
+
+        $achievementId = $this->getId();
+        if (!$achievementId) {
+            throw new Exception("Cannot update dates: Achievement ID not set.");
+        }
+
+        // If no dates provided, delete all
+        if (empty($dates)) {
+            $existingDates = AchievementDate::getByAchievement($achievementId);
+            foreach ($existingDates as $dt) {
+                $delDt = new AchievementDate($dt->getId());
+                if ($delDt->delete()) {
+                    error_log("✅ Deleted date ID {$dt->getId()} for achievement {$achievementId} (empty array case)");
+                } else {
+                    error_log("❌ Failed to delete date ID {$dt->getId()} for achievement {$achievementId}");
+                }
+            }
+            return true;
+        }
+
+        // --- Sync logic ---
+        $existingDates = AchievementDate::getByAchievement($achievementId);
+        $existingMap   = [];
+        foreach ($existingDates as $dt) {
+            $existingMap[$dt->getId()] = $dt;
+        }
+
+        $usedIds = [];
+
+        foreach ($dates as $dt) {
+            if (empty($dt['date'])) {
+                error_log("⚠️ Skipping date with empty value for achievement {$achievementId}");
+                continue;
+            }
+
+            if (!empty($dt['id']) && isset($existingMap[$dt['id']])) {
+                // Update existing
+                $ad = new AchievementDate($dt['id']);
+                $ad->setAchievementId($achievementId);
+                $ad->setDate($dt['date']);
+
+                if ($ad->update()) {
+                    $usedIds[] = $dt['id'];
+                    error_log("✅ Updated date ID {$dt['id']} for achievement {$achievementId}");
+                } else {
+                    error_log("❌ Failed to update date ID {$dt['id']} for achievement {$achievementId}");
+                }
+            } else {
+                // Insert new
+                $ad = new AchievementDate();
+                $ad->setAchievementId($achievementId);
+                $ad->setDate($dt['date']);
+
+                if ($ad->insert()) {
+                    $newId = $ad->getId(); // ensure your AchievementDate::insert() sets the ID
+                    if ($newId) {
+                        $usedIds[] = $newId;
+                    }
+                    error_log("✅ Inserted new date for achievement {$achievementId} ({$dt['date']})");
+                } else {
+                    error_log("❌ Failed to insert new date for achievement {$achievementId}");
+                }
+            }
+        }
+
+        // Delete dates not in the new list
+        foreach ($existingMap as $id => $dt) {
+            if (!in_array($id, $usedIds)) {
+                $delDt = new AchievementDate($id);
+                if ($delDt->delete()) {
+                    error_log("🗑️ Deleted date ID $id for achievement {$achievementId}");
+                } else {
+                    error_log("❌ Failed to delete date ID $id for achievement {$achievementId}");
+                }
+            }
+        }
+
+        return true;
+    }
+
+
+    
+
 }

@@ -11,7 +11,7 @@ export default {
         return {
             hoverIndex: null,
             editingIndex: null,
-            achievements: {},
+            achievements: [],
             personalAchievements: [],
             // Controls the visibility of the new achievement form
             showNewAchievement: false
@@ -53,6 +53,7 @@ export default {
                 },
                 success: (data) => {
                     this.achievements = data.data.achievements;
+                    console.log(data.data.achievements);
                 },
                 error: (jqXHR, textStatus, errorThrown) => {
                     console.error("Error:", textStatus, errorThrown);
@@ -153,7 +154,7 @@ export default {
                     </article>
 
                     <v-card class="w-[80%] d-flex items-center ga-1 px-5 mb-5 elevation-5">
-                        <v-avatar :image="(achievement.sk_official_img ? ($store.getters.base + '/OfficialImages/' + achievement.sk_official_img) : ($store.getters.base + '/OfficialImages/no-avatar.png'))" size="50"></v-avatar>
+                        <v-avatar :image="(achievement.sk_official_img ? ($store.getters.base + 'public/OfficialImages/' + achievement.sk_official_img) : ($store.getters.base + 'public/OfficialImages/no-avatar.png'))" size="50"></v-avatar>
                         <v-card-text class="d-flex flex-col">
                             <span class="text-sm">Hon. {{ achievement.sk_official_name }}</span>
                             <span class="uppercase text-xs">{{ achievement.sk_official_position }}</span>
@@ -171,7 +172,7 @@ export default {
                     <!-- Edit Achievement Form (shown for updating an achievement) -->
                     <FormAchievement
                         v-if="editingIndex === index"
-                        :action="'updating-main'"
+                        :action="'updating'"
                         :achievement="achievement"
                         @close="editingIndex = null"
                         @fetchInfo="fetchBarangayAchievements"
@@ -194,7 +195,7 @@ export default {
         <FormAchievement
             v-if="showNewAchievement"
             :achievement="{ sk_official_id: id }"
-            :action="'adding-main'"
+            :action="'adding'"
             @close="showNewAchievement = false"
             @fetchInfo="fetchBarangayAchievements"
         />

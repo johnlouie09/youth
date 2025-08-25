@@ -315,6 +315,14 @@ else if ($action === 'update-announcement') {
             ? $announcementInfo['datetimes'] 
             : [];
 
+        if (empty($datetimes)) {
+            require_once __DIR__ . '/models/AnnouncementDatetime.php';
+            AnnouncementDatetime::deleteByAnnouncement($announcementId);
+        } else {
+            $announcement->updateWithDatetimes($datetimes);
+        }
+
+
         if ($announcement->updateWithDatetimes($datetimes)) {
             returnSuccess([
                 'message' => 'Announcement updated successfully.',
