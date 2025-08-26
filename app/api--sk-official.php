@@ -247,13 +247,95 @@ else if ($action === 'updateAchievement') {
             $achievement->updateDates($dates);
         }
 
+        // --- IMAGE HANDLING ---
+        $uploadDir = __DIR__ . '/../public/Achievements/';
+        if (!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);
+
+        $achievementId = $achievement->getId();
+        $existingImages = AchievementImage::getByachievement($achievementId, true);
+
+        $incomingImages = $achievementInfo['images'] ?? [];
+        $incomingIds = array_filter(array_map(fn($img) => $img['id'] ?? null, $incomingImages));
+
+        // Delete images not in payload
+        foreach ($existingImages as $existing) {
+            if (!in_array($existing['id'], $incomingIds)) {
+                $imgObj = new AchievementImage($existing['id']);
+                $imgObj->delete();
+                $filePath = $uploadDir . $existing['img'];
+                if (file_exists($filePath)) unlink($filePath);
+            }
+        }
+
+        // ✅ Map tempIds for new uploads
+        $tempIdMap = [];
+
+        if (!empty($_FILES['files']) && isset($_FILES['files']['name'])) {
+            for ($i = 0; $i < count($_FILES['files']['name']); $i++) {
+                if ($_FILES['files']['error'][$i] === UPLOAD_ERR_OK) {
+                    $originalName = basename($_FILES['files']['name'][$i]);
+                    $filename = uniqid() . "_" . $originalName; // ✅ prevent overwrite
+                    $targetFile = $uploadDir . $filename;
+
+                    if (move_uploaded_file($_FILES['files']['tmp_name'][$i], $targetFile)) {
+                        $img = new AchievementImage();
+                        $img->setAchievementId($achievementId);
+                        $img->setImg($filename);
+                        $img->insert();
+
+                        $newImageId = $img->getId();
+
+                        // ✅ Find matching tempId from payload
+                        if (!empty($achievementInfo['images'])) {
+                            foreach ($achievementInfo['images'] as $imgInfo) {
+                                if (empty($imgInfo['id']) && !empty($imgInfo['tempId'])) {
+                                    // first unassigned tempId gets mapped
+                                    $tempIdMap[$imgInfo['tempId']] = $newImageId;
+                                    break;
+                                }
+                            }
+                        }
+                    } else {
+                        error_log("❌ Failed to move uploaded file: " . $_FILES['files']['name'][$i]);
+                    }
+                }
+            }
+        }
+
+        // ✅ Resolve thumbnail (updates should respect null)
+        $thumbnailImageId = null;
+
+        if (!empty($achievementInfo['thumbnail_tempId']) && isset($tempIdMap[$achievementInfo['thumbnail_tempId']])) {
+            $thumbnailImageId = $tempIdMap[$achievementInfo['thumbnail_tempId']];
+        } elseif (array_key_exists('thumbnail_id', $achievementInfo)) {
+            // Respect explicit null or a real id
+            $thumbnailImageId = $achievementInfo['thumbnail_id'] ?: null;
+        }
+
+        if ($thumbnailImageId !== null) {
+            $achievement->setThumbnailId($thumbnailImageId);
+            $achievement->updateThumbnail();
+        } else {
+            // ✅ If explicitly null, clear it in DB
+            $achievement->setThumbnailId(null);
+            $achievement->updateThumbnail();
+        }
+
+
+
+        if ($thumbnailImageId !== null) {
+            $achievement->setThumbnailId($thumbnailImageId);
+            $achievement->updateThumbnail();
+        }
+
 
 
         if ($achievement->updateDates($dates)) {
             returnSuccess([
                 'message'     => 'Achievement updated successfully.',
                 'achievement' => $achievement->getAssoc(true),
-                'dates'       => AchievementDate::getByAchievement($achievementId, true)
+                'dates'       => AchievementDate::getByAchievement($achievementId, true),
+                'images'      => AchievementImage::getByAchievement($achievementId, true)     
             ]);
         } else {
             returnError("Achievement update failed. Check server logs.", 500);
@@ -280,7 +362,7 @@ else if ($action === 'addAchievement') {
         returnError('Invalid Achievement Information Format.', 400);
     }
 
-    // Required field
+    // Required fields
     if (empty($achievementInfo['sk_official_id'])) {
         returnError('SK Official ID is required.', 400);
     }
@@ -298,21 +380,80 @@ else if ($action === 'addAchievement') {
         if (isset($achievementInfo['info'])) $achievement->setInfo($achievementInfo['info']);
         if (isset($achievementInfo['sk_official_comment'])) $achievement->setSkOfficialComment($achievementInfo['sk_official_comment']);
 
-        // ✅ Insert first
+        // ✅ Insert first (so we have an ID)
         if ($achievement->insert()) {
+            $achievementId = $achievement->getId();
+
+            // ✅ Handle dates
             $dates = isset($achievementInfo['dates']) && is_array($achievementInfo['dates'])
                 ? $achievementInfo['dates']
                 : [];
 
-            // ✅ Sync dates
             if (!empty($dates)) {
                 $achievement->updateDates($dates);
             }
 
+            // --- IMAGE HANDLING ---
+            $uploadDir = __DIR__ . '/../public/Achievements/';
+            if (!is_dir($uploadDir)) mkdir($uploadDir, 0755, true);
+
+            $incomingImages = $achievementInfo['images'] ?? [];
+            $incomingIds = array_filter(array_map(fn($img) => $img['id'] ?? null, $incomingImages));
+            $tempIdMap = [];
+
+            if (!empty($_FILES['files']) && isset($_FILES['files']['name'])) {
+                for ($i = 0; $i < count($_FILES['files']['name']); $i++) {
+                    if ($_FILES['files']['error'][$i] === UPLOAD_ERR_OK) {
+                        $originalName = basename($_FILES['files']['name'][$i]);
+                        $filename = uniqid() . "_" . $originalName; // ✅ prevent overwrite
+                        $targetFile = $uploadDir . $filename;
+
+                        if (move_uploaded_file($_FILES['files']['tmp_name'][$i], $targetFile)) {
+                            $img = new AchievementImage();
+                            $img->setAchievementId($achievementId);
+                            $img->setImg($filename);
+                            $img->insert();
+
+                            $newImageId = $img->getId();
+
+                            // ✅ Match to tempId from payload
+                            if (!empty($achievementInfo['images'])) {
+                                foreach ($achievementInfo['images'] as $imgInfo) {
+                                    if (empty($imgInfo['id']) && !empty($imgInfo['tempId'])) {
+                                        $tempIdMap[$imgInfo['tempId']] = $newImageId;
+                                        break;
+                                    }
+                                }
+                            }
+                        } else {
+                            error_log("❌ Failed to upload file: " . $_FILES['files']['name'][$i]);
+                        }
+                    }
+                }
+            }
+
+            // ✅ Resolve thumbnail only if explicitly set
+            $thumbnailImageId = null;
+
+            if (!empty($achievementInfo['thumbnail_tempId']) && isset($tempIdMap[$achievementInfo['thumbnail_tempId']])) {
+                $thumbnailImageId = $tempIdMap[$achievementInfo['thumbnail_tempId']];
+            } elseif (!empty($achievementInfo['thumbnail_id'])) {
+                $thumbnailImageId = $achievementInfo['thumbnail_id'];
+            }
+
+            if ($thumbnailImageId !== null) {
+                $achievement->setThumbnailId($thumbnailImageId);
+                $achievement->updateThumbnail();
+            }
+
+
+            // ✅ Final response
             returnSuccess([
                 'message'     => 'Achievement added successfully.',
                 'achievement' => $achievement->getAssoc(true),
-                'dates'       => AchievementDate::getByAchievement($achievement->getId(), true)
+                'dates'       => AchievementDate::getByAchievement($achievementId, true),
+                'images'      => AchievementImage::getByAchievement($achievementId, true),
+                'tempIdMap'   => $tempIdMap // frontend can map tempId → real ID
             ]);
         } else {
             returnError("Insert failed. An error occurred.", 500);
@@ -323,6 +464,7 @@ else if ($action === 'addAchievement') {
         returnError("An error occurred while adding the achievement: " . $e->getMessage(), 500);
     }
 }
+
 
 else if ($action === 'deleteAchievement') {
     // Ensure an ID is provided

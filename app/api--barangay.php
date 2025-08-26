@@ -193,7 +193,6 @@ else if ($action === 'add-announcement') {
 }
 
 else if ($action === 'update-announcement') {
-
     // Check if Announcement Info Exist
     if (!isset($_POST['announcementInfo'])) {
         returnError('Invalid announcement information received.', 400);

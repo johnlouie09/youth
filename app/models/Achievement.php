@@ -16,7 +16,7 @@ class Achievement extends Model
     protected $title                = '';
     protected $subtitle             = '';
     protected $info                 = '';
-    protected $thumbnail_id         = 0;
+    protected ?int $thumbnail_id = null;
     protected $sk_official_comment  = '';
     protected $sk_official_img      = '';
     protected $sk_official_position  = '';
@@ -592,6 +592,23 @@ class Achievement extends Model
         }
 
         return true;
+    }
+
+    public function updateThumbnail(): bool
+    {
+        $stmt = $this->getConnection()->prepare("
+            UPDATE `achievements` 
+            SET `thumbnail_id` = ? 
+            WHERE `id` = ?
+        ");
+
+        if (!$stmt) {
+            throw new Exception("Failed to prepare statement: " . $this->getConnection()->error);
+        }
+
+        $stmt->bind_param("ii", $this->thumbnail_id, $this->id);
+
+        return $stmt->execute();
     }
 
 
