@@ -56,8 +56,7 @@ class SkOfficial extends Model
             }
         }
     }
-
-
+    
     /**
      * Gets SkOfficial barangay_id.
      * @return int

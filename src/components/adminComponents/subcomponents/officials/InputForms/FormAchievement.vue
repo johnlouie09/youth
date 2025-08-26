@@ -401,7 +401,6 @@ export default {
 
                 <!-- Achievement SK Official Selector -->
                 <v-select
-                    v-if="action ==='adding-main' || action === 'updating-main'"
                     class="w-full"
                     v-model="achievementInfo.sk_official_name"
                     :items="officialNamesList"

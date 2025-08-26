@@ -194,10 +194,13 @@ else if ($action === 'add-announcement') {
 
 else if ($action === 'update-announcement') {
 
+    // Check if Announcement Info Exist
     if (!isset($_POST['announcementInfo'])) {
         returnError('Invalid announcement information received.', 400);
     }
 
+
+    // Check if the announcementInfo from frontend is an array and if not convert it
     $announcementInfo = is_array($_POST['announcementInfo']) 
         ? $_POST['announcementInfo'] 
         : json_decode($_POST['announcementInfo'], true);
@@ -206,18 +209,13 @@ else if ($action === 'update-announcement') {
         returnError('Invalid announcement information format.', 400);
     }
 
+
     // Required fields validation
     if (empty($announcementInfo['id'])) {
         returnError('Announcement ID is required for update.', 400);
     }
     if (!isset($announcementInfo['barangay_id'])) {
         returnError('Barangay ID is required.', 400);
-    }
-    if (empty($announcementInfo['title'])) {
-        returnError('Announcement title is required.', 400);
-    }
-    if (empty($announcementInfo['description'])) {
-        returnError('Announcement description is required.', 400);
     }
 
     $announcementInfo['is_featured'] = $announcementInfo['is_featured'] ?? 0;
@@ -236,6 +234,11 @@ else if ($action === 'update-announcement') {
         if (isset($announcementInfo['who'])) $announcement->setWho($announcementInfo['who']);
         if (isset($announcementInfo['where'])) $announcement->setWhere($announcementInfo['where']);
         if (isset($announcementInfo['why'])) $announcement->setWhy($announcementInfo['why']);
+
+        // ✅ persist changes to announcements table
+        if (!$announcement->update()) {
+            returnError("Failed to update announcement record.", 500);
+        }
 
         // --- IMAGE HANDLING ---
         $uploadDir = __DIR__ . '/../public/Announcements/';
@@ -316,7 +319,6 @@ else if ($action === 'update-announcement') {
             : [];
 
         if (empty($datetimes)) {
-            require_once __DIR__ . '/models/AnnouncementDatetime.php';
             AnnouncementDatetime::deleteByAnnouncement($announcementId);
         } else {
             $announcement->updateWithDatetimes($datetimes);

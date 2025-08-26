@@ -427,15 +427,27 @@ class Achievement extends Model
      */
     public function insert(): bool
     {
-        $stmt = $this->getConnection()->prepare("INSERT INTO `" . self::$table . "` (`sk_official_id`, `title`, `subtitle`, `info`) VALUES (?, ?, ?, ?, ?, ?)");
-        $stmt->bind_param("isss", $this->sk_official_id, $this->title, $this->subtitle, $this->info);
-        $stmt->execute();
-        if ($stmt->affected_rows > 0) {
+        $stmt = $this->getConnection()->prepare("
+            INSERT INTO `" . self::$table . "` 
+            (`sk_official_id`, `title`, `subtitle`, `info`, `thumbnail_id`, `sk_official_comment`) 
+            VALUES (?, ?, ?, ?, ?, ?)
+        ");
+        $stmt->bind_param("isssis", 
+            $this->sk_official_id, 
+            $this->title, 
+            $this->subtitle, 
+            $this->info, 
+            $this->thumbnail_id, 
+            $this->sk_official_comment
+        );
+
+        if ($stmt->execute()) {
             $this->setId($stmt->insert_id);
             return true;
         }
         return false;
     }
+
 
 
     /**

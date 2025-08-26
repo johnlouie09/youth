@@ -6,6 +6,7 @@ if (!defined('__BASE')) { exit(); }
 /** imports */
 require_once __DIR__ . '/models/SkOfficial.php';
 require_once __DIR__ .'/models/Achievement.php';
+require_once __DIR__ .'/models/AchievementDate.php';
 require_once __DIR__ .'/models/SkEducation.php';
 /** Extract Action */
 $action = $_GET['a'] ?? '';
@@ -233,15 +234,22 @@ else if ($action === 'updateAchievement') {
         if (isset($achievementInfo['sk_official_comment'])) $achievement->setSkOfficialComment($achievementInfo['sk_official_comment']);
 
         $achievementId = $achievement->getId();
+        $achievement->update();
 
         // ✅ Handle dates with new helper
         $dates = isset($achievementInfo['dates']) && is_array($achievementInfo['dates'])
             ? $achievementInfo['dates']
             : [];
 
-        $success = $achievement->update() && $achievement->updateDates($dates);
+        if(empty($dates)) {
+            AchievementDate::deleteByAchievement($achievementId);
+        } else {
+            $achievement->updateDates($dates);
+        }
 
-        if ($success) {
+
+
+        if ($achievement->updateDates($dates)) {
             returnSuccess([
                 'message'     => 'Achievement updated successfully.',
                 'achievement' => $achievement->getAssoc(true),
@@ -259,51 +267,60 @@ else if ($action === 'updateAchievement') {
 }
 
 
-else if($action === 'addAchievement') {
-    // Ensure achievement data exists
+else if ($action === 'addAchievement') {
     if (!isset($_POST['achievementInfo'])) {
         returnError('Invalid Achievement Information Received.', 400);
     }
-    
-    // Decode JSON if needed (if sent via FormData, it may be a JSON string)
-    $achievementInfo = is_array($_POST['achievementInfo']) 
-        ? $_POST['achievementInfo'] 
+
+    $achievementInfo = is_array($_POST['achievementInfo'])
+        ? $_POST['achievementInfo']
         : json_decode($_POST['achievementInfo'], true);
-    
+
     if (!$achievementInfo) {
         returnError('Invalid Achievement Information Format.', 400);
     }
-    
-    // Ensure required field(s) exist - for example, SK Official ID is required
-    if (!isset($achievementInfo['sk_official_id'])) {
+
+    // Required field
+    if (empty($achievementInfo['sk_official_id'])) {
         returnError('SK Official ID is required.', 400);
     }
-    
-    // Create a new Achievement object
-    $achievement = new Achievement();
-    
-    // Set fields if provided
-    if (isset($achievementInfo['sk_official_id'])) {
+    if (empty($achievementInfo['title'])) {
+        returnError('Achievement title is required.', 400);
+    }
+
+    try {
+        $achievement = new Achievement();
+
+        // ✅ Set fields
         $achievement->setSkOfficialId($achievementInfo['sk_official_id']);
-    }
-    if (isset($achievementInfo['title'])) {
         $achievement->setTitle($achievementInfo['title']);
-    }
-    if (isset($achievementInfo['subtitle'])) {
-        $achievement->setSubtitle($achievementInfo['subtitle']);
-    }
-    if (isset($achievementInfo['info'])) {
-        $achievement->setInfo($achievementInfo['info']);
-    }
-    
-    // Insert the new achievement record
-    if ($achievement->insert()) {
-        returnSuccess([
-            'message' => 'Achievement added successfully.',
-            'achievement' => $achievement->getAssoc()
-        ]);
-    } else {
-        returnError("Insert failed. An error occurred.", 500);
+        if (isset($achievementInfo['subtitle'])) $achievement->setSubtitle($achievementInfo['subtitle']);
+        if (isset($achievementInfo['info'])) $achievement->setInfo($achievementInfo['info']);
+        if (isset($achievementInfo['sk_official_comment'])) $achievement->setSkOfficialComment($achievementInfo['sk_official_comment']);
+
+        // ✅ Insert first
+        if ($achievement->insert()) {
+            $dates = isset($achievementInfo['dates']) && is_array($achievementInfo['dates'])
+                ? $achievementInfo['dates']
+                : [];
+
+            // ✅ Sync dates
+            if (!empty($dates)) {
+                $achievement->updateDates($dates);
+            }
+
+            returnSuccess([
+                'message'     => 'Achievement added successfully.',
+                'achievement' => $achievement->getAssoc(true),
+                'dates'       => AchievementDate::getByAchievement($achievement->getId(), true)
+            ]);
+        } else {
+            returnError("Insert failed. An error occurred.", 500);
+        }
+
+    } catch (Exception $e) {
+        error_log("Achievement add error: " . $e->getMessage());
+        returnError("An error occurred while adding the achievement: " . $e->getMessage(), 500);
     }
 }
 
