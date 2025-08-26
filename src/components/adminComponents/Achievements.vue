@@ -141,7 +141,11 @@ export default {
                 >
                     <!-- Achievement Image -->
                     <img
-                        :src="`/achievements/${achievement.img}`"
+                        :src="achievement.img 
+                        ? ($store.getters.base + 'public/achievements/' + achievement.img)
+                        : ($store.getters.base + 'public/achievements/no-avatar.png')"
+
+
                         alt=""
                         class="elevation-5 w-full max-h-[225px] rounded-t-lg"
                     />

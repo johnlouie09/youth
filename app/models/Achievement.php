@@ -1,6 +1,7 @@
 <?php
 
 require_once __DIR__ . '/Model.php';
+require_once __DIR__ . '/AchievementImage.php';
 
 class Achievement extends Model
 {
@@ -291,6 +292,7 @@ class Achievement extends Model
 
             if ($assoc) {
                 $data = $achievement->getAssoc($assoc_basic);
+                
 
                 // ✅ Fetch achievement dates
                 require_once __DIR__ . '/AchievementDate.php';
@@ -302,6 +304,28 @@ class Achievement extends Model
                         'date'           => $dt['date'],
                     ];
                 }, $dates);
+
+                // Fetch Images
+                $images = AchievementImage::getByAchievement($row['id'], true);
+                $data['images'] = array_map(function ($img) {
+                    return [
+                        'id'    => $img['id'],
+                        'achievementId' => $img['achievement_id'],
+                        'img'  => $img['img']
+                    ];
+                }, $images);
+
+                // ✅ Use thumbnail_id if available
+                if (!empty($row['thumbnail_id'])) {
+                    $thumbnail = array_filter($data['images'], function ($img) use ($row) {
+                        return $img['id'] == $row['thumbnail_id'];
+                    });
+                    $thumbnail = reset($thumbnail);
+                    $data['img'] = $thumbnail ? $thumbnail['img'] : (!empty($data['images']) ? $data['images'][0]['img'] : '');
+                } else {
+                    // fallback to first image
+                    $data['img'] = !empty($data['images']) ? $data['images'][0]['img'] : '';
+                }
 
                 $achievements[] = $data;
             } else {

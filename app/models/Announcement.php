@@ -1,6 +1,7 @@
 <?php
 
 require_once __DIR__ . '/Model.php';
+require_once __DIR__ . '/AnnouncementImage.php';
 
 class Announcement extends Model
 {
@@ -264,7 +265,7 @@ class Announcement extends Model
                 }, $datetimes);
 
                 // ✅ Fetch images
-                require_once __DIR__ . '/AnnouncementImage.php';
+             
                 $images = AnnouncementImage::getByAnnouncement($row['id'], true);
                 $data['images'] = array_map(function ($img) {
                     return [
