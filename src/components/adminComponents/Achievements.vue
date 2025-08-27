@@ -12,7 +12,7 @@ export default {
             hoverIndex: null,
             editingIndex: null,
             achievements: [],
-            allAchievements: [], // store unfiltered list
+            allAchievements: [],
             personalAchievements: [],
             showNewAchievement: false,
             

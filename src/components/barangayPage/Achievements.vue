@@ -1,8 +1,24 @@
 <template>
-
     <!-- Achievements Card -->
-    <v-container fluid class="achievement-main pa-0 ma-0 mb-15 d-flex flex-col ga-15">
+    <v-container fluid class="pa-0 ma-0 mb-15 d-flex flex-col justify-start items-center ga-5">
         <h1 class="gradient-text font-black uppercase">Achievements</h1>
+
+        <!-- Achievement Sorting Selector -->
+        <v-tabs v-model="selectedAchievementSort" grow class="my-5">
+            <div class="grid grid-cols-2 ga-5">
+                <v-tab value='all' class="border rounded-md col-span-1">ALL</v-tab>
+                <v-tab value="month" class="border rounded-md col-span-1">
+                    <v-select
+                        v-model="selectedMonth"
+                        class="border rounded-md w-full"
+                        :items="items"
+                        density="comfortable"
+                        hide-details
+                    />
+                </v-tab>
+            </div>
+        </v-tabs>
+
         <div class="achievements">
             <v-card
                 v-for="(achievement, index) in achievements" :key="index"
@@ -40,38 +56,43 @@
     </v-container>
 
     <!-- Achievement Dialog -->
-    <v-dialog v-model=showAchievementDetails width="1100px" height="95vh">
-        <v-sheet class="hella rounded-3xl" style="border-radius: 2rem; overflow: hidden;"> 
+    <v-dialog v-model=showAchievementDetails width="1100px" max-height="95vh">
+        <v-card class="hella rounded-3xl overflow-y-auto" style="border-radius: 2rem;"> 
 
             <!-- Achievement Images Slideshow -->
-            <div ref="swiperContainer" class="swiper mySwiper w-[95%] h-[45%]">
-                <div class="swiper-wrapper">
-                    <div class="swiper-slide" v-for="n of 10">
-                        <img 
-                            :src="achievementDetails.img 
-                                    ? ($store.getters.base + 'public/achievements/' + achievementDetails.img) 
-                                    : ($store.getters.base + 'public/achievements/exx.jpg')"
-                            style="border-radius: .5rem; width: 611px; height: 314px;"
-                            cover
-                        ></img>
+            <div class="w-full">
+                <div ref="swiperContainer" class="swiper mySwiper">
+                    <div class="swiper-wrapper">
+                        <div class="swiper-slide" v-for="(image, index) in achievementDetails.images">
+                            <img 
+                                :src="image.img
+                                        ? ($store.getters.base + 'public/achievements/' + image.img) 
+                                        : ($store.getters.base + 'public/achievements/no-avatar.png')"
+                                style="border-radius: .5rem; height: 300px;"
+                                contain
+                            ></img>
+                        </div>
                     </div>
                 </div>
             </div>
 
 
+
             <!-- Achievement Details -->
-            <div class="w-full h-[40%] d-flex flex-col justify-around items-center gap-1" style="font-family: 'Inter', sans-serif;">
-                <div class="d-flex flex-col justify-center items-center ga-2">
+            <div class="w-full d-flex flex-col justify-around items-center gap-1" style="font-family: 'Inter', sans-serif;">
+                <div class="w-full d-flex flex-col justify-center items-center ga-1 border-b py-3 relative">
                     <h2 class='uppercase text-2xl font-extrabold'>{{ achievementDetails.title }}</h2>
-                    <h3 class="capitalize w-[55%] text-sm text-center italic font-light">{{ achievementDetails.subtitle }} Lorem, ipsum dolor sit amet consectetur adipisicing elit. Veniam rem dolorum quam! Odio t. Veniam rem dolorum quam! </h3>
-                    <h3 class="font-bold text-xs">{{ formatDate(achievementDetails.date) }}</h3>
+                    <h3 class="capitalize w-[55%] text-sm text-center italic font-light">{{ achievementDetails.subtitle }}</h3>
+                    <div class="absolute right-0 bottom-0 pa-2">
+                        <p class="italic text-xs font-light" v-for="(date, index) in achievementDetails.dates">{{ formatDate(date.date) }}</p>
+                    </div>
                 </div>
 
-                <p class="w-full h-[60%] text-base text-center overflow-y-auto my-2 px-2 py-4 rounded-md">{{ achievementDetails.info }} Lorem, ipsum dolor sit amet consectetur adipisicing elit. Et exercitationem perferendis voluptates at. Qui, repudiandae fuga expedita possimus nisi necessitatibus consequuntur molestiae quisquam doloribus, culpa ipsum esse numquam eos. Sint. Lorem ipsum dolor sit amet consectetur adipisicing elit. Atque ducimus nobis iusto explicabo, voluptatem quae. Commodi rem, officiis, rerum veritatis autem pariatur delectus voluptatibus nobis nam, consectetur animi nihil necessitatibus?</p>
+                <p class="w-full text-base text-center my-2 px-2 py-4 rounded-md">{{ achievementDetails.info }}</p>
             </div>
 
             <!-- SK Official Comments -->
-            <v-sheet class="h-[16%] w-[90%] d-flex ga-8 items-center px-10 py-5 elevation-10">
+            <v-sheet class="w-[90%] d-flex ga-8 items-center px-10 py-5 elevation-10">
                 <div class="d-flex flex-col justify-center items-center ga-2 w-auto">
                     <v-avatar                         
                     :image="achievementDetails.sk_official_img
@@ -84,10 +105,10 @@
 
                 <div class="d-flex flex-col justify-center ga-1 h-full">
                     <h3 class="font-bold text-sm">Hon. {{ achievementDetails.sk_official_name }}</h3>
-                    <p class="italic font-extralight text-sm overflow-y-auto h-full">"As SK Chairperson, I am proud of the successful launch of the Adolescent Health Forum, which empowered our youth with knowledge, encouraged open dialogue, and reinforced our commitment to promoting their overall well-being and development."</p>
+                    <p class="italic font-extralight text-sm overflow-y-auto h-full">{{ achievementDetails.sk_official_comment }}</p>
                 </div>
             </v-sheet>
-        </v-sheet>
+        </v-card>
     </v-dialog>
 
 </template>
@@ -112,9 +133,14 @@ export default {
         return {
             myBarangayId: this.barangayId,
             achievements: [],  // Initialize as an array, not a string.
+            allAchievements: [], // store unfiltered list
 
             showAchievementDetails: false,
-            achievementDetails: []
+            achievementDetails: [],
+
+            items: [],
+            selectedAchievementSort: 'all',  
+            selectedMonth: 'Select a Month' // ✅ default value
         };
     },
     methods: {
@@ -146,7 +172,10 @@ export default {
                     barangayId: this.myBarangayId,
                 },
                 success: (data) => {
-                    this.achievements = data.data.achievements;
+                    this.allAchievements = data.data.achievements; // ✅ keep original
+                    this.achievements = [...this.allAchievements]; // show all initially
+                    this.populateMonths();
+
                 },
                 error: (jqXHR, textStatus, errorThrown) => {
                     console.error("Error:", textStatus, errorThrown);
@@ -162,6 +191,74 @@ export default {
                 }
             });
         },
+
+        populateMonths() {
+            const monthYearSet = new Set();
+
+            this.achievements.forEach(achievement => {
+                if (achievement.dates && Array.isArray(achievement.dates)) {
+                    achievement.dates.forEach(d => {
+                        if (d.date) {
+                            // Convert '2025,07,25' → Date object
+                            const parts = d.date.split('-');
+                            const date = new Date(parts[0], parts[1] - 1, parts[2]);
+
+                            // Format "April 2002"
+                            const monthYear = date.toLocaleDateString('en-US', {
+                                month: 'long',
+                                year: 'numeric'
+                            });
+
+                            monthYearSet.add(monthYear);
+                        }
+                    });
+                }
+            });
+
+            // Convert Set → Array of strings like "April 2002"
+            this.items = Array.from(monthYearSet).sort((a, b) => {
+                // Parse back into Date for sorting
+                const [monthA, yearA] = a.split(' ');
+                const [monthB, yearB] = b.split(' ');
+                const dateA = new Date(`${monthA} 1, ${yearA}`);
+                const dateB = new Date(`${monthB} 1, ${yearB}`);
+                return dateB - dateA; // latest first
+            });
+
+            // Add "Select a Month" at the beginning
+            this.items.unshift('Select a Month');
+
+            console.log("📅 Available Months:", this.items);
+        },
+
+        
+        filterAchievementsByMonth(monthYear) {
+            if (!monthYear || monthYear === 'Select a Month') {
+                // Reset back to all
+                this.achievements = [...this.allAchievements];
+                return;
+            }
+
+            this.achievements = this.allAchievements.filter(achievement => {
+                if (!achievement.dates) return false;
+
+                return achievement.dates.some(d => {
+                    if (!d.date) return false;
+
+                    // Parse "2025-07-25" or "2025,07,25"
+                    const parts = d.date.includes('-') ? d.date.split('-') : d.date.split(',');
+                    const date = new Date(parts[0], parts[1] - 1, parts[2]);
+
+                    const formatted = date.toLocaleDateString('en-US', {
+                        month: 'long',
+                        year: 'numeric'
+                    });
+
+                    return formatted === monthYear;
+                });
+            });
+        },
+
         showAchievement(achievement){
             this.showAchievementDetails = true;
             this.achievementDetails = { ... achievement };
@@ -223,7 +320,20 @@ export default {
                 }
             },
             immediate: true
+        },
+        selectedAchievementSort(newVal) {
+            if (newVal === 'all') {
+                this.achievements = [...this.allAchievements];
+            } else if (newVal === 'month' && this.selectedMonth && this.selectedMonth !== 'Select a Month') {
+                this.filterAchievementsByMonth(this.selectedMonth);
+            }
+        },
+        selectedMonth(newVal) {
+            if (this.selectedAchievementSort === 'month') {
+                this.filterAchievementsByMonth(newVal);
+            }
         }
+
     },
     computed: {
         baseUrl() {
@@ -239,9 +349,11 @@ export default {
 .hella {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: start;
     align-items: center;
     padding: 3rem 4rem;
+    position: relative;
+    gap: 1rem;
 }
 
 .achievements {
@@ -302,8 +414,7 @@ article {
 
 
 .swiper {
-    width: 100%;
-    height: 314px;
+    width: 95%;
 }
 
 .swiper-slide {
