@@ -182,30 +182,8 @@ class AchievementDate extends Model
         return parent::getAssoc($basic);
     }
 
-    /**
-     * Get available Year-Month values
-     */
-    public static function getAvailableYearMonths(): array
-    {
-        $db = self::getConnectionStatic();
 
-        $sql = "
-            SELECT DISTINCT DATE_FORMAT(date, '%Y-%m') AS year_month
-            FROM " . self::$table . "
-            ORDER BY date DESC
-        ";
 
-        $stmt = $db->prepare($sql);
-        $stmt->execute();
-        $result = $stmt->get_result();
-
-        $yearMonths = [];
-        while ($row = $result->fetch_assoc()) {
-            $yearMonths[] = $row['year_month'];
-        }
-
-        return $yearMonths;
-    }
 
 
 }

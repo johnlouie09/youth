@@ -12,11 +12,16 @@ export default {
             hoverIndex: null,
             editingIndex: null,
             achievements: [],
+            allAchievements: [], // store unfiltered list
             personalAchievements: [],
-            // Controls the visibility of the new achievement form
-            showNewAchievement: false
+            showNewAchievement: false,
+            
+            items: [],
+            selectedAchievementSort: 'all',  
+            selectedMonth: 'Select a Month' // ✅ default value
         };
     },
+
     methods: {
         /**
         * Set the editing index for a given achievement.
@@ -42,9 +47,7 @@ export default {
             $.ajax({
                 url: `${this.$store.getters.api_base}?e=barangay&a=achievements`,
                 type: 'POST',
-                xhrFields: {
-                    withCredentials: true
-                },
+                xhrFields: { withCredentials: true },
                 headers: {
                     'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
                 },
@@ -52,20 +55,84 @@ export default {
                     barangayId: this.$store.getters['auth/getBarangayId'],
                 },
                 success: (data) => {
-                    this.achievements = data.data.achievements;
-                    console.log(data.data.achievements);
+                    this.allAchievements = data.data.achievements; // ✅ keep original
+                    this.achievements = [...this.allAchievements]; // show all initially
+                    this.populateMonths();
                 },
                 error: (jqXHR, textStatus, errorThrown) => {
                     console.error("Error:", textStatus, errorThrown);
-                    let errorMsg = "An error occurred while processing your request.";
-                    if (jqXHR.responseJSON && jqXHR.responseJSON.error) {
-                        errorMsg = jqXHR.responseJSON.message;
-                    } else if (jqXHR.responseText) {
-                        errorMsg = jqXHR.responseText;
-                    }
                 }
             });
         },
+
+        filterAchievementsByMonth(monthYear) {
+            if (!monthYear || monthYear === 'Select a Month') {
+                // Reset back to all
+                this.achievements = [...this.allAchievements];
+                return;
+            }
+
+            this.achievements = this.allAchievements.filter(achievement => {
+                if (!achievement.dates) return false;
+
+                return achievement.dates.some(d => {
+                    if (!d.date) return false;
+
+                    // Parse "2025-07-25" or "2025,07,25"
+                    const parts = d.date.includes('-') ? d.date.split('-') : d.date.split(',');
+                    const date = new Date(parts[0], parts[1] - 1, parts[2]);
+
+                    const formatted = date.toLocaleDateString('en-US', {
+                        month: 'long',
+                        year: 'numeric'
+                    });
+
+                    return formatted === monthYear;
+                });
+            });
+        },
+
+
+
+        populateMonths() {
+            const monthYearSet = new Set();
+
+            this.achievements.forEach(achievement => {
+                if (achievement.dates && Array.isArray(achievement.dates)) {
+                    achievement.dates.forEach(d => {
+                        if (d.date) {
+                            // Convert '2025,07,25' → Date object
+                            const parts = d.date.split('-');
+                            const date = new Date(parts[0], parts[1] - 1, parts[2]);
+
+                            // Format "April 2002"
+                            const monthYear = date.toLocaleDateString('en-US', {
+                                month: 'long',
+                                year: 'numeric'
+                            });
+
+                            monthYearSet.add(monthYear);
+                        }
+                    });
+                }
+            });
+
+            // Convert Set → Array of strings like "April 2002"
+            this.items = Array.from(monthYearSet).sort((a, b) => {
+                // Parse back into Date for sorting
+                const [monthA, yearA] = a.split(' ');
+                const [monthB, yearB] = b.split(' ');
+                const dateA = new Date(`${monthA} 1, ${yearA}`);
+                const dateB = new Date(`${monthB} 1, ${yearB}`);
+                return dateB - dateA; // latest first
+            });
+
+            // Add "Select a Month" at the beginning
+            this.items.unshift('Select a Month');
+
+            console.log("📅 Available Months:", this.items);
+        },
+
 
         /**
         * Shows a confirmation dialog for deletion and, if confirmed,
@@ -111,16 +178,30 @@ export default {
         }
     },
     created() {
-        this.fetchBarangayAchievements();
+        this.fetchBarangayAchievements(); 
+    },
+    computed : {
+
     },
     watch: {
-
+        selectedAchievementSort(newVal) {
+            if (newVal === 'all') {
+                this.achievements = [...this.allAchievements];
+            } else if (newVal === 'month' && this.selectedMonth && this.selectedMonth !== 'Select a Month') {
+                this.filterAchievementsByMonth(this.selectedMonth);
+            }
+        },
+        selectedMonth(newVal) {
+            if (this.selectedAchievementSort === 'month') {
+                this.filterAchievementsByMonth(newVal);
+            }
+        }
     }
 };
 </script>
 
 <template>
-    <v-card class="achievements-section">
+    <v-container class="achievements-section">
         <!-- Title Section -->
         <v-card-title class="title d-flex items-center justify-center ma-5">
             <v-icon class="mr-3" size="75">mdi-trophy</v-icon>
@@ -128,13 +209,30 @@ export default {
             <v-icon class="ml-3" size="75">mdi-trophy</v-icon>
         </v-card-title>
 
+        <!-- Achievement Sorting Selector -->
+        <v-tabs v-model="selectedAchievementSort" grow class="my-5">
+            <div class="grid grid-cols-2 ga-5 w-full">
+                <v-tab value='all' class="border rounded-md col-span-1">ALL</v-tab>
+                <v-tab value="month" class="border rounded-md col-span-1">
+                    <v-select
+                        v-model="selectedMonth"
+                        class="border rounded-md w-full"
+                        :items="items"
+                        density="comfortable"
+                        hide-details
+                    />
+                </v-tab>
+            </div>
+        </v-tabs>
+        
+
         <!-- Achievements List -->
         <div class="achievements-cards">
             <v-container class="d-flex flex-row flex-wrap justify-evenly p-5 pt-0 gap-10">
                 <v-card
                     v-for="(achievement, index) in achievements"
                     :key="index"
-                    class="achievement-card w-[30%] min-w-[250px] rounded-lg d-flex flex-col justify-start items-center overflow-hidden pb-10"
+                    class="achievement-card w-[30%] min-w-[250px] rounded-lg d-flex flex-col justify-start items-center pb-10"
                     elevation="5"
                     @mouseover="hoverIndex = index"
                     @mouseleave="hoverIndex = null"
@@ -203,7 +301,7 @@ export default {
             @close="showNewAchievement = false"
             @fetchInfo="fetchBarangayAchievements"
         />
-    </v-card>
+    </v-container>
 </template>
 
 <style scoped>
@@ -217,25 +315,22 @@ export default {
 
 /* Other existing styles */
 .achievements-section {
+    padding: 2rem 0rem;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: start;
     align-items: center;
-    width: 100%;
-    border-radius: 1rem;
-    padding: 2rem 0;
     gap: 1rem;
+    width: 100%;
 }
 
 .achievements-cards {
     padding: 1rem 2rem;
     width: 90%;
-    height: 90vh;
     display: flex;
     align-items: flex-start;
     justify-content: space-evenly;
     flex-wrap: wrap;
-    overflow-y: scroll;
 }
 
 .achievement-card-actions {

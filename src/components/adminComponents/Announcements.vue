@@ -236,21 +236,19 @@ export default {
         </div>
 
         <v-tabs v-model="selectedAnnouncementSort" grow class="my-5">
-        <div class="grid grid-cols-3 ga-5 w-full">
-            <v-tab value='all' class="border rounded-md col-span-1">ALL</v-tab>
-            <v-tab value='featured' class="border rounded-md col-span-1">FEATURED</v-tab>
-            <v-tab value="month" class="border rounded-md col-span-1">
-                <v-select
-                    v-model="selectedMonth"
-                    class="border rounded-md w-full"
-                    :items="items"
-                    density="comfortable"
-                    hide-details
-                />
-            </v-tab>
-
-
-        </div>
+            <div class="grid grid-cols-3 ga-5 w-full">
+                <v-tab value='all' class="border rounded-md col-span-1">ALL</v-tab>
+                <v-tab value='featured' class="border rounded-md col-span-1">FEATURED</v-tab>
+                <v-tab value="month" class="border rounded-md col-span-1">
+                    <v-select
+                        v-model="selectedMonth"
+                        class="border rounded-md w-full"
+                        :items="items"
+                        density="comfortable"
+                        hide-details
+                    />
+                </v-tab>
+            </div>
         </v-tabs>
 
 

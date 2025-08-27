@@ -819,6 +819,19 @@ else if ($action === 'deleteOfficial') {
     }
 }
 
+
+// Get available year-months for Achievements
+else if ($action === 'achievements-available-year-months') {
+    $barangayId = $_POST['barangayId'] ?? null;
+
+    $yearMonths = AchievementDate::getAvailableYearMonths(
+        $barangayId ? (int)$barangayId : null
+    );
+
+    returnSuccess([
+        'yearMonths' => $yearMonths
+    ]);
+}
 /** Invalid Request *******************************************/
 else
 {
