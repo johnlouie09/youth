@@ -137,7 +137,6 @@ export default {
                 { menuName: "Officials", icon: "mdi-account-group", to: `/admin/${this.barangaySlug}/officials`},
                 { menuName: "Announcements", icon: "mdi-bullhorn", to: `/admin/${this.barangaySlug}/announcements`},
                 { menuName: "Achievements", icon: "mdi-trophy", to: `/admin/${this.barangaySlug}/achievements`},
-                { menuName: "Youth Request", icon: "mdi-bell", to: `/admin/${this.barangaySlug}/youth-request`},
                 { menuName: "Settings and Profile", icon: "mdi-cog", to: `/admin/${this.barangaySlug}/settings` },
             ];
         },

@@ -1,6 +1,6 @@
 <script>
 import { VDateInput } from 'vuetify/lib/labs/components.mjs';
-import FormAnnouncement from './subcomponents/FormAnnouncement.vue';
+import FormAnnouncement from './subcomponents/inputForms/FormAnnouncement.vue';
 import $ from 'jquery';
 
 export default {

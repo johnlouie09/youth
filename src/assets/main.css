@@ -1,8 +1,5 @@
 @import "tailwindcss";
 
-
-
-
 :root {
     --background-color: #121212;
     --text-color: #000000;
@@ -22,34 +19,6 @@ body {
     transition: background-color 0.3s, color 0.3s;
 }
 
-.custom-cardss {
-    position: relative;
-    overflow: hidden;
-    transition: border 0.3s ease-in-out;
-    border-radius: 10px;
-}
-
-/* Pseudo-element for gradient border effect */
-.custom-cardss::before {
-    content: "";
-    border-radius: 10px;
-    position: absolute;
-    inset: 0;
-    padding: 3px;
-    background: linear-gradient(45deg, #3772FF, #DF2935, #FDCA40);
-    -webkit-mask:
-            linear-gradient(white 0 0) content-box,
-            linear-gradient(white 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    transition: opacity 0.3s ease-in-out;
-    opacity: 0; /* Initially hidden */
-}
-
-/* Show gradient border on hover */
-.custom-cardss:hover::before {
-    opacity: 1;
-}
 
 .gradient-text {
     background-image: linear-gradient(to right, #3772FF 30%, #DF2935 50%, #FDCA40 70%);
@@ -57,6 +26,27 @@ body {
     -webkit-text-fill-color: transparent;
     text-align: center;
 }
+
+
+.custom-border {
+    transition: all 0.3s ease-in-out;
+    position: relative;
+}
+
+.custom-border::before {
+    content: "";
+    inset: 0;
+    background: linear-gradient(45deg, #3772FF, #DF2935, #FDCA40);
+
+    -webkit-mask:
+            linear-gradient(white 0 0) content-box,
+            linear-gradient(white 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+
+    opacity: 1; /* Set initial opacity to 0 */
+}
+
 
 .faq-title {
     font-size: 1.5rem;

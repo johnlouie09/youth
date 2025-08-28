@@ -1,5 +1,5 @@
 <script>
-import FormAchievement from './subcomponents/officials/InputForms/FormAchievement.vue';
+import FormAchievement from './subcomponents/inputForms/FormAchievement.vue';
 import $ from 'jquery';
 
 export default {

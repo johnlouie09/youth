@@ -24,7 +24,7 @@
                 v-for="(achievement, index) in achievements" :key="index"
                 class="card custom-card elevation-10"
             >
-                <img :src="`/achievements/${achievement.img}`" alt="" class="w-full max-h-[225px] elevation-10">
+                <img :src="achievement.img ? ($store.getters.base + 'public/achievements/' + achievement.img) : ($store.getters.base + 'public/achievements/no-avatar.png')" alt="" class="w-full max-h-[225px] elevation-10">
 
                 <article class="relative pb-5">
                     <h3 class="text-lg uppercase font-extrabold">{{ achievement.title }}</h3>
