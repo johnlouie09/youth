@@ -1,8 +1,9 @@
 <template>
     <v-card class="educational-section" elevation="5">
-        <v-card-title class="title d-flex align-center justify-center">
-            <v-icon class="me-2" size="30">mdi-account-circle</v-icon>
-            <h2 class="mb-0">EDUCATIONAL BACKGROUND</h2>
+        <v-card-title class="w-[90%] d-flex align-center justify-center ga-5 border-b py-3">
+            <v-icon size="40">mdi-school</v-icon>
+            <h2 class="font-extrabold text-2xl">EDUCATIONAL BACKGROUND</h2>
+            <v-icon size="40">mdi-school</v-icon>
         </v-card-title>
 
         <div class="educational-cards">
@@ -17,10 +18,10 @@
             >
                 <div class="educational-details">
                     <v-avatar 
-                    :image="(item.school_logo ? ($store.getters.base + 'public/schoolLogos/' + item.school_logo) : ($store.getters.base + 'public/schoolLogos/no-avatar.svg'))" size="80" elevation="3"></v-avatar>
+                    :image="(item.institution_logo ? ($store.getters.base + 'public/schoolLogos/' + item.institution_logo) : ($store.getters.base + 'public/schoolLogos/no-avatar.svg'))" size="80" elevation="3"></v-avatar>
                     <article>
-                        <h2 class="uppercase text-lg font-extrabold">{{ item.school_name }}</h2>
-                        <p class="text-base">{{ item.course }}</p>
+                        <h2 class="uppercase text-lg font-extrabold">{{ item.institution }}</h2>
+                        <p class="text-base">{{ item.course_or_details }}</p>
                         <h3 class="text-sm font-italic">{{ item.start_year }} - {{ item.end_year}}</h3>
                     </article>
                 </div>
@@ -165,6 +166,7 @@ export default {
     display: flex;
     flex-direction: column;
     justify-content: center;
+    align-items: center;
     width: 75%;
     border-radius: 1rem;
     padding: 2rem 0;

@@ -12,7 +12,7 @@ export default {
       initialEducationInfo: {},
       educationInfo: {},
       years: Array.from({ length: 50 }, (_, i) => (currentYear - i).toString()),
-      educationLevels: [],
+      educationTypeNames: [],
       // Flag to track if changes have been made
       hasChanges: false,
       // For file upload handling
@@ -41,6 +41,7 @@ export default {
       this.filePreview = null;
       this.hasChanges = false;
     },
+
     closeForm() {
       this.dialog = false;
       this.$emit('close');
@@ -69,36 +70,10 @@ export default {
         reader.readAsDataURL(file);
       }
     },
-    // Fetch education levels from the API
-    fetchEducationLevel() {
-      $.ajax({
-        url: `${this.$store.getters['api_base']}?e=education-level&a=fetchEducationLevel`,
-        type: 'GET',
-        xhrFields: { withCredentials: true },
-        success: (data) => {
-          this.educationLevels = data.data.educationLevel;
-          console.log("Education Level Fetched Successfully", data.data.educationLevel);
-          // Once education levels are fetched, update the education level name if an id exists.
-          this.updateEducationLevelName();
-        },
-        error: (jqXHR, textStatus, errorThrown) => {
-          console.error("Error:", textStatus, errorThrown);
-        }
-      });
-    },
-    // Update the educationInfo.educational_level_name based on education_level_id.
-    updateEducationLevelName() {
-      if (this.educationInfo.education_level_id) {
-        const level = this.educationLevels.find(item => item.id === this.educationInfo.education_level_id);
-        if (level) {
-          this.educationInfo.educational_level_name = level.name;
-          // Update the initial copy so that it contains the new name.
-          this.initialEducationInfo = { ...this.educationInfo };
-        }
-      }
-    },
-    // AJAX method for updating an education record.
+
+    // AJAX Request Methods
     updateEducation() {
+      // AJAX method for updating an education record.
       const formData = new FormData();
       formData.append("educationInfo", JSON.stringify(this.educationInfo));
       if (this.file) {
@@ -126,8 +101,9 @@ export default {
         }
       });
     },
-    // AJAX method for adding a new education record.
+    
     addEducation() {
+      // AJAX method for adding a new education record.
       const formData = new FormData();
       formData.append("educationInfo", JSON.stringify(this.educationInfo));
       if (this.file) {
@@ -156,11 +132,24 @@ export default {
         }
       });
     },
-    // Helper method: returns the education level id for a given name.
-    findEducationalLevelIdByName(name) {
-      const level = this.educationLevels.find(item => item.name === name);
-      return level ? level.id : null;
-    }
+
+    fetchEducationTypes() {
+      // Fetch education types from the API
+      $.ajax({
+        url: `${this.$store.getters['api_base']}?e=education-type&a=fetchEducationTypes`,
+        type: 'GET',
+        xhrFields: { withCredentials: true },
+        success: (data) => {
+          this.educationTypeNames = data.data.educationTypes;
+          
+        },
+        error: (jqXHR, textStatus, errorThrown) => {
+          console.error("Error:", textStatus, errorThrown);
+        }
+      });
+    },
+
+    
   },
   computed: {
     // Create an array of education level names from the educationLevels array.
@@ -206,7 +195,7 @@ export default {
     // Initialize local copies from the prop and fetch education levels.
     this.educationInfo = { ...this.education };
     this.initialEducationInfo = { ...this.educationInfo };
-    this.fetchEducationLevel();
+    this.fetchEducationTypes();
   }
 };
 </script>
@@ -215,22 +204,22 @@ export default {
 <template>
     <v-dialog v-model="dialog" max-width="900px" persistent>
       <v-card class="card w-full" elevation="10">
-        <!-- Title Section -->
-        <div class="d-flex items-center justify-center gap-2">
-          <h3 v-if="action === 'updating'" class="gradient-text text-2xl font-extrabold">
-            UPDATE EDUCATION
-          </h3>
-          <h3 v-if="action === 'adding'" class="gradient-text text-2xl font-extrabold">
-            ADD NEW EDUCATION
-          </h3>
-        </div>
+        
+        <!-- Title Section -->  
+        <h3 class="w-full text-center pt-5 text-2xl font-extrabold">
+        {{ action === 'updating' ? 'UPDATING EDUCATION' : 'ADD EDUCATION' }}
+        <v-divider class="my-2"></v-divider>
+        </h3>
+
+
   
         <div class="d-flex flex-col items-center justify-center gap-5 w-full">
           <!-- Image Container -->
           <div class="image-container">
             <v-avatar
-              :image="filePreview || (educationInfo.school_logo ? ($store.getters.base + 'public/schoolLogos/' + educationInfo.school_logo) : ($store.getters.base + 'public/schoolLogos/favicon.ico'))"
+              :image="filePreview || (educationInfo.institution_logo ? ($store.getters.base + 'public/schoolLogos/' + educationInfo.institution_logo) : ($store.getters.base + 'public/schoolLogos/no-avatar.svg'))"
               size="150"
+              class="elavation-5"
             />
             <v-btn class="upload-icon" icon @click="triggerFileInput">
               <v-icon>mdi-camera</v-icon>
@@ -246,27 +235,40 @@ export default {
           
           <!-- Form Fields -->
           <article class="w-[90%]">
-            <v-text-field
-              class="w-full text-lg"
-              v-model="educationInfo.school_name"
-              label="School Name"
-              variant="outlined"
-              required
-            />
-            <v-text-field
-              class="w-full text-lg"
-              v-model="educationInfo.course"
-              label="Course or Details"
-              variant="outlined"
-              required
-            />
-            <!-- Education Level Select -->
             <v-select
-              v-model="educationInfo.educational_level_name"
-              :items="educationLevelNames"
-              label="Select Educational Level"
-              outlined
+              v-model="educationInfo.educational_type"
+              :items="educationTypeNames"
+              label="Education Type"
+              variant="outlined"
+              required>
+            </v-select>
+
+            <v-text-field
+              class="w-full text-lg"
+              v-model="educationInfo.institution"
+              :label="educationInfo.educational_type === 'Formal Education' ? 'School Name' : 'Institution Name'"
+              variant="outlined"
+              required
             />
+
+            <v-text-field
+              class="w-full text-lg"
+              v-model="educationInfo.course_or_details"
+              :label="educationInfo.educational_type === 'Formal Education' ? 'Degree or Course' : 'Seminar or Training Title'"
+              variant="outlined"
+              required
+            />
+
+              <v-text-field
+              class="w-full text-lg"
+              v-model="educationInfo.educational_achievements"
+              :label="educationInfo.educational_type === 'Formal Education' ? 'Educational Achievements' : 'Seminar or Training Achievements'"
+              label="Educational Achievement"
+              variant="outlined"
+              required
+            />
+
+
             <!-- Year Selects -->
             <div class="d-flex gap-10">
               <v-select

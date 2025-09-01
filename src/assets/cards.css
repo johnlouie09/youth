@@ -21,6 +21,7 @@
 .custom-card:hover::before {
     opacity: 1; /* Show the gradient when hovering */
 }
+
 .card-image {
     position: absolute;
     top: 50%;

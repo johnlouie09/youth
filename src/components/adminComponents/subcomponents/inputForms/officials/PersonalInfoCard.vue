@@ -153,9 +153,7 @@
 
   <!-- Personal Information Section -->
   <v-card 
-  :class="{ 'custom-border' : hasChanges }"
-  class="personal-info w-[60%] d-flex flex-col justify-center items-center ga-5" 
-  
+  class="personal-info custom-border w-[60%] d-flex flex-col justify-center items-center ga-5" 
   elevation="5">
     <!-- Official Image and Motto Card -->
     <v-card justify="center" class="intro pa-4 info-card">
@@ -196,14 +194,14 @@
     </v-card>
 
     <!-- Title Section -->
-    <v-card-title class="d-flex align-center justify-center ga-5">
+    <v-card-title class="w-full d-flex align-center justify-center ga-5 border-b py-5">
       <v-icon size="40">mdi-account-circle</v-icon>
       <h2 class="font-extrabold text-2xl">PERSONAL INFORMATION</h2>
       <v-icon size="40">mdi-account-circle</v-icon>
     </v-card-title>
 
     <!-- Form Section -->
-    <v-card-text class="w-[70%]">
+    <v-card-text class="w-[70%] py-5">
       <v-form>
         <!-- Full Name Field -->
         <v-text-field
@@ -236,24 +234,24 @@
           label="Birthdate"
           prepend-icon=""
           prepend-inner-icon="$calendar"
-          variant="solo"
+          variant="outlined"
         />
 
         <!-- Term Start and Term End Fields -->
-        <div class="flex justify-evenly">
+        <div class="flex justify-center ga-5">
           <v-date-input
             v-model="personalInfo.term_start"
             label="Term Start"
             prepend-icon=""
             prepend-inner-icon="$calendar"
-            variant="solo"
+            variant="outlined"
           />
           <v-date-input
             v-model="personalInfo.term_end"
             label="Term End"
             prepend-icon=""
             prepend-inner-icon="$calendar"
-            variant="solo"
+            variant="outlined"
           />
         </div>
       </v-form>
@@ -299,7 +297,7 @@
 /* Personal Info Card */
 .personal-info {
   border-radius: 2rem;
-  padding: 3rem 0rem;
+  padding: 3rem 1rem;
 }
 
 /* Form Spacing */

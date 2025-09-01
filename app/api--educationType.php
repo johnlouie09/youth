@@ -4,17 +4,17 @@
 if (!defined('__BASE')) { exit(); }
 
 /** imports */
-require_once __DIR__ . '/models/EducationLevel.php';
+require_once __DIR__ . '/models/SkEducation.php';
 
 /** Extract Action */
 $action = $_GET['a'] ?? '';
 
-if ($action === 'fetchEducationLevel')
+if ($action === 'fetchEducationTypes')
 {
     try {
-        $educationLevel = EducationLevel::all(true);
+        $educationTypes = SkEducation::fetchEducationTypes();
         returnSuccess([
-            'educationLevel' =>  $educationLevel
+            'educationTypes' =>  $educationTypes
         ]);
     }
     catch (Exception $e) {

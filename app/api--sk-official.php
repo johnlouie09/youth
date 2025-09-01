@@ -519,11 +519,11 @@ else if ($action === 'updateEducation') {
     }
 
     // Update fields if provided
-    if (isset($educationInfo['school_name'])) {
-        $education->setSchoolName($educationInfo['school_name']);
+    if (isset($educationInfo['institution'])) {
+        $education->setInstitution($educationInfo['institution']);
     }
-    if (isset($educationInfo['course'])) {
-        $education->setCourse($educationInfo['course']);
+    if (isset($educationInfo['course_or_details'])) {
+         $education->setCourseOrDetails($educationInfo['course_or_details']);
     }
     if (isset($educationInfo['start_year'])) {
         $education->setStartYear($educationInfo['start_year']);
@@ -531,8 +531,8 @@ else if ($action === 'updateEducation') {
     if (isset($educationInfo['end_year'])) {
         $education->setEndYear($educationInfo['end_year']);
     }
-    if (isset($educationInfo['education_level_id'])) {
-        $education->setEducationLevelId($educationInfo['education_level_id']);
+    if(isset($educationInfo['educational_achievements'])) {
+        $education->setEducationalAchievements($educationInfo['educational_achievements']);
     }
     if (isset($educationInfo['sk_official_id'])) {
         $education->setSkOfficialId($educationInfo['sk_official_id']);
@@ -557,13 +557,13 @@ else if ($action === 'updateEducation') {
         // Move the uploaded file to the target directory
         if (move_uploaded_file($_FILES['file']['tmp_name'], $targetFile)) {
             // Update the education record with the new school logo filename
-            $education->setSchoolLogo($filename);
+            $education->setInstitutionLogo($filename);
         } else {
             returnError("Failed to upload file.", 500);
         }
     } else if (isset($educationInfo['school_logo'])) {
         // If no new file is uploaded, update with the provided school_logo value if any
-        $education->setSchoolLogo($educationInfo['school_logo']);
+        $education->setInstitutionLogo($educationInfo['institution_logo']);
     }
 
     // Execute update
@@ -604,36 +604,39 @@ else if ($action === 'addEducation') {
     if (!isset($_POST['educationInfo'])) {
         returnError('Invalid education information received.', 400);
     }
-    
+
     // Decode JSON if needed (if sent via FormData, it may be a JSON string)
     $educationInfo = is_array($_POST['educationInfo']) 
         ? $_POST['educationInfo'] 
         : json_decode($_POST['educationInfo'], true);
-    
+
     if (!$educationInfo) {
         returnError('Invalid education information format.', 400);
     }
-    
-    // Ensure that required fields are provided; for adding, the primary key is auto-incremented.
+
+    // Ensure that required fields are provided
     if (!isset($educationInfo['sk_official_id'])) {
         returnError('SK Official ID is required.', 400);
     }
-    
+
     // Create a new Education record
     $education = new SkEducation();
-    
+
     // Set fields if provided
     if (isset($educationInfo['sk_official_id'])) {
         $education->setSkOfficialId($educationInfo['sk_official_id']);
     }
-    if (isset($educationInfo['education_level_id'])) {
-        $education->setEducationLevelId($educationInfo['education_level_id']);
+    if (isset($educationInfo['educational_type'])) {
+        $education->setEducationalType($educationInfo['educational_type']);
     }
-    if (isset($educationInfo['school_name'])) {
-        $education->setSchoolName($educationInfo['school_name']);
+    if (isset($educationInfo['institution'])) {
+        $education->setInstitution($educationInfo['institution']);
     }
-    if (isset($educationInfo['course'])) {
-        $education->setCourse($educationInfo['course']);
+    if (isset($educationInfo['course_or_details'])) {
+        $education->setCourseOrDetails($educationInfo['course_or_details']);
+    }
+    if (isset($educationInfo['educational_achievements'])) {
+        $education->setEducationalAchievements($educationInfo['educational_achievements']);
     }
     if (isset($educationInfo['start_year'])) {
         $education->setStartYear($educationInfo['start_year']);
@@ -641,35 +644,27 @@ else if ($action === 'addEducation') {
     if (isset($educationInfo['end_year'])) {
         $education->setEndYear($educationInfo['end_year']);
     }
-    
-    // Process file upload if a file was provided (for the school logo)
+
+    // Process file upload if a file was provided (for the institution logo)
     if (isset($_FILES['file']) && $_FILES['file']['error'] === UPLOAD_ERR_OK) {
-        // Define the upload directory (adjust the path as needed)
-        $uploadDir = __DIR__ . '/../public/OfficialImages/'; 
-        
-        // Create the directory if it doesn't exist
+        $uploadDir = __DIR__ . '/../public/schoolLogos/'; 
+
         if (!is_dir($uploadDir)) {
             mkdir($uploadDir, 0755, true);
         }
-        
-        // Get a sanitized version of the filename
+
         $filename = basename($_FILES['file']['name']);
-        
-        // Set the target file path
         $targetFile = $uploadDir . $filename;
-        
-        // Move the uploaded file to the target directory
+
         if (move_uploaded_file($_FILES['file']['tmp_name'], $targetFile)) {
-            // Update the education record with the new logo filename
-            $education->setSchoolLogo($filename);
+            $education->setInstitutionLogo($filename);
         } else {
             returnError("Failed to upload file.", 500);
         }
-    } else if (isset($educationInfo['school_logo'])) {
-        // If no new file is uploaded, update with the provided school_logo value if any
-        $education->setSchoolLogo($educationInfo['school_logo']);
+    } else if (isset($educationInfo['institution_logo'])) {
+        $education->setInstitutionLogo($educationInfo['institution_logo']);
     }
-    
+
     // Insert the new education record
     if ($education->insert()) {
         returnSuccess([
@@ -677,9 +672,10 @@ else if ($action === 'addEducation') {
             'education' => $education->getAssoc()
         ]);
     } else {
-        returnError("Insert failed. No changes detected or an error occurred.", 500);
+        returnError("Insert failed. An error occurred.", 500);
     }
 }
+
 
 
 

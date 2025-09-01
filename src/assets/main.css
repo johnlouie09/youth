@@ -44,7 +44,7 @@ body {
     -webkit-mask-composite: xor;
     mask-composite: exclude;
 
-    opacity: 1; /* Set initial opacity to 0 */
+    
 }
 
 
