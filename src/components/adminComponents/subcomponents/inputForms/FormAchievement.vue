@@ -185,19 +185,19 @@ export default {
                 contentType: false,
                 data: formData,
                 success: (data) => {
-                console.log("Data has been updated successfully", data);
-                // Convert date string back to a Date object for v-date-input
-                this.achievementInfo.date = new Date(this.achievementInfo.date);
-                // Update the original info to match current info
-                this.initialAchievementInfo = { ...this.achievementInfo };
-                this.hasChanges = false;
-                this.file = null;
-                this.filePreview = null;
-                // Emit an event to notify the parent that an update occurred
-                this.$emit("fetchInfo", true);
+                    console.log("Data has been updated successfully", data);
+                    // Convert date string back to a Date object for v-date-input
+                    this.achievementInfo.date = new Date(this.achievementInfo.date);
+                    // Update the original info to match current info
+                    this.initialAchievementInfo = { ...this.achievementInfo };
+                    this.hasChanges = false;
+                    this.file = null;
+                    this.filePreview = null;
+                    // Emit an event to notify the parent that an update occurred
+                    this.$emit("fetchInfo", true);
                 },
-                error: (jqXHR, textStatus, errorThrown) => {
-                console.error("Error:", textStatus, errorThrown);
+                    error: (jqXHR, textStatus, errorThrown) => {
+                    console.error("Error:", textStatus, errorThrown);
                 }
             });
         },

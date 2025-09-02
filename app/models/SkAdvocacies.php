@@ -2,7 +2,7 @@
 
 require_once __DIR__ . '/Model.php';
 
-class SkAdvocacy extends Model
+class SkAdvocacies extends Model
 {
     protected static $table = 'sk_advocacies';
     public    static $table_columns = [];
@@ -138,12 +138,17 @@ class SkAdvocacy extends Model
 
         $records = [];
         while ($row = $result->fetch_assoc()) {
-            $advocacy = new SkAdvocacy();
+            $advocacy = new SkAdvocacies();
             $advocacy->hydrate($row);
             $records[] = $assoc ? $advocacy->getAssoc($assoc_basic) : $advocacy;
         }
         return $records;
     }
+
+
+
+  
+    // -------------------- UTILITY FUNCTIONS --------------------
 
     /**
      * Get the SK Official linked to this advocacy

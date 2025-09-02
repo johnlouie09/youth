@@ -19,13 +19,14 @@
             ProgramForm,
             Dialogs
         },
+        emits: ['fetchOfficialInfo'],
         data() {
             return {
                 skOfficialSlug: this.$route.params.officialSlug,
                 officialInfos: {
                     personalInfo           : {},
                     educationalBackgrounds : [],
-                    achievements           : []
+                    achievements           : [],
                 }     
             }
         },
@@ -64,11 +65,11 @@
 
 <template>
     <v-container class="editing-official-main">
-        <PersonalInfoCard :info="officialInfos.personalInfo"></PersonalInfoCard>
+        <PersonalInfoCard :info="officialInfos.personalInfo" :id="officialInfos.personalInfo.id" @fetchOfficialInfo="fetchSkOfficialInfos"></PersonalInfoCard>
         <EducationalOfficial :educations="officialInfos.educationalBackgrounds" :id="officialInfos.personalInfo.id" @fetchOfficialInfo="fetchSkOfficialInfos"></EducationalOfficial>
         <PersonalAchievements :achievements="officialInfos.achievements" :id="officialInfos.personalInfo.id" @fetchOfficialInfo="fetchSkOfficialInfos"></PersonalAchievements>
-        <AdvocacyForm></AdvocacyForm>
-        <PlatformForm></PlatformForm>
+        <AdvocacyForm :advocacies="officialInfos.advocacies" :id="officialInfos.personalInfo.id" @fetchOfficialInfo="fetchSkOfficialInfos"></AdvocacyForm>
+        <PlatformForm :advocacies="officialInfos.advocacies" :platforms="officialInfos.platforms" @fetchOfficialInfo="fetchSkOfficialInfos"></PlatformForm>
         <ProgramForm></ProgramForm>
         <Dialogs />
         <!-- Button to Official Page in Admin -->

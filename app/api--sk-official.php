@@ -8,6 +8,8 @@ require_once __DIR__ . '/models/SkOfficial.php';
 require_once __DIR__ .'/models/Achievement.php';
 require_once __DIR__ .'/models/AchievementDate.php';
 require_once __DIR__ .'/models/SkEducation.php';
+require_once __DIR__ .'/models/SkAdvocacies.php';
+require_once __DIR__ .'/models/SkPlatforms.php';
 /** Extract Action */
 $action = $_GET['a'] ?? '';
 
@@ -60,7 +62,6 @@ else if ($action === 'session')
     }
 }
 
-/** Logout Request ********************************************/
 else if ($action === 'logout')
 {
     // get inputs
@@ -83,6 +84,10 @@ else if ($action === 'logout')
     ]);
 }
 
+
+
+
+//---------------------- SK Official Management API --------------------
 else if ($action === 'personalInfo') {
     // Use null coalescing to provide a default value
     $slug = $_POST['officialSlug'] ?? '';
@@ -103,7 +108,8 @@ else if ($action === 'personalInfo') {
         'personalInfo' => $official->getAssoc(),
         'educationalBackgrounds' => $official->getEducations(true),
         'achievements' => $official->getAchievements(true),
-        // 'advocacy' => $official->getAdvocacy()
+        'advocacies' => $official->getAdvocacies(),
+        'platforms' => $official->getPlatforms()
     ]);
 }
 
@@ -195,7 +201,9 @@ else if ($action === 'updatePersonalInfo') {
 }
 
 
-// SK Official Achievement
+
+
+// ---------------------- SK Official Achievement API --------------------
 else if ($action === 'updateAchievement') {
 
     if (!isset($_POST['achievementInfo'])) {
@@ -492,7 +500,10 @@ else if ($action === 'deleteAchievement') {
     }
 }
 
-// SK Official Education
+
+
+
+// ---------------------- SK Official Education API --------------------
 else if ($action === 'updateEducation') {
     // Ensure education data is provided
     if (!isset($_POST['educationInfo'])) {
@@ -680,6 +691,269 @@ else if ($action === 'addEducation') {
 
 
 
+// ---------------------- SK Official Advocacy API --------------------
+else if ($action === 'addAdvocacy') {
+    // Ensure advocacies data is provided
+    if (!isset($_POST['advocacyInfo']) || !isset($_POST['sk_official_id'])) {
+        returnError('Advocacy info and SK Official ID are required.', 400);
+    }
+
+    // Decode JSON if needed
+    $advocacy = is_array($_POST['advocacyInfo']) 
+        ? $_POST['advocacyInfo'] 
+        : json_decode($_POST['advocacyInfo'], true);
+
+    if (!is_array($advocacy)) {
+        returnError('Invalid advocacy format.', 400);
+    }
+
+    $sk_official_id = (int) $_POST['sk_official_id'];
+
+    // Create new advocacy instance
+    $skAdvocacy = new SkAdvocacies();
+    $skAdvocacy->setSkOfficialId($sk_official_id);
+    $skAdvocacy->setTitle($advocacy['title'] ?? '');
+    $skAdvocacy->setSubtitle($advocacy['subtitle'] ?? '');
+    $skAdvocacy->setDetail($advocacy['detail'] ?? '');
+
+    // Handle file upload
+    if (isset($_FILES['file']) && $_FILES['file']['error'] === UPLOAD_ERR_OK) {
+        $uploadDir = __DIR__ . '/../public/advocacyImages/'; 
+        $filename = time() . '_' . basename($_FILES['file']['name']); // unique filename
+        $targetFile = $uploadDir . $filename;
+
+        if (move_uploaded_file($_FILES['file']['tmp_name'], $targetFile)) {
+            $skAdvocacy->setThumbnail($filename);
+        } else {
+            returnError("Failed to upload file.", 500);
+        }
+    } else if (!empty($advocacy['thumbnail'])) {
+        $skAdvocacy->setThumbnail($advocacy['thumbnail']);
+    }
+
+    // Insert into DB
+    if ($skAdvocacy->insert()) {
+        returnSuccess([
+            'message' => 'Advocacy added successfully.',
+            'advocacy' => $skAdvocacy->getAssoc()
+        ]);
+    } else {
+        returnError("Failed to add advocacy.", 500);
+    }
+}
+
+else if ($action === 'updateAdvocacy') {
+    // Ensure advocacies data is provided
+    if (!isset($_POST['advocacyInfo']) || !isset($_POST['sk_official_id'])) {
+        returnError('Advocacies and SK Official ID are required.', 400);
+    }
+
+    // Decode JSON if needed (if sent via FormData, it may be a JSON string)
+    $advocacy = is_array($_POST['advocacyInfo']) 
+        ? $_POST['advocacyInfo'] 
+        : json_decode($_POST['advocacyInfo'], true);
+
+    if (!is_array($advocacy)) {
+        returnError('Invalid advocacies format.', 400);
+    }
+
+    $sk_official_id = $_POST['sk_official_id'];
+
+    // Fetch the SK Official to ensure they exist
+    $skAdvocacy = SkAdvocacies::findBy('id', $advocacy['id']);
+    if (!$skAdvocacy) {
+        returnError("No SK advocacy found with ID",404);
+    }
+
+    // Update the properties of the advocacy if provided
+    if(isset($advocacy['title'])) { $skAdvocacy->setTitle($advocacy['title']);}
+    if(isset($advocacy['subtitle'])) { $skAdvocacy->setSubtitle($advocacy['subtitle']);}
+    if(isset($advocacy['detail'])) { $skAdvocacy->setDetail($advocacy['detail']);}
+
+    // Upload the file to Directory in the Server
+    if(isset($_FILES['file']) && $_FILES['file']['error'] === UPLOAD_ERR_OK) {
+         // Define the upload directory (adjust path as needed)
+        $uploadDir = __DIR__ . '/../public/advocacyImages/'; 
+
+        // Get a sanitized version of the filename
+        $filename = basename($_FILES['file']['name']);
+
+        // Set the target file path
+        $targetFile = $uploadDir . $filename;
+
+        // Move the uploaded file to the target directory
+        if (move_uploaded_file($_FILES['file']['tmp_name'], $targetFile)) {
+            // Update the education record with the new school logo filename
+            $skAdvocacy->setThumbnail($filename);
+        } else {
+            returnError("Failed to upload file.", 500);
+        }
+    }
+    else if (isset($advocacy['thumbnail'])) {
+        // If no new file is uploaded, update with the provided school_logo value if any
+        $skAdvocacy->setThumbnail($advocacy['thumbnail']);
+    }
+
+
+
+    // Update advocacies
+    if ($skAdvocacy->update()) {
+        returnSuccess([
+            'message' => 'Advocacies updated successfully.',
+            'advocacies' => $skAdvocacy->getAssoc()
+        ]);
+    } else {
+        returnError("Failed to update advocacies.", 500);
+    }
+}
+
+else if ($action === 'deleteAdvocacy') {
+    // Ensure the advocacy ID is provided.
+    if (!isset($_POST['id'])) {
+        returnError('Advocacy ID is required.', 400);
+    }
+
+    $id = $_POST['id'];
+    // Fetch the advocacy from the database
+    $skAdvocacy = SkAdvocacies::findBy('id', $id);
+
+    if (!$skAdvocacy) {
+        returnError("No advocacy found with ID $id.", 404);
+    }
+
+    // Attempt to delete the advocacy.
+    if ($skAdvocacy->delete()) {
+        returnSuccess([
+            'message' => 'Advocacy deleted successfully.'
+        ]);
+    } else {
+        returnError("Failed to delete advocacy.", 500);
+    } 
+}
+
+
+
+
+// ---------------------- SK Official Platform API --------------------
+else if ($action === 'updatePlatform') {
+    // Ensure platform data is provided
+    if (!isset($_POST['platformInfo'])) {
+        returnError('Invalid Platform Information Received.', 400);
+    }
+
+    // Decode JSON if needed (if sent via FormData, it may be a JSON string)
+    $platformInfo = is_array($_POST['platformInfo']) 
+        ? $_POST['platformInfo'] 
+        : json_decode($_POST['platformInfo'], true);
+
+    if (!$platformInfo) {
+        returnError('Invalid Platform Information Format.', 400);
+    }
+
+    // Ensure ID exists
+    if (!isset($platformInfo['id'])) {
+        returnError('Platform ID is required.', 400);
+    }
+
+    // Fetch platform record from database using the provided ID
+    $platform = SkPlatforms::findBy('id', $platformInfo['id']);
+    if (!$platform) {
+        returnError("No platform record found with ID " . $platformInfo['id'], 404);
+    }
+
+    // Update fields if provided
+    if (isset($platformInfo['title'])) {
+        $platform->setTitle($platformInfo['title']);
+    }
+    if (isset($platformInfo['detail'])) {
+         $platform->setDetail($platformInfo['detail']);
+    }
+    if (isset($platformInfo['sk_advocacy_id'])) {
+        $platform->setSkAdvocacyId($platformInfo['sk_advocacy_id']);
+    }
+
+    // Execute update
+    if ($platform->update()) {
+        returnSuccess([
+            'message' => 'Platform record updated successfully.',
+            'platform' => $platform->getAssoc()
+        ]);
+    } else {
+        returnError("Update failed. No changes detected or an error occurred.", 500);
+    }
+}
+
+else if ($action === 'deletePlatform') {
+    // Ensure an ID is provided
+    if (!isset($_POST['id']) || empty($_POST['id'])) {
+        returnError("Platform ID is required.", 400);
+    }
+
+    // Fetch the platform record from the database using the provided ID
+    $platform = SkPlatforms::findBy('id', $_POST['id']);
+    if (!$platform) {
+        returnError("No platform record found with ID " . $_POST['id'], 404);
+    }
+
+    // Attempt to delete the platform record
+    if ($platform->delete()) {
+        returnSuccess([
+            'message' => 'Platform deleted successfully.'
+        ]);
+    } else {
+        returnError("Delete failed. No changes detected or an error occurred.", 500);
+    }
+}
+
+else if( $action === 'addPlatform') {
+    // Ensure platform data is provided
+    if (!isset($_POST['platformInfo'])) {
+        returnError('Invalid platform information received.', 400);
+    }
+
+    // Decode JSON if needed (if sent via FormData, it may be a JSON string)
+    $platformInfo = is_array($_POST['platformInfo']) 
+        ? $_POST['platformInfo'] 
+        : json_decode($_POST['platformInfo'], true);
+
+    if (!$platformInfo) {
+        returnError('Invalid platform information format.', 400);
+    }
+
+    // Ensure that required fields are provided
+    if (!isset($platformInfo['sk_advocacy_id'])) {
+        returnError('SK Advocacy ID is required.', 400);
+    }
+    if (!isset($platformInfo['title'])) {
+        returnError('Platform title is required.', 400);
+    }
+
+    // Create a new Platform record
+    $platform = new SkPlatforms();
+
+    // Set fields if provided
+    if (isset($platformInfo['sk_advocacy_id'])) {
+        $platform->setSkAdvocacyId($platformInfo['sk_advocacy_id']);
+    }
+    if (isset($platformInfo['title'])) {
+        $platform->setTitle($platformInfo['title']);
+    }
+    if (isset($platformInfo['detail'])) {
+        $platform->setDetail($platformInfo['detail']);
+    }
+
+    // Insert the new platform record
+    if ($platform->insert()) {
+        returnSuccess([
+            'message' => 'Platform added successfully.',
+            'platform' => $platform->getAssoc()
+        ]);
+    } else {
+        returnError("Insert failed. An error occurred.", 500);
+    }
+}
+
+// ---------------------- SK Official Management API --------------------
 else if ($action === 'addOfficial') {
     // Ensure officialInfo is provided
     if (!isset($_POST['officialInfo'])) {
@@ -790,7 +1064,6 @@ else if ($action === 'addOfficial') {
         returnError("Failed to add SK Official.", 500);
     }
 }
-
 
 else if ($action === 'deleteOfficial') {
     // Ensure the official ID is provided.
