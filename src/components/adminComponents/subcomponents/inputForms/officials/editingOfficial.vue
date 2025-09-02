@@ -2,6 +2,9 @@
     import PersonalInfoCard from "./PersonalInfoCard.vue";
     import EducationalOfficial from "./EducationalOfficial.vue";
     import PersonalAchievements from "./PersonalAchievements.vue";
+    import AdvocacyForm from "./AdvocacyForm.vue";
+    import PlatformForm from "./PlatformForm.vue";
+    import ProgramForm from "./ProgramForm.vue";
     import Dialogs from "@/components/dialogs/Dialogs.vue";
 
     import $ from 'jquery';
@@ -11,6 +14,9 @@
             PersonalInfoCard,
             EducationalOfficial,
             PersonalAchievements,
+            AdvocacyForm,
+            PlatformForm,
+            ProgramForm,
             Dialogs
         },
         data() {
@@ -61,6 +67,9 @@
         <PersonalInfoCard :info="officialInfos.personalInfo"></PersonalInfoCard>
         <EducationalOfficial :educations="officialInfos.educationalBackgrounds" :id="officialInfos.personalInfo.id" @fetchOfficialInfo="fetchSkOfficialInfos"></EducationalOfficial>
         <PersonalAchievements :achievements="officialInfos.achievements" :id="officialInfos.personalInfo.id" @fetchOfficialInfo="fetchSkOfficialInfos"></PersonalAchievements>
+        <AdvocacyForm></AdvocacyForm>
+        <PlatformForm></PlatformForm>
+        <ProgramForm></ProgramForm>
         <Dialogs />
         <!-- Button to Official Page in Admin -->
         <div class="back" @click="$router.replace({name: 'admin-officials', params:{barangaySlug : this.$store.getters[auth/getBarangayName]}})">

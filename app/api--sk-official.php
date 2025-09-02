@@ -102,7 +102,8 @@ else if ($action === 'personalInfo') {
     returnSuccess([
         'personalInfo' => $official->getAssoc(),
         'educationalBackgrounds' => $official->getEducations(true),
-        'achievements' => $official->getAchievements(true)
+        'achievements' => $official->getAchievements(true),
+        // 'advocacy' => $official->getAdvocacy()
     ]);
 }
 

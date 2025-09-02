@@ -288,7 +288,9 @@ export default {
         </div>
   
         <!-- Action Buttons -->
-        <v-card-actions v-if="hasChanges" class="w-[70%] d-flex justify-center items-center gap-10">
+        <v-card-actions 
+        v-if="hasChanges" class="w-full d-flex justify-center items-center gap-10 pt-5 border-t"
+        style="position: relative; bottom: 0;">
           <v-btn color="red-lighten-1" @click="discardChanges">Discard Changes</v-btn>
           <v-btn v-if="action === 'adding'" color="teal-lighten-1" @click="saveChanges">Add Education</v-btn>
           <v-btn v-if="action === 'updating'" color="teal-lighten-1" @click="saveChanges">Save Changes</v-btn>

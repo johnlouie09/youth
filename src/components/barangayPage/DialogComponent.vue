@@ -233,17 +233,20 @@
                         <v-icon>mdi-trophy</v-icon>
                     </v-card-title>
 
-                    <v-container class="d-flex flex-row flex-wrap justify-evenly pa-5 ga-10 rounded-md">
+                    <v-container class="grid grid-cols-3 justify-evenly px-15 ga-10 rounded-md">
                         <v-card
-                        v-for="(achievement, index) in officialInfos.achievements" :key="index"
-                        class="card w-[35%] d-flex flex-col items-center ga-2 elevation-10 border pb-5">
-                            <img :src="`/achievements/${achievement.img}`" alt="" class="w-full elevation-10">
+                            v-for="(achievement, index) in officialInfos.achievements" :key="index"
+                            class="card w-full custom-card elevation-10 col-span-1"
+                        >
+                            <img :src="achievement.img ? ($store.getters.base + 'public/achievements/' + achievement.img) : ($store.getters.base + 'public/achievements/no-avatar.png')" 
+                            class="w-full max-h-[60%] elevation-10"
+                            cover>
 
-                            <article class="relative w-[90%] pb-5">
-                                <h3 class="text-base uppercase font-extrabold">{{ achievement.title }}</h3>
+                            <article class="relative">
+                                <h3 class="text-sm uppercase font-extrabold">{{ achievement.title }}</h3>
                                 <h5 class="text-sm">{{ achievement.subtitle }}</h5>
-                                <h5 class="text-xs font-italic absolute bottom-0 right-0 pa-1">{{ formatDate(achievement.date) }}</h5>
                             </article>
+
 
                         </v-card>
                     </v-container>  
@@ -624,7 +627,14 @@ export default {
 }
 
 .card {
+    border-radius: .5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    position: relative;
     transition: transform 0.3s ease-in-out, border 0.3s ease-in-out;
+
 }
 
 .card:hover {

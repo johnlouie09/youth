@@ -1,7 +1,13 @@
 <template>
     <!-- Achievements Card -->
     <v-container fluid class="pa-0 ma-0 mb-15 d-flex flex-col justify-start items-center ga-5">
-        <h1 class="gradient-text font-black uppercase">Achievements</h1>
+                <!-- Title Section -->
+        <v-card-title class="gradient-text title d-flex items-center justify-center ga-5 ma-5">
+            <v-icon size="60">mdi-trophy</v-icon>
+                <h1 class="gradient-text font-black uppercase">Achievements</h1>
+            <v-icon size="60">mdi-trophy</v-icon>
+        </v-card-title>
+
 
         <!-- Achievement Sorting Selector -->
         <v-tabs v-model="selectedAchievementSort" grow class="my-5">
@@ -366,13 +372,14 @@ export default {
     padding: 0rem 9rem;
 }
 
-h1 {
+.title > * {
     font-size: 2.5rem;
     background: linear-gradient(
         45deg,
         #0533a0,
         #ffffff,
         #DF2935,
+        #ffffff,
         #FDCA40,
     );
     background: linear-gradient(to left, #3772FF, #fffefe, #DF2935, #FDCA40, #3772FF);

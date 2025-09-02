@@ -110,10 +110,11 @@
 <template>
   <v-card class="achievements-section" elevation="5">
 
-    <!-- Title Section -->
-    <v-card-title class="title d-flex items-center justify-center">
-      <v-icon class="me-2" size="30">mdi-trophy</v-icon>
-      <h2 class="uppercase font-extrabold text-2xl">PERSONAL ACHIEVEMENTS</h2>
+      <!-- Title Section -->
+    <v-card-title class="w-[90%] d-flex align-center justify-center ga-5 border-b py-5">
+      <v-icon size="40">mdi-trophy</v-icon>
+      <h2 class="font-extrabold text-2xl">PERSONAL ACHIEVEMENTS</h2>
+      <v-icon size="40">mdi-trophy</v-icon>
     </v-card-title>
 
     <!-- Achievements List -->
@@ -208,6 +209,7 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
+  align-items: center;
   width: 80%;
   border-radius: 1rem;
   padding: 2rem 0;
