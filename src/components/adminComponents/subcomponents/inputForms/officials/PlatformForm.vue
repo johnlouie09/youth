@@ -1,7 +1,5 @@
 <script>
   import $ from 'jquery';
-import { update } from 'lodash';
-import { initial } from 'lodash';
 
   export default {
     name: "PlatformForm",
@@ -139,6 +137,14 @@ import { initial } from 'lodash';
         immediate: true
       }
     },
+    created() {
+      this.advocaciesItems = this.advocacies.map(advocacy => ({
+        title: advocacy.title,
+        value: advocacy.id
+      }));
+      this.initialPlatformsInfo = JSON.parse(JSON.stringify(this.platforms));
+      this.platformsInfo = JSON.parse(JSON.stringify(this.platforms));
+    }
 
   };
 </script>
@@ -158,7 +164,7 @@ import { initial } from 'lodash';
         <!-- Existing Platforms Cards -->
         <v-card
         v-for="( platform, index ) in platformsInfo"
-        class="custom-card h-auto d-flex flex-col ga-3 justify-start items-center w-[40%] border rounded-lg elevation-10 overflow-visible">
+        class="custom-card h-auto d-flex flex-col ga-3 justify-start items-center w-[45%] pa-3 border rounded-lg elevation-10 overflow-visible">
 
             <!--Platform Image, Title and Subtitle -->
             <div class="w-[90%] d-flex justify-center items-center ga-5">
@@ -202,11 +208,13 @@ import { initial } from 'lodash';
           <v-card-actions 
           class="w-[90%] d-flex justify-center items-center gap-10 py-5 border-t text-sm"
           v-if="JSON.stringify(platform) !== JSON.stringify(initialPlatformsInfo[index])"
-          style="position: relative; bottom: 0;">
+          style="position: relative; bottom: 0;"
+          >
             <v-btn color="red-lighten-1" @click="platformsInfo[index] = JSON.parse(JSON.stringify(initialPlatformsInfo[index]))">Discard Changes</v-btn>
             <v-btn color="teal-lighten-1" @click="saveChanges('update', platform)">Save Changes</v-btn>
           </v-card-actions>
 
+          <!-- Delete Button -->
           <v-btn
           class="absolute top-0 right-0"
           style="position: absolute; top: 0; right: 0; margin: -10px;"
@@ -227,10 +235,10 @@ import { initial } from 'lodash';
         <!-- Add New Plaform Form -->
         <v-card
         v-if="addingNewPlatform"
-        class="custom-card h-auto d-flex flex-col ga-3 justify-start items-center w-[40%] border rounded-lg elevation-10 overflow-visible">
+        class="custom-card h-auto d-flex flex-col ga-3 pa-3 justify-start items-center w-[45%] rounded-lg elevation-10 overflow-visible">
           
         <!-- Title Section -->
-          <v-card-title class="w-[90%] d-flex align-center justify-center border-b py-5">
+          <v-card-title class="w-[90%] d-flex align-center justify-center border-b py-3">
             <h2 class="font-extrabold text-sm">ADD NEW PLATFORM</h2>
           </v-card-title>
 

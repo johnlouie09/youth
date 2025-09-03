@@ -185,6 +185,10 @@ import { error } from 'jquery';
         }
       }
     },
+    created() {
+      this.advocaciesInfo = JSON.parse(JSON.stringify(this.advocacies));
+      this.initialAdvocaciesInfo = JSON.parse(JSON.stringify(this.advocacies));
+    }
   };
 </script>
 
@@ -209,11 +213,20 @@ import { error } from 'jquery';
           <div class="w-full d-flex justify-evenly items-center ga-5 border-b">
               <div class="w-2/6 d-flex justify-center items-center relative">
                 <v-img 
-                    class="w-full elevation-5 rounded-lg"   
-                    :src="advocacy.preview ? advocacy.preview : advocacy.thumbnail ? ($store.getters.base + 'public/advocacyImages/' + advocacy.thumbnail) : ($store.getters.base + 'public/advocacyImages/no-avatar.png')"    
-                    cover
+                  class="w-full elevation-5 rounded-lg"
+                  :src="
+                    advocacy?.preview 
+                      ? advocacy.preview 
+                      : (advocacy?.thumbnail 
+                          ? ($store.getters.base + 'public/advocacyImages/' + advocacy.thumbnail) 
+                          : ($store.getters.base + 'public/advocacyImages/no-avatar.png')
+                        )
+                  "
+                  cover
                 ></v-img>
 
+
+                
                 <v-btn 
                 @click="triggerFileInput(); editingAdvocacyIndex = index"
                 class="bottom-0 right-0 ma-2"

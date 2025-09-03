@@ -10,6 +10,7 @@ require_once __DIR__ .'/models/AchievementDate.php';
 require_once __DIR__ .'/models/SkEducation.php';
 require_once __DIR__ .'/models/SkAdvocacies.php';
 require_once __DIR__ .'/models/SkPlatforms.php';
+require_once __DIR__ .'/models/SkPrograms.php';
 /** Extract Action */
 $action = $_GET['a'] ?? '';
 
@@ -109,7 +110,8 @@ else if ($action === 'personalInfo') {
         'educationalBackgrounds' => $official->getEducations(true),
         'achievements' => $official->getAchievements(true),
         'advocacies' => $official->getAdvocacies(),
-        'platforms' => $official->getPlatforms()
+        'platforms' => $official->getPlatforms(),
+        'programs' => $official->getPrograms()
     ]);
 }
 
@@ -952,6 +954,188 @@ else if( $action === 'addPlatform') {
         returnError("Insert failed. An error occurred.", 500);
     }
 }
+
+// ---------------------- SK Official Programs API -----------------------
+else if ( $action === 'addProgram') {
+    // Ensure program data is provided
+    if (!isset($_POST['programInfo'])) {
+        returnError('Invalid program information received.', 400);
+    }
+
+    // Decode JSON if needed (if sent via FormData, it may be a JSON string)
+    $programInfo = is_array($_POST['programInfo']) 
+        ? $_POST['programInfo'] 
+        : json_decode($_POST['programInfo'], true);
+
+    if (!$programInfo) {
+        returnError('Invalid program information format.', 400);
+    }
+
+    // Ensure that required fields are provided
+    if (!isset($programInfo['sk_platform_id'])) {
+        returnError('SK Platform ID is required.', 400);
+    }
+    if (!isset($programInfo['title'])) {
+        returnError('Program title is required.', 400);
+    }
+
+    // Create a new Program record
+    $program = new SkPrograms();
+
+    // Set fields if provided
+    if (isset($programInfo['sk_platform_id'])) {
+        $program->setSkPlatformId($programInfo['sk_platform_id']);
+    }
+    if (isset($programInfo['title'])) {
+        $program->setTitle($programInfo['title']);
+    }
+    if (isset($programInfo['subtitle'])) {
+        $program->setSubtitle($programInfo['subtitle']);
+    }
+    if (isset($programInfo['detail'])) {
+        $program->setDetail($programInfo['detail']);
+    }
+
+    // Process file upload if a file was provided
+    if (isset($_FILES['file']) && $_FILES['file']['error'] === UPLOAD_ERR_OK) {
+        // Define the upload directory (adjust path as needed)
+        $uploadDir = __DIR__ . '/../public/programImages/'; 
+
+        // Create the directory if it doesn't exist
+        if (!is_dir($uploadDir)) {
+            mkdir($uploadDir, 0755, true);
+        }
+
+        // Get a sanitized version of the filename
+        $filename = basename($_FILES['file']['name']);
+
+        // Set the target file path
+        $targetFile = $uploadDir . $filename;
+
+        // Move the uploaded file to the target directory
+        if (move_uploaded_file($_FILES['file']['tmp_name'], $targetFile)) {
+            // Update the program record with the new image filename
+            $program->setThumbnail($filename);
+        } else {
+            returnError("Failed to upload file.", 500);
+        }
+    } else if (isset($programInfo['thumbnail'])) {  
+        $program->setThumbnail($programInfo['thumbnail']);
+    }
+    // Insert the new program record
+    if ($program->insert()) {
+        returnSuccess([
+            'message' => 'Program added successfully.',
+            'program' => $program->getAssoc()
+        ]);
+    } else {
+        returnError("Insert failed. An error occurred.", 500);
+    }
+}
+
+else if( $action === 'updateProgram') {
+    // Ensure program data is provided
+    if (!isset($_POST['programInfo'])) {
+        returnError('Invalid Program Information Received.', 400);
+    }
+
+    // Decode JSON if needed (if sent via FormData, it may be a JSON string)
+    $programInfo = is_array($_POST['programInfo']) 
+        ? $_POST['programInfo'] 
+        : json_decode($_POST['programInfo'], true);
+
+    if (!$programInfo) {
+        returnError('Invalid Program Information Format.', 400);
+    }
+
+    // Ensure ID exists
+    if (!isset($programInfo['id'])) {
+        returnError('Program ID is required.', 400);
+    }
+
+    // Fetch program record from database using the provided ID
+    $program = SkPrograms::findBy('id', $programInfo['id']);
+    if (!$program) {
+        returnError("No program record found with ID " . $programInfo['id'], 404);
+    }
+
+    // Update fields if provided
+    if (isset($programInfo['title'])) {
+        $program->setTitle($programInfo['title']);
+    }
+
+    if (isset($programInfo['subtitle'])) {
+        $program->setSubtitle($programInfo['subtitle']);
+    }
+
+
+    if (isset($programInfo['detail'])) {
+         $program->setDetail($programInfo['detail']);
+    }
+    if (isset($programInfo['sk_platform_id'])) {
+        $program->setSkPlatformId($programInfo['sk_platform_id']);
+    }
+
+    // Upload file to dir on the server
+    if (isset($_FILES['file']) && $_FILES['file']['error'] === UPLOAD_ERR_OK) {
+        // Define the upload directory (adjust path as needed)
+        $uploadDir = __DIR__ . '/../public/programImages/'; 
+
+        // Get a sanitized version of the filename
+        $filename = basename($_FILES['file']['name']);
+
+        // Set the target file path
+        $targetFile = $uploadDir . $filename;
+
+        // Move the uploaded file to the target directory
+        if (move_uploaded_file($_FILES['file']['tmp_name'], $targetFile)) {
+            // Update the program record with the new image filename
+            $program->setThumbnail($filename);
+        } else {
+            returnError("Failed to upload file.", 500);
+        }
+    } else if (isset($programInfo['thumbnail'])) {
+        // If no new file is uploaded, update with the provided thumbnail value if any
+        $program->setThumbnail($programInfo['thumbnail']);
+    }
+
+    // Execute update
+    if ($program->update()) {
+        returnSuccess([
+            'message' => 'Program record updated successfully.',
+            'program' => $program->getAssoc()
+        ]);
+    } else {
+        returnError("Update failed. No changes detected or an error occurred.", 500);
+    }
+}
+
+else if ($action === 'deleteProgram') {
+    // Ensure an ID is provided
+    if (!isset($_POST['id']) || empty($_POST['id'])) {
+        returnError("Program ID is required.", 400);
+    }
+
+    // Fetch the program record from the database using the provided ID
+    $program = SkPrograms::findBy('id', $_POST['id']);
+    if (!$program) {
+        returnError("No program record found with ID " . $_POST['id'], 404);
+    }
+
+    // Attempt to delete the program record
+    if ($program->delete()) {
+        returnSuccess([
+            'message' => 'Program deleted successfully.'
+        ]);
+    } else {
+        returnError("Delete failed. No changes detected or an error occurred.", 500); 
+    }
+}
+
+
+
+
+
 
 // ---------------------- SK Official Management API --------------------
 else if ($action === 'addOfficial') {

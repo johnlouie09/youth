@@ -555,10 +555,11 @@ class SkOfficial extends Model
         return SkPlatforms::all(true, false, $this);
     }
 
-
-
-
-
+    public function getPrograms(): array
+    {
+        require_once __DIR__ . '/SkPrograms.php';
+        return SkPrograms::all(true, false, $this);
+    }
 
 
 

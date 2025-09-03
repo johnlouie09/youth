@@ -70,7 +70,7 @@
         <PersonalAchievements :achievements="officialInfos.achievements" :id="officialInfos.personalInfo.id" @fetchOfficialInfo="fetchSkOfficialInfos"></PersonalAchievements>
         <AdvocacyForm :advocacies="officialInfos.advocacies" :id="officialInfos.personalInfo.id" @fetchOfficialInfo="fetchSkOfficialInfos"></AdvocacyForm>
         <PlatformForm :advocacies="officialInfos.advocacies" :platforms="officialInfos.platforms" @fetchOfficialInfo="fetchSkOfficialInfos"></PlatformForm>
-        <ProgramForm></ProgramForm>
+        <ProgramForm :platforms="officialInfos.platforms" :programs="officialInfos.programs" @fetchOfficialInfo="fetchSkOfficialInfos"></ProgramForm>
         <Dialogs />
         <!-- Button to Official Page in Admin -->
         <div class="back" @click="$router.replace({name: 'admin-officials', params:{barangaySlug : this.$store.getters[auth/getBarangayName]}})">
