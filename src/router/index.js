@@ -96,11 +96,6 @@ const router = createRouter({
           component: () => import('../components/adminComponents/Settings.vue'),
         },
         {
-          path: 'youth-request',
-          name: 'admin-youth-request',
-          component: () => import('../components/adminComponents/YouthRequest.vue'),
-        },
-        {
           path: 'notices',
           name: 'admin-notices',
           component: () => import('../components/adminComponents/Notices.vue'),
@@ -108,7 +103,7 @@ const router = createRouter({
         {
           path: 'officials/:officialSlug',
           name: 'admin-edit-official',
-          component: () => import('../components/adminComponents/subcomponents/officials/editingOfficial.vue'),
+          component: () => import('../components/adminComponents/subcomponents/inputForms/officials/editingOfficial.vue'),
         },
         // DEMO ->
         {

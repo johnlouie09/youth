@@ -23,6 +23,7 @@ export default ({mode}) => {
     base: '/',
     server: {
       host: 'localhost',
+      port:5173,
       proxy: {
         '/app': {
           target: 'http://localhost/youth',

@@ -5,6 +5,7 @@ require_once __DIR__ . '/../../models/Barangay.php';
 
 $barangay = Barangay::findBy('name', 'San Francisco');
 
+
 if ($barangay) {
     echo "<h1>Testing getSkChairman()</h1>";
     // test getSkChairman() with assoc parameters

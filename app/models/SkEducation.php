@@ -6,16 +6,17 @@ class SkEducation extends Model
 {
     protected static $table = 'sk_educations';
     public    static $table_columns = [];
-    protected static $basic_columns = ['id', 'school_name', 'school_logo', 'course', 'start_year', 'end_year'];
+    protected static $basic_columns = ['id', 'educational_type', 'institution', 'institution_logo', 'course_or_details', 'educational_achievements', 'start_year', 'end_year'];
 
     /** properties */
-    protected $sk_official_id     = 0;
-    protected $education_level_id = 0;
-    protected $school_name        = '';
-    protected $school_logo        = '';
-    protected $course             = '';
-    protected $start_year         = 0;
-    protected $end_year           = 0;
+    protected $sk_official_id               = 0;
+    protected $educational_type             = '';
+    protected $institution                  = '';
+    protected $institution_logo             = '';
+    protected $course_or_details            = '';
+    protected $educational_achievements     = '';
+    protected $start_year                   = 0;
+    protected $end_year                     = 0;
 
 
     /**
@@ -48,34 +49,32 @@ class SkEducation extends Model
         return $this->sk_official_id;
     }
 
-
     /**
-     * Gets SkEducation education_level_id.
-     * @return int
+     * Gets SkEducation educational_type.
+     * @return string
      */
-    public function getEducationLevelId()
+    public function getEducationalType()
     {
-        return $this->education_level_id;
+        return $this->educational_type;
     }
-
 
     /**
      * Gets SkEducation school_name.
      * @return string
      */
-    public function getSchoolName()
+    public function getInstitution()
     {
-        return $this->school_name;
+        return $this->institution;
     }
 
 
     /**
-     * Gets SkEducation school_logo
+     * Gets SkEducation institution_logo
      * @return string
      */
-    public function getSchoolLogo()
+    public function getInstitutionLogo()
     {
-        return $this->school_logo;
+        return $this->institution_logo;
     }
 
 
@@ -83,11 +82,19 @@ class SkEducation extends Model
      * Gets SkEducation course.
      * @return string
      */
-    public function getCourse()
+    public function getCourseOrDetails()
     {
-        return $this->course;
+        return $this->course_or_details;
     }
 
+    /**
+     * Gets SkEducation Educational Achievements.
+     * @return string
+     */
+    public function getEducationalAchievements()
+    {
+        return $this->educational_achievements;
+    }
 
     /**
      * Gets SkEducation start_year.
@@ -119,48 +126,57 @@ class SkEducation extends Model
         $this->sk_official_id = $sk_official_id;
     }
 
-
     /**
-     * Sets SkEducation education_level_id.
-     * @param $education_level_id
+     * Sets SkEducation educational_type.
+     * @param $educational_type
      * @return void
      */
-    public function setEducationLevelId($education_level_id)
+    public function setEducationalType($educational_type)
     {
-        $this->education_level_id = $education_level_id;
+        $this->educational_type = $educational_type;
+    }
+
+    /**
+     * Sets SkEducation institution.
+     * @param $institution
+     * @return void
+     */
+    public function setInstitution($institution)
+    {
+        $this->institution = $institution;
     }
 
 
     /**
-     * Sets SkEducation school_name.
-     * @param $school_name
+     * Sets SkEducation institution_logo
+     * @param $institution_logo
      * @return void
      */
-    public function setSchoolName($school_name)
+    public function setInstitutionLogo($institution_logo)
     {
-        $this->school_name = $school_name;
-    }
-
-
-    /**
-     * Sets SkEducation school_logo
-     * @param $school_logo
-     * @return void
-     */
-    public function setSchoolLogo($school_logo)
-    {
-        $this->school_logo = $school_logo;
+        $this->institution_logo = $institution_logo;
     }
 
     /**
-     * Sets SkEducation course.
-     * @param $course
+     * Sets SkEducation course_or_details.
+     * @param $course_or_details
      * @return void
      */
-    public function setCourse($course)
+    public function setCourseOrDetails($course_or_details)
     {
-        $this->course = $course;
+        $this->course_or_details = $course_or_details;
     }
+
+    /**
+     * Sets SkEducation Educational Achievements.
+     * @param $educational_achievements
+     * @return void
+     */
+    public function setEducationalAchievements($educational_achievements)
+    {
+        $this->educational_achievements = $educational_achievements;
+    }
+
 
 
     /**
@@ -245,15 +261,34 @@ class SkEducation extends Model
      */
     public function insert(): bool
     {
-        $stmt = $this->getConnection()->prepare("INSERT INTO `" . self::$table . "` (`sk_official_id`, `education_level_id`, `school_name`, `school_logo`, `course`, `start_year`, `end_year`) VALUES (?, ?, ?, ?, ?, ?, ?)");
-        $stmt->bind_param("iisssii", $this->sk_official_id, $this->education_level_id, $this->school_name, $this->school_logo, $this->course, $this->start_year, $this->end_year);
+        $stmt = $this->getConnection()->prepare("
+            INSERT INTO `" . self::$table . "` 
+            (`sk_official_id`, `educational_type`, `institution`, `institution_logo`, `course_or_details`, `educational_achievements`, `start_year`, `end_year`) 
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        ");
+        
+        $stmt->bind_param(
+            "isssssii", 
+            $this->sk_official_id, 
+            $this->educational_type, 
+            $this->institution, 
+            $this->institution_logo, 
+            $this->course_or_details, 
+            $this->educational_achievements, 
+            $this->start_year, 
+            $this->end_year
+        );
+
         $stmt->execute();
+
         if ($stmt->affected_rows > 0) {
             $this->setId($stmt->insert_id);
             return true;
         }
+
         return false;
     }
+
 
 
     /**
@@ -264,8 +299,8 @@ class SkEducation extends Model
      */
     public function update(): bool
     {
-        $stmt = $this->getConnection()->prepare("UPDATE `" . self::$table . "` SET `sk_official_id` = ?, `education_level_id` = ?, `school_name` = ?, `school_logo` = ?, `course` = ?, `start_year` = ?, `end_year` = ? WHERE `id` = ?");
-        $stmt->bind_param("iisssiii", $this->sk_official_id, $this->education_level_id, $this->school_name, $this->school_logo, $this->course, $this->start_year, $this->end_year, $this->id);
+        $stmt = $this->getConnection()->prepare("UPDATE `" . self::$table . "` SET `sk_official_id` = ?, `educational_type` = ?, `institution` = ?, `institution_logo` = ?, `course_or_details` = ?, `educational_achievements` = ?, `start_year` = ?, `end_year` = ? WHERE `id` = ?");
+        $stmt->bind_param("isssssiii", $this->sk_official_id, $this->educational_type, $this->institution, $this->institution_logo, $this->course_or_details, $this->educational_achievements, $this->start_year, $this->end_year, $this->id);
         $stmt->execute();
         return $stmt->affected_rows > 0;
     }
@@ -284,4 +319,34 @@ class SkEducation extends Model
         $stmt->execute();
         return $stmt->affected_rows > 0;
     }
+
+
+    public static function fetchEducationTypes(): array
+    {
+        $stmt = self::getConnectionStatic()->prepare(
+            "SHOW COLUMNS FROM `" . self::$table . "` LIKE 'educational_type'"
+        );
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $row = $result->fetch_assoc();
+
+        $educationTypes = [];
+        if ($row && isset($row['Type'])) {
+            // Extract ENUM values: enum('Primary','Secondary','Tertiary')
+            preg_match("/^enum\((.*)\)$/", $row['Type'], $matches);
+            if (!empty($matches[1])) {
+                $educationTypes = array_filter(array_map(function ($val) {
+                    return trim($val, " '");
+                }, explode(",", $matches[1])), function ($v) {
+                    return $v !== ''; // remove empty strings
+                });
+                $educationTypes = array_values($educationTypes); // reindex cleanly
+            }
+        }
+
+        return $educationTypes;
+    }
+
+
+
 }

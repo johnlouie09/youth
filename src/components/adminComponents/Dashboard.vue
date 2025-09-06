@@ -9,7 +9,6 @@
 
         <!-- Features Section -->
         <v-container class="feats" justify="space-between">
-            <Suggestions />  
             <Analytics />
         </v-container>
     </v-container>
@@ -18,14 +17,12 @@
 <script>
 import DashboardCards from './subcomponents/dashboard/DashboardCards.vue';
 import Analytics from './subcomponents/dashboard/Analytics.vue';
-import Suggestions from './subcomponents/dashboard/Suggestions.vue';
 import $ from 'jquery';
 
 export default {
     components: {
         DashboardCards,
         Analytics,
-        Suggestions
     },
     data() {
         return {

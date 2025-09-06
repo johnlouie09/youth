@@ -16,8 +16,8 @@
                 <OfficialCard
                     v-for="(skMember, index) in skMembers"
                     :key="index"
-                    v-slot="{ selectedClass }"
-                    :class="[selectedClass, 'members-card', 'custom-card', 'mx-3 min-w-[20%]']"
+                    
+                    :class="['members-card', 'custom-card', 'mx-3 min-w-[20%]']"
                     :officialProps="skMember || {}"
                 />
             </div>
