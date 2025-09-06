@@ -113,10 +113,6 @@ export default {
 };
 </script>
 
-
-
-
-
 <template>
     <v-dialog v-model="isDialogOpen" max-width="1000px" height="90vh" persistent class="overflow-hidden">
         <v-card style="border-radius: 1rem; font-family: 'Inter', sans-serif;" border="primary lg">
@@ -610,113 +606,6 @@ export default {
     </v-dialog>
 </template>
 
-<script>
-import SocialLinks from '../landingPageComponents/SocialLinks.vue';
-import Achievements from './Achievements.vue';
-import $ from 'jquery';
-export default {
-    name: "DialogComponent",
-    components : {
-        SocialLinks,
-        Achievements
-    },
-    computed: {
-        isDialogOpen: {
-            get() {
-                return this.$store.getters['viewOfficial/getViewOfficialOpenDialog'];
-            },
-            set(value) {
-                this.$store.commit('viewOfficial/setViewOfficialOpenDialog', value);
-            }
-        },
-        // Wrap the store getter in a computed property for reactivity.
-        officialStore() {
-            return this.$store.getters['viewOfficial/getViewOfficial'];
-        }
-    },
-    data() {
-        return {
-            officialInfos: {
-                personalInfo: {},
-                educationalBackgrounds: [],
-                achievements: []
-            },
-            activeTab: 'profile', // Default active tab.
-            errorMessage: null,
-
-            showAdvocacyDetails: false,
-            showPlatformDetails: false,
-            showProgramDetails: false
-        };
-    },
-    methods: {
-        closeDialog() {
-            this.isDialogOpen = false;
-            this.$store.commit('viewOfficial/setViewOfficialOpenDialog', false);
-            this.activeTab = 'profile'
-            this.errorMessage = null;
-        },
-        openDialog(official) {
-            this.$store.commit('viewOfficial/setViewOfficial', official);
-            this.isDialogOpen = true;
-        },
-        formatDate(dateStr) {
-            if (!dateStr) return 'N/A';
-            const date = new Date(dateStr);
-            // Format as "Month Day, Year" (e.g., "March 24, 2025")
-            return date.toLocaleDateString('en-US', {
-                month: 'long',
-                day: 'numeric',
-                year: 'numeric'
-            });
-        },
-        async fetchOfficialData(slug) {
-            const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
-            await $.ajax({
-                url: `${this.$store.getters['api_base']}?e=sk-official&a=personalInfo`,
-                type: 'POST',
-                xhrFields: { withCredentials: true },
-                headers: { 'X-CSRF-Token': csrfToken },
-                data: { officialSlug: slug },
-                success: (data) => {
-                    this.officialInfos = data.data;
-                    console.log(data.data);
-                    this.errorMessage = null;
-                },
-                error: (jqXHR, textStatus, errorThrown) => {
-                    let errorMsg = "Failed to load official data.";
-                    if (jqXHR.responseJSON && jqXHR.responseJSON.message) {
-                        errorMsg = jqXHR.responseJSON.message;
-                    }
-                    this.errorMessage = errorMsg;
-                    console.error("Error:", textStatus, errorThrown);
-                }
-            });
-        }
-    },
-    created() {
-        this.officialInfos = this.$store.getters['viewOfficial/getViewOfficial'] || {
-            personalInfo: {},
-            educationalBackgrounds: [],
-            achievements: []
-        };
-        if (this.officialInfos?.personalInfo?.slug) {
-            this.fetchOfficialData(this.officialInfos.personalInfo.slug);
-        }
-    },
-    watch: {
-        officialStore: {
-            handler(newVal) {
-                if (newVal && newVal.personalInfo && newVal.personalInfo.slug) {
-                    this.fetchOfficialData(newVal.personalInfo.slug);
-                }
-            },
-            deep: true,
-            immediate: true
-        }
-    }
-};
-</script>
 
 <style scoped>
 .active-tab {
