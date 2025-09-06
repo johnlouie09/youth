@@ -31,6 +31,7 @@ if (in_array($origin, $allowedOrigins)) {
 } else {
     header('Access-Control-Allow-Origin: https://testdeploy.irigayouth.com'); // Default to production
 }
+
 header("Access-Control-Allow-Credentials: true");
 header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type, X-CSRF-Token');
@@ -112,8 +113,8 @@ else if ($endpoint == 'cluster')
 else if($endpoint == 'barangay') {
     require_once __DIR__ . '/api--barangay.php';
 }
-else if($endpoint == 'education-level') {
-    require_once __DIR__ . '/api--educationLevel.php';
+else if($endpoint == 'education-type') {
+    require_once __DIR__ . '/api--educationType.php';
 }
 else if($endpoint == 'csrf') {
     require_once __DIR__ . '/csrf.php';

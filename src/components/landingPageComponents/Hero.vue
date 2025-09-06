@@ -32,7 +32,7 @@
             <div class="swiper-wrapper">
 
                 <div class="swiper-slide pa-5 d-flex flex-col justify-evenly items-center ga-5">
-                    <img :src="$store.getters.base + `public/announcements/kalinisan.jpg`" class="max-h-[300px] rounded-lg" alt="">
+                    <img :src="$store.getters.base + `public/announcements/youthnight.jpg`" class="max-h-[300px] rounded-lg" alt="">
                     <div class="w-full text-center">
                         <h4 class="uppercase font-bold text-sm">San Francisco, Iriga City</h4>
                         <h3 class="capitalize font-extrabold text-lg">Kalinisan Program</h3>
@@ -50,7 +50,7 @@
                 </div>
 
                 <div class="swiper-slide pa-5 d-flex flex-col justify-evenly items-center ga-5">
-                    <img :src="$store.getters.base + `public/announcements/kalinisan.jpg`" class="max-h-[300px] rounded-lg" alt="">
+                    <img :src="$store.getters.base + `public/announcements/youthnight.jpg`" class="max-h-[300px] rounded-lg" alt="">
                     <div class="w-full text-center">
                         <h4 class="uppercase font-bold text-sm">San Francisco, Iriga City</h4>
                         <h3 class="capitalize font-extrabold text-lg">Kalinisan Program</h3>
@@ -68,7 +68,7 @@
                 </div>
 
                 <div class="swiper-slide pa-5 d-flex flex-col justify-evenly items-center ga-5">
-                    <img :src="$store.getters.base + `public/announcements/kalinisan.jpg`" class="max-h-[300px] rounded-lg" alt="">
+                    <img :src="$store.getters.base + `public/announcements/youthnight.jpg`" class="max-h-[300px] rounded-lg" alt="">
                     <div class="w-full text-center">
                         <h4 class="uppercase font-bold text-sm">San Francisco, Iriga City</h4>
                         <h3 class="capitalize font-extrabold text-lg">Kalinisan Program</h3>
@@ -86,7 +86,7 @@
                 </div>
 
                 <div class="swiper-slide pa-5 d-flex flex-col justify-evenly items-center ga-5">
-                    <img :src="$store.getters.base + `public/announcements/kalinisan.jpg`" class="max-h-[300px] rounded-lg" alt="">
+                    <img :src="$store.getters.base + `public/announcements/youthnight.jpg`" class="max-h-[300px] rounded-lg" alt="">
                     <div class="w-full text-center">
                         <h4 class="uppercase font-bold text-sm">San Francisco, Iriga City</h4>
                         <h3 class="capitalize font-extrabold text-lg">Kalinisan Program</h3>
@@ -104,7 +104,7 @@
                 </div>
 
                 <div class="swiper-slide pa-5 d-flex flex-col justify-evenly items-center ga-5">
-                    <img :src="$store.getters.base + `public/announcements/kalinisan.jpg`" class="max-h-[300px] rounded-lg" alt="">
+                    <img :src="$store.getters.base + `public/announcements/youthnight.jpg`" class="max-h-[300px] rounded-lg" alt="">
                     <div class="w-full text-center">
                         <h4 class="uppercase font-bold text-sm">San Francisco, Iriga City</h4>
                         <h3 class="capitalize font-extrabold text-lg">Kalinisan Program</h3>

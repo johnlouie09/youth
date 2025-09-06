@@ -5,7 +5,6 @@ import Cards from '@/components/barangayPage/Cards.vue';
 import Achievements from '@/components/barangayPage/Achievements.vue';
 import DialogComponent from '@/components/barangayPage/DialogComponent.vue';
 import FeedbackForm from '@/components/barangayPage/FeedbackForm.vue';
-import YouthAccount from '@/components/barangayPage/YouthAccount.vue';
 import SocialLinks from '@/components/landingPageComponents/SocialLinks.vue';
 import $ from 'jquery';
 
@@ -18,7 +17,6 @@ export default {
         DialogComponent,
         FeedbackForm,
         SocialLinks,
-        YouthAccount
     },
     data() {
         return {
