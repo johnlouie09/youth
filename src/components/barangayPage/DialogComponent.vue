@@ -312,46 +312,34 @@ export default {
                         <v-icon>mdi-school</v-icon>
                     </v-card-title>
 
-                    <v-container class="w-[90%] d-flex flex-start justify-center flex-wrap ga-10 py-5">
-                        <v-timeline class="w-[90%]"       
-                        
-                        >
+                    <v-container class="w-[90%] d-flex flex-start justify-center items-center flex-wrap ga-5 py-5">
+                        <v-timeline class="w-[90%]">
                             <v-timeline-item
                             v-for="(item, index) in officialInfos.educationalBackgrounds"
                             :key="index" size="large">
                             
                                 <template v-slot:icon>
-                                    <v-avatar class="bg-white" :image="item.school_logo ? ($store.getters.base + 'public/schoolLogos/' + item.school_logo) : ($store.getters.base + 'public/schoolLogos/no-avatar.svg')"></v-avatar>
+                                    <v-avatar class="bg-white" :image="item.institution_logo ? ($store.getters.base + 'public/schoolLogos/' + item.institution_logo) : ($store.getters.base + 'public/schoolLogos/no-avatar.svg')"></v-avatar>
                                 </template>
 
                                 <v-card
                                     class="d-flex flex-col justify-start items-center w-full ga-3 rounded-lg border pa-5 pt-10 min-w-[360px]"
                                     elevation="10"
                                 >
-                                    <v-avatar :image="item.school_logo ? ($store.getters.base + 'public/schoolLogos/' + item.school_logo) : ($store.getters.base + 'public/schoolLogos/no-avatar.svg')" size="75" />
-                                    <article class="w-full d-flex flex-col">
-                                        <h2 class="w-full text-base uppercase font-bold text-center">{{ item.school_name || 'Unknown School' }}<v-divider class="my-3"></v-divider></h2>
+                                    <v-avatar :image="item.institution_logo ? ($store.getters.base + 'public/schoolLogos/' + item.institution_logo) : ($store.getters.base + 'public/schoolLogos/no-avatar.svg')" size="75" />
+                                    <article class="w-full d-flex flex-col border-b py-3">
+                                        <h2 class="w-full text-base uppercase font-bold text-center">{{ item.institution || 'Unknown Institution' }}</h2>
                                         <h3 class="text-sm font-italic font-bold absolute top-0 left-0 pa-5">{{ item.start_year || 'N/A' }} - {{ item.end_year || 'N/A' }}</h3>
-                                        <p class="text-sm text-center">{{ item.course || '' }}</p>
-                                        
+                                        <p class="text-sm text-center">{{ item.course_or_details|| '' }}</p>  
                                     </article>
+
+                                    <div v-if="item.educational_achievements" class="w-full d-flex flex-col ga-2">
+                                        <h3 class="w-full text-center text-sm font-bold">EDUCATIONAL ACHIEVEMENTS</h3>
+                                        <p class="w-full text-xs text-center ">{{ item.educational_achievements }}</p>
+                                    </div>
                                 </v-card>
                             </v-timeline-item>
                         </v-timeline>
-
-                        <!-- <v-card
-                            v-for="(item, index) in officialInfos.educationalBackgrounds"
-                            :key="index"
-                            class="d-flex flex-col justify-start items-center w-[40%] ga-5 rounded-md pa-10"
-                            elevation="4"
-                        >
-                            <v-avatar :image="item.school_logo ? ($store.getters.base + 'public/schoolLogos/' + item.school_logo) : ($store.getters.base + 'public/schoolLogos/no-avatar.svg')" size="75" />
-                            <article class="d-flex flex-col ga-1">
-                                <h2 class="text-base uppercase font-bold text-center">{{ item.school_name || 'Unknown School' }}</h2>
-                                <p class="text-sm text-center">{{ item.course || 'No Course Specified' }}</p>
-                                <h3 class="text-xs font-italic absolute bottom-0 right-0 pa-3">{{ item.start_year || 'N/A' }} - {{ item.end_year || 'N/A' }}</h3>
-                            </article>
-                        </v-card> -->
                     </v-container>
                 </v-sheet>
 
@@ -364,17 +352,20 @@ export default {
                         <v-icon>mdi-trophy</v-icon>
                     </v-card-title>
 
-                    <v-container class="d-flex flex-row flex-wrap justify-evenly pa-5 ga-10 rounded-md">
+                    <v-container class="grid grid-cols-3 justify-evenly px-15 ga-10 rounded-md">
                         <v-card
-                        v-for="(achievement, index) in officialInfos.achievements" :key="index"
-                        class="card w-[35%] d-flex flex-col items-center ga-2 elevation-10 border pb-5">
-                            <img :src="`/achievements/${achievement.img}`" alt="" class="w-full elevation-10">
+                            v-for="(achievement, index) in officialInfos.achievements" :key="index"
+                            class="card w-full custom-card elevation-10 col-span-1"
+                        >
+                            <img :src="achievement.img ? ($store.getters.base + 'public/achievements/' + achievement.img) : ($store.getters.base + 'public/achievements/no-avatar.png')" 
+                            class="w-full max-h-[60%] elevation-10"
+                            cover>
 
-                            <article class="relative w-[90%] pb-5">
-                                <h3 class="text-base uppercase font-extrabold">{{ achievement.title }}</h3>
+                            <article class="relative">
+                                <h3 class="text-sm uppercase font-extrabold">{{ achievement.title }}</h3>
                                 <h5 class="text-sm">{{ achievement.subtitle }}</h5>
-                                <h5 class="text-xs font-italic absolute bottom-0 right-0 pa-1">{{ formatDate(achievement.date) }}</h5>
                             </article>
+
 
                         </v-card>
                     </v-container>  
@@ -735,7 +726,14 @@ export default {
 }
 
 .card {
+    border-radius: .5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    position: relative;
     transition: transform 0.3s ease-in-out, border 0.3s ease-in-out;
+
 }
 
 .card:hover {

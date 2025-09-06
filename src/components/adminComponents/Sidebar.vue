@@ -13,7 +13,7 @@
         <v-list-item class="logo-container">
             <div class="d-flex justify-center items-center py-5" @click="openBarangayWebsite">
                 <v-avatar size="45">
-                    <v-img :src="$store.getters['base'] + '/Group.svg'" alt="Barangay Logo"></v-img>
+                    <v-img :src="$store.getters['base'] + 'public/Group.svg'" alt="Barangay Logo"></v-img>
                 </v-avatar>
 
                 <v-list-item>
@@ -137,7 +137,6 @@ export default {
                 { menuName: "Officials", icon: "mdi-account-group", to: `/admin/${this.barangaySlug}/officials`},
                 { menuName: "Announcements", icon: "mdi-bullhorn", to: `/admin/${this.barangaySlug}/announcements`},
                 { menuName: "Achievements", icon: "mdi-trophy", to: `/admin/${this.barangaySlug}/achievements`},
-                { menuName: "Youth Request", icon: "mdi-bell", to: `/admin/${this.barangaySlug}/youth-request`},
                 { menuName: "Settings and Profile", icon: "mdi-cog", to: `/admin/${this.barangaySlug}/settings` },
             ];
         },

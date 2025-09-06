@@ -1,34 +1,48 @@
 <template>
-
     <!-- Announcements Cards -->
     <div class="carousel-container">
         <div class="relative w-[80%] d-flex flex-col justify-center items-center gap-5">
             <h1 class="title">ANNOUNCEMENTS</h1>
-            <v-tabs grow class="w-[50%] d-flex justify-center gap-5">
-                <v-tab>FEATURED</v-tab>
-                <v-tab>
-                    <v-select 
-                    class="w-[100%]"
-                    :items="items"
-                    v-model='selectedAnnoncementItem'>
-                    </v-select>
-                </v-tab>
-
+            <v-tabs v-model="selectedAnnouncementSort" grow class="my-5">
+                <div class="grid grid-cols-3 ga-5 w-full">
+                    <v-tab value='all' class="border rounded-md col-span-1">ALL</v-tab>
+                    <v-tab value='featured' class="border rounded-md col-span-1">FEATURED</v-tab>
+                    <v-tab value="month" class="border rounded-md col-span-1">
+                        <v-select
+                            v-model="selectedMonth"
+                            class="border rounded-md w-full"
+                            :items="items"
+                            density="comfortable"
+                            hide-details
+                        />
+                    </v-tab>
+                </div>
             </v-tabs>
         </div>
 
         <div ref="swiperContainer" class="swiper mySwiper">
-            <div class="swiper-wrapper h-full">
+            <div class="swiper-wrapper">
                     <v-card
                     v-for="announcement in announcements" :key="announcement.id"
                     style="border-radius: 1rem;"
-                    class="swiper-slide w-sm d-flex flex-col items-center justify-center ga-5 elevation-10 pt-10 pb-5 px-5 ma-5"
+                    class="swiper-slide d-flex flex-col items-center justify-center ga-5 elevation-10 pt-10 pb-5 px-5 ma-5"
                     >
+                        <!-- Featured Icon -->
+                        <v-icon 
+                            v-if="announcement.is_featured" 
+                            color="yellow darken-2 ma-5" 
+                            size="30" 
+                            style="position: absolute; top: 0; right: 0; z-index: 10;"
+                            title="Featured Announcement"
+                        >
+                            mdi-star
+                        </v-icon>
+
                         <div>
                             <img 
                                 :src="announcement.img 
-                                        ? ($store.getters.base + 'public/announcements/' + announcement.img) 
-                                        : ($store.getters.base + 'public/announcements/exx.jpg')"
+                                        ? ($store.getters.base + 'public/announcements/' + announcement.img)
+                                        : ($store.getters.base + 'public/announcements/no-avatar.png')"
                                 :alt="announcement.title"
                                 style="border-radius: .5rem; width: 280px ;height: 400px;"
                                 cover
@@ -44,7 +58,7 @@
                                 </h2>
 
                                 <p class="text-sm font-base italic text-center">
-                                    {{ announcement.description }} Lorem ipsum dolor, sit amet consectetur adipisicing elit. Eligendi quo facere com. lorem
+                                    {{ announcement.description }}
                                 </p>
 
                                 <span class="text-xs font-italic absolute bottom-0 right-0 pa-2">
@@ -62,14 +76,36 @@
     </div>
 
     <!-- Announcement Dialog -->
-    <v-dialog v-model=showAnnouncementDetails width="auto" max-width="1200px" max-height="90vh">
-        <v-card class="d-flex justify-center items-center py-15 ga-5" style="border-radius: 1rem;">
+    <v-dialog v-model=showAnnouncementDetails min-width='800px' max-width="1200px" max-height="90vh">
+        <v-card class="d-flex justify-center items-center py-10 pt-15 ga-5" style="border-radius: 1rem;">
             <h1 class="w-[90%] text-3xl font-extrabold text-center uppercase">{{ announcementDetails.title }} <v-divider class="mt-3"></v-divider></h1>
-            <div class="announcementDialog w-[90%]">
-                <div class="d-flex flex-col justify-around items-center py-5">
-                    <div class="d-flex justify-center items-center ga-3">
+
+            <v-carousel
+            class="ma-10"
+            style="width: 800px;"
+            v-if="imagesContainer"
+            hide-delimiter-background
+            >
+                <!-- Carousel Items -->
+                <v-carousel-item
+                class="rounded-lg elevation-10"
+                v-for="(image, index) in announcementDetails.images"
+                :key="index"
+                :src="image.name 
+                    ? ($store.getters.base + 'public/announcements/' + image.name) 
+                    : ($store.getters.base + 'public/announcementsno-avatar.png')"
+                contain
+                >
+                </v-carousel-item>
+            </v-carousel>
+
+
+            <div v-if="!imagesContainer" class="announcementDialog w-[90%]">
+                <!-- WHO, WHY AND WHAT CARD -->
+                <div class="w-full d-flex flex-col justify-around items-center py-5">
+                    <div class="w-full d-flex justify-center items-center ga-3">
                         <div class="custom-card w-full d-flex justify-center items-center ga-3 elevation-5 py-3 px-5 rounded-md border">
-                            <h3 class='text-center text-sm'><i class="text-lg font-extrabold">WHO</i><br>Organized by Barangay San Francisco. Open to all residents, especially youth and local groups.</h3>
+                            <h3 class='text-center text-sm'><i class="text-lg font-extrabold">WHO</i><br>{{ announcementDetails.who }}</h3>
                         </div>
 
                         <v-btn icon class="border">
@@ -78,18 +114,18 @@
                         
                     </div>
 
-                    <div class="d-flex justify-center items-center ga-3">
+                    <div class="w-full d-flex justify-center items-center ga-3">
                         <div class="custom-card w-full d-flex justify-center items-center ga-3 elevation-5 py-3 px-5 rounded-md border">
-                            <h3 class='text-center text-sm'><i class="text-lg font-extrabold">WHY</i><br>To promote cleanliness, reduce waste, and build community responsibility.</h3>
+                            <h3 class='text-center text-sm'><i class="text-lg font-extrabold">WHY</i><br>{{ announcementDetails.why }}</h3>
                         </div>
                         <v-btn class="border" icon>
                             <v-icon :size="30">mdi-lightbulb-on-outline</v-icon>
                         </v-btn>
                     </div>
 
-                    <div class="d-flex justify-center items-center ga-3">
+                    <div class="w-full d-flex justify-center items-center ga-3">
                         <div class="custom-card w-full d-flex justify-center items-center ga-3 elevation-5 py-3 px-5 rounded-md border">
-                            <h3 class='text-center text-sm'><i class="text-lg font-extrabold">WHAT</i><br>Barangay Clean-Up Drive to collect trash, recycle, and improve public spaces.</h3>
+                            <h3 class='text-center text-sm'><i class="text-lg font-extrabold">WHAT</i><br>{{ announcementDetails.what }}</h3>
                         </div>
                         <v-btn class="border" icon>
                             <v-icon :size="30">mdi-help-circle-outline</v-icon>
@@ -97,57 +133,61 @@
                     </div>
                 </div>
 
+                <!-- THUMBNAIL IMAGE -->
                 <div class="d-flex flex-col justify-center items-center ga-3">
-                    <Carousel v-if="showAnnouncementImages" v-bind="config">
-                        <Slide v-for="n of 1">
-                        <img                    
-                        :src="announcementDetails.img 
-                            ? ($store.getters.base + 'public/announcements/' + announcementDetails.img) 
-                            : ($store.getters.base + 'public/announcements/exx.jpg')"
-                        :alt="announcementDetails.title" />
-                        </Slide>
-
-                        <template #addons>
-                        <Navigation />
-                        </template>
-                    </Carousel>
-
                     <img
                         class="rounded-lg max-h-[600px] max-w-[400px] elevation-10"
                         :src="announcementDetails.img 
                             ? ($store.getters.base + 'public/announcements/' + announcementDetails.img) 
-                            : ($store.getters.base + 'public/announcements/exx.jpg')"
+                            : ($store.getters.base + 'public/announcementsno-avatar.png')"
                         :alt="announcementDetails.title">
                     </img>
-
-                    <v-card-actions>
-                        <v-btn color="teal">SEE MORE IMAGES</v-btn>
-                    </v-card-actions>
                 </div>
 
-
-
-                
-                <div class="d-flex flex-col justify-around items-center py-5"> 
-                    <div class="d-flex justify-center items-center ga-3">
+                <!-- WHEN AND WHERE -->
+                <div class="w-full d-flex flex-col justify-around items-center py-5"> 
+                    <div class="w-full d-flex justify-center items-center ga-3">
                         <v-btn class="border" icon>
                             <v-icon :size="30">mdi-calendar-clock</v-icon>
                         </v-btn>
-                        <div class="custom-card w-full d-flex justify-center items-center ga-3 elevation-5 py-3 px-5 rounded-md border">
-                            <h3 class='text-center text-sm'><i class="text-center text-lg font-extrabold">WHEN</i><br>April 15, 2025 | 7:00 AM – 12:00 PM</h3>
+                        <div class="custom-card w-full d-flex flex-col justify-center items-center ga-3 elevation-5 py-3 px-5 rounded-md border">
+                            <h3 class='italic text-center text-lg font-extrabold'>WHEN</h3>
+                            <div
+                            v-for="(dt, dIndex) in announcementDetails.datetimes"
+                            :key="dt.id"
+                            class="w-full"
+                            >
+                                <h5 class="whitespace-nowrap pa-2 border rounded-sm">
+                                    📅 
+                                    {{
+                                        new Date(dt.date + 'T00:00:00').toLocaleDateString('en-US', {
+                                        month: 'long',
+                                        day: 'numeric',
+                                        year: 'numeric'
+                                        })
+                                    }}
+                                    <br>
+                                    ⏰ {{ dt.start }} - {{ dt.end }}
+                                </h5>
+                            </div>
+
                         </div>
                     </div>
 
-                    <div class="d-flex justify-center items-center ga-3">
+                    <div class="w-full d-flex justify-center items-center ga-3">
                         <v-btn class="border" icon>
                             <v-icon :size="30">mdi-map-marker</v-icon>
                         </v-btn>
                         <div class="custom-card w-full d-flex justify-center items-center ga-3 elevation-5 py-3 px-5 rounded-md border">
-                            <h3 class='text-center text-sm'><i class="text-center text-lg font-extrabold">WHERE</i><br>Barangay Francia, Iriga City – Starting at Barangay Hall, covering nearby areas.</h3>
+                            <h3 class='text-center text-sm'><i class="text-center text-lg font-extrabold">WHERE</i><br>{{ announcementDetails.where }}</h3>
                         </div>
                     </div>
                 </div>
             </div>
+
+            <v-card-actions>
+                <v-btn color="teal" @click="imagesContainer = !imagesContainer">{{ imagesContainer ? 'LESS IMAGES' : 'MORE IMAGES'}}</v-btn>
+            </v-card-actions>
         </v-card>
     </v-dialog>
 </template>
@@ -160,15 +200,12 @@ import "swiper/css/autoplay";
 import "swiper/css/pagination";
 import { EffectCoverflow, Autoplay, Pagination } from "swiper/modules";
 
-import 'vue3-carousel/carousel.css'
-import { Carousel, Slide, Navigation } from 'vue3-carousel'
+
 import $ from 'jquery';
 
 export default {
     name: "Announcements",
     components : {
-        Carousel,
-        Slide,
         Navigation,
     },
     props: {
@@ -177,18 +214,14 @@ export default {
     data() {
         return {
             announcements: [],
-            items: ['Select a Month', 'January', 'February', 'March', 'April'],
+            items: [],
             selectedAnnoncementItem: 'Select a Month',
             announcementDetails: [],
             showAnnouncementDetails: false,
             isFetchingAnnouncements: false,
-
-
-            config: {
-                height: 500,
-                gap: 5,
-                wrapAround: true,
-            },
+            selectedAnnouncementSort: 'featured',  // all | featured | month
+            selectedMonth: null,             // holds actual month string
+            imagesContainer : false
         };
 
     },
@@ -248,14 +281,14 @@ export default {
                 },
             });
         },
-        async fetchBarangayAnnouncements() {
+        fetchBarangayAnnouncements() {
             if (this.isFetchingAnnouncements) {
                 console.log('Fetch already in progress, skipping...');
                 return;
             }
             this.isFetchingAnnouncements = true;
             try {
-                await $.ajax({
+                $.ajax({
                     url: `${this.$store.getters['api_base']}?e=barangay&a=announcements`,
                     type: 'POST',
                     xhrFields: { withCredentials: true },
@@ -297,14 +330,112 @@ export default {
                 });
             }
         },
+        fetchBarangayFeaturedAnnouncements() {
+            $.ajax({
+            url: `${this.$store.getters.api_base}?e=barangay&a=featured-announcements`,
+            type: 'POST',
+            xhrFields: {
+                withCredentials: true
+            },
+            headers: {
+                'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
+            },
+            data: {
+                barangayId: this.$store.getters['auth/getBarangayId'],
+            },
+            success: (data) => {
+                this.announcements = data.data.announcements;
+                console.log(data);
+            },
+            error: (jqXHR, textStatus, errorThrown) => {
+                console.error("Error:", textStatus, errorThrown);
+                let errorMsg = "An error occurred while processing your request.";
+                if (jqXHR.responseJSON && jqXHR.responseJSON.error) {
+                errorMsg = jqXHR.responseJSON.message;
+                } else if (jqXHR.responseText) {
+                errorMsg = jqXHR.responseText;
+                }
+            },
+            complete: () => {
+                // Optional: any actions after completion.
+            }
+            });
+        },
+        fetchBarangayAnnouncementsByMonth(month) {
+            $.ajax({
+                url: `${this.$store.getters.api_base}?e=barangay&a=announcements-by-month`,
+                type: 'POST',
+                xhrFields: { withCredentials: true },
+                headers: {
+                    'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
+                },
+                data: {
+                    barangayId: this.$store.getters['auth/getBarangayId'],
+                    month: month
+                },
+                success: (data) => {
+                    this.announcements = data.data.announcements;
+                    console.log("Announcements for month:", month, data);
+                },
+                error: (jqXHR, textStatus, errorThrown) => {
+                    console.error("Error fetching announcements by month:", textStatus, errorThrown);
+                }
+            });
+        },
+        fetchAvailableMonths() {
+            $.ajax({
+                url: `${this.$store.getters.api_base}?e=barangay&a=available-year-months`,
+                type: 'POST',
+                xhrFields: { withCredentials: true },
+                headers: {
+                    'X-CSRF-Token': document.querySelector('meta[name="csrf-token"]').content
+                },
+                data: {
+                    barangayId: this.$store.getters['auth/getBarangayId']
+                },
+                success: (data) => {
+                    // Backend returns e.g. ["2025-08", "2025-07", "2024-12"]
+                    const months = data.data.yearMonths.map(ym => {
+                        const [year, month] = ym.split('-');
+                        const monthName = new Date(ym + '-01').toLocaleString('en-US', { month: 'long' });
+                        return `${monthName} ${year}`;
+                    });
+
+                    // Add default option
+                    this.items = ['Select a Month', ...months];
+                    this.selectedMonth = this.items[0];
+                    console.log("Available months:", this.items);
+                },
+                error: (jqXHR, textStatus, errorThrown) => {
+                    console.error("Error fetching months:", textStatus, errorThrown);
+                }
+            });
+        }
     },
     created() {
         this.fetchBarangayAnnouncements();
+        this.fetchAvailableMonths();
     },
     watch: {
         barangayId(newVal, oldVal) {
             if (newVal !== oldVal) {
                 this.fetchBarangayAnnouncements();
+                this.fetchAvailableMonths();
+            }
+        },
+        selectedAnnouncementSort(newVal) {
+            if (newVal === 'all') {
+            this.fetchBarangayAnnouncements();
+            } else if (newVal === 'featured') {
+            this.fetchBarangayFeaturedAnnouncements();
+            } else if (newVal === 'month' && this.selectedMonth && this.selectedMonth !== 'Select a Month') {
+            this.fetchBarangayAnnouncementsByMonth(this.selectedMonth);
+            }
+        },
+        selectedMonth(newMonth) {
+            // Only fetch if the "month" tab is active
+            if (this.selectedAnnouncementSort === 'month' && newMonth && newMonth !== 'Select a Month') {
+            this.fetchBarangayAnnouncementsByMonth(newMonth);
             }
         }
     }
@@ -323,14 +454,13 @@ export default {
 
 .swiper {
     width: 100%;
-    height: 80vh;
     overflow: visible;
 }
 
 .swiper-slide {
     background-position: center;
+    height: 625px;
     width: 400px;
-    height: auto;    
 }
 
 

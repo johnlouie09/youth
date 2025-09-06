@@ -56,7 +56,8 @@ class SkOfficial extends Model
             }
         }
     }
-
+    
+    // -------------------- GETTERS --------------------
 
     /**
      * Gets SkOfficial barangay_id.
@@ -72,8 +73,7 @@ class SkOfficial extends Model
      * Gets SkOfficial slug.
      * @return string
      */
-    public function getSlug()
-    {
+    public function getSlug(){
         return $this->slug;
     }
 
@@ -371,6 +371,15 @@ class SkOfficial extends Model
     }
 
 
+
+
+
+
+
+
+    // -------------------- CRUD OPERATIONS --------------------
+
+
     /**
      * Retrieves all SK Official records, optionally filtering by Barangay.
      *
@@ -378,7 +387,7 @@ class SkOfficial extends Model
      * @param bool $assoc_basic
      * @param Barangay|null $barangay
      * @return array
-     */
+    */
     public static function all(bool $assoc = false, bool $assoc_basic = false, ?Barangay $barangay = null): array
     {
         $query = "SELECT * FROM `" . self::$table . "`";
@@ -409,175 +418,6 @@ class SkOfficial extends Model
 
         return $sk_officials;
     }
-
-
-    /**
-     * Gets the Barangay that this SK Official belongs to.
-     *
-     * @param bool $assoc
-     * @param bool $assoc_basic
-     * @return Barangay|array|null
-     * @throws Exception
-     */
-    public function getBarangay(bool $assoc = false, bool $assoc_basic = false): Barangay|array|null
-    {
-        require_once __DIR__ . '/Barangay.php';
-        $barangay = Barangay::find($this->barangay_id);
-        return ($assoc && $barangay) ? $barangay->getAssoc($assoc_basic) : $barangay;
-    }
-
-
-    /**
-     * Retrieves achievements for this SK Official.
-     *
-     * @param bool $assoc
-     * @param bool $assoc_basic
-     * @return array
-     */
-    public function getAchievements(bool $assoc = false, bool $assoc_basic = false): array
-    {
-        require_once __DIR__ . '/Achievement.php';
-        return Achievement::all($assoc, $assoc_basic, $this);
-    }
-
-
-    /**
-     * Retrieves educations for this SK Official.
-     *
-     * @param bool $assoc
-     * @param bool $assoc_basic
-     * @return array
-     */
-    public function getEducations(bool $assoc = false, bool $assoc_basic = false): array
-    {
-        require_once __DIR__ . '/SkEducation.php';
-        return SkEducation::all($assoc, $assoc_basic, $this);
-    }
-
-
-    /**
-     * Authenticates using the given identifier and password.
-     * @param string $identifier
-     * @param string $password
-     * @param bool $is_password_hashed
-     * @return SkOfficial|null
-     */
-    private static function authenticate(string $identifier, string $password, bool $is_password_hashed = false): ?SkOfficial
-    {
-        $authenticated = null;
-
-        // find the sk_official using the given identifier
-        $column = (filter_var($identifier, FILTER_VALIDATE_EMAIL)) ? 'email' : 'username';
-        $sk_official = SkOfficial::findBy($column, $identifier);
-
-        // if sk_official is found, verify the given password
-        if ($sk_official) {
-            if ((!$is_password_hashed && $sk_official->getPassword() === $password) || ($is_password_hashed && password_verify(base64_encode($sk_official->getPassword()), $password))) {
-                $authenticated = $sk_official;
-            }
-        }
-
-        return $authenticated;
-    }
-    
-    
-    /**
-     * Attempts to log in using the given identifier and password.
-     * @param string $identifier
-     * @param string $password
-     * @param bool $remember
-     * @return SkOfficial
-     * @throws Exception
-     */
-    public static function login(string $identifier, string $password, bool $remember = false): SkOfficial
-    {
-        if (self::getLoggedIn() !== null) {
-            self::logout();
-        }
-        
-        // authenticate
-        $sk_official = self::authenticate($identifier, $password);
-        if ($sk_official === null) {
-            throw new Exception('Invalid credentials');
-        }
-        
-        // encode credentials
-        $encoded_username = base64_encode($sk_official->getUsername());
-        $encoded_password = base64_encode(password_hash(base64_encode($sk_official->getPassword()), PASSWORD_DEFAULT));
-
-        // store encoded credentials in session
-        $_SESSION[self::$session_username_key] = $encoded_username;
-        $_SESSION[self::$session_password_key] = $encoded_password;
-
-        // if remembered, store credentials in cookies as well
-        if ($remember) {
-            $cookie_expiration = time() + (86400 * 15); // n days
-            $cookie_path       = '/';
-            setcookie(self::$session_username_key, $encoded_username, $cookie_expiration, $cookie_path);
-            setcookie(self::$session_password_key, $encoded_password, $cookie_expiration, $cookie_path);
-        }
-
-        self::$logged_in  = $sk_official;
-        self::$logged_out = false;
-
-        return $sk_official;
-    }
-
-
-    /**
-     * Gets logged in SkOfficial.
-     * @return SkOfficial|null
-     */
-    public static function getLoggedIn(): ?SkOfficial
-    {
-        if (!self::$logged_out && (self::$logged_in === null)) {
-            // get remembered credentials
-            if (!isset($_SESSION[self::$session_username_key]) || !isset($_SESSION[self::$session_password_key])) {
-                if (isset($_COOKIE[self::$session_username_key]) && isset($_COOKIE[self::$session_password_key])) {
-                    $_SESSION[self::$session_username_key] = $_COOKIE[self::$session_username_key];
-                    $_SESSION[self::$session_password_key] = $_COOKIE[self::$session_password_key];
-                }
-            }
-
-            // attempt to get logged in sk_official
-            if (isset($_SESSION[self::$session_username_key]) && isset($_SESSION[self::$session_password_key])) {
-                // decode credentials
-                $decoded_username = base64_decode($_SESSION[self::$session_username_key]);
-                $decoded_password = base64_decode($_SESSION[self::$session_password_key]);
-
-                self::$logged_in  = self::authenticate($decoded_username, $decoded_password, true);
-            }
-        }
-
-        return self::$logged_in;
-    }
-
-
-    /**
-     * Clears logged in.
-     * @return void
-     */
-    public static function logout(): void
-    {
-        // delete session
-        if (isset($_SESSION[self::$session_username_key])) {
-            unset($_SESSION[self::$session_username_key]);
-        }
-        if (isset($_SESSION[self::$session_password_key])) {
-            unset($_SESSION[self::$session_password_key]);
-        }
-
-        // delete cookies as well
-        $cookie_expiration = time() - 3600;
-        $cookie_path       = '/';
-        setcookie(self::$session_username_key, '', $cookie_expiration, $cookie_path);
-        setcookie(self::$session_password_key, '', $cookie_expiration, $cookie_path);
-
-        // clear cache
-        self::$logged_in  = null;
-        self::$logged_out = true;
-    }
-
 
     /**
      * Insert sk_official
@@ -628,6 +468,50 @@ class SkOfficial extends Model
     }
 
 
+
+    // -------------------- UTILITY FUNCTION --------------------
+    /**
+     * Gets the Barangay that this SK Official belongs to.
+     *
+     * @param bool $assoc
+     * @param bool $assoc_basic
+     * @return Barangay|array|null
+     * @throws Exception
+     */
+    public function getBarangay(bool $assoc = false, bool $assoc_basic = false): Barangay|array|null
+    {
+        require_once __DIR__ . '/Barangay.php';
+        $barangay = Barangay::find($this->barangay_id);
+        return ($assoc && $barangay) ? $barangay->getAssoc($assoc_basic) : $barangay;
+    }
+
+
+    /**
+     * Retrieves achievements for this SK Official.
+     *
+     * @param bool $assoc
+     * @param bool $assoc_basic
+     * @return array
+     */
+    public function getAchievements(bool $assoc = false, bool $assoc_basic = false): array
+    {
+        require_once __DIR__ . '/Achievement.php';
+        return Achievement::all($assoc, $assoc_basic, $this);
+    }
+
+    /**
+     * Retrieves educations for this SK Official.
+     *
+     * @param bool $assoc
+     * @param bool $assoc_basic
+     * @return array
+     */
+    public function getEducations(bool $assoc = false, bool $assoc_basic = false): array
+    {
+        require_once __DIR__ . '/SkEducation.php';
+        return SkEducation::all($assoc, $assoc_basic, $this);
+    }
+
     /**
      * Retrieves the education background for this SK Official.
      * @return array
@@ -659,6 +543,147 @@ class SkOfficial extends Model
         return $educationBackground;
     }
 
+    public function getAdvocacies(): array
+    {
+        require_once __DIR__ . '/SkAdvocacies.php';
+        return SkAdvocacies::all(true, false, $this);
+    }
+
+    public function getPlatforms(): array
+    {
+        require_once __DIR__ . '/SkPlatforms.php';
+        return SkPlatforms::all(true, false, $this);
+    }
+
+    public function getPrograms(): array
+    {
+        require_once __DIR__ . '/SkPrograms.php';
+        return SkPrograms::all(true, false, $this);
+    }
+
+
+
+
+    // -------------------- AUTHENTICATION & SESSION MANAGEMENT --------------------
+    /**
+     * Authenticates using the given identifier and password.
+     * @param string $identifier
+     * @param string $password
+     * @param bool $is_password_hashed
+     * @return SkOfficial|null
+     */
+    private static function authenticate(string $identifier, string $password, bool $is_password_hashed = false): ?SkOfficial
+    {
+        $authenticated = null;
+
+        // find the sk_official using the given identifier
+        $column = (filter_var($identifier, FILTER_VALIDATE_EMAIL)) ? 'email' : 'username';
+        $sk_official = SkOfficial::findBy($column, $identifier);
+
+        // if sk_official is found, verify the given password
+        if ($sk_official) {
+            if ((!$is_password_hashed && $sk_official->getPassword() === $password) || ($is_password_hashed && password_verify(base64_encode($sk_official->getPassword()), $password))) {
+                $authenticated = $sk_official;
+            }
+        }
+
+        return $authenticated;
+    }
+    
+    /**
+     * Attempts to log in using the given identifier and password.
+     * @param string $identifier
+     * @param string $password
+     * @param bool $remember
+     * @return SkOfficial
+     * @throws Exception
+     */
+    public static function login(string $identifier, string $password, bool $remember = false): SkOfficial
+    {
+        if (self::getLoggedIn() !== null) {
+            self::logout();
+        }
+        
+        // authenticate
+        $sk_official = self::authenticate($identifier, $password);
+        if ($sk_official === null) {
+            throw new Exception('Invalid credentials');
+        }
+        
+        // encode credentials
+        $encoded_username = base64_encode($sk_official->getUsername());
+        $encoded_password = base64_encode(password_hash(base64_encode($sk_official->getPassword()), PASSWORD_DEFAULT));
+
+        // store encoded credentials in session
+        $_SESSION[self::$session_username_key] = $encoded_username;
+        $_SESSION[self::$session_password_key] = $encoded_password;
+
+        // if remembered, store credentials in cookies as well
+        if ($remember) {
+            $cookie_expiration = time() + (86400 * 15); // n days
+            $cookie_path       = '/';
+            setcookie(self::$session_username_key, $encoded_username, $cookie_expiration, $cookie_path);
+            setcookie(self::$session_password_key, $encoded_password, $cookie_expiration, $cookie_path);
+        }
+
+        self::$logged_in  = $sk_official;
+        self::$logged_out = false;
+
+        return $sk_official;
+    }
+
+    /**
+     * Gets logged in SkOfficial.
+     * @return SkOfficial|null
+     */
+    public static function getLoggedIn(): ?SkOfficial
+    {
+        if (!self::$logged_out && (self::$logged_in === null)) {
+            // get remembered credentials
+            if (!isset($_SESSION[self::$session_username_key]) || !isset($_SESSION[self::$session_password_key])) {
+                if (isset($_COOKIE[self::$session_username_key]) && isset($_COOKIE[self::$session_password_key])) {
+                    $_SESSION[self::$session_username_key] = $_COOKIE[self::$session_username_key];
+                    $_SESSION[self::$session_password_key] = $_COOKIE[self::$session_password_key];
+                }
+            }
+
+            // attempt to get logged in sk_official
+            if (isset($_SESSION[self::$session_username_key]) && isset($_SESSION[self::$session_password_key])) {
+                // decode credentials
+                $decoded_username = base64_decode($_SESSION[self::$session_username_key]);
+                $decoded_password = base64_decode($_SESSION[self::$session_password_key]);
+
+                self::$logged_in  = self::authenticate($decoded_username, $decoded_password, true);
+            }
+        }
+
+        return self::$logged_in;
+    }
+
+    /**
+     * Clears logged in.
+     * @return void
+     */
+    public static function logout(): void
+    {
+        // delete session
+        if (isset($_SESSION[self::$session_username_key])) {
+            unset($_SESSION[self::$session_username_key]);
+        }
+        if (isset($_SESSION[self::$session_password_key])) {
+            unset($_SESSION[self::$session_password_key]);
+        }
+
+        // delete cookies as well
+        $cookie_expiration = time() - 3600;
+        $cookie_path       = '/';
+        setcookie(self::$session_username_key, '', $cookie_expiration, $cookie_path);
+        setcookie(self::$session_password_key, '', $cookie_expiration, $cookie_path);
+
+        // clear cache
+        self::$logged_in  = null;
+        self::$logged_out = true;
+    }
 
     /**
      * Test email sending
@@ -724,6 +749,12 @@ class SkOfficial extends Model
     }
 
 
+
+
+
+
+
+    //-------------------- HELPER METHODS --------------------
     /**
      * Returns a list of positions along with the number of officials holding each position
      * If a barangay slug is provided, only counts for that barangay are returned.
