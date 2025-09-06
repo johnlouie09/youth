@@ -1,8 +1,31 @@
 <template>
 
     <!-- Achievements Card -->
-    <v-container fluid class="achievement-main pa-0 ma-0 mb-15 d-flex flex-col ga-15">
-        <h1 class="gradient-text font-black uppercase">Achievements</h1>
+    <v-container fluid class="pa-0 ma-0 mb-15 d-flex flex-col justify-start items-center ga-5">
+                <!-- Title Section -->
+        <v-card-title class="gradient-text title d-flex items-center justify-center ga-5">
+            <v-icon size="60">mdi-trophy</v-icon>
+                <h1 class="gradient-text font-black uppercase">Achievements</h1>
+            <v-icon size="60">mdi-trophy</v-icon>
+        </v-card-title>
+
+
+        <!-- Achievement Sorting Selector -->
+        <v-tabs v-model="selectedAchievementSort" grow class="my-5">
+            <div class="grid grid-cols-2 ga-5">
+                <v-tab value='all' class="border rounded-md col-span-1">ALL</v-tab>
+                <v-tab value="month" class="border rounded-md col-span-1">
+                    <v-select
+                        v-model="selectedMonth"
+                        class="border rounded-md w-full"
+                        :items="items"
+                        density="comfortable"
+                        hide-details
+                    />
+                </v-tab>
+            </div>
+        </v-tabs>
+
         <div class="achievements">
             <v-card
                 v-for="(achievement, index) in achievements" :key="index"
@@ -40,31 +63,36 @@
     </v-container>
 
     <!-- Achievement Dialog -->
-    <v-dialog v-model=showAchievementDetails width="1100px" height="95vh">
-        <v-sheet class="hella rounded-3xl" style="border-radius: 2rem; overflow: hidden;"> 
+    <v-dialog v-model=showAchievementDetails width="1100px" max-height="95vh">
+        <v-card 
+        class="hella rounded-6xl overflow-y-auto"
+        style="border-radius: 1rem; font-family: 'Inter', sans-serif;"> 
+            <h2 class='w-full uppercase text-center text-3xl font-extrabold py-4 border-b'>{{ achievementDetails.title }}</h2>
 
             <!-- Achievement Images Slideshow -->
-            <div ref="swiperContainer" class="swiper mySwiper w-[95%] h-[45%]">
-                <div class="swiper-wrapper">
-                    <div class="swiper-slide" v-for="n of 10">
-                        <img 
-                            :src="achievementDetails.img 
-                                    ? ($store.getters.base + 'public/achievements/' + achievementDetails.img) 
-                                    : ($store.getters.base + 'public/achievements/exx.jpg')"
-                            style="border-radius: .5rem; width: 611px; height: 314px;"
-                            cover
-                        ></img>
+            <div class="w-[90%]">
+                <div ref="swiperContainer" class="swiper mySwiper">
+                    <div class="swiper-wrapper">
+                        <div class="swiper-slide" v-for="(image, index) in achievementDetails.images">
+                            <v-img 
+                                :src="image.img
+                                        ? ($store.getters.base + 'public/achievements/' + image.img) 
+                                        : ($store.getters.base + 'public/achievements/no-avatar.png')"
+                                style="border-radius: .5rem; height: 300px;"
+                                cover
+                            ></v-img>
+                        </div>
                     </div>
                 </div>
             </div>
 
-
             <!-- Achievement Details -->
-            <div class="w-full h-[40%] d-flex flex-col justify-around items-center gap-1" style="font-family: 'Inter', sans-serif;">
-                <div class="d-flex flex-col justify-center items-center ga-2">
-                    <h2 class='uppercase text-2xl font-extrabold'>{{ achievementDetails.title }}</h2>
-                    <h3 class="capitalize w-[55%] text-sm text-center italic font-light">{{ achievementDetails.subtitle }} Lorem, ipsum dolor sit amet consectetur adipisicing elit. Veniam rem dolorum quam! Odio t. Veniam rem dolorum quam! </h3>
-                    <h3 class="font-bold text-xs">{{ formatDate(achievementDetails.date) }}</h3>
+            <div class="w-full d-flex flex-col justify-around items-center gap-1" style="font-family: 'Inter', sans-serif;">
+                <div class="w-full d-flex flex-col justify-center items-center ga-1 border-b py-3 relative">
+                    <h3 class="capitalize w-[55%] text-sm text-center italic font-light">{{ achievementDetails.subtitle }}</h3>
+                    <div class="absolute right-0 bottom-0 pa-2">
+                        <p class="italic text-xs font-light" v-for="(date, index) in achievementDetails.dates">{{ formatDate(date.date) }}</p>
+                    </div>
                 </div>
 
                 <p class="w-full h-[60%] text-base text-center overflow-y-auto my-2 px-2 py-4 rounded-md">{{ achievementDetails.info }} Lorem, ipsum dolor sit amet consectetur adipisicing elit. Et exercitationem perferendis voluptates at. Qui, repudiandae fuga expedita possimus nisi necessitatibus consequuntur molestiae quisquam doloribus, culpa ipsum esse numquam eos. Sint. Lorem ipsum dolor sit amet consectetur adipisicing elit. Atque ducimus nobis iusto explicabo, voluptatem quae. Commodi rem, officiis, rerum veritatis autem pariatur delectus voluptatibus nobis nam, consectetur animi nihil necessitatibus?</p>

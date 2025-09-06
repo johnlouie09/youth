@@ -1,10 +1,129 @@
+<script>
+import SocialLinks from '../landingPageComponents/SocialLinks.vue';
+import Achievements from './Achievements.vue';
+import $ from 'jquery';
+export default {
+    name: "DialogComponent",
+    components : {
+        SocialLinks,
+        Achievements
+    },
+    computed: {
+        isDialogOpen: {
+            get() {
+                return this.$store.getters['viewOfficial/getViewOfficialOpenDialog'];
+            },
+            set(value) {
+                this.$store.commit('viewOfficial/setViewOfficialOpenDialog', value);
+            }
+        },
+        // Wrap the store getter in a computed property for reactivity.
+        officialStore() {
+            return this.$store.getters['viewOfficial/getViewOfficial'];
+        }
+    },
+    data() {
+        return {
+            officialInfos: {
+                personalInfo: {},
+                educationalBackgrounds: [],
+                achievements: []
+            },
+            activeTab: 'profile', // Default active tab.
+            errorMessage: null,
+
+            showAdvocacyDetails: false,
+            showPlatformDetails: false,
+            showProgramDetails: false,
+            
+        };
+    },
+    methods: {
+        closeDialog() {
+            this.isDialogOpen = false;
+            this.$store.commit('viewOfficial/setViewOfficialOpenDialog', false);
+            this.activeTab = 'profile'
+            this.errorMessage = null;
+        },
+        openDialog(official) {
+            this.$store.commit('viewOfficial/setViewOfficial', official);
+            this.isDialogOpen = true;
+        },
+        formatDate(dateStr) {
+            if (!dateStr) return 'N/A';
+            const date = new Date(dateStr);
+            // Format as "Month Day, Year" (e.g., "March 24, 2025")
+            return date.toLocaleDateString('en-US', {
+                month: 'long',
+                day: 'numeric',
+                year: 'numeric'
+            });
+        },
+        async fetchOfficialData(slug) {
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+            await $.ajax({
+                url: `${this.$store.getters['api_base']}?e=sk-official&a=personalInfo`,
+                type: 'POST',
+                xhrFields: { withCredentials: true },
+                headers: { 'X-CSRF-Token': csrfToken },
+                data: { officialSlug: slug },
+                success: (data) => {
+                    this.officialInfos = data.data;
+                    console.log(data.data);
+                    this.errorMessage = null;
+                },
+                error: (jqXHR, textStatus, errorThrown) => {
+                    let errorMsg = "Failed to load official data.";
+                    if (jqXHR.responseJSON && jqXHR.responseJSON.message) {
+                        errorMsg = jqXHR.responseJSON.message;
+                    }
+                    this.errorMessage = errorMsg;
+                    console.error("Error:", textStatus, errorThrown);
+                }
+            });
+        },
+
+        // HELPER METHODS
+        getTitleAdvocacy(advocacyId) {
+            const advocacy = this.officialInfos.advocacies.find(a => a.id === advocacyId);
+            return advocacy ? advocacy.title : 'Unknown Advocacy';
+        }
+    },
+    created() {
+        this.officialInfos = this.$store.getters['viewOfficial/getViewOfficial'] || {
+            personalInfo: {},
+            educationalBackgrounds: [],
+            achievements: []
+        };
+        if (this.officialInfos?.personalInfo?.slug) {
+            this.fetchOfficialData(this.officialInfos.personalInfo.slug);
+        }
+    },
+    watch: {
+        officialStore: {
+            handler(newVal) {
+                if (newVal && newVal.personalInfo && newVal.personalInfo.slug) {
+                    this.fetchOfficialData(newVal.personalInfo.slug);
+                }
+            },
+            deep: true,
+            immediate: true
+        }
+    }
+};
+</script>
+
+
+
+
+
 <template>
     <v-dialog v-model="isDialogOpen" max-width="1000px" height="90vh" persistent class="overflow-hidden">
         <v-card style="border-radius: 1rem; font-family: 'Inter', sans-serif;" border="primary lg">
-            <div class="grid grid-cols-5 place-items-center pt-15 py-0 px-15 ga-5">
+            <div class="grid grid-cols-5 place-items-center pt-13 py-0 px-15 ga-5">
 
                 <!-- Icon Tab Bar with active state -->
-                <v-sheet class="col-span-1 d-flex flex-col justify-center gap-5">
+                <v-sheet class="h-full col-span-1 d-flex flex-col justify-evenly">
                     <v-btn
                         icon
                         class="elevation-10"
@@ -31,7 +150,7 @@
                 <div class="col-span-3 d-flex flex-col align-center justify-center ga-5">
                     <v-avatar
                         :image="officialInfos.personalInfo.img? ($store.getters.base + 'public/OfficialImages/' + officialInfos.personalInfo?.img) : '/public/OfficialImages/no-avatar.png'"
-                        size="200"
+                        size="150"
                         cover
                         alt="SK Logo"
                         class="rounded-circle"
@@ -50,29 +169,29 @@
                 </div>
 
                 <!-- Button for Advocacies, Platforms and Programs -->
-                <v-sheet class="col-span-1 d-flex flex-col justify-center gap-5">
+                <v-sheet class="h-full col-span-1 d-flex flex-col justify-evenly">
                     <v-btn 
-                        class="custom-btn d-flex justify-center text-xl font-bold py-5 px-10 elevation-10"
+                        class="custom-btn d-flex justify-center font-bold px-8 py-4 elevation-10"
                         :class="{ 'active-btn': activeTab === 'advocacies' }"
-                        @click="activeTab = 'advocacies'"
+                        @click="activeTab = 'advocacies';"
                     >
-                        <span class="overlay-titles">ADVOCACIES</span>
+                        <span class="overlay-titles text-xs">ADVOCACIES</span>
                     </v-btn>
 
                     <v-btn 
-                        class="custom-btn d-flex justify-center text-xl font-bold py-5 px-10 elevation-10"
+                        class="custom-btn d-flex justify-center font-bold px-8 py-4 elevation-10"
                         :class="{ 'active-btn': activeTab === 'platforms' }"
                         @click="activeTab = 'platforms'"
                     >
-                        <span class="overlay-titles">PLATFORMS</span>
+                        <span class="overlay-titles text-xs">PLATFORMS</span>
                     </v-btn>
 
                     <v-btn 
-                        class="custom-btn d-flex justify-center text-xl font-bold py-5 px-10 elevation-10"
+                        class="custom-btn d-flex justify-center text-xl font-bold px-8 py-4 elevation-10"
                         :class="{ 'active-btn': activeTab === 'programs' }"
                         @click="activeTab = 'programs'"
                     >
-                        <span class="overlay-titles">PROGRAMS</span>
+                        <span class="overlay-titles text-xs">PROGRAMS</span>
                     </v-btn>
                 </v-sheet>
 
@@ -270,27 +389,32 @@
 
                     <v-container class="d-flex flex-row flex-wrap justify-evenly pa-5 ga-10">
                         <v-card
-                        v-for="n of 3"
+                        v-for="(advocacy, index) in officialInfos.advocacies"
                         class="custom-card border rounded-lg elevation-10"
-                        :class="{'d-flex flex-col ga-5 items-center w-[90%] elevation-10 px-15 py-10' : showAdvocacyDetails, 'd-flex ga-10 w-[90%] max-h-[250px]' : !showAdvocacyDetails}">
+                        :class="{'d-flex flex-col ga-5 items-center w-[90%] elevation-10 px-10 pt-10 pb-5' : showAdvocacyDetails, 'd-flex ga-10 w-[90%] max-h-[250px]' : !showAdvocacyDetails}">
 
                             <!-- Advocacy Image, Title and Subtitle -->
-                            <div :class="{'d-flex justify-evenly items-center ga-5' : showAdvocacyDetails, 'd-flex justify-evenly items-center ga-5 pa-5' : !showAdvocacyDetails}">
+                            <div :class="{'w-full d-flex justify-evenly items-center ga-5' : showAdvocacyDetails, 'w-full d-flex justify-evenly items-center ga-5 pa-5' : !showAdvocacyDetails}">
                                 <v-img 
                                     class="elevation-5 rounded-lg"
-                                    :class="{'max-h-[250px] w-[40%]' : showAdvocacyDetails, 'h-full w-[40%]' : !showAdvocacyDetails}"
-                                    :src="$store.getters.base + 'Flogo.svg'"    
+                                    :class="{'w-[35%]' : showAdvocacyDetails, 'w-[40%]' : !showAdvocacyDetails}"
+                                    :src="
+                                        advocacy?.thumbnail 
+                                        ? ($store.getters.base + 'public/advocacyImages/' + advocacy.thumbnail) 
+                                        : ($store.getters.base + 'public/advocacyImages/no-avatar.png')"
+                                    cover  
                                 ></v-img>
 
-                                <div class="d-flex flex-col justify-center items-center py-5 ga-2">
+
+                                <div class="w-full d-flex flex-col justify-evenly items-center">
                                     <h3 class="w-full text-lg font-extrabold uppercase text-center">
-                                        Kabataan, Kabalikat ng Kaunlaran
+                                        {{ advocacy.title || 'No Title Available' }}
                                         <v-divider class="mt-3"></v-divider>
                                     </h3>
 
                                     
-                                    <h4 class="w-[80%] text-center font-italic">
-                                        Bilang SK Official, tungkulin nating maging tinig at tagapagtanggol ng kabataan. Sama-sama nating itaguyod ang isang barangay na ligtas, progresibo, at makabuluhan para sa lahat.
+                                    <h4 class="w-[90%] text-center font-italic">
+                                        {{ advocacy.subtitle || 'No Subtitle Available' }}
                                     </h4>
 
                                     <v-card-actions v-if="!showAdvocacyDetails" >
@@ -303,35 +427,12 @@
                                         </v-btn>
                                     </v-card-actions>
                                 </div>
-
-
                             </div>
 
                             <!-- Advocacy Details -->
-                            <p v-if="showAdvocacyDetails" class="text-justify text-sm">
-                                <v-divider class="my-4"></v-divider>
-                                Ang Kabataan, Kabalikat ng Kaunlaran ay isang adbokasiyang naglalayong palakasin ang partisipasyon ng kabataan sa mga programang pangkaunlaran ng barangay. Bilang mga SK Official, isinusulong namin ang aktibong pakikilahok ng kabataan sa paggawa ng mga proyekto ukol sa edukasyon, kalusugan, kabuhayan, at kalikasan. Layunin naming bigyan ng boses ang kabataan sa bawat desisyon at plano ng barangay, upang masiguro na ang kanilang mga pangangailangan at adhikain ay naisasama sa paghubog ng mas maunlad na komunidad. Sa pamamagitan ng mga pagsasanay, seminar, clean-up drives, youth assemblies, at livelihood programs, nais naming mailapit ang gobyerno sa kabataan at maisulong ang kabataang may malasakit, disiplina, at ambag sa bayan.
+                            <p v-if="showAdvocacyDetails" class="w-full text-center border-t pt-3">
+                                {{ advocacy.detail || 'No Details Available' }}
                             </p>
-
-                            <!-- Platforms Under this Advocacy -->
-                            <div v-if="showAdvocacyDetails" class="w-full d-flex flex-col justify-center items-center text-lg ga-5 elevation-10 pa-5 py-10">
-                                <h3 class="text-center teact-xl font-extrabold ">PLATFORMS FOR THIS ADVOCACY</h3>
-
-                                <v-sheet class="w-full d-flex flex-row justify-center items-center flex-wrap ga-5">
-                                    <v-card v-for="n of 2" class="w-auto d-flex flex-col flex-wrap justify-center items-center px-10 py-5 ga-2 elevation-5">
-                                        <h4 class="uppercase text-sm text-center font-semibold">Kabataang Handa sa Kinabukasan lorem</h4>
-                                        <v-card-actions>
-                                            <v-btn class="w-full" color="teal">
-                                                GO TO PLATFORM 
-                                                <v-icon class="ml-2">mdi-launch</v-icon>
-                                            </v-btn>                                            
-                                        </v-card-actions>
-
-                                    </v-card>
-                                </v-sheet>
-
-
-                            </div>
                             
                             <v-card-actions v-if="showAdvocacyDetails" >
                                 <v-btn 
@@ -355,25 +456,24 @@
 
                     <v-container class="d-flex flex-row flex-wrap justify-evenly pa-5 ga-10">
                         <v-card
-                        v-for="n of 2"
+                        v-for="(platform, index) in officialInfos.platforms"
                         class="custom-card d-flex flex-col justify-center items-center ga-5 py-10 pb-3 w-[90%] border rounded-lg elevation-10">
 
                             <div class="w-[90%] d-flex flex-col justify-center items-center ga-3">
                                 <div class="d-flex flex-col justify-center items-center">
                                     <h3 class="w-full text-2xl font-extrabold uppercase text-center" >
-                                        Kabataang Handa sa Kinabukasan  
+                                        {{ platform.title || 'No Title Available' }} 
                                     </h3>
                                     
-                                    <h4 class="w-full text-center text-xs font-bold italic capitalize text-grey">Advocacy: Kabataan, Kabalikat ng Kaunlaran</h4>
+                                    <h4 class="w-full text-center text-xs font-bold italic capitalize text-grey">Advocacy: {{ getTitleAdvocacy(platform.sk_advocacy_id) }}</h4>
                                 </div>
                                 
 
 
                                 <p class="w-full text-justify text-sm font-italic">
-                                    Ang platformang ito ay nakatuon sa pagbibigay ng kaalaman, kasanayan, at oportunidad sa kabataan upang sila ay maging handa sa kanilang hinaharap. Sa pamamagitan ng mga programang nakatuon sa edukasyon at kabuhayan, layunin nitong palakasin ang kakayahan ng kabataan na maging produktibo at may direksyon sa buhay. Nais nating matulungan ang kabataan na maabot ang kanilang mga pangarap sa pamamagitan ng konkretong suporta tulad ng skills training.
+                                    {{ platform.detail || 'No Details Available' }}
                                 </p>
                             </div>
-
 
                             
 
@@ -423,56 +523,57 @@
 
                     <v-container class="d-flex flex-row flex-wrap justify-evenly pa-5 ga-10">
                         <v-card
-                        v-for="n of 5"
+                        v-for="(program, index) in officialInfos.programs"
                         class="custom-card w-[90%] d-flex justify-center items-center border rounded-lg elevation-10"
-                        :class="{'flex-col py-10 ga-5' : showProgramDetails, 'ga-5 max-h-[300px] px-7 py-5' : !showProgramDetails}">
+                        :class="{'flex-col py-10' : showProgramDetails, 'ga-5 max-h-[300px] px-7 py-5' : !showProgramDetails}">
 
                             <div
                             class="d-flex justify-center items-center"
-                            :class="{'w-[80%] flex-row ga-10': showProgramDetails, 'flex-col w-[40%] ' : !showProgramDetails}">
+                            :class="{'w-[80%] flex-col': showProgramDetails, 'flex-col w-[40%]' : !showProgramDetails}">
 
-                                <div>
-                                    <img 
+                                <div :class="{'w-[35%]' : showProgramDetails, 'w-full' : !showProgramDetails}">
+                                    <v-img 
                                     class=" elevation-5 rounded"
-                                    :src="$store.getters.base + 'ex.jpg'"                    
-                                    ></img>
+                                    :src="program.thumbnail ? ($store.getters.base + 'public/programImages/' + program.thumbnail) : ($store.getters.base + 'public/programImages/no-avatar.png')"    
+                                    cover                 
+                                    ></v-img>
                                 </div>
 
                                 <v-card-actions 
                                 class="d-flex"
-                                :class="{'justify-start items-start flex-col ga-5': showProgramDetails, 'justify-center items-center' : !showProgramDetails}">
+                                :class="{'justify-start items-start flex-row ga-5': showProgramDetails, 'justify-center items-center' : !showProgramDetails}">
                                 
                                     <!-- <v-chip color="green">DONE<v-icon class="ml-1">mdi-check</v-icon></v-chip> -->
 
                                     <!-- <v-chip color="yellow">PENDING<v-icon class="ml-1">mdi-reload</v-icon></v-chip> -->
 
-                                    <v-chip color="red">DISMISSED<v-icon class="ml-1">mdi-close-circle-outline</v-icon></v-chip>
+                                    <v-chip class="w-full d-flex flex-col justify-center items-center" color="red">
+                                        <span>DISMISSED</span>
+                                        <v-icon class="ml-2">mdi-close-circle-outline</v-icon>
+                                    </v-chip>
 
-                                    <v-btn color="teal">GO TO ACHIEVEMENT
+                                    <v-btn color="teal text-xs" icon>
                                         <v-icon>mdi-launch</v-icon>
                                     </v-btn>
                                 </v-card-actions>
                             </div>
 
-                         
-
 
                             <div 
-                            class="d-flex flex-col justify-evenly items-center ga-1"
-                            :class="{'pt-5' : showProgramDetails, 'py-5 pr-5' : !showProgramDetails}">
+                            class="d-flex flex-col justify-evenly items-center w-full h-full"
+                            :class="{'justify-start ga-1' : showProgramDetails, '' : !showProgramDetails}">
                                 <h3 
                                 class="font-extrabold text-center uppercase"
-                                :class="{'text-xl w-[90%]' : showProgramDetails, 'w-full' : !showProgramDetails}"
+                                :class="{'text-xl w-[90%]' : showProgramDetails, 'w-full border-b py-3' : !showProgramDetails}"
                                 >
-                                    Kabataan Hub: Skills and Livelihood Training
-                                    <v-divider v-if="!showProgramDetails" class="my-1"></v-divider>
+                                    {{ program.title || 'No Title Available' }}
                                 </h3>
 
                                 
                                 <p 
-                                class="text-center italic text-sm"
-                                :class="{'w-[90%]' : showProgramDetails, 'w-full' : !showProgramDetails}">
-                                    Magkakaloob ng libreng workshops at hands-on training sa mga kabataan tulad ng computer literacy, basic entrepreneurship, online freelancing, baking, at iba pang praktikal na kaalaman. Layon nitong bigyan sila ng kakayahang kumita o makapagsimula ng sariling negosyo, kahit habang nag-aaral.
+                                class="w-[90%] text-center italic text-sm"
+                                >
+                                    {{ program.subtitle || 'No Subtitle Available' }}  
                                 </p>
 
 
@@ -490,7 +591,7 @@
 
                             <p 
                             v-if="showProgramDetails"
-                            class="w-[90%] text-justify"><v-divider class="pb-3"></v-divider> Lorem ipsum, dolor sit amet consectetur adipisicing elit. Deserunt quia pariatur odio quaerat reprehenderit molestiae exercitationem cupiditate dignissimos dolor, et, placeat enim magnam suscipit corporis, accusamus numquam eaque saepe repellendus! Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempore, culpa aperiam et inventore, beatae dolorum recusandae totam eaque fuga suscipit ratione. Odio, quod? Labore officia cupiditate omnis vitae neque corrupti?</p>
+                            class="w-[90%] text-justify mt-2 py-3 border-t">{{program.detail || 'No Details Available' }}</p>
 
                             
                             <v-card-actions
@@ -516,17 +617,17 @@
             </v-card-actions>
         </v-card>
     </v-dialog>
-
-
 </template>
 
 <script>
 import SocialLinks from '../landingPageComponents/SocialLinks.vue';
+import Achievements from './Achievements.vue';
 import $ from 'jquery';
 export default {
     name: "DialogComponent",
     components : {
-        SocialLinks
+        SocialLinks,
+        Achievements
     },
     computed: {
         isDialogOpen: {
@@ -588,6 +689,7 @@ export default {
                 data: { officialSlug: slug },
                 success: (data) => {
                     this.officialInfos = data.data;
+                    console.log(data.data);
                     this.errorMessage = null;
                 },
                 error: (jqXHR, textStatus, errorThrown) => {

@@ -107,7 +107,7 @@ export default {
       },
       handleSubmit: debounce(async function() {
           if (!this.validateForm()) {
-              return;
+              return; 
           }
 
           this.loading = true;

@@ -35,7 +35,7 @@ if ($action === 'login')
         ]);
     }
     catch (Exception $e) {
-        returnError($e->getMessage(), 401);
+        returnError($e->getMessage());
     }
 }
 
@@ -49,7 +49,7 @@ else if ($action === 'session')
 
 
     if ($sk_official === null) {
-        returnError('No logged-in SkOfficial.', 401);
+        returnError('No logged-in SkOfficial.');
     }
     else {
         returnSuccess([

@@ -1,5 +1,6 @@
 <template>
     <v-container class="dashboard-main" fluid>
+        <h1>IMPLEMENT SECURITY HEADERS TO YOUR WEBSITE</h1>
         <!-- Cards Section -->
         <v-container class="cards" justify="center">
                 <DashboardCards :card="dashBoardData.skOfficialCount" />
