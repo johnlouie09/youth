@@ -70,13 +70,13 @@
                 <div ref="swiperContainer" class="swiper mySwiper">
                     <div class="swiper-wrapper">
                         <div class="swiper-slide" v-for="(image, index) in achievementDetails.images">
-                            <img 
+                            <v-img 
                                 :src="image.img
                                         ? ($store.getters.base + 'public/achievements/' + image.img) 
                                         : ($store.getters.base + 'public/achievements/no-avatar.png')"
                                 style="border-radius: .5rem; height: 300px;"
-                                contain
-                            ></img>
+                                cover
+                            ></v-img>
                         </div>
                     </div>
                 </div>

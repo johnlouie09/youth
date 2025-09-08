@@ -1,4 +1,21 @@
 <?php
+declare(strict_types=1);
+use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
+require_once('../vendor/autoload.php');
+
+use Dotenv\Dotenv;
+
+// Default environment file
+$envFile = '.env.development';
+
+// Load the chosen file
+$dotenv = Dotenv::createImmutable(__DIR__ . '/../', $envFile);
+$dotenv->load();
+
+$GLOBALS['secret_key'] = $_ENV['JWT_SECRET'];
+
+
 
 // enable error reporting for development
 ini_set('display_errors', 1);           // tells PHP to display runtime errors
@@ -12,6 +29,7 @@ define('__BASE', __DIR__);
 // Define allowed origins
 $allowedOrigins = ['http://localhost:5173', 'https://testdeploy.irigayouth.com'];
 $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
+
 
 // Handle OPTIONS preflight requests
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
@@ -54,6 +72,21 @@ if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
             'message' => 'Invalid CSRF token.'
         ]);
         exit;
+    }
+}
+
+
+function authorizeRequest() {
+    if (!isset($_COOKIE['jwt'])) {
+        returnError("Unauthorized", 401);
+    }
+
+    try {
+        $jwt = $_COOKIE['jwt'];
+        $decoded = JWT::decode($jwt, new Key($GLOBALS['secret_key'],'HS256'));  
+        return $decoded; // return user info (payload)
+    } catch (Exception $e) {
+        returnError("Invalid Token", 401);
     }
 }
 

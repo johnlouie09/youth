@@ -138,6 +138,7 @@ export default {
                 { menuName: "Announcements", icon: "mdi-bullhorn", to: `/admin/${this.barangaySlug}/announcements`},
                 { menuName: "Achievements", icon: "mdi-trophy", to: `/admin/${this.barangaySlug}/achievements`},
                 { menuName: "Settings and Profile", icon: "mdi-cog", to: `/admin/${this.barangaySlug}/settings` },
+                { menuName: "Notices", icon: "mdi-information", to: `/admin/${this.barangaySlug}/notices` },
             ];
         },
         barangayName() {

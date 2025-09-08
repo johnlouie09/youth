@@ -126,7 +126,6 @@ export default {
               data: {
                   identifier: this.username,
                   password: this.password,
-                  remember: true
               },
               headers: { 'X-CSRF-Token': csrfToken },
               success: (data) => {

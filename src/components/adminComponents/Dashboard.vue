@@ -1,6 +1,11 @@
 <template>
     <v-container class="dashboard-main" fluid>
-        <h1>IMPLEMENT SECURITY HEADERS TO YOUR WEBSITE</h1>
+        <div>
+            <h1>IMPLEMENT SECURITY HEADERS TO YOUR WEBSITE</h1>
+            <h1>Add Change Password per barangay (make sure that the password is hashed)</h1>
+            <h1>Make the Authentication of Credentials more Secure</h1>
+        </div>
+
         <!-- Cards Section -->
         <v-container class="cards" justify="center">
                 <DashboardCards :card="dashBoardData.skOfficialCount" />
@@ -101,7 +106,6 @@ export default {
         }
     },
     created() {
-        this.getDashboardData();
     }
 };
 </script>
@@ -112,7 +116,7 @@ export default {
 <style scoped>
 .dashboard-main {
     display: grid;
-    grid-template-rows: 35% 1fr;
+    grid-template-rows: 1fr 35% 1fr;
     padding: 1.5rem 3rem;
     gap: 1rem;
     overflow: hidden;

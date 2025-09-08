@@ -1,4 +1,8 @@
 <?php
+declare(strict_types=1);
+use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
+require_once('../vendor/autoload.php');
 
 /** Check Guard Constant */
 if (!defined('__BASE')) { exit(); }
@@ -11,31 +15,36 @@ require_once __DIR__ .'/models/SkEducation.php';
 require_once __DIR__ .'/models/SkAdvocacies.php';
 require_once __DIR__ .'/models/SkPlatforms.php';
 require_once __DIR__ .'/models/SkPrograms.php';
+
+
+
+
 /** Extract Action */
 $action = $_GET['a'] ?? '';
 
-/** Login Request *********************************************/
+
+// Authentication & Authorization API
 if ($action === 'login')
 {
-    // get inputs
+    // Get Inputs
     $identifier = $_POST['identifier'] ?? '';
     $password   = $_POST['password']   ?? '';
-    $remember   = filter_var($_POST['remember'], FILTER_VALIDATE_BOOLEAN);
 
     // validate inputs
     if (empty(trim($identifier)) || empty($password)) {
         returnError('Username/Email and password are required.');
     }
 
-    // try to login
+    // Try
     try {
-        $sk_official = SkOfficial::login($identifier, $password, $remember);
+        $sk_official = SkOfficial::login($identifier, $password);
         require_once __DIR__ . '/models/Barangay.php';
         
         $barangay = $sk_official->getBarangay();
+
         returnSuccess([
             'sk_official' => $sk_official->getAssoc(true),
-            'barangay' => $barangay->getAssoc(true)
+            'barangay' => $barangay->getAssoc(true),
         ]);
     }
     catch (Exception $e) {
@@ -43,46 +52,46 @@ if ($action === 'login')
     }
 }
 
-
-/** Session Request *******************************************/
-else if ($action === 'session')
+else if ($action === 'authorized')
 {
-    $sk_official = SkOfficial::getLoggedIn();
-    require_once __DIR__ . '/models/Barangay.php';
-    $barangay = $sk_official->getBarangay();
 
+    $sk_official = null;
+    if (isset($_COOKIE['jwt'])) {
+        $jwt = $_COOKIE['jwt'];
+        try {
+            $decoded = JWT::decode($jwt, new Key($GLOBALS['secret_key'], 'HS256'));            // ✅ token is valid
+            $sk_official= SkOfficial::findBy('id', $decoded->skOfficialId);
 
-    if ($sk_official === null) {
-        returnError('No logged-in SkOfficial.');
+        } catch (Exception $e) {
+            // ❌ token is missing/invalid/expired
+            http_response_code(401);
+            echo json_encode(["error" => "Unauthorized"]);
+            exit;
+        }
+    } else {
+        http_response_code(401);
+        echo json_encode(["error" => "No token provided"]);
+        exit;
     }
-    else {
+
+
+    try {
         returnSuccess([
             'sk_official' => $sk_official->getAssoc(true),
-            'barangay' => $barangay->getAssoc(true)
+            'barangay' => $sk_official->getBarangay()->getAssoc(true),
         ]);
+    }
+    catch (Exception $e) {
+        returnError($e->getMessage());
     }
 }
 
-else if ($action === 'logout')
-{
-    // get inputs
-    $username = $_POST['username'] ?? '';
-
-    // validate inputs
-    if (empty(trim($username))) {
-        returnError('Username is required.');
-    }
-
-    // proceed to logout
-    $sk_official_logged_in = SkOfficial::getLoggedIn();
-    if ($sk_official_logged_in !== null) {
-        if ($sk_official_logged_in->getUsername() === $username) {
-            SkOfficial::logout();
-        }
-    }
-    returnSuccess([
-        'logged_out' => true
-    ]);
+else if($action === 'logout') {
+    authorizeRequest(); // Ensure the user is authorized
+    
+    // Clear the JWT cookie
+    setcookie('jwt', '', time() - 3600, '/', '', false, true); // Adjust path and domain as needed
+    returnSuccess(['message' => 'Logged out successfully.']);
 }
 
 
@@ -116,6 +125,7 @@ else if ($action === 'personalInfo') {
 }
 
 else if ($action === 'updatePersonalInfo') {
+    authorizeRequest(); // Ensure the user is authorized
     // Ensure data exists
     if (!isset($_POST['personalInfo'])) {
         returnError('Invalid personal information received.', 400);
@@ -207,6 +217,7 @@ else if ($action === 'updatePersonalInfo') {
 
 // ---------------------- SK Official Achievement API --------------------
 else if ($action === 'updateAchievement') {
+    authorizeRequest(); // Ensure the user is authorized
 
     if (!isset($_POST['achievementInfo'])) {
         returnError('Invalid Achievement Information Received.', 400);
@@ -361,6 +372,7 @@ else if ($action === 'updateAchievement') {
 
 
 else if ($action === 'addAchievement') {
+    authorizeRequest(); // Ensure the user is authorized
     if (!isset($_POST['achievementInfo'])) {
         returnError('Invalid Achievement Information Received.', 400);
     }
@@ -478,6 +490,8 @@ else if ($action === 'addAchievement') {
 
 
 else if ($action === 'deleteAchievement') {
+    authorizeRequest(); // Ensure the user is authorized
+
     // Ensure an ID is provided
     if (!isset($_POST['id']) || empty($_POST['id'])) {
         returnError("Achievement ID is required.", 400);
@@ -507,6 +521,8 @@ else if ($action === 'deleteAchievement') {
 
 // ---------------------- SK Official Education API --------------------
 else if ($action === 'updateEducation') {
+    authorizeRequest(); // Ensure the user is authorized
+
     // Ensure education data is provided
     if (!isset($_POST['educationInfo'])) {
         returnError('Invalid Education Information Received.', 400);
@@ -592,6 +608,7 @@ else if ($action === 'updateEducation') {
 }
 
 else if ($action === 'deleteEducation') {
+    authorizeRequest(); // Ensure the user is authorized
     // Ensure an ID is provided
     if (!isset($_POST['id']) || empty($_POST['id'])) {
         returnError("Education ID is required.", 400);
@@ -614,6 +631,8 @@ else if ($action === 'deleteEducation') {
 }
 
 else if ($action === 'addEducation') {
+    authorizeRequest(); // Ensure the user is authorized
+
     // Ensure education data is provided
     if (!isset($_POST['educationInfo'])) {
         returnError('Invalid education information received.', 400);
@@ -695,6 +714,8 @@ else if ($action === 'addEducation') {
 
 // ---------------------- SK Official Advocacy API --------------------
 else if ($action === 'addAdvocacy') {
+    authorizeRequest(); // Ensure the user is authorized
+
     // Ensure advocacies data is provided
     if (!isset($_POST['advocacyInfo']) || !isset($_POST['sk_official_id'])) {
         returnError('Advocacy info and SK Official ID are required.', 400);
@@ -745,6 +766,8 @@ else if ($action === 'addAdvocacy') {
 }
 
 else if ($action === 'updateAdvocacy') {
+    authorizeRequest(); // Ensure the user is authorized
+
     // Ensure advocacies data is provided
     if (!isset($_POST['advocacyInfo']) || !isset($_POST['sk_official_id'])) {
         returnError('Advocacies and SK Official ID are required.', 400);
@@ -810,6 +833,8 @@ else if ($action === 'updateAdvocacy') {
 }
 
 else if ($action === 'deleteAdvocacy') {
+    authorizeRequest(); // Ensure the user is authorized
+    
     // Ensure the advocacy ID is provided.
     if (!isset($_POST['id'])) {
         returnError('Advocacy ID is required.', 400);
@@ -838,6 +863,7 @@ else if ($action === 'deleteAdvocacy') {
 
 // ---------------------- SK Official Platform API --------------------
 else if ($action === 'updatePlatform') {
+    authorizeRequest(); // Ensure the user is authorized
     // Ensure platform data is provided
     if (!isset($_POST['platformInfo'])) {
         returnError('Invalid Platform Information Received.', 400);
@@ -886,6 +912,8 @@ else if ($action === 'updatePlatform') {
 }
 
 else if ($action === 'deletePlatform') {
+    authorizeRequest(); // Ensure the user is authorized
+
     // Ensure an ID is provided
     if (!isset($_POST['id']) || empty($_POST['id'])) {
         returnError("Platform ID is required.", 400);
@@ -908,6 +936,8 @@ else if ($action === 'deletePlatform') {
 }
 
 else if( $action === 'addPlatform') {
+    authorizeRequest(); // Ensure the user is authorized
+
     // Ensure platform data is provided
     if (!isset($_POST['platformInfo'])) {
         returnError('Invalid platform information received.', 400);
@@ -957,6 +987,8 @@ else if( $action === 'addPlatform') {
 
 // ---------------------- SK Official Programs API -----------------------
 else if ( $action === 'addProgram') {
+    authorizeRequest(); // Ensure the user is authorized
+
     // Ensure program data is provided
     if (!isset($_POST['programInfo'])) {
         returnError('Invalid program information received.', 400);
@@ -1034,6 +1066,8 @@ else if ( $action === 'addProgram') {
 }
 
 else if( $action === 'updateProgram') {
+    authorizeRequest(); // Ensure the user is authorized
+
     // Ensure program data is provided
     if (!isset($_POST['programInfo'])) {
         returnError('Invalid Program Information Received.', 400);
@@ -1111,6 +1145,8 @@ else if( $action === 'updateProgram') {
 }
 
 else if ($action === 'deleteProgram') {
+    authorizeRequest(); // Ensure the user is authorized
+
     // Ensure an ID is provided
     if (!isset($_POST['id']) || empty($_POST['id'])) {
         returnError("Program ID is required.", 400);
@@ -1139,6 +1175,8 @@ else if ($action === 'deleteProgram') {
 
 // ---------------------- SK Official Management API --------------------
 else if ($action === 'addOfficial') {
+    authorizeRequest(); // Ensure the user is authorized
+
     // Ensure officialInfo is provided
     if (!isset($_POST['officialInfo'])) {
         returnError('Official information is required.', 400);
@@ -1250,6 +1288,8 @@ else if ($action === 'addOfficial') {
 }
 
 else if ($action === 'deleteOfficial') {
+    authorizeRequest(); // Ensure the user is authorized
+
     // Ensure the official ID is provided.
     if (!isset($_POST['id'])) {
         returnError('Official ID is required.', 400);
@@ -1274,18 +1314,6 @@ else if ($action === 'deleteOfficial') {
 }
 
 
-// Get available year-months for Achievements
-else if ($action === 'achievements-available-year-months') {
-    $barangayId = $_POST['barangayId'] ?? null;
-
-    $yearMonths = AchievementDate::getAvailableYearMonths(
-        $barangayId ? (int)$barangayId : null
-    );
-
-    returnSuccess([
-        'yearMonths' => $yearMonths
-    ]);
-}
 /** Invalid Request *******************************************/
 else
 {
