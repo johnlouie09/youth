@@ -14,7 +14,7 @@ require_once 'config/database.php';
  */
 function getUser() {
     require_once 'models/SkOfficial.php';
-    return SkOfficial::getLoggedIn();
+    
 }
 
 /**

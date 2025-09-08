@@ -16,6 +16,8 @@ require_once __DIR__ . "/models/AnnouncementImage.php";
 /** Extract Action */
 $action = $_GET['a'] ?? '';
 
+
+// Public API
 if($action === 'fetchBarangays')
 {
     $clusters = new Cluster();
@@ -30,13 +32,7 @@ else if($action === 'barangayInfo') {
         'barangayInfo' => $barangay->getAssoc(true),
     ]);
 }
-else if($action === 'barangay-dashboard') {
-    returnSuccess([
-        'SkOfficialCount' => $SKOfficialsCount = SkOfficial::getPositionCount( $_POST['barangaySlug']),
-        'reportAchievement' => $BarangayAchievement = Achievement::getMonthlySummary($_POST['barangaySlug']),
-        'reportAnnouncement' => $barangayAnnouncement = Announcement::getMonthlySummary($_POST['barangaySlug'], 2025)
-    ]);
-}
+
 else if($action === 'sk-officials') {
     $barangay_id = $_POST['barangayId'] ?? '';
     $barangay = new Barangay($barangay_id);
@@ -45,6 +41,7 @@ else if($action === 'sk-officials') {
         'skMembers' => $barangay->getSkMembers(true, true)
     ]);
 }
+
 else if($action === 'achievements') {
     $barangay_id = $_POST['barangayId'] ?? '';
     $barangay = new Barangay($barangay_id);
@@ -53,6 +50,7 @@ else if($action === 'achievements') {
     ]);
 
 }
+
 else if($action === 'announcements') {
     $barangay_id = $_POST['barangayId'] ?? '';
     $barangay = new Barangay($barangay_id);
@@ -61,7 +59,77 @@ else if($action === 'announcements') {
     ]);
 }
 
+else if ($action === 'announcements-by-month') {
+    $barangayId = $_POST['barangayId'] ?? null;
+    $month = $_POST['month'] ?? null;
+
+    if (!$barangayId || !$month) {
+        returnError("Barangay ID and month are required.", 400);
+    }
+
+    $barangay = Barangay::findBy('id', (int)$barangayId);
+    if (!$barangay) {
+        returnError("Barangay not found.", 404);
+    }
+
+    // Pass $assoc = true to getByMonthYear
+    $announcements = Announcement::getByMonthYear($month, $barangay, true);
+
+    // No need to call getAssoc again — they are already associative arrays
+    returnSuccess([
+        'announcements' => $announcements,
+        'month' => $month
+    ]);
+}
+
+// ✅ Get featured announcements
+else if ($action === 'featured-announcements') {
+    $barangayId = $_POST['barangayId'] ?? null;
+    $barangay = $barangayId ? Barangay::findBy('id', (int)$barangayId) : null;
+
+    // Pass assoc + assoc_basic + barangay
+    $announcements = Announcement::getFeatured(true, false, $barangay);
+
+    returnSuccess([
+        'announcements' => $announcements,
+        'featured' => true
+    ]);
+}
+
+// Get available year-months for announcements
+else if ($action === 'available-year-months') {
+    $barangayId = $_POST['barangayId'] ?? null;
+
+    $yearMonths = AnnouncementDatetime::getAvailableYearMonths(
+        $barangayId ? (int)$barangayId : null
+    );
+
+    returnSuccess([
+        'yearMonths' => $yearMonths
+    ]);
+}
+
+
+
+
+
+
+
+
+// Private API
+
+else if($action === 'barangay-dashboard') {
+    authorizeRequest(); // Ensure the user is authorized
+    returnSuccess([
+        'SkOfficialCount' => $SKOfficialsCount = SkOfficial::getPositionCount( $_POST['barangaySlug']),
+        'reportAchievement' => $BarangayAchievement = Achievement::getMonthlySummary($_POST['barangaySlug']),
+        'reportAnnouncement' => $barangayAnnouncement = Announcement::getMonthlySummary($_POST['barangaySlug'], 2025)
+    ]);
+}
+
 else if ($action === 'add-announcement') {
+    authorizeRequest(); // Ensure the user is authorized
+
     if (empty($_POST['announcementInfo'])) {
         returnError('Invalid announcement information received.', 400);
     }
@@ -193,6 +261,8 @@ else if ($action === 'add-announcement') {
 }
 
 else if ($action === 'update-announcement') {
+    authorizeRequest(); // Ensure the user is authorized
+
     // Check if Announcement Info Exist
     if (!isset($_POST['announcementInfo'])) {
         returnError('Invalid announcement information received.', 400);
@@ -342,6 +412,8 @@ else if ($action === 'update-announcement') {
 
 
 else if ($action === 'delete-announcement') {
+    authorizeRequest(); // Ensure the user is authorized
+
     // Ensure the announcement ID is provided
     if (!isset($_POST['id'])) {
         returnError('Announcement ID is required.', 400);
@@ -366,58 +438,63 @@ else if ($action === 'delete-announcement') {
     }
 }
 
-// ✅ Get announcements by month name
-else if ($action === 'announcements-by-month') {
-    $barangayId = $_POST['barangayId'] ?? null;
-    $month = $_POST['month'] ?? null;
 
-    if (!$barangayId || !$month) {
-        returnError("Barangay ID and month are required.", 400);
+else if ($action === 'change-password') {
+    authorizeRequest();
+
+    if (!isset($_POST['sk_official_id'])) {
+        returnError('SK Official ID is required.', 400);
     }
 
-    $barangay = Barangay::findBy('id', (int)$barangayId);
-    if (!$barangay) {
-        returnError("Barangay not found.", 404);
+    $skOfficialId = $_POST['sk_official_id'];
+    $sk_official = SkOfficial::findBy('id', $skOfficialId);
+
+    if (!$sk_official) {
+        returnError("No SK Official found with ID $skOfficialId", 404);
     }
 
-    // Pass $assoc = true to getByMonthYear
-    $announcements = Announcement::getByMonthYear($month, $barangay, true);
+    // Ensure passwordInfo is an array
+    $passwordInfo = is_array($_POST['passwordInfo']) 
+        ? $_POST['passwordInfo'] 
+        : json_decode($_POST['passwordInfo'], true);
 
-    // No need to call getAssoc again — they are already associative arrays
-    returnSuccess([
-        'announcements' => $announcements,
-        'month' => $month
-    ]);
+    $oldPassword = $passwordInfo['oldPassword'] ?? null;
+    $newPassword = $passwordInfo['newPassword'] ?? null;
+
+    if (!$oldPassword || !$newPassword) {
+        returnError('Both old and new password are required.', 400);
+    }
+
+    $storedPassword = $sk_official->getPassword();
+
+    if (password_verify($oldPassword, $storedPassword)) {
+        // Stored as hashed
+        if (password_verify($oldPassword, $storedPassword)) {
+            $sk_official->setPassword(password_hash($newPassword, PASSWORD_BCRYPT));
+            $sk_official->update();
+            returnSuccess('Password successfully changed.');
+        } else {
+            returnError('Old password (hashed) does not match.');
+        }
+    }
+    else if ($oldPassword === $storedPassword) {
+                // Stored as plain text (bad practice, but maybe migrating)
+        if ($oldPassword === $storedPassword) {
+            $sk_official->setPassword(password_hash($newPassword, PASSWORD_BCRYPT));
+            $sk_official->update();
+            returnSuccess('Password successfully changed (migrated to hash).');
+        } else {
+            returnError('Old password (not hashed) does not match.');
+        }
+    } else {
+        returnError("Old password does not match.");
+    }
 }
 
 
-// ✅ Get featured announcements
-else if ($action === 'featured-announcements') {
-    $barangayId = $_POST['barangayId'] ?? null;
-    $barangay = $barangayId ? Barangay::findBy('id', (int)$barangayId) : null;
-
-    // Pass assoc + assoc_basic + barangay
-    $announcements = Announcement::getFeatured(true, false, $barangay);
-
-    returnSuccess([
-        'announcements' => $announcements,
-        'featured' => true
-    ]);
-}
-
-// Get available year-months for announcements
-else if ($action === 'available-year-months') {
-    $barangayId = $_POST['barangayId'] ?? null;
-
-    $yearMonths = AnnouncementDatetime::getAvailableYearMonths(
-        $barangayId ? (int)$barangayId : null
-    );
-
-    returnSuccess([
-        'yearMonths' => $yearMonths
-    ]);
-}
-
+// TO DO Methods
+// 1. Add or Change Barangay Cover Photo
+// 2. Add or Change Barngay Logo
 
 
 else if ($action === 'image-filenames') {

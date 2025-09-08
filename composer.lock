@@ -1,9 +1,14 @@
 {
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "8f1c6311296f2eea1bb3ac4d0d79275b",
     "packages": [
         {
             "name": "firebase/php-jwt",
             "version": "v6.11.1",
-            "version_normalized": "6.11.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/firebase/php-jwt.git",
@@ -30,9 +35,7 @@
                 "ext-sodium": "Support EdDSA (Ed25519) signatures",
                 "paragonie/sodium_compat": "Support EdDSA (Ed25519) signatures when libsodium is not present"
             },
-            "time": "2025-04-09T20:32:01+00:00",
             "type": "library",
-            "installation-source": "source",
             "autoload": {
                 "psr-4": {
                     "Firebase\\JWT\\": "src"
@@ -64,12 +67,11 @@
                 "issues": "https://github.com/firebase/php-jwt/issues",
                 "source": "https://github.com/firebase/php-jwt/tree/v6.11.1"
             },
-            "install-path": "../firebase/php-jwt"
+            "time": "2025-04-09T20:32:01+00:00"
         },
         {
             "name": "graham-campbell/result-type",
             "version": "v1.1.3",
-            "version_normalized": "1.1.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/GrahamCampbell/Result-Type.git",
@@ -88,9 +90,7 @@
             "require-dev": {
                 "phpunit/phpunit": "^8.5.39 || ^9.6.20 || ^10.5.28"
             },
-            "time": "2024-07-20T21:45:45+00:00",
             "type": "library",
-            "installation-source": "source",
             "autoload": {
                 "psr-4": {
                     "GrahamCampbell\\ResultType\\": "src/"
@@ -129,12 +129,11 @@
                     "type": "tidelift"
                 }
             ],
-            "install-path": "../graham-campbell/result-type"
+            "time": "2024-07-20T21:45:45+00:00"
         },
         {
             "name": "phpoption/phpoption",
             "version": "1.9.4",
-            "version_normalized": "1.9.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/schmittjoh/php-option.git",
@@ -153,7 +152,6 @@
                 "bamarni/composer-bin-plugin": "^1.8.2",
                 "phpunit/phpunit": "^8.5.44 || ^9.6.25 || ^10.5.53 || ^11.5.34"
             },
-            "time": "2025-08-21T11:53:16+00:00",
             "type": "library",
             "extra": {
                 "bamarni-bin": {
@@ -164,7 +162,6 @@
                     "dev-master": "1.9-dev"
                 }
             },
-            "installation-source": "source",
             "autoload": {
                 "psr-4": {
                     "PhpOption\\": "src/PhpOption/"
@@ -207,12 +204,11 @@
                     "type": "tidelift"
                 }
             ],
-            "install-path": "../phpoption/phpoption"
+            "time": "2025-08-21T11:53:16+00:00"
         },
         {
             "name": "symfony/polyfill-ctype",
             "version": "v1.33.0",
-            "version_normalized": "1.33.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-ctype.git",
@@ -233,7 +229,6 @@
             "suggest": {
                 "ext-ctype": "For best performance"
             },
-            "time": "2024-09-09T11:45:10+00:00",
             "type": "library",
             "extra": {
                 "thanks": {
@@ -241,7 +236,6 @@
                     "name": "symfony/polyfill"
                 }
             },
-            "installation-source": "source",
             "autoload": {
                 "files": [
                     "bootstrap.php"
@@ -293,12 +287,11 @@
                     "type": "tidelift"
                 }
             ],
-            "install-path": "../symfony/polyfill-ctype"
+            "time": "2024-09-09T11:45:10+00:00"
         },
         {
             "name": "symfony/polyfill-mbstring",
             "version": "v1.33.0",
-            "version_normalized": "1.33.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-mbstring.git",
@@ -320,7 +313,6 @@
             "suggest": {
                 "ext-mbstring": "For best performance"
             },
-            "time": "2024-12-23T08:48:59+00:00",
             "type": "library",
             "extra": {
                 "thanks": {
@@ -328,7 +320,6 @@
                     "name": "symfony/polyfill"
                 }
             },
-            "installation-source": "source",
             "autoload": {
                 "files": [
                     "bootstrap.php"
@@ -381,12 +372,11 @@
                     "type": "tidelift"
                 }
             ],
-            "install-path": "../symfony/polyfill-mbstring"
+            "time": "2024-12-23T08:48:59+00:00"
         },
         {
             "name": "symfony/polyfill-php80",
             "version": "v1.33.0",
-            "version_normalized": "1.33.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/polyfill-php80.git",
@@ -401,7 +391,6 @@
             "require": {
                 "php": ">=7.2"
             },
-            "time": "2025-01-02T08:10:11+00:00",
             "type": "library",
             "extra": {
                 "thanks": {
@@ -409,7 +398,6 @@
                     "name": "symfony/polyfill"
                 }
             },
-            "installation-source": "source",
             "autoload": {
                 "files": [
                     "bootstrap.php"
@@ -468,12 +456,11 @@
                     "type": "tidelift"
                 }
             ],
-            "install-path": "../symfony/polyfill-php80"
+            "time": "2025-01-02T08:10:11+00:00"
         },
         {
             "name": "vlucas/phpdotenv",
             "version": "v5.6.2",
-            "version_normalized": "5.6.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/vlucas/phpdotenv.git",
@@ -502,7 +489,6 @@
             "suggest": {
                 "ext-filter": "Required to use the boolean validator."
             },
-            "time": "2025-04-30T23:37:27+00:00",
             "type": "library",
             "extra": {
                 "bamarni-bin": {
@@ -513,7 +499,6 @@
                     "dev-master": "5.6-dev"
                 }
             },
-            "installation-source": "source",
             "autoload": {
                 "psr-4": {
                     "Dotenv\\": "src/"
@@ -555,9 +540,16 @@
                     "type": "tidelift"
                 }
             ],
-            "install-path": "../vlucas/phpdotenv"
+            "time": "2025-04-30T23:37:27+00:00"
         }
     ],
-    "dev": true,
-    "dev-package-names": []
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": {},
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": {},
+    "platform-dev": {},
+    "plugin-api-version": "2.6.0"
 }

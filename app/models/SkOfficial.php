@@ -1,4 +1,7 @@
 <?php
+declare(strict_types=1);
+use Firebase\JWT\JWT;
+require_once('../vendor/autoload.php');
 
 require_once __DIR__ . '/Model.php';
 
@@ -12,10 +15,7 @@ class SkOfficial extends Model
     public    const  POSITION_SK_SECRETARY   = "SK Secretary";
     public    const  POSITION_SK_TREASURER   = "SK Treasurer";
     public    const  POSITION_SK_KAGAWAD     = "SK Kagawad";
-    private   static $session_username_key   = 'kh0vlaf86ytb7hg9';
-    private   static $session_password_key   = 'f06vtd9gx1r41tsg';
-    private   static $logged_in              = null;
-    private   static $logged_out             = false;
+
 
     /** properties */
     protected $barangay_id    = 0;
@@ -564,7 +564,7 @@ class SkOfficial extends Model
 
 
 
-    // -------------------- AUTHENTICATION & SESSION MANAGEMENT --------------------
+    // -------------------- AUTHENTICATION & JWT AUTHORIZATION MANAGEMENT --------------------
     /**
      * Authenticates using the given identifier and password.
      * @param string $identifier
@@ -572,62 +572,85 @@ class SkOfficial extends Model
      * @param bool $is_password_hashed
      * @return SkOfficial|null
      */
-    private static function authenticate(string $identifier, string $password, bool $is_password_hashed = false): ?SkOfficial
+    private static function authenticate(string $identifier, string $password): ?SkOfficial
     {
-        $authenticated = null;
-
-        // find the sk_official using the given identifier
+        // find the sk_official using email or username
         $column = (filter_var($identifier, FILTER_VALIDATE_EMAIL)) ? 'email' : 'username';
         $sk_official = SkOfficial::findBy($column, $identifier);
 
-        // if sk_official is found, verify the given password
-        if ($sk_official) {
-            if ((!$is_password_hashed && $sk_official->getPassword() === $password) || ($is_password_hashed && password_verify(base64_encode($sk_official->getPassword()), $password))) {
-                $authenticated = $sk_official;
-            }
+        if ($sk_official === null) {
+            return null;
         }
 
-        return $authenticated;
+
+        $storedPassword = $sk_official->getPassword();
+        $info = password_get_info($storedPassword);
+
+
+
+        // Case 1: password is hashed with password_hash()
+        if ($info['algo'] !== 0 && password_verify($password, $storedPassword)) {
+            return $sk_official;
+        }
+
+        // Case 2: password is plaintext (legacy accounts)
+        if (empty($info['algo']) && $password === $storedPassword) {
+            $sk_official->setPassword(password_hash($password, PASSWORD_BCRYPT));
+            $sk_official->update();
+            return $sk_official;
+        }
+
+        return null;
     }
+
+     
     
     /**
      * Attempts to log in using the given identifier and password.
      * @param string $identifier
      * @param string $password
-     * @param bool $remember
      * @return SkOfficial
      * @throws Exception
      */
-    public static function login(string $identifier, string $password, bool $remember = false): SkOfficial
-    {
-        if (self::getLoggedIn() !== null) {
-            self::logout();
-        }
-        
-        // authenticate
+    public static function login(string $identifier, string $password): SkOfficial
+    {   
+        // Authenticate
         $sk_official = self::authenticate($identifier, $password);
         if ($sk_official === null) {
             throw new Exception('Invalid credentials');
         }
-        
-        // encode credentials
-        $encoded_username = base64_encode($sk_official->getUsername());
-        $encoded_password = base64_encode(password_hash(base64_encode($sk_official->getPassword()), PASSWORD_DEFAULT));
 
-        // store encoded credentials in session
-        $_SESSION[self::$session_username_key] = $encoded_username;
-        $_SESSION[self::$session_password_key] = $encoded_password;
 
-        // if remembered, store credentials in cookies as well
-        if ($remember) {
-            $cookie_expiration = time() + (86400 * 15); // n days
-            $cookie_path       = '/';
-            setcookie(self::$session_username_key, $encoded_username, $cookie_expiration, $cookie_path);
-            setcookie(self::$session_password_key, $encoded_password, $cookie_expiration, $cookie_path);
-        }
+        // Create the JWT Token if Authenticated
+        $date   = new DateTimeImmutable();
+        $expire_at = $date->modify('+4 week')->getTimestamp();
+        $request_data = [
+            'iss'  => 'localhost.youth',                    // Issuer
+            'iat'  => $date->getTimestamp(),                // Issued at: time when the token was generated
+            'exp'  => $expire_at,                           // Expire
+            'skOfficialId' => $sk_official->getId(),
+            'position' => $sk_official->getPosition()                  
+        ];
 
-        self::$logged_in  = $sk_official;
-        self::$logged_out = false;
+        // Create the Token
+        $jwt = JWT::encode($request_data, $GLOBALS['secret_key'], 'HS256');      
+
+        // Create and Set the JWT Cookie
+        setcookie(
+            "jwt",
+            $jwt,
+            [
+                "path" => "/",
+
+                // Set this to true in production
+                "secure" => false,     // only HTTPS
+
+
+                "httponly" => true,   // JavaScript can’t read it
+                "samesite" => "Strict"
+            ]
+        );
+
 
         return $sk_official;
     }
@@ -636,54 +659,6 @@ class SkOfficial extends Model
      * Gets logged in SkOfficial.
      * @return SkOfficial|null
      */
-    public static function getLoggedIn(): ?SkOfficial
-    {
-        if (!self::$logged_out && (self::$logged_in === null)) {
-            // get remembered credentials
-            if (!isset($_SESSION[self::$session_username_key]) || !isset($_SESSION[self::$session_password_key])) {
-                if (isset($_COOKIE[self::$session_username_key]) && isset($_COOKIE[self::$session_password_key])) {
-                    $_SESSION[self::$session_username_key] = $_COOKIE[self::$session_username_key];
-                    $_SESSION[self::$session_password_key] = $_COOKIE[self::$session_password_key];
-                }
-            }
-
-            // attempt to get logged in sk_official
-            if (isset($_SESSION[self::$session_username_key]) && isset($_SESSION[self::$session_password_key])) {
-                // decode credentials
-                $decoded_username = base64_decode($_SESSION[self::$session_username_key]);
-                $decoded_password = base64_decode($_SESSION[self::$session_password_key]);
-
-                self::$logged_in  = self::authenticate($decoded_username, $decoded_password, true);
-            }
-        }
-
-        return self::$logged_in;
-    }
-
-    /**
-     * Clears logged in.
-     * @return void
-     */
-    public static function logout(): void
-    {
-        // delete session
-        if (isset($_SESSION[self::$session_username_key])) {
-            unset($_SESSION[self::$session_username_key]);
-        }
-        if (isset($_SESSION[self::$session_password_key])) {
-            unset($_SESSION[self::$session_password_key]);
-        }
-
-        // delete cookies as well
-        $cookie_expiration = time() - 3600;
-        $cookie_path       = '/';
-        setcookie(self::$session_username_key, '', $cookie_expiration, $cookie_path);
-        setcookie(self::$session_password_key, '', $cookie_expiration, $cookie_path);
-
-        // clear cache
-        self::$logged_in  = null;
-        self::$logged_out = true;
-    }
 
     /**
      * Test email sending
