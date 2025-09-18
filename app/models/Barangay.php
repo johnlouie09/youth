@@ -345,8 +345,9 @@ class Barangay extends Model
             'iss'  => 'localhost.youth',                    // Issuer
             'iat'  => $date->getTimestamp(),                // Issued at: time when the token was generated
             'exp'  => $expire_at,                           // Expire
-            'skOfficialId' => $barangay->getId(),
-            'position' => $barangay->getName(),                  
+            'barangayId' => $barangay->getId(),
+            'barangayName' => $barangay->getName(),  
+            'barangayUsername' => $barangay->getUsername()                
         ];
 
         // Create the Token
@@ -361,7 +362,6 @@ class Barangay extends Model
 
                 // Set this to true in production
                 "secure" => false,     // only HTTPS
-
 
                 "httponly" => true,   // JavaScript can’t read it
                 "samesite" => "Strict"

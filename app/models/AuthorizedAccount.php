@@ -4,7 +4,7 @@ require_once __DIR__ . '/Model.php';
 class AuthorizedAccount extends Model {
 
     public static $table = 'authorized_accounts';
-
+    public    static $table_columns = [];
     protected static $basic_columns = [
         'id',
         'barangay_id',
@@ -15,6 +15,8 @@ class AuthorizedAccount extends Model {
         'created_at',
         'updated_at'
     ];
+
+
 
     // Properties
     protected $barangay_id;
@@ -146,5 +148,12 @@ class AuthorizedAccount extends Model {
         $stmt->bind_param("i", $this->id);
         $stmt->execute();
         return $stmt->affected_rows > 0;
+    }
+
+
+
+    // -------------------- UTILITY METHODS --------------------
+    public function getBarangay(): Barangay {
+        return Barangay::findBy('id', self::getBarangayId());
     }
 }

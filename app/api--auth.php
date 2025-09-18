@@ -8,6 +8,7 @@ require_once('../vendor/autoload.php');
 // Models Imports
 require_once __DIR__ . '/models/SkOfficial.php';
 require_once __DIR__ . '/models/Barangay.php';
+require_once __DIR__ . '/models/AuthorizedAccount.php';
 
 /** Check Guard Constant */
 if (!defined('__BASE')) { exit(); }
@@ -85,14 +86,12 @@ if ($action === 'login')
 
 else if ($action === 'authorized')
 {
-
     $sk_official = null;
     if (isset($_COOKIE['jwt'])) {
         $jwt = $_COOKIE['jwt'];
         try {
             $decoded = JWT::decode($jwt, new Key($GLOBALS['secret_key'], 'HS256'));            // ✅ token is valid
-            $sk_official= SkOfficial::findBy('id', $decoded->skOfficialId);
-
+            $barangay = Barangay::findBy('id', $decoded->barangayId);
         } catch (Exception $e) {
             // ❌ token is missing/invalid/expired
             http_response_code(401);
@@ -108,7 +107,7 @@ else if ($action === 'authorized')
 
     try {
         returnSuccess([
-            'barangay' => $sk_official->getBarangay()->getAssoc(true),
+            'barangay' => $barangay->getAssoc(true),
         ]);
     }
     catch (Exception $e) {
@@ -137,12 +136,10 @@ if ($action === 'process')
     }
 
     $code = $_POST["code"];
-   
 
     $tokens = getGoogleTokens($code);
     // Get Google public keys
     $jwks = json_decode(file_get_contents("https://www.googleapis.com/oauth2/v3/certs"), true);
-
 
     try {
     // Convert Google's JWKS into an array of usable keys
@@ -157,28 +154,25 @@ if ($action === 'process')
         throw new Exception("Invalid audience");
     }
     if ($decoded->iss !== "https://accounts.google.com" && $decoded->iss !== "accounts.google.com") {
-        throw new Exception("Invalid issuer");
+        throw new Exception("Invalid issue");
     }
 
     // Extract user info
     $googleId = $decoded->sub;
     $email = $decoded->email ?? null;
 
-    // TODO: Lookup or create user in DB
+    $accounts = AuthorizedAccount::findBy('provider_user_id', $googleId);
+    $barangay = $accounts->getBarangay();
 
-    $sk_official = SkOfficial::findBy('google_id', $googleId);
-    $barangay = $sk_official->getBarangay();
-
-    if($sk_official) {
-        // TODO: Issue your own JWT for your app
-        // Create the JWT Token if Authenticated
+    if($accounts) {
         $date   = new DateTimeImmutable();
         $expire_at = $date->modify('+4 week')->getTimestamp();
         $request_data = [
             'iss'  => 'localhost.youth',                    // Issuer
             'exp'  => $expire_at,                           // Expire
-            'skOfficialId' => $sk_official->getId(),
-            'position' => $sk_official->getPosition()                  
+            'barangayId' => $accounts->getId(),
+            'barangayName' => $barangay->getName(),  
+            'barangayUsername' => $barangay->getUsername()                  
         ];
 
         // Create the Token
@@ -199,7 +193,6 @@ if ($action === 'process')
 
 
         returnSuccess([
-            'sk_official' => $sk_official->getAssoc(true),
             'barangay' => $barangay->getAssoc(true),
         ]);
     }

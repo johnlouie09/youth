@@ -1155,10 +1155,7 @@ else if ($action === 'addOfficial') {
         $official->setSlug($slug);
     }
     
-    // Do not set username and password from the input; set them as empty strings.
-    $official->setUsername('');
-    $official->setPassword('');
-    
+
     // Set the remaining properties
     $official->setFullName($officialInfo['full_name']);
     $official->setPosition($officialInfo['position']);

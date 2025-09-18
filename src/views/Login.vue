@@ -101,7 +101,6 @@ export default {
         success: (res) => {
           if (res.success) {
             this.$store.commit("auth/setUser", res.data);
-
             const barangaySlug = res?.data?.barangay?.slug;
             if (barangaySlug) {
               this.$router.replace({ name: "admin-dashboard", params: { barangaySlug } });
