@@ -12,9 +12,6 @@ export default {
         getBarangayId(state) {
             return state.user.barangay.id;
         },
-        getSkOfficialId(state) {
-            return state.user.sk_official.id;
-        },
         getBarangayName(state) {
             return state.user.barangay.name;
         },

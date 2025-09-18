@@ -29,11 +29,6 @@ const router = createRouter({
       component: () => import('../views/Contact.vue'),
     },
     {
-      path: '/youth-login',
-      name: 'youth-login',
-      component: () => import('../views/YouthLogin.vue'),
-    },
-    {
       path: '/:catchAll(.*)',
       name: 'NotFound',
       component: () => import('../components/404.vue'),
