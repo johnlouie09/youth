@@ -55,7 +55,7 @@ $.ajax({
 $.ajax({
   type: 'GET',
   xhrFields: { withCredentials: true },
-  url: `${fullApiUrl}?e=sk-official&a=authorized`,
+  url: `${fullApiUrl}?e=auth&a=authorized`,
   success: (data) => {
     store.commit('auth/setUser', data?.data)
   },

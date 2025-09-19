@@ -153,12 +153,9 @@ export default {
             const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
             $.ajax({
                 type: 'POST', xhrFields: { withCredentials: true },
-                url: `${this.$store.getters['api_base']}?e=sk-official&a=logout`,
+                url: `${this.$store.getters['api_base']}?e=auth&a=logout`,
                 headers: {
                     'X-CSRF-Token': csrfToken
-                },
-                data: {
-                    username: this.$store.getters['auth/getUser'].sk_official.username
                 },
                 success: () => {
                     this.$store.commit('auth/setUser', null);

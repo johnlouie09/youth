@@ -22,83 +22,8 @@ require_once __DIR__ .'/models/SkPrograms.php';
 /** Extract Action */
 $action = $_GET['a'] ?? '';
 
-
-// Authentication & Authorization API
-if ($action === 'login')
-{
-    // Get Inputs
-    $identifier = $_POST['identifier'] ?? '';
-    $password   = $_POST['password']   ?? '';
-
-    // validate inputs
-    if (empty(trim($identifier)) || empty($password)) {
-        returnError('Username/Email and password are required.');
-    }
-
-    // Try
-    try {
-        $sk_official = SkOfficial::login($identifier, $password);
-        require_once __DIR__ . '/models/Barangay.php';
-        
-        $barangay = $sk_official->getBarangay();
-
-        returnSuccess([
-            'sk_official' => $sk_official->getAssoc(true),
-            'barangay' => $barangay->getAssoc(true),
-        ]);
-    }
-    catch (Exception $e) {
-        returnError($e->getMessage());
-    }
-}
-
-else if ($action === 'authorized')
-{
-
-    $sk_official = null;
-    if (isset($_COOKIE['jwt'])) {
-        $jwt = $_COOKIE['jwt'];
-        try {
-            $decoded = JWT::decode($jwt, new Key($GLOBALS['secret_key'], 'HS256'));            // ✅ token is valid
-            $sk_official= SkOfficial::findBy('id', $decoded->skOfficialId);
-
-        } catch (Exception $e) {
-            // ❌ token is missing/invalid/expired
-            http_response_code(401);
-            echo json_encode(["error" => "Unauthorized"]);
-            exit;
-        }
-    } else {
-        http_response_code(401);
-        echo json_encode(["error" => "No token provided"]);
-        exit;
-    }
-
-
-    try {
-        returnSuccess([
-            'sk_official' => $sk_official->getAssoc(true),
-            'barangay' => $sk_official->getBarangay()->getAssoc(true),
-        ]);
-    }
-    catch (Exception $e) {
-        returnError($e->getMessage());
-    }
-}
-
-else if($action === 'logout') {
-    authorizeRequest(); // Ensure the user is authorized
-    
-    // Clear the JWT cookie
-    setcookie('jwt', '', time() - 3600, '/', '', false, true); // Adjust path and domain as needed
-    returnSuccess(['message' => 'Logged out successfully.']);
-}
-
-
-
-
 //---------------------- SK Official Management API --------------------
-else if ($action === 'personalInfo') {
+if ($action === 'personalInfo') {
     // Use null coalescing to provide a default value
     $slug = $_POST['officialSlug'] ?? '';
     
@@ -1230,10 +1155,7 @@ else if ($action === 'addOfficial') {
         $official->setSlug($slug);
     }
     
-    // Do not set username and password from the input; set them as empty strings.
-    $official->setUsername('');
-    $official->setPassword('');
-    
+
     // Set the remaining properties
     $official->setFullName($officialInfo['full_name']);
     $official->setPosition($officialInfo['position']);

@@ -1,4 +1,8 @@
 <?php
+declare(strict_types=1);
+use Firebase\JWT\JWT;
+require_once('../vendor/autoload.php');
+
 
 require_once __DIR__ . '/Model.php';
 
@@ -7,14 +11,17 @@ class Barangay extends Model
     /** static data */
     public    static $table         = 'barangays';
     public    static $table_columns = [];
-    protected static $basic_columns = ['id', 'slug', 'name', 'img', 'is_agreed'];
+    protected static $basic_columns = ['id', 'slug', 'name', 'img', 'sk_barangay_logo', 'is_agreed', 'username'];
 
     /** properties */
-    protected $cluster_id = 0;
-    protected $slug       = '';
-    protected $name       = '';
-    protected $img        = '';
-    protected $is_agreed  = 0;
+    protected $cluster_id               = 0;
+    protected $slug                     = '';
+    protected $name                     = '';
+    protected $img                      = '';
+    protected $sk_barangay_logo         = '';
+    protected $username                 = '';
+    protected $password                 = '';
+    protected $is_agreed                = 0;
 
 
     /**
@@ -37,7 +44,7 @@ class Barangay extends Model
         }
     }
 
-
+    // -------------------- GETTERS --------------------
     /**
      * Gets Barangay cluster_id.
      * @return int
@@ -46,7 +53,6 @@ class Barangay extends Model
     {
         return $this->cluster_id;
     }
-
 
     /**
      * Gets Barangay slug.
@@ -57,7 +63,6 @@ class Barangay extends Model
         return $this->slug;
     }
 
-
     /**
      * Gets Barangay name.
      * @return string
@@ -66,7 +71,6 @@ class Barangay extends Model
     {
         return $this->name;
     }
-
 
     /**
      * Gets Barangay img.
@@ -77,6 +81,32 @@ class Barangay extends Model
         return $this->img;
     }
 
+    /**
+     * Gets Barangay Logo .
+     * @return string
+     */
+    public function getSkBarangayLogo()
+    {
+        return $this->sk_barangay_logo;
+    }
+
+    /**
+     * Gets Barangay username.
+     * @return string
+     */
+    public function getUsername()
+    {
+        return $this->username;
+    }
+
+    /**
+     * Gets Barangay Password.
+     * @return string
+     */
+    public function getPassword()
+    {
+        return $this->password;
+    }
 
     /**
      * Gets Barangay is_agreed
@@ -88,6 +118,7 @@ class Barangay extends Model
     }
 
 
+    // -------------------- SETTERS --------------------
     /**
      * Sets Barangay cluster_id.
      * @param $cluster_id
@@ -97,7 +128,6 @@ class Barangay extends Model
     {
         $this->cluster_id = $cluster_id;
     }
-
 
     /**
      * Sets Barangay slug.
@@ -109,7 +139,6 @@ class Barangay extends Model
         $this->slug = $slug;
     }
 
-
     /**
      * Sets Barangay name.
      * @param $name
@@ -119,7 +148,6 @@ class Barangay extends Model
     {
         $this->name = $name;
     }
-
 
     /**
      * Sets Barangay img.
@@ -131,18 +159,93 @@ class Barangay extends Model
         $this->img = $img;
     }
 
+    /**
+     * Sets Barangay Logo.
+     * @param $sk_barangay_logo
+     * @return void
+     */
+    public function setSkBarangayLogo($sk_barangay_logo)
+    {
+        $this->sk_barangay_logo = $sk_barangay_logo;
+    }
+
+    /**
+     * Sets Barangay Username.
+     * @param $username
+     * @return void
+     */
+    public function setUsername($username)
+    {
+        $this->username = $username;
+    }
+
+    /**
+     * Sets Barangay Password.
+     * @param $password
+     * @return void
+     */
+    public function setPassword($password)
+    {
+        $this->password = $password;
+    }
 
     /**
      * Sets Barangay is_agreed
      * @param $is_agreed
      * @return void
-     */
+    */
     public function setIsAgreed($is_agreed)
     {
         $this->is_agreed = $is_agreed;
     }
 
 
+    // -------------------- CRUD OPERATIONS --------------------
+    
+    // Insert barangay
+    /**
+    * @return bool
+    * @throws Exception 
+    */
+    public function insert(): bool
+    {
+        $stmt = $this->getConnection()->prepare("INSERT INTO `" . self::$table . "` (`cluster_id`, `slug`, `name`, `img`, `is_agreed`) VALUES (?, ?, ?, ?, ?)");
+        $stmt->bind_param("isssi", $this->cluster_id, $this->slug, $this->name, $this->img, $this->is_agreed);
+        $stmt->execute();
+        if ($stmt->affected_rows > 0) {
+            $this->setId($stmt->insert_id);
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Update barangay
+     * @return bool
+     * @throws Exception
+     */
+    public function update(): bool
+    {
+        $stmt = $this->getConnection()->prepare("UPDATE `" . self::$table . "` SET `cluster_id` = ?, `slug` = ?, `name` = ?, `img` = ?, `is_agreed` = ? WHERE `id` = ?");
+        $stmt->bind_param("isssii", $this->cluster_id, $this->slug, $this->name, $this->img, $this->is_agreed, $this->id);
+        $stmt->execute();
+        return $stmt->affected_rows > 0;
+    }
+
+    /**
+     * Delete barangay
+     *
+     * @return bool
+     * @throws Exception
+     */
+    public function delete(): bool
+    {
+        $stmt = $this->getConnection()->prepare("DELETE FROM `" . self::$table . "` WHERE `id` = ?");
+        $stmt->bind_param("i", $this->id);
+        $stmt->execute();
+        return $stmt->affected_rows > 0;
+    }
+    
     /**
      * Retrieves all Barangay records, optionally filtering by Cluster.
      *
@@ -183,9 +286,99 @@ class Barangay extends Model
     }
 
 
+    // -------------------- AUTHENTICATION & JWT AUTHORIZATION MANAGEMENT --------------------
+    /**
+     * Authenticates using the given identifier and password.
+     * @param string $identifier
+     * @param string $password
+     * @param bool $is_password_hashed
+     * @return Barangay|null
+     */
+    private static function authenticate(string $identifier, string $password): ?Barangay
+    {
+        $barangay = Barangay::findBy('username', $identifier);
+        if ($barangay === null) {
+            return null;
+        }
+
+
+        $storedPassword = $barangay->getPassword();
+        $info = password_get_info($storedPassword);
+
+
+
+        // Case 1: password is hashed with password_hash()
+        if ($info['algo'] !== 0 && password_verify($password, $storedPassword)) {
+            return $barangay;
+        }
+
+        // Case 2: password is plaintext (legacy accounts)
+        if (empty($info['algo']) && $password === $storedPassword) {
+            $barangay->setPassword(password_hash($password, PASSWORD_BCRYPT));
+            $barangay->update();
+            return $barangay;
+        }
+
+        return null;
+    }
+    
+    /**
+     * Attempts to log in using the given identifier and password.
+     * @param string $identifier
+     * @param string $password
+     * @return Barangay
+     * @throws Exception
+     */
+    public static function login(string $identifier, string $password): Barangay
+    {   
+        // Authenticate
+        $barangay = self::authenticate($identifier, $password);
+        if ($barangay === null) {
+            throw new Exception('Invalid credentialswswsre');
+        }
+
+
+        // Create the JWT Token if Authenticated
+        $date   = new DateTimeImmutable();
+        $expire_at = $date->modify('+4 week')->getTimestamp();
+        $request_data = [
+            'iss'  => 'localhost.youth',                    // Issuer
+            'iat'  => $date->getTimestamp(),                // Issued at: time when the token was generated
+            'exp'  => $expire_at,                           // Expire
+            'barangayId' => $barangay->getId(),
+            'barangayName' => $barangay->getName(),  
+            'barangayUsername' => $barangay->getUsername()                
+        ];
+
+        // Create the Token
+        $jwt = JWT::encode($request_data, $GLOBALS['secret_key'], 'HS256');      
+
+        // Create and Set the JWT Cookie
+        setcookie(
+            "jwt",
+            $jwt,
+            [
+                "path" => "/",
+
+                // Set this to true in production
+                "secure" => false,     // only HTTPS
+
+                "httponly" => true,   // JavaScript can’t read it
+                "samesite" => "Strict"
+            ]
+        );
+
+
+        return $barangay;
+    }
+
+
+    /** -------------------- UTILITY FUNCTIONS -------------------- */ 
+
+
+
     /**
      * Gets the SK Chairperson for this Barangay.
-     *
      * @param bool $assoc
      * @param bool $assoc_basic
      * @return SkOfficial|array|null
@@ -319,21 +512,6 @@ class Barangay extends Model
         return Announcement::all($assoc, $assoc_basic, $this);
     }
 
-
-    /**
-     * Gets all Youths that belong to this Barangay.
-     *
-     * @param bool $assoc
-     * @param bool $assoc_basic
-     * @return array
-     */
-    public function getYouths(bool $assoc = false, bool $assoc_basic = false): array
-    {
-        require_once __DIR__ . '/Youth.php';
-        return Youth::all($assoc, $assoc_basic, $this);
-    }
-
-
     /**
      * Gets all achievements for this Barangay across all its SK Officials.
      *
@@ -363,82 +541,4 @@ class Barangay extends Model
         return $allAchievements;
     }
 
-
-    /**
-     * Gets all feedbacks for this Barangay across all its youths.
-     *
-     * This method retrieves every youth in this Barangay and then merges all of their feedbacks.
-     *
-     * @param bool $assoc
-     * @param bool $assoc_basic
-     * @return array
-     */
-    public function getAllFeedbacks(bool $assoc = false, bool $assoc_basic = false): array
-    {
-        $allFeedbacks = [];
-        // retrieve all Youths for this Barangay
-        $youths = $this->getYouths();
-        require_once __DIR__ . '/Feedback.php';
-        foreach ($youths as $youth) {
-            // ensure we have an object instance
-            if (!is_object($youth)) {
-                require_once __DIR__ . '/Youth.php';
-                $youth = new Youth($youth['id']);
-            }
-            // retrieve the feedbacks for this Youth
-            $feedbacks = $youth->getFeedbacks($assoc, $assoc_basic);
-            // merge them into one array
-            $allFeedbacks = array_merge($allFeedbacks, $feedbacks);
-        }
-        return $allFeedbacks;
-    }
-
-
-    /**
-     * Insert barangay
-     *
-     * @return bool
-     * @throws Exception
-     */
-    public function insert(): bool
-    {
-        $stmt = $this->getConnection()->prepare("INSERT INTO `" . self::$table . "` (`cluster_id`, `slug`, `name`, `img`, `is_agreed`) VALUES (?, ?, ?, ?, ?)");
-        $stmt->bind_param("isssi", $this->cluster_id, $this->slug, $this->name, $this->img, $this->is_agreed);
-        $stmt->execute();
-        if ($stmt->affected_rows > 0) {
-            $this->setId($stmt->insert_id);
-            return true;
-        }
-        return false;
-    }
-
-
-    /**
-     * Update barangay
-     *
-     * @return bool
-     * @throws Exception
-     */
-    public function update(): bool
-    {
-        $stmt = $this->getConnection()->prepare("UPDATE `" . self::$table . "` SET `cluster_id` = ?, `slug` = ?, `name` = ?, `img` = ?, `is_agreed` = ? WHERE `id` = ?");
-        $stmt->bind_param("isssii", $this->cluster_id, $this->slug, $this->name, $this->img, $this->is_agreed, $this->id);
-        $stmt->execute();
-        return $stmt->affected_rows > 0;
-    }
-
-
-    /**
-     * Delete barangay
-     *
-     * @return bool
-     * @throws Exception
-     */
-    public function delete(): bool
-    {
-        $stmt = $this->getConnection()->prepare("DELETE FROM `" . self::$table . "` WHERE `id` = ?");
-        $stmt->bind_param("i", $this->id);
-        $stmt->execute();
-        return $stmt->affected_rows > 0;
-    }
 }

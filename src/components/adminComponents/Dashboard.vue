@@ -1,11 +1,5 @@
 <template>
     <v-container class="dashboard-main" fluid>
-        <div>
-            <h1>IMPLEMENT SECURITY HEADERS TO YOUR WEBSITE</h1>
-            <h1>Add Change Password per barangay (make sure that the password is hashed)</h1>
-            <h1>Make the Authentication of Credentials more Secure</h1>
-        </div>
-
         <!-- Cards Section -->
         <v-container class="cards" justify="center">
                 <DashboardCards :card="dashBoardData.skOfficialCount" />

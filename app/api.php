@@ -14,6 +14,9 @@ $dotenv = Dotenv::createImmutable(__DIR__ . '/../', $envFile);
 $dotenv->load();
 
 $GLOBALS['secret_key'] = $_ENV['JWT_SECRET'];
+$GLOBALS['client_secret'] = $_ENV['CLIENT_SECRET'];
+$GLOBALS['client_id'] = $_ENV['CLIENT_ID'];
+
 
 
 
@@ -148,6 +151,9 @@ else if($endpoint == 'barangay') {
 }
 else if($endpoint == 'education-type') {
     require_once __DIR__ . '/api--educationType.php';
+}
+else if($endpoint == 'auth') {
+    require_once __DIR__ . '/api--auth.php';
 }
 else if($endpoint == 'csrf') {
     require_once __DIR__ . '/csrf.php';
