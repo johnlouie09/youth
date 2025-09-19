@@ -3,6 +3,8 @@ declare(strict_types=1);
 use Firebase\JWT\JWT;
 use Firebase\JWT\JWK;
 use Firebase\JWT\Key;
+use League\OAuth2\Client\Provider\Google;
+
 require_once('../vendor/autoload.php');
 
 // Models Imports
@@ -131,39 +133,39 @@ else if($action === 'logout') {
 // Authorization using Third Party Accounts (Facebook and Google)
 if ($action === 'process')
 {
+    // 1. Create a provider (Google example)
+    $provider = new League\OAuth2\Client\Provider\Google([
+    'clientId'     => $GLOBALS['client_id'],
+    'clientSecret' => $GLOBALS['client_secret'],
+    'redirectUri'  => 'http://localhost:5173/login',
+    ]);
+
+
+    // 2. Redirect user to Google login
     if(!isset($_POST["code"])) {
+        $authUrl = $provider->getAuthorizationUrl();
+        header('Location: ' . $authUrl);
         returnError('Invalid code received.', 400);
+        exit;
     }
 
-    $code = $_POST["code"];
+    // 3. Handle callback: exchange code for access token
+    $token = $provider->getAccessToken('authorization_code', [
+        'code' => $_POST['code']
+    ]);
 
-    $tokens = getGoogleTokens($code);
-    // Get Google public keys
-    $jwks = json_decode(file_get_contents("https://www.googleapis.com/oauth2/v3/certs"), true);
-
-    try {
-    // Convert Google's JWKS into an array of usable keys
-    $keys = JWK::parseKeySet($jwks);
-
-    // Decode and verify Google ID token
-    JWT::$leeway = 60; // allow 1 minute clock skew
-    $decoded = JWT::decode($tokens['id_token'], $keys);
-
-    // Validate claims 
-    if ($decoded->aud !== $GLOBALS['client_id']) {
-        throw new Exception("Invalid audience");
-    }
-    if ($decoded->iss !== "https://accounts.google.com" && $decoded->iss !== "accounts.google.com") {
-        throw new Exception("Invalid issue");
-    }
+    $user = $provider->getResourceOwner($token);
+    $data = $user->toArray();
 
     // Extract user info
-    $googleId = $decoded->sub;
-    $email = $decoded->email ?? null;
+    $googleId = $user->getId();
+    $email = $data['email'] ?? null;
 
+    // 4. Find the Account in the Database
     $accounts = AuthorizedAccount::findBy('provider_user_id', $googleId);
     $barangay = $accounts->getBarangay();
 
+    // 5. Issue your own JWT/cookie
     if($accounts) {
         $date   = new DateTimeImmutable();
         $expire_at = $date->modify('+4 week')->getTimestamp();
@@ -200,10 +202,4 @@ if ($action === 'process')
         // TODO: return error
     }
 
-
-    
-
-    } catch (Exception $e) {
-        echo "Token invalid: " . $e->getMessage();
-    }
 }
