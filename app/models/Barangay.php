@@ -209,8 +209,8 @@ class Barangay extends Model
     */
     public function insert(): bool
     {
-        $stmt = $this->getConnection()->prepare("INSERT INTO `" . self::$table . "` (`cluster_id`, `slug`, `name`, `img`, `is_agreed`) VALUES (?, ?, ?, ?, ?)");
-        $stmt->bind_param("isssi", $this->cluster_id, $this->slug, $this->name, $this->img, $this->is_agreed);
+        $stmt = $this->getConnection()->prepare("INSERT INTO `" . self::$table . "` (`cluster_id`, `slug`, `name`, `img`, `sk_barangay_logo`, `username`, `password`, `is_agreed`) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+        $stmt->bind_param("issssssi", $this->cluster_id, $this->slug, $this->name, $this->img, $this->sk_barangay_logo, $this->username, $this->password, $this->is_agreed);
         $stmt->execute();
         if ($stmt->affected_rows > 0) {
             $this->setId($stmt->insert_id);
@@ -226,8 +226,8 @@ class Barangay extends Model
      */
     public function update(): bool
     {
-        $stmt = $this->getConnection()->prepare("UPDATE `" . self::$table . "` SET `cluster_id` = ?, `slug` = ?, `name` = ?, `img` = ?, `is_agreed` = ? WHERE `id` = ?");
-        $stmt->bind_param("isssii", $this->cluster_id, $this->slug, $this->name, $this->img, $this->is_agreed, $this->id);
+        $stmt = $this->getConnection()->prepare("UPDATE `" . self::$table . "` SET `cluster_id` = ?, `slug` = ?, `name` = ?, `img` = ?, `sk_barangay_logo` = ?, `username` = ?, `password` = ?, `is_agreed` = ? WHERE `id` = ?");
+        $stmt->bind_param("issssssii", $this->cluster_id, $this->slug, $this->name, $this->img, $this->sk_barangay_logo, $this->username, $this->password, $this->is_agreed, $this->id);
         $stmt->execute();
         return $stmt->affected_rows > 0;
     }

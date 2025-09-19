@@ -442,15 +442,15 @@ else if ($action === 'delete-announcement') {
 else if ($action === 'change-password') {
     authorizeRequest();
 
-    if (!isset($_POST['sk_official_id'])) {
-        returnError('SK Official ID is required.', 400);
+    if (!isset($_POST['barangay_id'])) {
+        returnError('Barangay ID is required.', 400);
     }
 
-    $skOfficialId = $_POST['sk_official_id'];
-    $sk_official = SkOfficial::findBy('id', $skOfficialId);
+    $barangayId = $_POST['barangay_id'];
+    $barangay = Barangay::findBy('id', $barangayId);
 
-    if (!$sk_official) {
-        returnError("No SK Official found with ID $skOfficialId", 404);
+    if (!$barangay) {
+        returnError("No Barangay found with ID $barangayId", 404);
     }
 
     // Ensure passwordInfo is an array
@@ -465,13 +465,13 @@ else if ($action === 'change-password') {
         returnError('Both old and new password are required.', 400);
     }
 
-    $storedPassword = $sk_official->getPassword();
+    $storedPassword = $barangay->getPassword();
 
     if (password_verify($oldPassword, $storedPassword)) {
         // Stored as hashed
         if (password_verify($oldPassword, $storedPassword)) {
-            $sk_official->setPassword(password_hash($newPassword, PASSWORD_BCRYPT));
-            $sk_official->update();
+            $barangay->setPassword(password_hash($newPassword, PASSWORD_BCRYPT));
+            $barangay->update();
             returnSuccess('Password successfully changed.');
         } else {
             returnError('Old password (hashed) does not match.');
@@ -480,8 +480,8 @@ else if ($action === 'change-password') {
     else if ($oldPassword === $storedPassword) {
                 // Stored as plain text (bad practice, but maybe migrating)
         if ($oldPassword === $storedPassword) {
-            $sk_official->setPassword(password_hash($newPassword, PASSWORD_BCRYPT));
-            $sk_official->update();
+            $barangay->setPassword(password_hash($newPassword, PASSWORD_BCRYPT));
+            $barangay->update();
             returnSuccess('Password successfully changed (migrated to hash).');
         } else {
             returnError('Old password (not hashed) does not match.');
