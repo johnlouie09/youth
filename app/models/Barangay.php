@@ -373,6 +373,7 @@ class Barangay extends Model
     }
 
 
+
     /** -------------------- UTILITY FUNCTIONS -------------------- */ 
 
 
@@ -539,6 +540,12 @@ class Barangay extends Model
             $allAchievements = array_merge($allAchievements, $achievements);
         }
         return $allAchievements;
+    }
+
+    public function getAuthorizedAccounts(bool $assoc = false, bool $assoc_basic = false): array 
+    {
+        require_once __DIR__ . '/AuthorizedAccount.php';
+        return AuthorizedAccount::all($assoc, $assoc_basic, $this);
     }
 
 }

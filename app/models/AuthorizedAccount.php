@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/Model.php';
+require_once __DIR__ . '/Barangay.php';
 
 class AuthorizedAccount extends Model {
 
@@ -15,8 +16,6 @@ class AuthorizedAccount extends Model {
         'created_at',
         'updated_at'
     ];
-
-
 
     // Properties
     protected $barangay_id;
@@ -77,6 +76,45 @@ class AuthorizedAccount extends Model {
 
 
     // -------------------- CRUD METHODS --------------------
+
+    // --- All ---
+        /**
+     * @param bool $assoc
+     * @param bool $assoc_basic
+     * @param Barangay|null $barangay
+     * @return AuthorizedAccount[]|array[]
+     */
+    public static function all(bool $assoc = false, bool $assoc_basic = false, ?Barangay $barangay = null):array {
+        $query = "SELECT * FROM `" . self::$table . "`";
+        $params = [];
+        $types = '';
+
+        if($barangay !== null) {
+            $query .= " WHERE `barangay_id` = ?";
+            $params[] = $barangay->getId();
+            $types .= "i";
+        }
+
+        $stmt = self::getConnectionStatic()->prepare($query);
+
+        if (!empty($params)) {
+            $stmt->bind_param($types, ...$params);
+        }
+
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $authorized_accounts = [];
+
+        while($row = $result->fetch_assoc()) {
+            $account = new AuthorizedAccount();
+            $account->hydrate($row);
+            $authorized_accounts[] = $account->getAssoc($assoc_basic);
+        }
+
+        return $authorized_accounts;
+    }
+
+
     // --- Insert ---
     public function insert(): bool
     {
@@ -149,8 +187,6 @@ class AuthorizedAccount extends Model {
         $stmt->execute();
         return $stmt->affected_rows > 0;
     }
-
-
 
     // -------------------- UTILITY METHODS --------------------
     public function getBarangay(): Barangay {
