@@ -43,7 +43,7 @@
 
       <!-- OAuth buttons -->
       <div class="h-auto d-flex flex-col ga-2 py-5">
-        <v-btn size="large">
+        <v-btn size="large" @click="loginWithFacebook">
           <div class="d-flex justify-center items-center ga-3">
             <v-avatar size="25" :image="$store.getters['base'] + 'public/fb.png'" />
             <span class="text-sm">Continue with Facebook</span>
@@ -88,10 +88,11 @@ export default {
     // 🎯 Handle OAuth redirect with ?code=...
     const params = new URLSearchParams(window.location.search);
     const code = params.get("code");
+    const state = params.get("state");
 
-    if (code) {
+    if(code) {
       $.ajax({
-        url: `${this.$store.getters["api_base"]}?e=auth&a=process`,
+        url: `${this.$store.getters["api_base"]}?e=auth&a=process-${state}`,
         type: "POST",
         xhrFields: { withCredentials: true },
         headers: {
@@ -118,20 +119,6 @@ export default {
     }
   },
   methods: {
-    loginWithGoogle() {
-      const clientId =
-        "1096632843138-q7q1pg5qil4699vg1bhfecsjmjcat6gj.apps.googleusercontent.com";
-      const redirectUri = "http://localhost:5173/login";
-      const scope = "openid email profile";
-      const responseType = "code";
-
-      const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${encodeURIComponent(
-        redirectUri
-      )}&response_type=${responseType}&scope=${encodeURIComponent(scope)}`;
-
-      window.location.href = authUrl;
-    },
-
     validateForm() {
       let valid = true;
       this.usernameError = "";
@@ -197,9 +184,36 @@ export default {
         },
       });
     }, 300),
+
+
+    // Handles OAuth Login using Facebook or Google Account
+    loginWithGoogle() {
+      const clientId = "144092227095-2o4leroklngkidvlum4s8vlguchcc4av.apps.googleusercontent.com";
+      const provider = "google";
+      const redirectUri = "http://localhost:5173/login";
+      const scope = "openid email profile";
+      const responseType = "code";
+
+      const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=${responseType}&state=${provider}&scope=${encodeURIComponent(scope)}`;
+
+      window.location.href = authUrl;  
+    },
+
+    loginWithFacebook() {
+      const clientId = "1984297012108998";
+      const provider = "facebook";
+      const redirectUri = "http://localhost:5173/login";
+      const scope = "public_profile";
+
+      const facebookAuthUrl = `https://www.facebook.com/v21.0/dialog/oauth?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${scope}&state=${provider}&response_type=code`;
+      window.location.href = facebookAuthUrl;
+    },
   },
 };
 </script>
+
+
+
 
 <style scoped>
 .login-container {

@@ -3,7 +3,6 @@ declare(strict_types=1);
 use Firebase\JWT\JWT;
 use Firebase\JWT\JWK;
 use Firebase\JWT\Key;
-use League\OAuth2\Client\Provider\Google;
 
 require_once('../vendor/autoload.php');
 
@@ -16,44 +15,6 @@ require_once __DIR__ . '/models/AuthorizedAccount.php';
 if (!defined('__BASE')) { exit(); }
 
 
-
-function getGoogleTokens($code) {
-    $clientId = $GLOBALS['client_id'];
-    $clientSecret = $GLOBALS['client_secret'];
-    $redirectUri = "http://localhost:5173/login";
-    // Token endpoint
-    $url = "https://oauth2.googleapis.com/token";
-
-    // Data for POST request
-    $data = [
-        "code" => $code,
-        "client_id" => $clientId,
-        "client_secret" => $clientSecret,
-        "redirect_uri" => $redirectUri,
-        "grant_type" => "authorization_code"
-    ];
-
-    // Initialize cURL
-    $ch = curl_init();
-
-    curl_setopt($ch, CURLOPT_URL, $url);
-    curl_setopt($ch, CURLOPT_POST, true);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-    // Execute
-    $response = curl_exec($ch);
-
-    // Handle error
-    if (curl_errno($ch)) {
-        throw new Exception(curl_error($ch));
-    }
-
-    curl_close($ch);
-
-    // Decode JSON response
-    return json_decode($response, true);    
-}
 
 /** Extract Action */
 $action = $_GET['a'] ?? '';
@@ -131,17 +92,91 @@ else if($action === 'logout') {
 
 
 // Authorization using Third Party Accounts (Facebook and Google)
-if ($action === 'process')
+if ($action === 'process-google')
 {
     // 1. Create a provider (Google example)
     $provider = new League\OAuth2\Client\Provider\Google([
-    'clientId'     => $GLOBALS['client_id'],
-    'clientSecret' => $GLOBALS['client_secret'],
+    'clientId'     => $GLOBALS['client_id_google'],
+    'clientSecret' => $GLOBALS['client_secret_google'],
     'redirectUri'  => 'http://localhost:5173/login',
     ]);
 
 
     // 2. Redirect user to Google login
+    if(!isset($_POST["code"])) {
+        $authUrl = $provider->getAuthorizationUrl();
+        header('Location: ' . $authUrl);
+        returnError('Invalid code received.', 400);
+        exit;
+    }
+
+    // 3. Handle callback: exchange code for access token
+    $token = $provider->getAccessToken('authorization_code', [
+        'code' => $_POST['code']
+    ]);
+
+    $user = $provider->getResourceOwner($token);
+    $data = $user->toArray();
+
+    // Extract user info
+    $googleId = $user->getId();
+    $email = $data['email'] ?? null;
+
+    // 4. Find the Account in the Database
+    $accounts = AuthorizedAccount::findBy('provider_user_id', $googleId);
+    $barangay = $accounts->getBarangay();
+
+    // 5. Issue your own JWT/cookie
+    if($accounts) {
+        $date   = new DateTimeImmutable();
+        $expire_at = $date->modify('+4 week')->getTimestamp();
+        $request_data = [
+            'iss'  => 'localhost.youth',                    // Issuer
+            'exp'  => $expire_at,                           // Expire
+            'barangayId' => $accounts->getId(),
+            'barangayName' => $barangay->getName(),  
+            'barangayUsername' => $barangay->getUsername()                  
+        ];
+
+        // Create the Token
+        $jwt = JWT::encode($request_data, $GLOBALS['secret_key'], 'HS256');      
+
+        // Create and Set the JWT Cookie
+        setcookie(
+            "jwt",
+            $jwt,
+            [
+                "path" => "/",
+                // Set this to true in production
+                "secure" => false,     // only HTTPS
+                "httponly" => true,   // JavaScript can’t read it
+                "samesite" => "Strict"
+            ]
+        );
+
+
+        returnSuccess([
+            'barangay' => $barangay->getAssoc(true),
+        ]);
+    }
+    else {
+        // TODO: return error
+    }
+}
+
+// Authorization using Third Party Accounts (Facebook)
+else if ($action === 'process-facebook')
+{
+    // 1. Create a provider
+    $provider = new League\OAuth2\Client\Provider\Facebook([
+    'clientId'     => $GLOBALS['client_id_facebook'],
+    'clientSecret' => $GLOBALS['client_secret_facebook'],
+    'graphApiVersion' => 'v23.0',
+    'redirectUri'  => 'http://localhost:5173/login',
+    ]);
+
+
+    // 2. Redirect user to Facebook login
     if(!isset($_POST["code"])) {
         $authUrl = $provider->getAuthorizationUrl();
         header('Location: ' . $authUrl);

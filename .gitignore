@@ -17,6 +17,7 @@ coverage
 /node_modules/
 /vendor/
 .env
+env.development
 /cypress/videos/
 /cypress/screenshots/
 

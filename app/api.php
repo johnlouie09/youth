@@ -14,8 +14,10 @@ $dotenv = Dotenv::createImmutable(__DIR__ . '/../', $envFile);
 $dotenv->load();
 
 $GLOBALS['secret_key'] = $_ENV['JWT_SECRET'];
-$GLOBALS['client_secret'] = $_ENV['CLIENT_SECRET'];
-$GLOBALS['client_id'] = $_ENV['CLIENT_ID'];
+$GLOBALS['client_secret_google'] = $_ENV['CLIENT_SECRET_GOOGLE'];
+$GLOBALS['client_id_google'] = $_ENV['CLIENT_ID_GOOGLE'];
+$GLOBALS['client_id_facebook'] = $_ENV['CLIENT_ID_FACEBOOK'];
+$GLOBALS['client_secret_facebook'] = $_ENV['CLIENT_SECRET_FACEBOOK'];
 
 
 

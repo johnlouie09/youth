@@ -11,6 +11,7 @@ require_once __DIR__ . '/models/Achievement.php';
 require_once __DIR__ . '/models/Cluster.php';
 require_once __DIR__ . '/models/AnnouncementDateTime.php';
 require_once __DIR__ . "/models/AnnouncementImage.php";
+require_once __DIR__ . '/models/AuthorizedAccount.php';
 
 
 /** Extract Action */
@@ -489,6 +490,25 @@ else if ($action === 'change-password') {
     } else {
         returnError("Old password does not match.");
     }
+}
+
+else if ($action === 'authorized-accounts') {
+    // Check if the API Request is Authorized
+    authorizeRequest();
+
+    if (!isset($_POST['barangayId'])) {
+        returnError('Barangay ID is required.', 400);
+    }
+
+    $barangay_id = $_POST['barangayId'];
+    $barangay = new Barangay($barangay_id);
+
+    if(!$barangay) {
+        returnError('No Barangay Found in the Database.', 400);
+    }
+
+    returnSuccess($barangay->getAuthorizedAccounts());
+
 }
 
 

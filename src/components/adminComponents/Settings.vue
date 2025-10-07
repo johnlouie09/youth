@@ -5,7 +5,8 @@ export default {
     data() {
         return {
             passwordInfos : {},
-            authorizedAccounts: []
+            authorizedAccounts: [],
+            newAccountDialog: false
         }
     },
     methods: {
@@ -64,10 +65,55 @@ export default {
                     alert(errorMsg); // ✅ show error feedback to user
                 }
             });
-        }
+        },
+        loginWithGoogle() {
+            const clientId = "144092227095-2o4leroklngkidvlum4s8vlguchcc4av.apps.googleusercontent.com";
+            const provider = "google";
+            const redirectUri = "http://localhost:5173/admin/san-francisco/settings";
+            const scope = "openid email profile";
+            const responseType = "code";
+
+            const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=${responseType}&state=${provider}&scope=${encodeURIComponent(scope)}`;
+
+            window.location.href = authUrl;  
+        },
     },
     created() {
         this.getAuthorizedAccounts();
+    },
+    mounted() {
+        // 🎯 Handle OAuth redirect with ?code=...
+        const params = new URLSearchParams(window.location.search);
+        const code = params.get("code");
+        const state = params.get("state");
+
+        if(code) {
+        $.ajax({
+            url: `${this.$store.getters["api_base"]}?e=auth&a=bound-account-${state}`,
+            type: "POST",
+            xhrFields: { withCredentials: true },
+            headers: {
+            "X-CSRF-Token": document.querySelector("meta[name='csrf-token']").content,
+            },
+            data: { code },
+            success: (res) => {
+            if (res.success) {
+                this.$store.commit("auth/setUser", res.data);
+                const barangaySlug = res?.data?.barangay?.slug;
+                if (barangaySlug) {
+                this.$router.replace({ name: "admin-dashboard", params: { barangaySlug } });
+                } else {
+                this.$router.replace({ name: "admin-dashboard" });
+                }
+            } else {
+                console.error("OAuth failed:", res);
+            }
+            },
+            error: (xhr, status, err) => {
+            console.error("OAuth request error:", err);
+            },
+        });
+        }
     },
     computed : {
         hasChanges() {
@@ -155,7 +201,9 @@ export default {
                 <div class="d-flex flex-col items-center ga-5">
                     <!-- Provider Title Section -->
                     <v-card-title class="w-[90%] d-flex align-center justify-center ga-5 border-b py-3">
-                        <v-img height="50" :src="($store.getters.base + 'public/google-brand-color.svg')"/>
+                        <v-img height="50" :src="($store.getters.base + 'public/Facebook_Logo_(2019).png')"/>
+                        &
+                        <v-img height="40" :src="($store.getters.base + 'public/google-brand-color.svg')"/>
                     </v-card-title>
 
                     <v-card 
@@ -180,35 +228,30 @@ export default {
                         </v-card-actions>
                     </v-card>
                 </div>
-
-                <div class="d-flex flex-col ga-5">
-                    <!-- Provider Title Section -->
-                    <v-card-title class="w-[90%] d-flex align-center justify-center ga-5 border-b py-3">
-                        <v-img height="50" :src="($store.getters.base + 'public/Facebook_Logo_(2019).png')"/>
-                    </v-card-title>
-
-
-                    <v-card 
-                    v-for="n of 1"
-                    class="d-flex justify-center items-center ga-5 elevation-10 pa-5 border border-orange-300">
-                        <!-- Profile Image of the Account -->
-                        <v-avatar size="80">
-                            <v-img src="https://lh3.googleusercontent.com/a/ACg8ocLan6i1QYnueh176h_wd0Ls8lAmKndAa9Z31pIi2qYlBqHY5Rw=s96-c"></v-img>
-                        </v-avatar>
-
-                        <!-- Details of the Account -->
-                        <div>
-                            <h4>Name: Charles Harvey Gonzaga</h4>
-                            <h4>Email: harveygonzaga222@gmail.com</h4>
-                            <h4>Account Provider: Google</h4>
-                        </div>
-                    </v-card>
-                </div>
             </div>
 
-            <v-btn>
+            <v-btn 
+            class="border"
+            @click="newAccountDialog = true">
                 BOUND NEW ACCOUNT
             </v-btn>
+
+            <v-dialog 
+            :height="auto"
+            :width="450"
+            v-model=newAccountDialog>
+                <v-card class="d-flex justify-center items-center py-10 rounded-4xl">
+                    <h1 class="font-black">BOUND NEW ACCOUNT</h1>
+                    <div class="h-auto d-flex flex-col ga-2 py-5">
+                        <v-btn size="large" @click="loginWithGoogle">
+                        <div class="d-flex justify-center items-center ga-3">
+                            <v-avatar size="30" :image="$store.getters['base'] + 'public/google_logo.svg'" />
+                            <span class="text-sm">Google Account</span>
+                        </div>
+                        </v-btn>
+                    </div>
+                </v-card>
+            </v-dialog>
 
          </v-card>
     </v-container>
