@@ -124,6 +124,11 @@ if ($action === 'process-google')
 
     // 4. Find the Account in the Database
     $accounts = AuthorizedAccount::findBy('provider_user_id', $googleId);
+
+    if(!$accounts) {
+        returnError("This Google Account is not Authorized. Please contact the developer if you want to be authorized. Thank you :>", 400);
+    }
+
     $barangay = $accounts->getBarangay();
 
     // 5. Issue your own JWT/cookie

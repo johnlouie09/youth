@@ -334,7 +334,7 @@ class Barangay extends Model
         // Authenticate
         $barangay = self::authenticate($identifier, $password);
         if ($barangay === null) {
-            throw new Exception('Invalid credentialswswsre');
+            throw new Exception('Invalid credentials');
         }
 
 
