@@ -36,9 +36,11 @@
           Log In
         </v-btn>
 
-        <div class="reqErr" v-if="requestError">
-          {{ requestError.toUpperCase() }}
-        </div>
+        <v-card 
+        class="reqErr pa-5 my-3 rounded-2xl" 
+        v-if="requestError">
+          {{ requestError }}
+        </v-card>
       </v-form>
 
       <!-- OAuth buttons -->
@@ -91,6 +93,7 @@ export default {
     const state = params.get("state");
 
     if(code) {
+      this.loading = true
       $.ajax({
         url: `${this.$store.getters["api_base"]}?e=auth&a=process-${state}`,
         type: "POST",
@@ -101,6 +104,7 @@ export default {
         data: { code },
         success: (res) => {
           if (res.success) {
+            console.log(res);
             this.$store.commit("auth/setUser", res.data);
             const barangaySlug = res?.data?.barangay?.slug;
             if (barangaySlug) {
@@ -109,12 +113,17 @@ export default {
               this.$router.replace({ name: "admin-dashboard" });
             }
           } else {
-            console.error("OAuth failed:", res);
+            console.log("OAuth failed:", res.message);
           }
         },
-        error: (xhr, status, err) => {
-          console.error("OAuth request error:", err);
+        error: (jqXHR, textStatus, errorThrown) => {
+            if (jqXHR.responseJSON && jqXHR.responseJSON.error) {
+              this.requestError = jqXHR.responseJSON.message;
+            }
         },
+        complete: () => {
+          this.loading = false;
+        }
       });
     }
   },
@@ -261,6 +270,8 @@ export default {
     color: rgb(245, 49, 49);
     margin-bottom: 1rem;
     font-size: 120%;
+    border: red .5px solid;
+    
 }
 
 .v-text-field .v-icon {
